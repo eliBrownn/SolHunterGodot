@@ -224,3 +224,11 @@ vacant admission, retained old/owned records, fresh guard warnings, population
 projections, legacy full waits, movebooks and persistent imprints are covered.
 This is a bounded source-derived three-home loop, not production wildlife
 generation, affinity inheritance, reproduction, or a finalized rarity system.
+
+[Field-aware enemies, testing Seals and progression](ai-seals-progression.md)
+implement the next requested steps 2–4: shared legal enemy move planning, visible
+capture odds and persistent captured companions, party/storage selection, and
+participating victory XP with remembered level unlocks. Owner choices are unlimited
+testing Seals and editable provisional milestones 4/8/14. Story gates, genetics,
+evolution, battle switching, economy, production learnsets and manual acceptance
+remain outstanding.

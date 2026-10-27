@@ -29,6 +29,8 @@ var move_buttons: Array[Button] = []
 var aimed_slot := -1
 var quantum_choice: OptionButton
 var feedback_view: Node3D
+var progression: ProgressionSettings
+var capture_button: Button
 
 
 func bind(source: Node2D, entry: Node, actors: Node3D, tuning: BattleSettings) -> void:
@@ -39,6 +41,7 @@ func bind(source: Node2D, entry: Node, actors: Node3D, tuning: BattleSettings) -
 	if settings != tuning:
 		push_warning("Invalid battle settings; using the default prototype roster.")
 	library = world.host.move_library if world.host.move_library != null and world.host.move_library.valid() else preload("res://resources/move_library.tres")
+	progression = world.host.progression_settings if world.host.progression_settings != null and world.host.progression_settings.valid() else preload("res://resources/progression_settings.tres")
 	world.host.add_child(visuals)
 	build_ui()
 	feedback_view = preload("res://scripts/battle_feedback.gd").new()
@@ -77,14 +80,14 @@ func build_ui() -> void:
 		choice_buttons.append(button("%d · %s — HP %d · %s" % [index + 1, option.display_name, option.max_hp, option.move_name], choose.bind(index), choices))
 	button("Cancel · Escape", cancel_choice, choices)
 	selection_panel.hide()
-	battle_panel = world.panel_at(Rect2(890, 145, 365, 535))
+	battle_panel = world.panel_at(Rect2(890, 130, 365, 575))
 	var actions := VBoxContainer.new()
-	actions.add_theme_constant_override("separation", 6)
+	actions.add_theme_constant_override("separation", 4)
 	battle_panel.add_child(actions)
 	actions.add_child(world.label("TACTICAL ENCOUNTER", 21, Color("e1c791")))
 	status_label = world.label("", 16)
 	status_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	status_label.custom_minimum_size = Vector2(325, 90)
+	status_label.custom_minimum_size = Vector2(325, 80)
 	actions.add_child(status_label)
 	intent_label = world.label("", 15, Color("edc498"))
 	intent_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
@@ -105,6 +108,9 @@ func build_ui() -> void:
 			session.quantum_mode = ["position", "stabilize", "entangle"][index]
 			update_view())
 	actions.add_child(quantum_choice)
+	capture_button = button("Use Seal · Q", capture_enemy, actions)
+	capture_button.add_theme_font_size_override("font_size", 14)
+	capture_button.custom_minimum_size.y = 32
 	wait_button = button("End turn · Enter", wait_turn, actions)
 	button("Retreat · Escape", retreat, actions)
 	log_label = world.label("", 13)
@@ -119,6 +125,7 @@ func on_state(state: ExpeditionState) -> void:
 	if source_state != null and source_state.battle_progress_changed.is_connected(refresh_companion):
 		source_state.battle_progress_changed.disconnect(refresh_companion)
 	source_state = state
+	source_state.configure_progression(progression)
 	source_state.battle_progress_changed.connect(refresh_companion)
 	ensure_movebooks()
 	session = null
@@ -136,14 +143,14 @@ func on_state(state: ExpeditionState) -> void:
 func refresh_companion() -> void:
 	ensure_movebooks()
 	companion_label.visible = settings.enabled and session == null
-	var hero := source_state.starter_view()
+	var hero := source_state.active_sol_view()
 	companion_label.text = "C · Choose companion" if hero.is_empty() else "%s · HP %d/%d · H recover at refuge" % [hero.profile.display_name, hero.hp, hero.profile.max_hp]
 
 func open_choice() -> void:
 	if not settings.valid() or not settings.enabled or world.moving or world.confirmation.visible or session != null:
 		return
-	if not source_state.starter_view().is_empty():
-		loadout.open(source_state.starter_view().id)
+	if not source_state.active_sol_view().is_empty():
+		loadout.open(source_state.active_sol_view().id)
 		return
 	choosing = true
 	world.encounter_active = true
@@ -186,7 +193,7 @@ func cancel_choice() -> void:
 func begin_battle(target: Dictionary) -> void:
 	if session != null or not settings.valid() or not settings.enabled or not source_state.wild_available(target.id):
 		return
-	var hero := source_state.starter_view()
+	var hero := source_state.active_sol_view()
 	if hero.is_empty():
 		pending_target = target.duplicate(true)
 		open_choice()
@@ -218,6 +225,7 @@ func begin_battle(target: Dictionary) -> void:
 		return
 	prepared.set_movebooks(source_state.movebook(hero.id), source_state.movebook(target.id))
 	prepared.recovery_interval = library.recovery_interval
+	prepared.seal_power = settings.seal_power
 	prepared.field_damage = library.field_damage
 	prepared.rough_cost = library.rough_cost
 	prepared.assisted_cost = library.assisted_cost
@@ -239,6 +247,7 @@ func begin_battle(target: Dictionary) -> void:
 	feedback_view.reset()
 	session = prepared
 	quantum_choice.select(0)
+	session.capture_seed = world.terrain.world_seed ^ token ^ int(target.id.hash())
 	session.presentation_event.connect(feedback_view.receive)
 	aimed_slot = -1
 	serial = token
@@ -256,7 +265,7 @@ func recover() -> void:
 	if world.encounter_active or world.moving or not world.terrain.is_camp(world.cell):
 		world.message("Recover your companion at the refuge with H.", false)
 		return
-	world.message("Your companion recovered fully." if source_state.recover_starter() else "Your companion needs no recovery.", false)
+	world.message("Your companion recovered fully." if source_state.recover_party() else "Your companion needs no recovery.", false)
 
 func select_cell(cell: Vector2i) -> void:
 	if session == null:
@@ -290,13 +299,18 @@ func retreat() -> void:
 func after_command() -> void:
 	if session == null:
 		return
-	if session.phase in ["victory", "exhaustion", "retreat"]:
+	if session.phase in ["victory", "exhaustion", "retreat", "captured"]:
 		var outcome := session.phase
 		var imprint := session.imprint()
 		var counts := session.activity.duplicate()
 		var history := session.last_activity.duplicate()
+		var previous := source_state.active_sol_view()
+		var previous_moves: Dictionary = source_state.movebook(previous.id).learned
+		var details := {"participated": session.participated, "enemy_level": int(session.enemy.level), "move_definitions": library.definitions()}
+		if outcome == "captured":
+			details.capture = {"profile": session.enemy.duplicate(true), "hp": session.enemy_hp, "unlocks": library.levels_for(session.enemy.species_id, Array(progression.unlock_levels))}
 		var protection: int = encounters.settings.withdrawal_safe_steps if encounters.settings.valid() else 3
-		if not source_state.complete_battle(serial, session.ally_hp, outcome, protection, imprint):
+		if not source_state.complete_battle(serial, session.ally_hp, outcome, protection, imprint, details):
 			world.message("Battle result could not be committed. The encounter remains open.", false)
 			return
 		session = null
@@ -314,8 +328,15 @@ func after_command() -> void:
 			world.moving = false
 		world.rebuild_world()
 		refresh_companion()
-		feedback_view.show_result(outcome, source_state.starter_view(), imprint, counts, history)
-		world.message({"victory": "Victory. The wild Sol is exhausted. Save your expedition with F5.", "exhaustion": "Your companion is exhausted, not lost. Back at the refuge: press H to recover.", "retreat": "Retreated safely. Your companion's remaining health is retained."}[outcome])
+		feedback_view.show_result(outcome, source_state.active_sol_view(), imprint, counts, history)
+		if outcome == "victory":
+			var current := source_state.active_sol_view()
+			var growth := "\nXP +%d · total %d" % [int(current.xp) - int(previous.xp), int(current.xp)]
+			for id in source_state.movebook(current.id).learned:
+				if not previous_moves.has(id):
+					growth += "\nLearned: " + str(source_state.movebook(current.id).learned[id].name)
+			feedback_view.result_text.text += growth
+		world.message({"victory": "Victory. The wild Sol is exhausted. Save your expedition with F5.", "exhaustion": "Your companion is exhausted, not lost. Back at the refuge: press H to recover.", "retreat": "Retreated safely. Your companion's remaining health is retained.", "captured": "Sol sealed. Choose your companion with C; F5 saves."}[outcome])
 		return
 	update_view()
 
@@ -342,6 +363,8 @@ func handle_input(event: InputEvent) -> void:
 				update_view()
 			else:
 				retreat()
+		elif event.physical_keycode == KEY_Q:
+			capture_enemy()
 		elif event.physical_keycode == KEY_SPACE:
 			attack()
 		elif event.physical_keycode == KEY_ENTER:
@@ -417,6 +440,8 @@ func update_view() -> void:
 		status_label.text += "\nAim: arrows + Enter / click · Esc cancels"
 	if not session.activity.is_empty():
 		intent_label.text += "\nImprint leader: " + session.winner().capitalize()
+	capture_button.disabled = session.capture_chance() <= 0
+	capture_button.text = "Seal · %.0f%% · Q · unlimited" % [session.capture_chance() * 100.0]
 	wait_button.disabled = session.phase != "active"
 	var start := maxi(0, session.log.size() - 2)
 	log_label.text = "\n".join(session.log.slice(start))
@@ -464,6 +489,8 @@ func ensure_movebooks() -> void:
 			var book := library.book(record.species_id)
 			if not book.is_empty():
 				source_state.admit_movebook(identity, book)
+		var record := source_state.individual_view(identity)
+		source_state.configure_learning(identity, library.levels_for(record.species_id, Array(progression.unlock_levels)))
 
 func choose_move(slot: int) -> void:
 	if session == null or session.phase != "active" or slot >= session.ally_moves.size():
@@ -488,3 +515,12 @@ func move_description(move: Dictionary) -> String:
 		"quantum": "Choose position, field stabilization, or linked terrain using the Quantum selector.",
 		"field": "Shape shared terrain. Both sides are affected."}
 	return "%s · %s\n%s\nRange: %d cells · Power: %d" % [move.name, str(move.affinity).capitalize(), descriptions[move.effect], int(move.reach), int(move.power)]
+
+func capture_enemy() -> void:
+	if session == null or session.capture_chance() <= 0:
+		return
+	aimed_slot = -1
+	var random := RandomNumberGenerator.new()
+	random.seed = session.capture_seed + session.capture_attempts * 104729
+	session.attempt_capture(random.randf())
+	after_command()

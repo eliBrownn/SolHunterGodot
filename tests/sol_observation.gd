@@ -106,6 +106,9 @@ func verify_schema(snapshot: Dictionary, original: String, path: String) -> void
 		legacy.erase("movebooks")
 		legacy.erase("affinity_tiles")
 		legacy.erase("wild_population")
+		legacy.erase("collection")
+		if legacy.has("battle"):
+			legacy.battle.erase("captures")
 		if version < 3:
 			legacy.erase("natural")
 		if version < 2:

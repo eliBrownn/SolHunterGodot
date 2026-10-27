@@ -91,11 +91,11 @@ func verify_live() -> void:
 	var hero := state.starter_view()
 	var book := state.movebook(hero.id)
 	check(book.equipped.size() == 4 and state.individual_view(hero.id).affinity == "earth", "New expeditions have canonical affinity and four saved moves")
-	check(state.learn_move(hero.id, library.find("charge")), "Species eligibility permits learning off-affinity Lightning")
+	check(not state.learn_move(hero.id, library.find("charge")), "Species eligibility alone cannot bypass the new level unlock")
 	check(not state.learn_move(hero.id, library.find("fin_strike")), "Moves outside the species pool cannot be learned")
 	check(not state.equip_moves(hero.id, ["strike", "strike"]), "Duplicate equipped moves are rejected")
-	check(state.equip_moves(hero.id, ["strike", "heat", "charge", "current"]), "Four learned moves can be equipped outside battle")
-	check(state.movebook(hero.id).learned.has("barrier"), "Swapping does not forget the removed move")
+	check(state.equip_moves(hero.id, ["strike", "heat", "barrier", "current"]), "Four learned moves can be equipped outside battle")
+	check(state.movebook(hero.id).learned.has("barrier"), "Reordering keeps all remembered moves intact")
 	controller.open_choice()
 	check(controller.loadout.opened and world.paused, "C after selection opens the actual outside-battle loadout panel")
 	if OS.get_cmdline_user_args().has("--capture-affinities") and DisplayServer.get_name() != "headless":
@@ -137,6 +137,9 @@ func verify_live() -> void:
 	legacy.erase("movebooks")
 	legacy.erase("affinity_tiles")
 	legacy.erase("wild_population")
+	legacy.erase("collection")
+	if legacy.has("battle"):
+		legacy.battle.erase("captures")
 	legacy.individuals[hero.id].affinity = "grove"
 	legacy.battle.profile.affinity = "grove"
 	var upgraded := ExpeditionState.restore(legacy, 17)

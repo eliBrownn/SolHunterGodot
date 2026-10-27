@@ -20,9 +20,9 @@ return to the refuge. Names and artwork for these places are temporary.
 | E | Toggle tile examination under the pointer |
 | F | Observe a nearby Sol |
 | R | Approach a nearby Sol; Escape withdraws from the encounter panel |
-| C / 1–3 | Choose a starter; C afterward opens move learning and four-slot loadouts |
-| H | Recover companion health at the refuge |
-| Battle controls | 1–4 use moves; arrows + Enter or click aim field moves; Escape cancels aim, otherwise retreats; Space uses slot 1 |
+| C / 1–3 | Choose a starter; C afterward opens companions, storage and four-slot loadouts |
+| H | Recover party health at the refuge |
+| Battle controls | 1–4 use moves; arrows + Enter or click aim field moves; Q tries a testing Seal; Escape cancels aim, otherwise retreats; Space uses slot 1 |
 | J | Field Notes: saved sightings and session log |
 | F5 / F9 | Save / load expedition |
 | Escape | Pause, save/load, or start another seed |
@@ -121,5 +121,7 @@ network junctions, 3×3 routes, and save migration over ten seeds.
 
 See [implementation and validation notes](docs/development.md) for measured
 results and current limits. The [first playable battle](docs/first-playable-battle.md)
-adds a saved starter, deployment, tactical actions, and safe outcomes. Capture,
-growth, quests, caves, and production wildlife simulation remain future work.
+adds a saved starter, deployment, tactical actions, and safe outcomes.
+[Enemy AI, Seals and progression](docs/ai-seals-progression.md) add visible capture
+odds, captured companion selection/storage with C, and victory XP/move unlocks.
+Quests, caves, economy and production wildlife simulation remain future work.

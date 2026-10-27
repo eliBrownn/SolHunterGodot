@@ -176,6 +176,9 @@ func verify_legacy_and_validation(state: ExpeditionState, base: String) -> void:
 	var legacy := snapshot.duplicate(true)
 	legacy.version = 7
 	legacy.erase("wild_population")
+	legacy.erase("collection")
+	if legacy.has("battle"):
+		legacy.battle.erase("captures")
 	var old := ExpeditionState.restore(legacy, 17)
 	check(old != null and old.wild_population_view().is_empty() and old.snapshot().individuals == snapshot.individuals, "Legacy saves preserve history without inventing depletion dates")
 	var current := old.home_occupant(base)

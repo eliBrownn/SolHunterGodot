@@ -7,11 +7,11 @@ extends Resource
 @export var display_name := ""
 @export var lineage_id := ""
 @export var class_id := ""
-## Individual starter affinity. Basic attacks in this slice are neutral physical moves.
+## Individual affinity; equipped moves retain their own assigned affinities.
 @export var affinity := "grove"
 @export_range(1, 55) var level := 3
 @export_group("Combat")
-## Authored resolved stats; no hidden IV/trait roll or automatic growth is applied in this slice.
+## Authored starting resolved stats. Victory progression adds configured base growth without hidden IV/trait rolls.
 @export_range(1, 1000) var max_hp := 44
 @export_range(0, 1000) var attack := 19
 @export_range(0, 1000) var defense := 19

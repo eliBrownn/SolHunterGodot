@@ -37,6 +37,13 @@ var assisted_cost := 0
 var resisted_cost := 2
 var disrupted := {"ally": false, "enemy": false}
 var quantum_mode := "position"
+var participated := false
+var capture_attempts := 0
+var capture_seed := 0
+var seal_power := 10
+var ai_hazard_weight := 2.0
+var ai_heal_weight := 0.25
+var ai_field_weight := 2.0
 
 
 static func prepare(terrain: WorldTerrain, origin: Vector2i, target: Vector2i, hero: Dictionary, hero_hp: int, opponent: Dictionary, settings: BattleSettings) -> TacticalBattle:
@@ -52,6 +59,10 @@ static func prepare(terrain: WorldTerrain, origin: Vector2i, target: Vector2i, h
 	battle.movement = settings.movement_points
 	battle.remaining = battle.movement
 	battle.release_range = settings.release_range
+	battle.seal_power = settings.seal_power
+	battle.ai_hazard_weight = settings.ai_hazard_weight
+	battle.ai_heal_weight = settings.ai_heal_weight
+	battle.ai_field_weight = settings.ai_field_weight
 	var radius := settings.arena_radius
 	battle.bounds = Rect2i(origin - Vector2i(radius, radius), Vector2i.ONE * (2 * radius + 1))
 	for y in range(battle.bounds.position.y, battle.bounds.end.y):
@@ -167,6 +178,7 @@ func move_ally(cell: Vector2i) -> bool:
 	remaining -= route_cost(ally_cell, options[cell])
 	phasing.ally = false
 	ally_cell = cell
+	participated = true
 	return true
 
 func in_range(from: Vector2i, target: Vector2i, reach: int) -> bool:
@@ -212,72 +224,146 @@ func attack() -> bool:
 func wait_turn() -> bool:
 	if phase != "active" or turn != "ally":
 		return false
+	participated = true
 	log.append("You hold position and end the turn.")
 	finish_turn()
 	auto_enemy()
 	return true
 
 func enemy_plan() -> Vector2i:
-	var chosen := enemy_attack_move()
-	var options := paths(enemy_cell, movement, ally_cell)
-	var best := enemy_cell
-	var best_score := 2147483647
-	for cell: Vector2i in options:
-		var able := in_range(cell, ally_cell, int(chosen.reach))
-		var score: int = options[cell].size() if able else 1000 + distance(cell, ally_cell) * 100 + options[cell].size()
-		if score < best_score or (score == best_score and (cell.y < best.y or (cell.y == best.y and cell.x < best.x))):
-			best_score = score
-			best = cell
-	return best
-
+	return plan_enemy().cell
 
 func enemy_intent() -> String:
 	if phase == "deployment":
 		return "Enemy waits for deployment."
-	var chosen := enemy_attack_move()
-	var target := enemy_plan()
-	var amount := maxi(1, int(enemy.attack) + int(chosen.power) - int(ally.defense))
-	return "%s: approach, then %s (%d damage)." % [enemy.display_name, chosen.name, amount] if chosen.effect == "damage" and in_range(target, ally_cell, int(chosen.reach)) else str(enemy.display_name) + ": approach or recover."
+	var plan := plan_enemy()
+	if int(plan.slot) < 0:
+		return str(enemy.display_name) + ": seek safer attack range."
+	var move: Dictionary = moves_for("enemy")[plan.slot]
+	return "%s: %s%s." % [enemy.display_name, "reposition, then " if plan.cell != enemy_cell else "", move.name]
 
 func enemy_attack_move() -> Dictionary:
-	for move in enemy_moves:
+	for move in moves_for("enemy"):
 		if move.effect == "damage":
 			return move
-	if not enemy_moves.is_empty():
-		return enemy_moves[0]
-	return {"name": enemy.move_name, "effect": "damage", "power": enemy.move_power, "reach": enemy.move_range}
+	return moves_for("enemy")[0]
 
 func auto_enemy() -> void:
-	# Two participants: a bounded loop also handles an enemy-first initial deployment.
 	for iteration in range(2):
 		if phase != "active" or turn != "enemy":
 			return
-		enemy_cell = enemy_plan()
-		var chosen := enemy_attack_move()
-		var healed := false
-		for move in enemy_moves:
-			if move.effect == "heal" and enemy_hp < int(enemy.max_hp) / 2 and not in_range(enemy_cell, ally_cell, int(chosen.reach)):
-				var amount := mini(int(move.power), int(enemy.max_hp) - enemy_hp)
-				if amount > 0:
-					enemy_hp += amount
-					feedback("heal", enemy_cell, amount, move.affinity, move.name)
-					record_move(move, [enemy_cell])
-					log.append("%s restores %d HP." % [enemy.display_name, amount])
-					healed = true
-					break
-		if not healed and chosen.effect == "damage" and in_range(enemy_cell, ally_cell, int(chosen.reach)):
-			var amount := mini(ally_hp, maxi(1, int(enemy.attack) + int(chosen.power) - int(ally.defense)))
-			ally_hp -= amount
-			feedback("damage", ally_cell, amount, chosen.get("affinity", enemy.affinity), chosen.name)
-			if not enemy_moves.is_empty():
-				record_move(chosen, [ally_cell])
-			log.append("%s uses %s: %d damage." % [enemy.display_name, chosen.name, amount])
-		elif not healed:
-			log.append(str(enemy.display_name) + " approaches and waits.")
-		if ally_hp == 0:
-			phase = "exhaustion"
-			return
+		var plan := plan_enemy()
+		if plan.cell != enemy_cell:
+			enemy_cell = plan.cell
+			phasing.enemy = false
+		if int(plan.slot) >= 0 and execute_move("enemy", int(plan.slot), plan.target):
+			continue
+		log.append(str(enemy.display_name) + " approaches and waits.")
 		finish_turn()
+
+func moves_for(side: String) -> Array[Dictionary]:
+	var moves: Array[Dictionary] = ally_moves if side == "ally" else enemy_moves
+	if not moves.is_empty():
+		return moves
+	var profile: Dictionary = ally if side == "ally" else enemy
+	var fallback: Array[Dictionary] = [{"id": "legacy_basic", "name": profile.move_name, "affinity": AffinityImprint.canonical(profile.affinity), "effect": "damage", "power": profile.move_power, "reach": profile.move_range, "duration": 1}]
+	return fallback
+
+func unit_cell(side: String) -> Vector2i:
+	return ally_cell if side == "ally" else enemy_cell
+
+func set_unit_cell(side: String, cell: Vector2i) -> void:
+	if side == "ally":
+		ally_cell = cell
+	else:
+		enemy_cell = cell
+
+func unit_hp(side: String) -> int:
+	return ally_hp if side == "ally" else enemy_hp
+
+func set_unit_hp(side: String, hp: int) -> void:
+	if side == "ally":
+		ally_hp = hp
+	else:
+		enemy_hp = hp
+
+func field_area(target: Vector2i) -> Array[Vector2i]:
+	var area: Array[Vector2i] = [target]
+	for direction in [Vector2i.UP, Vector2i.LEFT, Vector2i.RIGHT, Vector2i.DOWN]:
+		var next: Vector2i = target + direction
+		if cells.get(next, false) and next != trainer:
+			area.append(next)
+	return area
+
+func hazard_cost(cell: Vector2i) -> float:
+	var kind: String = fields.get(cell, {}).get("kind", "")
+	if kind in ["heat", "charge"]:
+		return float(field_damage) * ai_hazard_weight * (3.0 if enemy_hp <= field_damage else 1.0)
+	if kind == "wet":
+		for field in fields.values():
+			if field.kind == "charge":
+				return float(field_damage)
+	return 0.0
+
+func plan_enemy() -> Dictionary:
+	var budget := remaining if turn == "enemy" else maxi(0, movement - (1 if disrupted.enemy else 0))
+	var options := paths(enemy_cell, budget, ally_cell, phasing.enemy or fields.get(enemy_cell, {}).get("kind") == "phase")
+	var best := {"cell": enemy_cell, "slot": -1, "target": ally_cell, "score": -INF, "cost": 0}
+	var positions: Array = options.keys()
+	positions.sort_custom(func(a: Vector2i, b: Vector2i) -> bool: return a.y < b.y if a.y != b.y else a.x < b.x)
+	for origin: Vector2i in positions:
+		var cost := route_cost(enemy_cell, options[origin])
+		var targets: Array[Vector2i] = [ally_cell, origin]
+		for direction in [Vector2i.UP, Vector2i.LEFT, Vector2i.RIGHT, Vector2i.DOWN]:
+			for anchor in [ally_cell, origin]:
+				var target: Vector2i = anchor + direction
+				if cells.has(target) and not targets.has(target):
+					targets.append(target)
+		var moves := moves_for("enemy")
+		for slot in range(moves.size()):
+			var move: Dictionary = moves[slot]
+			for target in targets:
+				if not can_use_for("enemy", slot, target, origin):
+					continue
+				var benefit := action_benefit(move, origin, target)
+				if benefit <= 0:
+					continue
+				var score := benefit - hazard_cost(origin)
+				if score > best.score or (is_equal_approx(score, best.score) and cost < best.cost):
+					best = {"cell": origin, "slot": slot, "target": target, "score": score, "cost": cost}
+	if best.slot >= 0:
+		return best
+	var score := INF
+	for origin: Vector2i in positions:
+		var candidate := distance(origin, ally_cell) * 10.0 + hazard_cost(origin) * 10.0 + route_cost(enemy_cell, options[origin]) * 0.1
+		if candidate < score:
+			score = candidate
+			best.cell = origin
+	return best
+
+func action_benefit(move: Dictionary, origin: Vector2i, target: Vector2i) -> float:
+	if move.effect == "damage":
+		var amount := mini(ally_hp, maxi(1, int(enemy.attack) + int(move.power) - int(ally.defense)))
+		return float(amount) + (100.0 if amount >= ally_hp else 0.0)
+	if move.effect == "heal":
+		return mini(int(enemy.max_hp) - enemy_hp, int(move.power)) * ai_heal_weight
+	if move.effect == "anchor":
+		return 2.0 if fields.get(origin, {}).get("kind") == "wind" else 0.0
+	if move.effect == "phase":
+		return 1.0 if distance(origin, ally_cell) <= 3 else 0.0
+	if move.effect == "quantum":
+		return maxf(0.0, distance(origin, ally_cell) - distance(target, ally_cell) - hazard_cost(target) - 1)
+	var area := field_area(target)
+	var kind: String = {"fire": "heat", "water": "wet", "earth": "rough", "air": "wind", "lightning": "charge", "void": "warp", "spectral": "phase", "quantum": "entangled"}.get(move.affinity, "rough")
+	var changed := false
+	for at in area:
+		changed = changed or fields.get(at, {}).get("kind") != kind
+	if not changed or not area.has(ally_cell):
+		return 0.0
+	var benefit := ai_field_weight * (1.5 if kind in ["heat", "charge"] else 1.0)
+	if area.has(origin) and kind in ["heat", "charge", "rough"]:
+		benefit -= 4.0
+	return benefit
 
 func retreat() -> bool:
 	if phase not in ["deployment", "active"]:
@@ -327,59 +413,74 @@ func imprint() -> Dictionary:
 	return {"winner": winner(), "tiles": tiles, "fields": effects, "interval": recovery_interval}
 
 func can_use(slot: int, target: Vector2i) -> bool:
-	if phase != "active" or turn != "ally" or slot < 0 or slot >= ally_moves.size():
+	return turn == "ally" and can_use_for("ally", slot, target, ally_cell)
+
+func can_use_for(side: String, slot: int, target: Vector2i, origin: Vector2i) -> bool:
+	var moves := moves_for(side)
+	if phase != "active" or slot < 0 or slot >= moves.size():
 		return false
-	var move: Dictionary = ally_moves[slot]
+	var move: Dictionary = moves[slot]
+	var profile: Dictionary = ally if side == "ally" else enemy
+	var other := "enemy" if side == "ally" else "ally"
 	if move.effect == "heal":
-		return target == ally_cell and ally_hp < int(ally.max_hp)
+		return target == origin and unit_hp(side) < int(profile.max_hp) and int(move.power) > 0
 	if move.effect == "phase":
-		return target == ally_cell and not phasing.ally
+		return target == origin and not phasing[side]
 	if move.effect == "anchor":
-		return target == ally_cell and int(anchored.ally) < round_number
-	if not passable(target) or target == trainer or distance(ally_cell, target) > int(move.reach):
+		return target == origin and int(anchored[side]) < round_number
+	if not passable(target) or target == trainer or distance(origin, target) > int(move.reach):
 		return false
 	if move.effect == "damage":
-		return target == enemy_cell and in_range(ally_cell, target, int(move.reach))
+		return target == unit_cell(other) and in_range(origin, target, int(move.reach))
 	if move.effect == "quantum":
-		if quantum_mode == "stabilize":
+		var mode := quantum_mode if side == "ally" else "position"
+		if mode == "stabilize":
 			return fields.has(target)
-		return target != ally_cell and target != enemy_cell
-	return in_range(ally_cell, target, int(move.reach))
+		return target != origin and target != unit_cell(other)
+	return in_range(origin, target, int(move.reach))
 
 func use_move(slot: int, target: Vector2i) -> bool:
-	if not can_use(slot, target):
+	return execute_move("ally", slot, target)
+
+func execute_move(side: String, slot: int, target: Vector2i) -> bool:
+	var origin := unit_cell(side)
+	if turn != side or not can_use_for(side, slot, target, origin):
 		return false
-	var move: Dictionary = ally_moves[slot]
+	var move: Dictionary = moves_for(side)[slot]
+	var actor: Dictionary = ally if side == "ally" else enemy
+	var foe: Dictionary = enemy if side == "ally" else ally
+	var other := "enemy" if side == "ally" else "ally"
+	var mode := quantum_mode if side == "ally" else "position"
 	var tiles: Array = [target]
 	if move.effect == "damage":
-		var amount := mini(enemy_hp, maxi(1, int(ally.attack) + int(move.power) - int(enemy.defense)))
-		enemy_hp -= amount
-		feedback("damage", enemy_cell, amount, move.affinity, move.name)
+		var amount := mini(unit_hp(other), maxi(1, int(actor.attack) + int(move.power) - int(foe.defense)))
+		set_unit_hp(other, unit_hp(other) - amount)
+		feedback("damage", unit_cell(other), amount, move.affinity, move.name)
 		log.append("%s: %d damage." % [move.name, amount])
 	elif move.effect == "heal":
-		var amount := mini(int(ally.max_hp) - ally_hp, int(move.power))
+		var amount := mini(int(actor.max_hp) - unit_hp(side), int(move.power))
 		if amount <= 0:
 			return false
-		ally_hp += amount
-		feedback("heal", ally_cell, amount, move.affinity, move.name)
+		set_unit_hp(side, unit_hp(side) + amount)
+		feedback("heal", unit_cell(side), amount, move.affinity, move.name)
 		log.append("%s restores %d HP." % [move.name, amount])
 	elif move.effect == "anchor":
-		anchored.ally = round_number + int(move.duration)
+		anchored[side] = round_number + int(move.duration)
 		log.append("Stable footing prevents wind displacement for %d rounds." % int(move.duration))
 	elif move.effect == "phase":
-		phasing.ally = true
+		phasing[side] = true
 		log.append("Thin obstacles may be crossed on your next movement; land on open ground.")
-	elif move.effect == "quantum" and quantum_mode == "position":
-		tiles.append(ally_cell)
-		ally_cell = target
+	elif move.effect == "quantum" and mode == "position":
+		tiles.append(origin)
+		set_unit_cell(side, target)
 		remaining = 0
 		log.append("Superposition resolved at the chosen open tile; movement spent.")
-	elif move.effect == "quantum" and quantum_mode == "stabilize":
+	elif move.effect == "quantum" and mode == "stabilize":
 		fields.erase(target)
 		log.append("Chosen field stabilized with certainty; action spent.")
 	else:
 		var kind: String = {"fire": "heat", "water": "wet", "earth": "rough", "air": "wind", "lightning": "charge", "void": "warp", "spectral": "phase", "quantum": "entangled"}.get(move.affinity, "rough")
-		var direction := target - ally_cell
+		var direction := target - origin
 		direction = Vector2i(signi(direction.x), 0) if absi(direction.x) >= absi(direction.y) else Vector2i(0, signi(direction.y))
 		if direction == Vector2i.ZERO:
 			direction = Vector2i.RIGHT
@@ -388,9 +489,9 @@ func use_move(slot: int, target: Vector2i) -> bool:
 			if cells.get(at, false) and at != trainer:
 				tiles.append(at)
 		if kind == "entangled":
-			tiles = [ally_cell, target]
-			links[ally_cell] = target
-			links[target] = ally_cell
+			tiles = [origin, target]
+			links[origin] = target
+			links[target] = origin
 		elif links.has(target):
 			tiles.append(links[target])
 		var changed := false
@@ -402,11 +503,11 @@ func use_move(slot: int, target: Vector2i) -> bool:
 				field.kind = "barrier"
 			fields[at] = field
 		if kind == "wind":
-			for side in ["ally", "enemy"]:
-				var position: Vector2i = ally_cell if side == "ally" else enemy_cell
+			for pushed_side in ["ally", "enemy"]:
+				var position: Vector2i = ally_cell if pushed_side == "ally" else enemy_cell
 				var landing := position + direction
-				if int(anchored[side]) < round_number and tiles.has(position) and passable(landing) and landing != trainer and landing != ally_cell and landing != enemy_cell:
-					if side == "ally":
+				if int(anchored[pushed_side]) < round_number and tiles.has(position) and passable(landing) and landing != trainer and landing != ally_cell and landing != enemy_cell:
+					if pushed_side == "ally":
 						ally_cell = landing
 					else:
 						enemy_cell = landing
@@ -417,11 +518,16 @@ func use_move(slot: int, target: Vector2i) -> bool:
 			return false
 		log.append("%s shapes shared terrain. Both sides are affected." % move.name)
 	record_move(move, tiles)
-	if enemy_hp <= 0:
+	if side == "ally":
+		participated = true
+	if ally_hp <= 0:
+		phase = "exhaustion"
+	elif enemy_hp <= 0:
 		phase = "victory"
 	else:
 		finish_turn()
-		auto_enemy()
+		if side == "ally":
+			auto_enemy()
 	return true
 
 func tick_fields() -> void:
@@ -493,3 +599,28 @@ func hurt(side: String, amount: int, affinity: String) -> void:
 		enemy_hp -= actual
 	if actual > 0:
 		feedback("damage", ally_cell if side == "ally" else enemy_cell, actual, affinity, "")
+
+func capture_chance() -> float:
+	if phase != "active" or turn != "ally" or enemy_hp <= 0:
+		return 0.0
+	var separation := distance(ally_cell, enemy_cell)
+	if separation < 1:
+		return 0.0
+	var weakened := 1.0 - float(enemy_hp) / float(enemy.max_hp)
+	var proximity := maxf(0.0, 0.20 - 0.025 * (separation - 1))
+	return clampf(0.08 + weakened * 0.48 + float(seal_power) / 250.0 + proximity, 0.0, 0.95)
+
+func attempt_capture(roll: float) -> bool:
+	var chance := capture_chance()
+	if chance <= 0 or not is_finite(roll) or roll < 0 or roll >= 1:
+		return false
+	capture_attempts += 1
+	feedback("seal", enemy_cell, 0, "", "Seal")
+	if roll < chance:
+		phase = "captured"
+		log.append(str(enemy.display_name) + " was sealed.")
+	else:
+		log.append("The Seal failed. The enemy acts next.")
+		finish_turn()
+		auto_enemy()
+	return true

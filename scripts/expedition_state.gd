@@ -10,7 +10,7 @@ signal human_activity_applied(event: Dictionary, effect: Dictionary)
 signal discovery_recorded(identity: String)
 signal battle_progress_changed
 
-const VERSION := 8
+const VERSION := 9
 const MAX_DISCOVERIES := 120 # Source journal retention: oldest discovery rows retire, not individuals.
 const MAX_ROAMING_DISTANCE := 5 # Saved movement schema bound; tuning may choose a smaller home range.
 const TERRITORY_SIZE := 16 # Source development setting; independent of render chunk size.
@@ -38,6 +38,8 @@ var _battle_enemy := ""
 var _movebooks: Dictionary = {}
 var _affinity_tiles: Dictionary = {}
 var _wild_population: Dictionary = {}
+var _collection := CollectionProgress.empty()
+var _progression_policy := ProgressionSettings.new().parameters()
 var _wild_recovery_delay := 0 # Bare domain instances do not invent a live recovery policy.
 # Derived indexes: never saved and never sources of population or individual identity.
 var _known_homes: Dictionary = {}
@@ -126,52 +128,89 @@ func choose_starter(profile: Dictionary, index: int) -> bool:
 	candidate.battle.profile = BattleProfile.normalized(profile)
 	candidate.battle.profile.affinity = AffinityImprint.canonical(profile.affinity)
 	candidate.battle.hp = int(profile.max_hp)
+	candidate.collection.selected = identity
+	candidate.collection.owned[identity] = CollectionProgress.entry(candidate.battle.profile, int(profile.max_hp))
 	if not valid_snapshot(candidate, _seed):
 		return false
 	_individuals[identity] = record
 	_known_homes[home_identity(identity)] = true
 	_battle = candidate.battle
+	_collection = candidate.collection
 	battle_progress_changed.emit()
 	return true
 
 func begin_battle(enemy_id: String) -> int:
-	if _affinity_tiles.size() > MAX_TILE_DELTAS - 169 or _battle.active or _battle.starter_id.is_empty() or _battle.hp <= 0 or not wild_available(enemy_id) or _battle.serial >= MAX_SAFE_INTEGER:
+	var hero := active_sol_view()
+	if _affinity_tiles.size() > MAX_TILE_DELTAS - 169 or _battle.active or hero.is_empty() or hero.hp <= 0 or not wild_available(enemy_id) or _battle.serial >= MAX_SAFE_INTEGER:
 		return 0
-	if _individuals[_battle.starter_id].location != "party":
+	if _individuals[hero.id].location != "party":
 		return 0
 	_battle.serial += 1
 	_battle.active = true
 	_battle_enemy = enemy_id
 	return int(_battle.serial)
 
-func complete_battle(serial: int, hp: int, outcome: String, grace_steps: int, imprint: Dictionary = {}) -> bool:
-	if not _battle.active or serial != _battle.serial or not wild_available(_battle_enemy) or outcome not in ["victory", "exhaustion", "retreat"] or not SolSpeciesDefinition.whole(hp, 0, int(_battle.profile.max_hp)) or grace_steps < 0 or grace_steps > 8:
+func complete_battle(serial: int, hp: int, outcome: String, grace_steps: int, imprint: Dictionary = {}, details: Dictionary = {}) -> bool:
+	var hero := active_sol_view()
+	if not _battle.active or serial != _battle.serial or hero.is_empty() or not wild_available(_battle_enemy) or outcome not in ["victory", "exhaustion", "retreat", "captured"] or not SolSpeciesDefinition.whole(hp, 0, int(hero.profile.max_hp)) or grace_steps < 0 or grace_steps > 8:
 		return false
 	if (outcome == "exhaustion") != (hp == 0):
 		return false
-	var candidate := _battle.duplicate(true)
-	candidate.active = false
-	candidate.hp = hp
-	candidate[{"victory": "wins", "exhaustion": "losses", "retreat": "retreats"}[outcome]] += 1
-	candidate.last_result = {"serial": serial, "enemy_id": _battle_enemy, "outcome": outcome}
-	candidate.grace_steps = grace_steps
+	var candidate := snapshot()
+	candidate.battle.active = false
+	candidate.battle[{"victory": "wins", "exhaustion": "losses", "retreat": "retreats", "captured": "captures"}[outcome]] += 1
+	candidate.battle.last_result = {"serial": serial, "enemy_id": _battle_enemy, "outcome": outcome}
+	candidate.battle.grace_steps = grace_steps
+	candidate.collection.owned[hero.id].hp = hp
 	if outcome == "victory":
-		candidate.defeated[_battle_enemy] = true
-	if not BattleProgress.valid(candidate, _individuals):
+		candidate.battle.defeated[_battle_enemy] = true
+		if details.get("participated", false) == true:
+			var level: Variant = details.get("enemy_level", 1)
+			if not SolSpeciesDefinition.whole(level, 1, 55):
+				return false
+			var reward := maxi(int(_progression_policy.minimum_xp), int(_progression_policy.victory_base) + int(level) * int(_progression_policy.xp_per_enemy_level))
+			candidate.collection.owned[hero.id] = CollectionProgress.grow(candidate.collection.owned[hero.id], reward, _progression_policy)
+			if int(candidate.collection.owned[hero.id].profile.level) > int(hero.profile.level):
+				learn_earned_moves(candidate.collection.owned[hero.id], candidate.movebooks.get(hero.id, {}), details.get("move_definitions", {}))
+	if outcome == "captured":
+		var capture: Variant = details.get("capture")
+		if not capture is Dictionary or not keys_match(capture, ["profile", "hp", "unlocks"]) or not capture.unlocks is Dictionary or not BattleProfile.valid_snapshot(capture.profile) or not SolSpeciesDefinition.whole(capture.hp, 1, int(capture.profile.max_hp)) or candidate.collection.owned.has(_battle_enemy) or not candidate.movebooks.has(_battle_enemy):
+			return false
+		for field in ["species_id", "lineage_id", "class_id", "affinity"]:
+			if capture.profile[field] != candidate.individuals[_battle_enemy][field]:
+				return false
+		var party := 0
+		for id in candidate.individuals:
+			if candidate.individuals[id].location == "party":
+				party += 1
+		candidate.individuals[_battle_enemy].location = "party" if party < CollectionProgress.PARTY_LIMIT else "storage"
+		candidate.individuals[_battle_enemy].sol_relationship = {"version": 1, "trust": null, "memories": []}
+		candidate.collection.owned[_battle_enemy] = CollectionProgress.entry(capture.profile, int(capture.hp))
+		candidate.collection.owned[_battle_enemy].unlocks = capture.unlocks.duplicate(true)
+	if hero.id == candidate.battle.starter_id:
+		candidate.battle.profile = candidate.collection.owned[hero.id].profile.duplicate(true)
+		candidate.battle.hp = candidate.collection.owned[hero.id].hp
+	var tiles: Variant = AffinityImprint.apply(_affinity_tiles, imprint, _tick, MAX_TILE_DELTAS)
+	if tiles == null:
 		return false
-	var prepared_tiles: Variant = AffinityImprint.apply(_affinity_tiles, imprint, _tick, MAX_TILE_DELTAS)
-	if prepared_tiles == null:
+	candidate.affinity_tiles = tiles
+	if outcome in ["victory", "captured"]:
+		candidate.roaming.erase(_battle_enemy)
+		var population := WildPopulation.deplete(_wild_population, _battle_enemy, _tick, _wild_recovery_delay)
+		if WildPopulation.valid(population, _seed, _tick, candidate.individuals, candidate.battle.defeated):
+			candidate.wild_population = population
+	if not valid_snapshot(candidate, _seed):
 		return false
 	var enemy := _battle_enemy
-	var population := WildPopulation.deplete(_wild_population, enemy, _tick, _wild_recovery_delay) if outcome == "victory" else _wild_population
-	if not WildPopulation.valid(population, _seed, _tick, _individuals, candidate.defeated):
-		population = _wild_population # Historical ID collisions are resolved on explicit local revisit.
-	_affinity_tiles = prepared_tiles
-	_wild_population = population
-	_battle = candidate
+	_battle = candidate.battle
+	_collection = candidate.collection
+	_individuals = candidate.individuals
+	_movebooks = candidate.movebooks
+	_affinity_tiles = candidate.affinity_tiles
+	_wild_population = candidate.wild_population
+	_roaming = candidate.roaming
 	_battle_enemy = ""
-	if outcome == "victory":
-		_roaming.erase(enemy)
+	if outcome in ["victory", "captured"]:
 		_wild_homes.erase(home_identity(enemy))
 	battle_progress_changed.emit()
 	individual_changed.emit(enemy)
@@ -181,8 +220,23 @@ func recover_starter() -> bool:
 	if _battle.active or _battle.starter_id.is_empty() or _battle.hp == _battle.profile.max_hp:
 		return false
 	_battle.hp = int(_battle.profile.max_hp)
+	_collection.owned[_battle.starter_id].hp = _battle.hp
 	battle_progress_changed.emit()
 	return true
+
+func recover_party() -> bool:
+	if _battle.active:
+		return false
+	var changed := false
+	for id in _collection.owned:
+		if _individuals[id].location == "party" and _collection.owned[id].hp < _collection.owned[id].profile.max_hp:
+			_collection.owned[id].hp = int(_collection.owned[id].profile.max_hp)
+			changed = true
+	if not _battle.starter_id.is_empty():
+		_battle.hp = _collection.owned[_battle.starter_id].hp
+	if changed:
+		battle_progress_changed.emit()
+	return changed
 
 func battle_grace() -> int:
 	return int(_battle.grace_steps)
@@ -341,6 +395,8 @@ func acquire(identity: String, location: String = "sealed") -> bool:
 	return true
 
 func relocate_owned(identity: String, location: String) -> bool:
+	if _collection.owned.has(identity):
+		return transfer_companion(identity, location)
 	if _battle.active or not OWNED_LOCATIONS.has(location) or not _individuals.has(identity) or not OWNED_LOCATIONS.has(_individuals[identity].location) or _individuals[identity].location == location:
 		return false
 	_individuals[identity].location = location
@@ -454,7 +510,7 @@ func snapshot() -> Dictionary:
 		"territory_size": _territory_size, "territories": _territories.duplicate(true),
 		"individuals": _individuals.duplicate(true), "tile_deltas": _tile_deltas.duplicate(true),
 		"human_activity": _human_activity.duplicate(true), "natural": _natural.duplicate(true),
-		"discoveries": _discoveries.duplicate(true), "roaming": _roaming.duplicate(true), "battle": _battle.duplicate(true), "movebooks": _movebooks.duplicate(true), "affinity_tiles": _affinity_tiles.duplicate(true), "wild_population": _wild_population.duplicate(true)}
+		"discoveries": _discoveries.duplicate(true), "roaming": _roaming.duplicate(true), "battle": _battle.duplicate(true), "movebooks": _movebooks.duplicate(true), "affinity_tiles": _affinity_tiles.duplicate(true), "wild_population": _wild_population.duplicate(true), "collection": _collection.duplicate(true)}
 
 static func restore(data: Variant, seed_value: int) -> ExpeditionState:
 	if not valid_snapshot(data, seed_value):
@@ -465,6 +521,8 @@ static func restore(data: Variant, seed_value: int) -> ExpeditionState:
 	state._territories = data.territories.duplicate(true)
 	state._individuals = data.individuals.duplicate(true)
 	state._tile_deltas = data.tile_deltas.duplicate(true)
+	if int(data.version) >= 9:
+		state._collection = CollectionProgress.normalized(data.collection)
 	if int(data.version) >= 8:
 		state._wild_population = WildPopulation.normalized(data.wild_population)
 	if int(data.version) >= 7:
@@ -521,6 +579,9 @@ static func restore(data: Variant, seed_value: int) -> ExpeditionState:
 	for key in state._tile_deltas:
 		for field in state._tile_deltas[key]:
 			state._tile_deltas[key][field] = int(state._tile_deltas[key][field])
+	if int(data.version) < 9 and not state._battle.starter_id.is_empty():
+		state._collection.selected = state._battle.starter_id
+		state._collection.owned[state._battle.starter_id] = CollectionProgress.entry(state._battle.profile, int(state._battle.hp))
 	return state
 
 static func normalized_relationship(evidence: Dictionary) -> Dictionary:
@@ -606,6 +667,8 @@ static func valid_snapshot(data: Variant, seed_value: int) -> bool:
 		expected_fields.append("affinity_tiles")
 	if int(data.version) >= 8:
 		expected_fields.append("wild_population")
+	if int(data.version) >= 9:
+		expected_fields.append("collection")
 	if not keys_match(data, expected_fields):
 		return false
 	if not SolSpeciesDefinition.whole(seed_value, 0, 2147483646) or not SolSpeciesDefinition.whole(data.activity_tick, 0, MAX_SAFE_INTEGER) or not SolSpeciesDefinition.whole(data.territory_size, 1, 256):
@@ -687,6 +750,8 @@ static func valid_snapshot(data: Variant, seed_value: int) -> bool:
 				return false
 	if int(data.version) >= 6 and not BattleProgress.valid(data.battle, data.individuals):
 		return false
+	if int(data.version) >= 9 and (not data.battle.has("captures") or not CollectionProgress.valid(data.collection, data.individuals, data.battle)):
+		return false
 	if int(data.version) >= 8 and not WildPopulation.valid(data.wild_population, seed_value, int(data.activity_tick), data.individuals, data.battle.defeated):
 		return false
 	if int(data.version) >= 5:
@@ -721,7 +786,7 @@ func learn_move(identity: String, move: Dictionary) -> bool:
 	if _battle.active or not _movebooks.has(identity) or _individuals[identity].location not in OWNED_LOCATIONS or not SolMove.valid(move):
 		return false
 	var book: Dictionary = _movebooks[identity]
-	if not book.pool.has(move.id) or book.learned.has(move.id):
+	if not book.pool.has(move.id) or book.learned.has(move.id) or (_collection.owned.has(identity) and int(_collection.owned[identity].unlocks.get(move.id, 55)) > int(_collection.owned[identity].profile.level)):
 		return false
 	book.learned[move.id] = SolMove.normalized(move)
 	return true
@@ -814,3 +879,75 @@ func activate_wild_home(home: String, species: SolSpeciesDefinition, affinity: S
 	_wild_homes[home] = identity
 	individual_changed.emit(identity)
 	return identity
+
+func collection_view() -> Dictionary:
+	return _collection.duplicate(true)
+
+func active_sol_view() -> Dictionary:
+	var id: String = _collection.selected
+	return companion_view(id)
+
+func companion_view(id: String) -> Dictionary:
+	if not _collection.owned.has(id):
+		return {}
+	var row: Dictionary = _collection.owned[id]
+	return {"id": id, "profile": row.profile.duplicate(true), "hp": int(row.hp), "xp": int(row.xp), "unlocks": row.unlocks.duplicate(true)}
+
+func select_companion(id: String) -> bool:
+	if _battle.active or not _collection.owned.has(id) or _individuals[id].location != "party":
+		return false
+	_collection.selected = id
+	battle_progress_changed.emit()
+	return true
+
+func transfer_companion(id: String, destination: String) -> bool:
+	if _battle.active or not _collection.owned.has(id) or destination not in ["party", "storage"]:
+		return false
+	var party: Array[String] = []
+	for identity in _collection.owned:
+		if _individuals[identity].location == "party":
+			party.append(identity)
+	if destination == "party" and party.size() >= CollectionProgress.PARTY_LIMIT:
+		return false
+	if destination == "storage" and party.has(id) and party.size() <= 1:
+		return false
+	if _individuals[id].location == destination:
+		return false
+	var candidate := snapshot()
+	candidate.individuals[id].location = destination
+	if destination == "storage" and _collection.selected == id and party.has(id):
+		party.erase(id)
+		candidate.collection.selected = party[0]
+	if not valid_snapshot(candidate, _seed):
+		return false
+	_individuals = candidate.individuals
+	_collection = candidate.collection
+	individual_changed.emit(id)
+	battle_progress_changed.emit()
+	return true
+
+func configure_progression(settings: ProgressionSettings) -> bool:
+	if settings == null or not settings.valid():
+		return false
+	_progression_policy = settings.parameters()
+	return true
+
+func configure_learning(id: String, levels: Dictionary) -> bool:
+	if _battle.active or not _collection.owned.has(id) or not _collection.owned[id].unlocks.is_empty():
+		return false
+	var candidate := snapshot()
+	candidate.collection.owned[id].unlocks = levels.duplicate(true)
+	if not valid_snapshot(candidate, _seed):
+		return false
+	_collection.owned[id].unlocks = levels.duplicate(true)
+	return true
+
+func learn_earned_moves(row: Dictionary, book: Dictionary, definitions: Dictionary) -> void:
+	if book.is_empty():
+		return
+	for id in row.unlocks:
+		if int(row.unlocks[id]) > int(row.profile.level) or book.learned.has(id) or not book.pool.has(id) or not definitions.has(id) or not SolMove.valid(definitions[id]) or definitions[id].id != id:
+			continue
+		book.learned[id] = SolMove.normalized(definitions[id])
+		if book.equipped.size() < 4:
+			book.equipped.append(id)
