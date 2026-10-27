@@ -22,7 +22,7 @@ return to the refuge. Names and artwork for these places are temporary.
 | R | Approach a nearby Sol; Escape withdraws from the encounter panel |
 | C / 1–3 | Choose a starter; C afterward opens move learning and four-slot loadouts |
 | H | Recover companion health at the refuge |
-| Battle controls | 1–4 use moves; click highlighted field targets; arrows move; Enter deploys/ends turn, Space uses slot 1, Escape retreats |
+| Battle controls | 1–4 use moves; arrows + Enter or click aim field moves; Escape cancels aim, otherwise retreats; Space uses slot 1 |
 | J | Field Notes: saved sightings and session log |
 | F5 / F9 | Save / load expedition |
 | Escape | Pause, save/load, or start another seed |

@@ -212,3 +212,8 @@ explicit species eligibility, shared field prototypes, lasting battle-wide tile
 imprints, and independent condition recovery. This advances D4/D5 with migration
 and save contracts; production progression, wildlife rarity rates, broader ability
 content and manual milestone acceptance remain open.
+
+The next [battle feedback slice](battle-feedback.md) adds capped damage/healing
+numbers, affinity pulses, result/imprint recaps, move tooltips, and keyboard field
+target confirmation/cancellation. It improves D4 readability while preserving
+the existing action, outcome, persistence and balance rules.
