@@ -22,6 +22,7 @@ var pending_target: Dictionary = {}
 var choosing := false
 var cursor := Vector2i.ZERO
 var visuals := Node3D.new()
+var visual_seconds := 0.0
 
 func bind(source: Node2D, entry: Node, actors: Node3D, tuning: BattleSettings) -> void:
 	world = source
@@ -171,6 +172,8 @@ func begin_battle(target: Dictionary) -> void:
 	if opponent.is_empty() or opponent.class_id != record.class_id:
 		world.message("This Sol has no compatible authored battle profile.", false)
 		return
+	# Wild profiles supply combat stats; affinity belongs to the actual individual.
+	opponent.affinity = record.affinity
 	var enemy_cell: Vector2i = target.cell
 	var prepared := TacticalBattle.prepare(world.terrain, world.cell, enemy_cell, hero.profile, int(hero.hp), opponent, settings)
 	if prepared == null:
@@ -303,20 +306,18 @@ func tile(cell: Vector2i, color: Color) -> void:
 	visuals.add_child(node)
 
 func unit(cell: Vector2i, profile: Dictionary) -> void:
-	var sprite := Sprite3D.new()
-	sprite.texture = sightings.texture_for(profile.species_id)
-	sprite.pixel_size = 1.0 / 24.0
-	sprite.billboard = BaseMaterial3D.BILLBOARD_ENABLED
-	sprite.texture_filter = BaseMaterial3D.TEXTURE_FILTER_NEAREST
-	sprite.offset.y = 9
+	var sprite := SolOrb.new()
+	sprite.configure(profile.affinity, sightings.visual_settings, float(cell.x))
+	sprite.ground_y = 0.13
 	sprite.position = point(cell)
+	sprite.animate(visual_seconds, sightings.settings.bob_pixels, sightings.settings.bob_cycles)
 	visuals.add_child(sprite)
 	var label := Label3D.new()
-	label.text = profile.display_name
+	label.text = profile.display_name + " · " + str(profile.affinity).capitalize()
 	label.billboard = BaseMaterial3D.BILLBOARD_ENABLED
 	label.font_size = 20
 	label.pixel_size = 0.012
-	label.position.y = 0.95
+	label.position.y = sightings.visual_settings.diameter * 0.5 + 0.3
 	sprite.add_child(label)
 
 func update_view() -> void:
@@ -350,3 +351,11 @@ func update_view() -> void:
 	unit(session.enemy_cell, session.enemy)
 	if session.phase != "deployment":
 		unit(session.ally_cell, session.ally)
+
+func _process(delta: float) -> void:
+	if session == null or world.smoke_mode:
+		return
+	visual_seconds += delta
+	for node in visuals.get_children():
+		if node is SolOrb:
+			node.animate(visual_seconds, sightings.settings.bob_pixels, sightings.settings.bob_cycles)
