@@ -1,0 +1,79 @@
+# SolHunter Godot project standard
+
+Status: authoritative organization and contribution policy.
+Established: 2026-10-26. Owner: project owner; steward: daily Git maintenance in this chat.
+
+## Authority and scope
+
+This is the single source of truth for repository organization, Git practices, and maintenance. README and agent instructions link here instead of duplicating policy. Explicit owner decisions take precedence; record durable changes here with their reason and date. Resolve conflicting instructions before acting on the affected work.
+
+`docs/reference/SolHunter_Worldbuilding_Bible.md` governs game design. Preserve confirmed, provisional, and deferred distinctions. Repository housekeeping must not revise canon or turn unresolved designs into requirements. Other SolHunter repositories are outside this maintenance scope.
+
+## Repository layout
+
+Keep the root small: project entry/configuration, README, agent instructions, and repository tooling. Use the following destinations as content arrives; do not create empty scaffolding or relocate existing assets solely for cosmetic consistency.
+
+| Path | Purpose |
+| --- | --- |
+| `project.godot` | Godot project entry |
+| `ROADMAP.md` | Repository management milestones and completion evidence |
+| `scenes/` | Reusable and game-specific scenes |
+| `scripts/` | Game code, grouped by feature |
+| `assets/` | Runtime art, audio, fonts, and source asset metadata |
+| `resources/` | Authored Godot resources and game data |
+| `addons/` | Deliberately adopted editor/runtime plugins with licenses |
+| `tests/` | Meaningful automated checks and fixtures |
+| `tools/` | Repeatable development and validation scripts |
+| `docs/reference/` | Canonical reference material |
+| `docs/decisions/` | Dated decisions with context and consequences |
+| `docs/maintenance-status.md` | Latest maintenance findings and unresolved actions |
+| `builds/` | Ignored generated exports |
+
+Use descriptive snake_case names for new game files/folders and follow established class naming in code. Avoid case-only renames on Windows. Keep related resources together and update references through Godot when moving scenes/assets. Validate moved paths and resource identifiers before committing. Do not keep duplicate authoritative documents or daily copies of the same status.
+
+## Branches and synchronization
+
+- `main` is the intended integration branch and must remain usable once the project exists. Confirm the remote default branch before establishing upstreams; do not rename branches speculatively.
+- Use short-lived branches for one coherent change: `feature/<topic>`, `fix/<topic>`, or `docs/<topic>` for human work; `codex/<topic>` for agent work. Use separate worktrees when concurrent changes need isolation.
+- Before work, inspect status, current branch/upstream, and active work. Preserve dirty and untracked files. Never stash, reset, clean, overwrite, or commit another contributor's work as housekeeping.
+- Fetch before synchronizing. On a clean integration checkout, use `git pull --ff-only`; if it cannot fast-forward, inspect divergence and resolve deliberately. Do not use an automatic merge pull.
+- Start topic branches from the verified current integration tip. Update a shared topic branch by merging the integration branch when necessary. Rebase only private, unpublished work; never rewrite published history.
+- A repository with no commits requires an explicit bootstrap change before normal branching/PR flow is possible. Account for pre-existing untracked content and inspect remote history before the initial commit or push.
+
+## Commits, pushes, and pull requests
+
+Review `git diff` and `git diff --cached`; stage named paths or selected hunks. Use focused commits with clear imperative subjects, for example `docs: define repository workflow`. Separate unrelated refactors, generated artifacts, and gameplay changes. Never commit credentials, machine-specific secrets, or player saves.
+
+Push topic branches without force only after checking their contents, destination, and validation. Open a PR to `main` describing the problem, resulting behavior, validation evidence, and material limitations. Link the relevant issue/decision when one exists. Scene or UI changes should include useful screenshots or a short reproduction path.
+
+Before merge, resolve review feedback and conflicts and pass the checks appropriate to the change. A reviewer other than the author should approve when available; in a solo project the owner explicitly reviews and merges. Prefer squash merge for a coherent topic and keep the PR description meaningful. Maintenance agents do not automatically merge PRs.
+
+The desired remote rules are: require PRs, block force pushes and default-branch deletion, and require relevant configured checks. Require independent approval when collaborators make that practical. These are policy targets, not proof of GitHub configuration. Record actual enforcement separately; do not invent check names or claim protection is enabled without verification.
+
+After merge, branch deletion is a deliberate cleanup action: verify the PR is merged, no unique commits or active work remain, and the owner authorizes deletion. Age alone never justifies deletion. Recover mistakes with revert commits rather than rewriting shared history. Tag approved releases with version and validation evidence; do not retag published releases.
+
+## Godot and validation
+
+Pin the actual Godot version and any required tooling in README when the runnable project arrives. Track authored scenes, resources, project configuration, import sidecars, and UID sidecars required by that pinned version. Ignore generated `.godot/` caches and builds. Do not blanket-ignore resource metadata or rewrite resource IDs during cleanup.
+
+For public repositories, confirm source redistribution rights before pushing third-party assets or source bundles. A local license to use assets in a game does not establish permission to publish the original source pack. Preserve supplied assets locally while that evidence is unresolved.
+
+Review binary asset size before adding it. Adopt Git LFS intentionally for selected large binary types before tracking them; record patterns and installation requirements in the same change. Do not migrate existing history as maintenance. Record third-party asset/plugin licenses and provenance. Keep credentials out of export configuration and review presets before committing.
+
+For documentation, check links, paths, consistency, and whitespace. For game changes, run relevant automated checks and import/parse validation using the pinned engine, then exercise the affected scene or feature. For exports, smoke-test the actual export. Record commands, results, and checks unavailable locally. Do not add meaningless tests for prose or claim a playable build exists from documentation checks alone.
+
+## Daily maintenance at 7:00 AM Pacific
+
+The scheduled chat maintenance runs daily at 07:00 America/Los_Angeles, including weekends. Inspect before changing anything:
+
+1. Read this standard, `ROADMAP.md`, and current status; advance the next unfinished organization milestone when safe. Check for concurrent work and preserve its files.
+2. Inspect local status, remotes/upstreams, branches, and recent history. Fetch when accessible; inspect PRs and checks through available access. Record access failures accurately.
+3. Identify organization drift, stale documentation, conflicting standards, and branch/PR issues. Make small reversible corrections within scope; avoid churn when nothing changed.
+4. Validate changes, review the diff, and commit only maintenance-owned files on an appropriate branch when safe. Leave blocked work intact with a concrete next action.
+5. Replace the maintenance status snapshot when findings change. Report meaningful changes, failures, and required decisions; stay quiet on unchanged, non-actionable runs.
+
+Routine maintenance never includes destructive cleanup, forced updates, automatic merges, remote permission changes, game implementation, or edits to the Bible. Surface those as specific owner decisions when needed.
+
+## Policy changes
+
+Update this document in the same change as an adopted layout/workflow change. Distinguish policy from observed enforcement, and remove superseded guidance rather than appending contradictory exceptions. Record substantial governance decisions under `docs/decisions/`; keep this file the operative standard.

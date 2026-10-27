@@ -1,0 +1,14 @@
+.godot/
+artifacts/
+builds/
+*.tmp
+
+# Local secrets and Godot export credentials
+.env
+.env.*
+!.env.example
+export_credentials.cfg
+
+# Local operating system files
+.DS_Store
+Thumbs.db
