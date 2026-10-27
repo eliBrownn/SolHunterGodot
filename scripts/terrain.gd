@@ -2,7 +2,8 @@ class_name WorldTerrain
 extends RefCounted
 ## Immutable generated defaults. All decisions use seed, version and absolute cells.
 
-const GENERATION_VERSION := 4
+const GENERATION_VERSION := 5
+const Structures = preload("res://scripts/authored_structures.gd")
 const CELL_SIZE := 32
 const CHUNK_SIZE := 16
 const ROUTE_SPACING := 96
@@ -19,6 +20,7 @@ var climate: Dictionary
 var noise := FastNoiseLite.new()
 var moisture := FastNoiseLite.new()
 var vastra := FastNoiseLite.new()
+var cabin_footprint := Rect2i()
 
 static func default_climate() -> Dictionary:
 	return {"moisture_frequency": 0.012, "dry_threshold": 0.42, "wet_threshold": 0.58}
@@ -43,6 +45,7 @@ func _init(seed_value: int = 2601026, climate_parameters: Dictionary = {}) -> vo
 	moisture.frequency = climate.moisture_frequency
 	vastra.seed = seed_value ^ 0x7315
 	vastra.frequency = 0.022
+	cabin_footprint = Structures.cabin_site(self)
 
 func roll(cell: Vector2i, salt: int) -> int:
 	# Keep intermediate integers in a bounded range, including at negative coordinates.
@@ -148,6 +151,11 @@ func sample(cell: Vector2i) -> Dictionary:
 		"overload": 0}
 
 func obstacle_at(cell: Vector2i, ground: int, reserved: bool) -> int:
+	if cabin_footprint.has_area():
+		if cabin_footprint.has_point(cell):
+			return 3
+		if cabin_footprint.grow(1).has_point(cell):
+			return 0
 	if reserved or ground == Ground.WATER:
 		return 0
 	var chance := roll(cell, 2) % 100

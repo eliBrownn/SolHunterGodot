@@ -28,9 +28,10 @@ seed, generation version, settled player cell, and journey progress. The previou
 save is copied to `.bak`; malformed or incompatible saves leave the live world
 intact. Backups are preserved but are not automatically restored. Starting a new
 expedition does not overwrite the saved expedition until you save again. New
-expeditions use generation version 4. Version 1, 2 and 3 saves migrate when loaded:
-the seed and journey progress are preserved, and the player moves to nearby dry
-ground if the new terrain blocks their former position. Geography changes. Loading
+expeditions use generation version 5 with a reserved, blocking cabin footprint.
+Version 1–4 saves migrate when loaded: seed, journey progress, and recorded climate
+settings are preserved. The player moves to nearby legal ground if terrain or the
+new cabin blocks their former position. Geography changes. Loading
 does not alter the original file; the next save backs it up before replacement.
 
 ## Climate parameters

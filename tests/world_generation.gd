@@ -107,7 +107,7 @@ func run() -> void:
 	var same_climate := WorldTerrain.new(42, dry_settings)
 	check(dry_world.extract_chunk(Vector2i(-2, 2)) == same_climate.extract_chunk(Vector2i(-2, 2)), "Seed and climate reproduce chunk defaults")
 	var path := "user://generation-compatibility-test.json"
-	for old_version in [1, 2, 3]:
+	for old_version in [1, 2, 3, 4]:
 		var old_save := ExpeditionSave.snapshot(1, Vector2i.ZERO, true, true, old_version)
 		var old_json := JSON.stringify(old_save)
 		var file := FileAccess.open(path, FileAccess.WRITE)

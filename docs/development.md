@@ -16,7 +16,7 @@ Implemented in a fresh Godot project:
   per world unit. Elevation and azimuth are exposed on the scene root in Godot.
 - Metadata-based asset slicing, anchored/y-sorted props, and directional player art.
 - Seeded, independently salted terrain and decoration using absolute coordinates;
-  new worlds use generation version 4 and save format version 1. Version 1, 2 and 3
+  new worlds use generation version 5 and save format version 1. Version 1–4
   saves migrate on load, retaining seed and journey progress; a blocked position
   is relocated to nearby dry ground. Migration does not rewrite the save on load.
 - A reserved refuge, eastern landmark, five-cell-wide winding main trail and a
@@ -68,7 +68,8 @@ continuous-travel acceptance remain outstanding.
   wilderness pockets can be isolated. Tests of large footprints are groundwork
   for future Sols. The regular provisional network needs design and playtesting
   before it is treated as final world geography.
-- Authored camp/landmark props are decorative and do not block movement.
+- The cabin now has a shared blocking footprint with a clear approach; other
+  camp/landmark props remain decorative. See [building collision](building-collision.md).
 - Player movement uses bobbing directional stills, not a completed walk cycle.
 - First view and explicit load/new-seed build the visible area plus canopy margin
   synchronously; remaining chunks stream one per frame on the main thread.
