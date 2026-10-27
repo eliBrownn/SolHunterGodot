@@ -45,6 +45,10 @@ or use Make Unique and save the result. Defaults preserve the current behavior.
 | Level / Max HP | 3 starters, 1 wild / 36–50 HP; 1–55 / 1–1000 | Authored level and resolved health ceiling; no automatic level scaling. Selected starter profile and current HP persist. |
 | Attack / Defense / Speed | Per-profile defaults; 0–1000 | Resolved physical stats and initiative. Saved for chosen starter; snapshotted per new wild battle. |
 | Move Power / Move Range | 6 / 2; 1–100 / 1–6 cells | Neutral physical basic damage and Manhattan targeting, subject to terrain line blocking. |
+| Root Sol Visual Settings | `resources/sol_visual_settings.tres` | Shared exploration/battle orb presentation. Restart or reconstruct views after changing visual values; no save migration or individual changes. |
+| Diameter / Hover Height | 0.75 / 0.7; 0.3–1.2 / 0.35–1.5 world cells | Pixel sphere size and real 3D center height above ground. Existing sighting Bob Pixels/Cycles settings animate both wild and battle orbs. |
+| Aura Opacity / Effect Count / Effect Speed | 0.22 / 5 / 0.6; 0–0.6 / 0–12 / 0–3 cycles per second | Halo strength and bounded decorative motes; zero opacity/count disables the corresponding effect, zero speed freezes effects. |
+| Palette | Ten provisional affinity ID → color entries | Uses the saved individual's affinity, with neutral white for unknown IDs. Custom opaque colors are supported. Species/class never select the color. |
 
 Battle settings are read for each new battle; restart after editing live resources
 to refresh chooser labels and the Enabled switch. Current battle settings and

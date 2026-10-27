@@ -20,6 +20,9 @@ const TEXTURE_SIZE := Vector2i(2048, 1536)
 ## Provisional starter roster, resolved combat profiles, arena size, movement and release budgets.
 @export var battle_settings: BattleSettings = preload("res://resources/battle_settings.tres")
 
+## Shared hovering orb palette, size, height, halo and effects for wild and deployed Sols.
+@export var sol_visual_settings: SolVisualSettings = preload("res://resources/sol_visual_settings.tres")
+
 @export_group("Camera")
 ## Degrees above the ground plane. Smaller is lower; 35 preserves the selected low-angle presentation. Applied at startup.
 @export_range(35.0, 70.0, 1.0) var camera_elevation := 35.0
@@ -72,7 +75,7 @@ func _ready() -> void:
 	player_billboard.bind(world.explorer, world.camera)
 	sightings = preload("res://scripts/authored_sightings.gd").new()
 	add_child(sightings)
-	sightings.bind(world, sighting_settings)
+	sightings.bind(world, sighting_settings, sol_visual_settings)
 	encounters = preload("res://scripts/encounter_controller.gd").new()
 	add_child(encounters)
 	encounters.bind(world, sightings, encounter_settings)

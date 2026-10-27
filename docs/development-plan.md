@@ -200,3 +200,8 @@ D3 subsequently adds [bounded local reactions](local-sol-reactions.md): real avo
 D3 now has [encounter initiation and withdrawal](encounter-initiation.md): deliberate R approach and owner-confirmed warned contact with the guarding Seedmote. A runtime face-to-face panel supports recording a sighting and withdrawal, with world activity/persistence guards.
 
 D4 now has a [first playable battle](first-playable-battle.md): all four requested steps are implemented—explicit starter selection, saved companion/deployment, tactical movement/basic attacks/enemy turns, and persistent victory/exhaustion/retreat. Source-derived mechanics and provisional Inspector profiles are documented with 6,335 passing headless checks and 58 rendered battle checks. Capture, growth, wild replacement, broader combat systems, and manual milestone acceptance remain outstanding.
+
+The owner's subsequent [affinity orb direction](affinity-orbs.md) replaces Sol
+silhouettes with hovering pixel spheres and basic affinity colors/effects in
+exploration and battle. Shared Inspector settings control presentation; saved
+individual affinity remains authoritative and no combat bonuses are added.

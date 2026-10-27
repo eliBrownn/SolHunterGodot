@@ -1,5 +1,5 @@
 extends Node3D
-## Three original pixel placeholders over persistent authored individuals, not a wild generator.
+## Affinity orbs over persistent authored individuals, not a wild generator.
 
 const ENTRIES := [
 	{"x": 8, "species": "seedmote", "name": "Seedmote", "lineage": "family_010", "class": "verdant", "affinity": "grove", "reaction": "Wary"},
@@ -10,12 +10,15 @@ var world: Node2D
 var settings: SightingSettings
 var members: Array[Dictionary] = []
 var elapsed := 0.0
-var textures: Dictionary = {}
+var visual_settings: SolVisualSettings
 var roaming_state: ExpeditionState
 var battle_hidden_ids: Dictionary = {}
 
-func bind(source: Node2D, tuning: SightingSettings) -> void:
+func bind(source: Node2D, tuning: SightingSettings, visuals: SolVisualSettings) -> void:
 	world = source
+	visual_settings = visuals if visuals != null and visuals.valid() else SolVisualSettings.new()
+	if visual_settings != visuals:
+		push_warning("Invalid Sol visual settings; using default orb presentation.")
 	settings = tuning if tuning != null and tuning.valid() else SightingSettings.new()
 	if settings != tuning:
 		push_warning("Invalid sighting tuning; using default sighting settings.")
@@ -61,48 +64,20 @@ func rebuild() -> void:
 		var record: Dictionary = world.persistent_state.individual_view(identity)
 		if identity.is_empty() or not world.persistent_state.wild_available(identity):
 			continue
-		var sprite := Sprite3D.new()
-		sprite.texture = texture_for(entry.species)
-		sprite.pixel_size = 1.0 / 24.0
-		sprite.billboard = BaseMaterial3D.BILLBOARD_ENABLED
-		sprite.texture_filter = BaseMaterial3D.TEXTURE_FILTER_NEAREST
-		sprite.shaded = false
-		sprite.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
-		sprite.offset.y = 9
+		var sprite := SolOrb.new()
+		sprite.configure(record.affinity, visual_settings, float(home.x))
 		add_child(sprite)
 		var label := Label3D.new()
 		label.billboard = BaseMaterial3D.BILLBOARD_ENABLED
 		label.font_size = 24
 		label.pixel_size = 0.012
-		label.position.y = 1.1
+		label.position.y = visual_settings.diameter * 0.5 + 0.35
 		label.no_depth_test = false
 		sprite.add_child(label)
 		var saved: Dictionary = world.persistent_state.roaming_view(identity)
 		members.append({"id": identity, "home": home, "sprite": sprite, "label": label, "entry": entry,
 			"visual_cell": Vector2(float(saved.cell[0]), float(saved.cell[1]))})
 	sync_views()
-
-func texture_for(species: String) -> Texture2D:
-	if textures.has(species):
-		return textures[species]
-	# Original code-native pixel silhouettes; not copied source artwork or final species art.
-	var rows := ["................", ".......gg.......", "......ggg.......", ".....ddgg.......", "....dddddd......", "...ddllllld.....", "...dllwllwld....", "...dllllllld....", "....dlllld......", ".....dddd.......", "......dd........", ".....g..g.......", "................", "................", "................", "................"]
-	if species == "bramblepup":
-		rows = ["................", "...dd......dd...", "...dld....dld...", "...dlllddllld...", "....dlllllld....", "...dlwllllwld...", "...dlllllllld...", "....dllllddd....", ".....dddd.......", "....dllllld.....", "...dllllllld....", "...ddllllldd....", "....dd..dd......", "....dd..dd......", "................", "................"]
-	var palette := {"d": Color("354b3c"), "l": Color("a8c77f"), "g": Color("6d9b51"), "w": Color("fff2cd")}
-	if species == "ashkit":
-		palette = {"d": Color("683e39"), "l": Color("e79b62"), "g": Color("efc86b"), "w": Color("fff2cd")}
-	elif species == "rillfin":
-		palette = {"d": Color("334b66"), "l": Color("8fc9d5"), "g": Color("599cae"), "w": Color("fff2cd")}
-	var image := Image.create(16, 16, false, Image.FORMAT_RGBA8)
-	image.fill(Color.TRANSPARENT)
-	for y in range(16):
-		for x in range(16):
-			var key: String = rows[y][x]
-			if palette.has(key):
-				image.set_pixel(x, y, palette[key])
-	textures[species] = ImageTexture.create_from_image(image)
-	return textures[species]
 
 func _process(delta: float) -> void:
 	if not world.paused and not world.smoke_mode:
@@ -212,10 +187,10 @@ func sync_views(delta: float = 0.0) -> void:
 			member.visual_cell = member.visual_cell.move_toward(Vector2(position), delta / settings.movement_blend_seconds)
 		var relative: Vector2 = Vector2(member.visual_cell) * 32.0 + Vector2(16, 16) - world.camera.position
 		member.sprite.position = Vector3(relative.x / 32.0, 0.08, relative.y / 32.0)
-		member.sprite.offset.y = 9 + sin(elapsed * TAU * settings.bob_cycles + member.home.x) * settings.bob_pixels
+		member.sprite.animate(elapsed, settings.bob_pixels, settings.bob_cycles)
 		var reacting: bool = absi(difference.x) + absi(difference.y) <= settings.reaction_distance
 		member.label.visible = reacting and not world.encounter_active
-		member.label.text = member.entry.name + "\n" + member.entry.reaction if reacting else ""
+		member.label.text = member.entry.name + " · " + str(member.sprite.affinity).capitalize() + "\n" + member.entry.reaction if reacting else ""
 		var row: Dictionary = world.persistent_state.roaming_view(member.id)
 		if reacting and row.get("action", "idle") != "idle":
 			member.label.text += " · " + str(row.action).capitalize()

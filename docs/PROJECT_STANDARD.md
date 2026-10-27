@@ -19,6 +19,12 @@ nearest-filtered terrain/prop textures and upright sprite foliage/characters;
 do not replace the established artwork with a smooth low-poly aesthetic by
 default. See [the visual direction decision](decisions/2026-10-26-pixel-art-3d.md).
 
+Owner direction, October 27, 2026: Sols use hovering balls with basic colors and
+effects from the individual’s assigned affinity, in exploration and battles.
+Preserve the pixel-art presentation and real 3D placement. The editable palette
+is provisional visual tuning, not a species/class mapping or new combat rule.
+See [affinity orb presentation](affinity-orbs.md).
+
 Keep the root small: project entry/configuration, README, agent instructions, and repository tooling. Use the following destinations as content arrives; do not create empty scaffolding or relocate existing assets solely for cosmetic consistency.
 
 | Path | Purpose |
