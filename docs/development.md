@@ -16,7 +16,7 @@ Implemented in a fresh Godot project:
   per world unit. Elevation and azimuth are exposed on the scene root in Godot.
 - Metadata-based asset slicing, anchored/y-sorted props, and directional player art.
 - Seeded, independently salted terrain and decoration using absolute coordinates;
-  new worlds use generation version 5 and save format version 1. Version 1–4
+  new worlds use generation version 5 and save format version 2. Generation 1–4
   saves migrate on load, retaining seed and journey progress; a blocked position
   is relocated to nearby dry ground. Migration does not rewrite the save on load.
 - A reserved refuge, eastern landmark, five-cell-wide winding main trail and a
@@ -39,8 +39,9 @@ Implemented in a fresh Godot project:
 The world bible remains the design authority. Vastra concentration and overload
 are separate measurements. Overload is initially zero, and no ecological behavior
 is inferred from a concentration reading. Chunk boundaries have no ecological
-meaning. This milestone implements no creature identity system because there
-are no creatures yet; it will be required before adding collection.
+meaning. The [D1 persistent foundation](d1-persistent-foundation.md) now supplies stable
+individual identities and bounded records independently of rendering. There are
+no live creatures or collection gameplay yet.
 
 ## Validation so far
 
