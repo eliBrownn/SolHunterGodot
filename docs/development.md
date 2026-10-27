@@ -79,7 +79,9 @@ continuous-travel acceptance remain outstanding.
   include initialization; the separate D0 harness isolates travel statistics but
   no target-device performance acceptance threshold has been adopted.
 - Session messages are temporary; [recorded Sol observations](sol-observation-journal.md) are saved. The [encounter-entry panel](encounter-initiation.md) supports approach and withdrawal. No fog-of-war, map, NPCs,
-  creature collection, tactical battle resolution, ecological population simulation, or Python save import.
+  creature collection, ecological population simulation, or Python save import.
+  The [first playable battle](first-playable-battle.md) now supplies explicit
+  starter choice, deployment, tactical actions, and persistent safe outcomes.
 
 Next player acceptance: walk the journey manually and judge the upright character,
 3D plane angle, pixel readability, and terrain scale before expanding content.

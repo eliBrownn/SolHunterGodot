@@ -62,6 +62,10 @@ The subsequent [observation journal](sol-observation-journal.md) adds domain
 version 4 while retaining compatibility with domains 1–3.
 The later [local-reaction slice](local-sol-reactions.md) adds domain version 5
 for current wild positions/actions while retaining domains 1–4.
+The [first playable battle](first-playable-battle.md) adds domain version 6 for
+explicit starter identity/profile, retained health, result receipts, defeated
+wild IDs, and protection steps. Domains 1–5 retain their history without an
+inferred starter; active battle snapshots cannot be saved.
 Format-1 saves upgrade in memory with
 empty persistent history; generation 1–4 terrain migration remains independent and can
 run in the same load. Loading preserves original file bytes. The next explicit save

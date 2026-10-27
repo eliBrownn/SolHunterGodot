@@ -12,6 +12,7 @@ var members: Array[Dictionary] = []
 var elapsed := 0.0
 var textures: Dictionary = {}
 var roaming_state: ExpeditionState
+var battle_hidden_ids: Dictionary = {}
 
 func bind(source: Node2D, tuning: SightingSettings) -> void:
 	world = source
@@ -58,7 +59,7 @@ func rebuild() -> void:
 			continue # Never relocate an identity or overwrite terrain to fit a visual.
 		var identity := SolIdentityContract.make(world.terrain.world_seed, home, entry.species)
 		var record: Dictionary = world.persistent_state.individual_view(identity)
-		if identity.is_empty() or record.get("location") != "wild":
+		if identity.is_empty() or not world.persistent_state.wild_available(identity):
 			continue
 		var sprite := Sprite3D.new()
 		sprite.texture = texture_for(entry.species)
@@ -89,6 +90,10 @@ func texture_for(species: String) -> Texture2D:
 	if species == "bramblepup":
 		rows = ["................", "...dd......dd...", "...dld....dld...", "...dlllddllld...", "....dlllllld....", "...dlwllllwld...", "...dlllllllld...", "....dllllddd....", ".....dddd.......", "....dllllld.....", "...dllllllld....", "...ddllllldd....", "....dd..dd......", "....dd..dd......", "................", "................"]
 	var palette := {"d": Color("354b3c"), "l": Color("a8c77f"), "g": Color("6d9b51"), "w": Color("fff2cd")}
+	if species == "ashkit":
+		palette = {"d": Color("683e39"), "l": Color("e79b62"), "g": Color("efc86b"), "w": Color("fff2cd")}
+	elif species == "rillfin":
+		palette = {"d": Color("334b66"), "l": Color("8fc9d5"), "g": Color("599cae"), "w": Color("fff2cd")}
 	var image := Image.create(16, 16, false, Image.FORMAT_RGBA8)
 	image.fill(Color.TRANSPARENT)
 	for y in range(16):
@@ -171,7 +176,7 @@ func observable_member() -> Dictionary:
 	for member in members:
 		var offset: Vector2i = current_cell(member) - world.cell
 		var distance := absi(offset.x) + absi(offset.y)
-		if distance > settings.observation_distance or Vector2(offset).length() > settings.visible_radius or world.persistent_state.individual_view(member.id).get("location") != "wild":
+		if distance > settings.observation_distance or Vector2(offset).length() > settings.visible_radius or not world.persistent_state.wild_available(member.id):
 			continue
 		if distance < best or (distance == best and str(member.id) < str(nearest.get("id", ""))):
 			nearest = member
@@ -196,7 +201,7 @@ func sync_views(delta: float = 0.0) -> void:
 	for member in members:
 		var position := current_cell(member)
 		var difference: Vector2i = position - world.cell
-		var available: bool = world.persistent_state.individual_view(member.id).get("location") == "wild"
+		var available: bool = world.persistent_state.wild_available(member.id) and not battle_hidden_ids.has(member.id)
 		var was_visible: bool = member.sprite.visible
 		member.sprite.visible = safe and available and Vector2(difference).length() <= settings.visible_radius
 		if not member.sprite.visible:

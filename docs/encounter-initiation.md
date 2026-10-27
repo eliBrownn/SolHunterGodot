@@ -1,5 +1,11 @@
 # Encounter initiation and withdrawal prototype
 
+This document records the original entry slice. The subsequent
+[first playable battle](first-playable-battle.md) adds a Battle button, explicit
+starter selection/deployment, tactical actions, and durable results. Its domain-6
+schema and low-level active-save rejection supersede the preview-only persistence
+limits below; the original preview verification remains historical evidence.
+
 Press **R** near a settled, available Sol to approach deliberately. Per the
 [owner's decision](decisions/2026-10-27-encounter-initiation.md), the third trail
 sighting (guarding Seedmote near x=48) also supports automatic contact: first a

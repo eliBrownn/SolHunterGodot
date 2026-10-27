@@ -1,0 +1,19 @@
+[gd_resource type="Resource" script_class="BattleProfile" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/battle_profile.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+species_id = "bramblepup"
+display_name = "Bramblepup"
+lineage_id = "family_001"
+class_id = "beast"
+affinity = "grove"
+level = 1
+max_hp = 36
+attack = 15
+defense = 15
+speed = 14
+move_name = "Strike"
+move_power = 6
+move_range = 2
