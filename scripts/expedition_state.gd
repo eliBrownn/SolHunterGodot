@@ -27,6 +27,12 @@ var _individuals: Dictionary = {}
 var _tile_deltas: Dictionary = {}
 var _human_activity := HumanVastraActivity.empty_ledger()
 var _natural := VastraNatural.empty_schedule()
+# Derived indexes: never saved and never sources of population or individual identity.
+var _known_homes: Dictionary = {}
+var _wild_homes: Dictionary = {}
+var _population_homes: Dictionary = {}
+var _population_order: Array[String] = []
+var _population_cache_limit := 256
 
 func _init(seed_value: int = 0, territory_size: int = TERRITORY_SIZE) -> void:
 	_seed = seed_value
@@ -81,6 +87,82 @@ func territory_view(cell: Vector2i) -> Dictionary:
 func individual_view(identity: String) -> Dictionary:
 	return _individuals.get(identity, {}).duplicate(true)
 
+func home_identity(identity: String) -> String:
+	var origin := SolIdentityContract.parse(identity)
+	if origin.is_empty() or origin.seed != _seed:
+		return ""
+	return SolIdentityContract.make(_seed, Vector2i(origin.home[0], origin.home[1]), origin.species_id)
+
+func set_population_cache_limit(limit: Variant) -> bool:
+	if not SolSpeciesDefinition.whole(limit, 1, 1024):
+		return false
+	if _population_cache_limit != int(limit):
+		_population_cache_limit = int(limit)
+		_population_homes.clear()
+		_population_order.clear()
+	return true
+
+func invalidate_population_territory(cell: Vector2i) -> bool:
+	var territory := territory_id(cell)
+	if not _population_homes.has(territory):
+		return false
+	_population_homes.erase(territory)
+	_population_order.erase(territory)
+	return true
+
+func remember_population_territory(cell: Vector2i, complete_homes: Array) -> bool:
+	# The producer must supply complete home definitions before any viewport clipping.
+	if absi(cell.x) > 1000000 or absi(cell.y) > 1000000 or complete_homes.size() > 256:
+		return false
+	var territory := territory_id(cell)
+	if territory.is_empty():
+		return false
+	var normalized: Array[String] = []
+	var coordinates: Dictionary = {}
+	for identity in complete_homes:
+		if not identity is String or not _known_homes.has(identity):
+			return false
+		var origin := SolIdentityContract.parse(identity)
+		if origin.is_empty() or origin.generation != 0:
+			return false
+		var home := Vector2i(origin.home[0], origin.home[1])
+		if territory_id(home) != territory or coordinates.has(home):
+			return false
+		coordinates[home] = true
+		normalized.append(identity)
+	_population_homes[territory] = normalized
+	_population_order.erase(territory)
+	_population_order.append(territory)
+	if _population_order.size() > _population_cache_limit:
+		_population_homes.erase(_population_order.pop_front())
+	return true
+
+func population_summary(cell: Vector2i, carrying_capacities: Dictionary = {}, region_resolver: Callable = Callable()) -> Dictionary:
+	if absi(cell.x) > 1000000 or absi(cell.y) > 1000000 or carrying_capacities.size() > 128:
+		return {}
+	for region in carrying_capacities:
+		if not SolSpeciesDefinition.text(region) or not SolSpeciesDefinition.whole(carrying_capacities[region], 0, 256):
+			return {}
+	if not carrying_capacities.is_empty() and not region_resolver.is_valid():
+		return {}
+	var territory := territory_id(cell)
+	if not _population_homes.has(territory):
+		return {} # Unknown, never an inferred zero or a generation request.
+	var capacity: Variant = null
+	if not carrying_capacities.is_empty():
+		var origin := cell - Vector2i(posmod(cell.x, _territory_size), posmod(cell.y, _territory_size))
+		var region: Variant = region_resolver.call(origin)
+		if not SolSpeciesDefinition.text(region):
+			return {}
+		capacity = carrying_capacities.get(region)
+	var available := 0
+	for identity: String in _population_homes[territory]:
+		if _wild_homes.has(identity):
+			available += 1
+	return {"territory_id": territory, "home_slots": _population_homes[territory].size(),
+		"available": available, "tick": _tick, "carrying_capacity": capacity,
+		"effective_population": mini(available, int(capacity)) if capacity != null else null}
+
 func register_individual(species: SolSpeciesDefinition, home: Vector2i, affinity: String, generation: int = 0) -> String:
 	if species == null or not species.valid() or not SolSpeciesDefinition.text(affinity) or _individuals.size() >= MAX_INDIVIDUALS:
 		return ""
@@ -94,6 +176,9 @@ func register_individual(species: SolSpeciesDefinition, home: Vector2i, affinity
 	if not valid_snapshot(candidate, _seed):
 		return ""
 	_individuals[identity] = record.duplicate(true)
+	var base := home_identity(identity)
+	_known_homes[base] = true
+	_wild_homes[base] = identity
 	individual_changed.emit(identity)
 	return identity
 
@@ -101,6 +186,7 @@ func acquire(identity: String, location: String = "sealed") -> bool:
 	if not OWNED_LOCATIONS.has(location) or not _individuals.has(identity) or _individuals[identity].location != "wild":
 		return false
 	_individuals[identity].location = location
+	_wild_homes.erase(home_identity(identity))
 	individual_changed.emit(identity)
 	return true
 
@@ -247,6 +333,10 @@ static func restore(data: Variant, seed_value: int) -> ExpeditionState:
 			record[field] = int(record[field])
 		if record.has("sol_relationship"):
 			record.sol_relationship = normalized_relationship(record.sol_relationship)
+		var base := state.home_identity(identity)
+		state._known_homes[base] = true
+		if record.location == "wild":
+			state._wild_homes[base] = identity
 	for key in state._tile_deltas:
 		for field in state._tile_deltas[key]:
 			state._tile_deltas[key][field] = int(state._tile_deltas[key][field])
