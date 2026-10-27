@@ -108,6 +108,7 @@ func verify_limits() -> void:
 	baseline = ExpeditionState.new(17).snapshot()
 	for index in range(ExpeditionState.MAX_TILE_DELTAS):
 		baseline.tile_deltas["%d:0" % index] = {"overload": 0}
+	baseline.natural.order = baseline.tile_deltas.keys()
 	state = ExpeditionState.restore(baseline, 17)
 	check(state.apply_human_activity(command(), ambient(), "west", 3).is_empty() and state.snapshot() == baseline, "Tile capacity failure preserves receipt, usage, and all existing tiles")
 
@@ -118,8 +119,9 @@ func verify_persistence(state: ExpeditionState, latest: Dictionary) -> void:
 	var legacy := snapshot.duplicate(true)
 	legacy.version = 1
 	legacy.erase("human_activity")
+	legacy.erase("natural")
 	var upgraded := ExpeditionState.restore(legacy, 17)
-	check(upgraded != null and upgraded.snapshot().version == 2 and upgraded.human_activity_view() == HumanVastraActivity.empty_ledger() and upgraded.snapshot().tile_deltas == legacy.tile_deltas, "D1 domain-v1 upgrades without inventing receipts or changing previous deltas")
+	check(upgraded != null and upgraded.snapshot().version == ExpeditionState.VERSION and upgraded.human_activity_view() == HumanVastraActivity.empty_ledger() and upgraded.snapshot().tile_deltas == legacy.tile_deltas, "D1 domain-v1 upgrades without inventing receipts or changing previous deltas")
 	var path := "user://d2-vastra-%d.json" % Time.get_ticks_usec()
 	var save := ExpeditionSave.snapshot(17, Vector2i.ZERO, false, false, 5, {}, snapshot)
 	check(ExpeditionSave.write(save, path) == OK, "Portable save accepts the new domain envelope without an outer format bump")

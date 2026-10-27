@@ -9,6 +9,7 @@ const ChunkView = preload("res://scripts/terrain_chunk.gd")
 const Explorer = preload("res://scripts/explorer.gd")
 const StructureView = preload("res://scripts/structure_view.gd")
 const CLIMATE_SETTINGS = preload("res://resources/climate_settings.tres")
+const VASTRA_SETTINGS = preload("res://resources/vastra_settings.tres")
 const MOVE_SECONDS := 0.135
 const CHUNK_RADIUS := 3
 # Tree upper pieces extend 120 pixels above their ground anchor.
@@ -178,7 +179,7 @@ func new_expedition(seed_value: int) -> void:
 		settings = WorldTerrain.default_climate()
 		push_warning("Invalid climate settings; using defaults for this expedition.")
 	terrain = WorldTerrain.new(seed_value, settings)
-	persistent_state = ExpeditionState.new(seed_value)
+	replace_persistent_state(ExpeditionState.new(seed_value))
 	persistent_state.observe_territory(Vector2i.ZERO)
 	cell = Vector2i.ZERO
 	destination = cell
@@ -240,6 +241,16 @@ func build_places() -> void:
 	add_prop("TX Props/TX Props Rune Pillar X3", terrain.landmark() + Vector2i(-2, -2))
 	add_prop("TX Props/TX Props Rune Pillar Broken", terrain.landmark() + Vector2i(2, -2))
 	add_prop("TX Props/TX Props Road Sign W", terrain.landmark() + Vector2i(-4, 2))
+
+func replace_persistent_state(state: ExpeditionState) -> void:
+	if persistent_state.activity_advanced.is_connected(advance_environment):
+		persistent_state.activity_advanced.disconnect(advance_environment)
+	persistent_state = state
+	persistent_state.activity_advanced.connect(advance_environment)
+
+func advance_environment(_tick: int) -> void:
+	# No production regional profile is authored yet; baseline recovery needs none.
+	persistent_state.advance_environment(VASTRA_SETTINGS.parameters())
 
 func _process(delta: float) -> void:
 	if frame_times.size() >= 3600:
@@ -374,7 +385,7 @@ func load_game(path: String = ExpeditionSave.SAVE_PATH) -> void:
 		return
 	var candidate_terrain := WorldTerrain.new(int(data.seed), data.climate)
 	terrain = candidate_terrain
-	persistent_state = candidate_state
+	replace_persistent_state(candidate_state)
 	cell = Vector2i(int(data.player[0]), int(data.player[1]))
 	destination = cell
 	moving = false
