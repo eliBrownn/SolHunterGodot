@@ -34,6 +34,11 @@ settings are preserved. The player moves to nearby legal ground if terrain or th
 new cabin blocks their former position. Geography changes. Loading
 does not alter the original file; the next save backs it up before replacement.
 
+Save format 2 also retains territory observations, the activity clock, sparse
+environment changes, and stable Sol records independently of streamed chunks.
+Older format-1 saves receive an empty persistent foundation without invented
+creature history. See [D1 implementation](docs/d1-persistent-foundation.md).
+
 ## Climate parameters
 
 Open `resources/climate_settings.tres` in Godot's Inspector to set the Perlin

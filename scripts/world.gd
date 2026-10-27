@@ -3,6 +3,7 @@ extends Node2D
 signal chunk_published(coord: Vector2i, cells: Array[Dictionary])
 signal chunk_removed(coord: Vector2i)
 signal rebuilt
+signal state_replaced(state: ExpeditionState)
 
 const ChunkView = preload("res://scripts/terrain_chunk.gd")
 const Explorer = preload("res://scripts/explorer.gd")
@@ -46,6 +47,7 @@ var frame_times: Array[float] = []
 var max_publish_ms := 0.0
 var max_generation_ms := 0.0
 var smoke_mode := false
+var persistent_state := ExpeditionState.new()
 var hover_outline := Line2D.new()
 
 func _ready() -> void:
@@ -176,11 +178,14 @@ func new_expedition(seed_value: int) -> void:
 		settings = WorldTerrain.default_climate()
 		push_warning("Invalid climate settings; using defaults for this expedition.")
 	terrain = WorldTerrain.new(seed_value, settings)
+	persistent_state = ExpeditionState.new(seed_value)
+	persistent_state.observe_territory(Vector2i.ZERO)
 	cell = Vector2i.ZERO
 	destination = cell
 	moving = false
 	visited = false
 	returned = false
+	state_replaced.emit(persistent_state)
 	history.clear()
 	rebuild_world()
 	message("Follow the old stone trail east and find the waystone.")
@@ -241,6 +246,7 @@ func _process(delta: float) -> void:
 		frame_times.pop_front()
 	frame_times.append(delta * 1000.0)
 	if not paused and not smoke_mode:
+		persistent_state.advance_time(delta)
 		advance_movement(delta, Input.get_vector("west", "east", "north", "south"))
 	if not pending.is_empty():
 		publish_chunk(pending.pop_front())
@@ -251,6 +257,8 @@ func _process(delta: float) -> void:
 		var times := frame_times.duplicate()
 		times.sort()
 		diagnostic.text = "Frame ms · p95 %.1f / p99 %.1f / max %.1f\nGeneration max %.2f ms · publication max %.2f ms\n%d / 49 live chunks · %d queued\nSeed %d · generation %d · cell %s" % [times[int((times.size() - 1) * 0.95)], times[int((times.size() - 1) * 0.99)], times.back(), max_generation_ms, max_publish_ms, chunks.size(), pending.size(), terrain.world_seed, terrain.generation_version, cell]
+		var stored := persistent_state.counts()
+		diagnostic.text += "\nActivity tick %d · %d observed territories · %d recorded Sols" % [persistent_state.activity_tick(), stored.territories, stored.individuals]
 
 func advance_movement(delta: float, direction: Vector2) -> void:
 	var remaining := delta
@@ -281,6 +289,7 @@ func advance_movement(delta: float, direction: Vector2) -> void:
 	plan_chunks()
 
 func arrived() -> void:
+	persistent_state.observe_territory(cell)
 	if not visited and Vector2(cell - terrain.landmark()).length() < 4:
 		visited = true
 		message("Waystone reached. The trail leads home — return to the refuge.")
@@ -351,7 +360,7 @@ func message(value: String) -> void:
 	history.append_text(value + "\n\n")
 
 func save_game(path: String = ExpeditionSave.SAVE_PATH) -> void:
-	var error := ExpeditionSave.write(ExpeditionSave.snapshot(terrain.world_seed, cell, visited, returned, terrain.generation_version, terrain.climate), path)
+	var error := ExpeditionSave.write(ExpeditionSave.snapshot(terrain.world_seed, cell, visited, returned, terrain.generation_version, terrain.climate, persistent_state.snapshot()), path)
 	message("Expedition saved." if error == OK else "Save failed: " + error_string(error))
 
 func load_game(path: String = ExpeditionSave.SAVE_PATH) -> void:
@@ -359,12 +368,19 @@ func load_game(path: String = ExpeditionSave.SAVE_PATH) -> void:
 	if data.is_empty():
 		message("No valid compatible save found. Current expedition kept.")
 		return
-	terrain = WorldTerrain.new(int(data.seed), data.climate)
+	var candidate_state := ExpeditionState.restore(data.world_state, int(data.seed))
+	if candidate_state == null:
+		message("Invalid persistent state. Current expedition kept.")
+		return
+	var candidate_terrain := WorldTerrain.new(int(data.seed), data.climate)
+	terrain = candidate_terrain
+	persistent_state = candidate_state
 	cell = Vector2i(int(data.player[0]), int(data.player[1]))
 	destination = cell
 	moving = false
 	visited = data.landmark_visited
 	returned = data.returned
+	state_replaced.emit(persistent_state)
 	rebuild_world()
 	if data.has("migrated_from"):
 		message("Expedition updated to new terrain." + (" Your position moved to nearby dry ground." if data.migration_moved else ""))
@@ -380,7 +396,7 @@ func inspect_mouse() -> void:
 	if point == null:
 		return
 	var hovered := Vector2i((point / 32.0).floor())
-	var data := terrain.sample(hovered)
+	var data := persistent_state.environment_view(hovered, terrain.sample(hovered))
 	hover_outline.position = Vector2(hovered) * 32
 	hover_outline.show()
 	var names := ["Meadow", "Woodland", "Heath", "Marsh", "Water", "Shore"]

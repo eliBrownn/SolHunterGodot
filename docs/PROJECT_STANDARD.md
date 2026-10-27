@@ -55,6 +55,8 @@ Review `git diff` and `git diff --cached`; stage named paths or selected hunks. 
 
 Push topic branches without force only after checking their contents, destination, and validation. Open a PR to `main` describing the problem, resulting behavior, validation evidence, and material limitations. Link the relevant issue/decision when one exists. Scene or UI changes should include useful screenshots or a short reproduction path.
 
+For an owner-authorized sequence that depends on unmerged work, a topic branch may start from its reviewed predecessor and target that predecessor in a stacked PR. Identify the dependency and integration order in the PR; retarget to `main` after the prerequisite merges. Each change still requires validation and owner review. This records the development workflow used on October 26, 2026.
+
 Before merge, resolve review feedback and conflicts and pass the checks appropriate to the change. A reviewer other than the author should approve when available; in a solo project the owner explicitly reviews and merges. Prefer squash merge for a coherent topic and keep the PR description meaningful. Maintenance agents do not automatically merge PRs.
 
 The desired remote rules are: require PRs, block force pushes and default-branch deletion, and require relevant configured checks. Require independent approval when collaborators make that practical. These are policy targets, not proof of GitHub configuration. Record actual enforcement separately; do not invent check names or claim protection is enabled without verification.
