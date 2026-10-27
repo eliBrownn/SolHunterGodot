@@ -42,9 +42,14 @@ func run() -> void:
 	var scene := packed.instantiate()
 	root.add_child(scene)
 	current_scene = scene
-	await process_frame
 	var world: Node2D = scene.world
 	world.smoke_mode = true
+	check(world.chunks.size() < 49 and not world.pending.is_empty(), "Initial build leaves offscreen chunks for bounded streaming")
+	check_visible_chunks(world)
+	check(not world.explorer.body.visible, "Ground texture does not duplicate the billboard character")
+	check(scene.player_billboard.billboard == BaseMaterial3D.BILLBOARD_ENABLED, "Character remains camera-facing")
+	check(is_equal_approx(scene.player_billboard.pixel_size, 1.0 / 32.0), "Billboard uses the terrain pixel scale")
+	await process_frame
 	var path := route(world.terrain, 1)
 	for i in range(1, path.size()):
 		walk_to(world, path[i])
@@ -57,10 +62,18 @@ func run() -> void:
 		walk_to(world, path[i])
 		await process_frame
 	check(world.returned, "Movement triggers return to camp")
+	world.explorer.facing = Vector2.LEFT
+	world.explorer._process(0.0)
+	scene.player_billboard.sync_art()
+	check(scene.player_billboard.flip_h, "Upright character retains left-facing art")
+	check(scene.player_billboard.texture == world.explorer.body.texture, "Billboard reuses the authored directional atlas")
+	check(Vector2(scene.player_billboard.position.x, scene.player_billboard.position.z).distance_to((world.explorer.position - world.camera.position) / 32.0) < 0.001, "Billboard feet track the ground shadow")
 	var expected: Array = world.terrain.extract_chunk(Vector2i.ZERO)
 	world.cell = Vector2i(-100, -100)
 	world.plan_chunks()
 	check(not world.chunks.has(Vector2i.ZERO), "Distant chunk eviction")
+	world.rebuild_world()
+	check_visible_chunks(world)
 	world.cell = Vector2i.ZERO
 	world.rebuild_world()
 	check(world.chunks[Vector2i.ZERO].view.cells == expected, "Evicted defaults reconstruct exactly")
@@ -70,7 +83,9 @@ func run() -> void:
 	var snapshot := ExpeditionSave.read_save(save_path)
 	check(not snapshot.is_empty() and snapshot.returned, "Save and validate expedition")
 	world.new_expedition(7)
+	check_visible_chunks(world)
 	world.load_game(save_path)
+	check_visible_chunks(world)
 	check(world.terrain.world_seed == 2601026 and world.returned and world.cell == Vector2i.ZERO, "Restore complete live state")
 	world.save_game(save_path)
 	check(FileAccess.file_exists(save_path + ".bak"), "Replacement preserves backup")
@@ -107,8 +122,15 @@ func run() -> void:
 	world.save_game(save_path)
 	check(ExpeditionSave.read_save(save_path).get("generation_version") == WorldTerrain.GENERATION_VERSION, "Resaving uses the current generator")
 	# Projection round trip at both sides of the viewport, including negative cells.
+	check(scene.surface.mesh is PlaneMesh and scene.surface.rotation == Vector3.ZERO, "Terrain occupies a real horizontal XZ surface")
+	check(is_zero_approx(scene.camera.position.x) and scene.camera.position.y > 0 and scene.camera.position.z > scene.camera.position.y, "Low camera stays aligned with the world axes without sideways rotation")
+	check(Vector2(scene.TEXTURE_SIZE) / 32.0 == scene.SURFACE_SIZE, "Enlarged 3D surface preserves one unit per terrain tile")
 	for zoom in [16.0, 22.0, 23.0]:
 		scene.camera.size = zoom
+		var screen_size: Vector2 = root.get_visible_rect().size
+		for corner in [Vector2.ZERO, Vector2(screen_size.x, 0), Vector2(0, screen_size.y), screen_size]:
+			var corner_hit: Variant = Plane(Vector3.UP, 0).intersects_ray(scene.camera.project_ray_origin(corner), scene.camera.project_ray_normal(corner))
+			check(corner_hit != null and absf(corner_hit.x) <= scene.SURFACE_SIZE.x * 0.5 and absf(corner_hit.z) <= scene.SURFACE_SIZE.y * 0.5, "Angled camera keeps viewport corners over rendered terrain at zoom %.0f" % zoom)
 		for plane_position in [Vector3.ZERO, Vector3(-8, 0, -5), Vector3(8, 0, 5)]:
 			var screen: Vector2 = scene.camera.unproject_position(plane_position)
 			var ray_origin: Vector3 = scene.camera.project_ray_origin(screen)
@@ -136,3 +158,12 @@ func walk_to(world: Node2D, next: Vector2i) -> void:
 	var seconds: float = world.MOVE_SECONDS * (sqrt(2.0) if change.x != 0 and change.y != 0 else 1.0)
 	world.advance_movement(seconds, Vector2(change).normalized())
 	check(world.cell == next and not world.moving, "Actual movement reaches settled destination")
+
+func check_visible_chunks(world: Node2D) -> void:
+	# Include the largest current tree canopy, whose anchor can be offscreen.
+	var half_view: Vector2 = world.get_viewport_rect().size * 0.5 + Vector2(40, 120)
+	for y in [-1.0, 0.0, 1.0]:
+		for x in [-1.0, 0.0, 1.0]:
+			var point: Vector2 = world.camera.position + half_view * Vector2(x, y)
+			var cell := Vector2i(floori(point.x / 32.0), floori(point.y / 32.0))
+			check(world.chunks.has(world.terrain.chunk_of(cell)), "Visible viewport covered immediately after rebuild")

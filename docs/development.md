@@ -3,7 +3,11 @@
 Implemented in a fresh Godot project:
 
 - A 2D world rendered as a texture onto a horizontal 3D plane, with a separate
-  screen-space HUD and orthographic zoom.
+  screen-space HUD, orthographic zoom, and an upright billboard explorer.
+  The camera looks down at 35 degrees with zero azimuth: lower toward the plane,
+  with the world axes aligned rather than rotated sideways.
+  Its 64-by-48-unit XZ surface uses a 2048-by-1536 texture, preserving 32 pixels
+  per world unit. Elevation and azimuth are exposed on the scene root in Godot.
 - Metadata-based asset slicing, anchored/y-sorted props, and directional player art.
 - Seeded, independently salted terrain and decoration using absolute coordinates;
   new worlds use generation version 4 and save format version 1. Version 1, 2 and 3
@@ -42,13 +46,15 @@ junctions, natural water collision, dry route reservations, reverse-order chunk
 reconstruction and migration of older saves. The integration smoke test exercises
 actual outbound and return movement, streaming and saving. F3 reports frame
 p95/p99/max for the current session, including startup and rebuild frames.
-Representative frame-time profiling and manual continuous-travel acceptance on
-target hardware remain outstanding.
+The D0 rendered benchmark now records separate startup/rebuild and travel phases;
+see [D0 evidence](d0-exploration.md). Target hardware budgets and manual
+continuous-travel acceptance remain outstanding.
 
 ## Current limits
 
-- The art is flat on the 3D plane, including actors. There are no upright
-  billboards, elevation traversal, 3D colliders, or dynamic 3D lighting.
+- The explorer is an upright camera-facing billboard with a flat ground shadow.
+  Environment props remain flat; there is no elevation traversal, general 3D
+  collision, or dynamic 3D lighting.
 - Noise classifies habitats; grass tint blends smoothly, but terrain boundaries
   and temporary water are still square cells. Water bodies are constrained to
   bounded basins; there is no drainage model or arbitrary water-aware route planner.
@@ -58,13 +64,14 @@ target hardware remain outstanding.
   before it is treated as final world geography.
 - Authored camp/landmark props are decorative and do not block movement.
 - Player movement uses bobbing directional stills, not a completed walk cycle.
-- First view and explicit load/new-seed rebuild all 49 chunks synchronously.
-  Travel streams one chunk per frame on the main thread. Work is not threaded.
+- First view and explicit load/new-seed build the visible area plus canopy margin
+  synchronously; remaining chunks stream one per frame on the main thread.
+  Work is not threaded and the live render budget remains 49 chunks.
 - Inspection samples a cell without populating the chunk cache. Frame statistics
-  include initialization; no representative p95/p99 acceptance benchmark exists yet.
+  include initialization; the separate D0 harness isolates travel statistics but
+  no target-device performance acceptance threshold has been adopted.
 - Session field notes are not persisted. No fog-of-war, map, NPCs, encounter,
   creature collection, combat, ecological simulation, or Python save import.
 
-Next player acceptance: walk the journey manually, judge the 3D plane angle,
-pixel readability and terrain scale, then choose whether actors should stand
-upright on the plane before expanding the content.
+Next player acceptance: walk the journey manually and judge the upright character,
+3D plane angle, pixel readability, and terrain scale before expanding content.

@@ -9,6 +9,8 @@ This is the single source of truth for repository organization, Git practices, a
 
 `docs/reference/SolHunter_Worldbuilding_Bible.md` governs game design. Preserve confirmed, provisional, and deferred distinctions. Repository housekeeping must not revise canon or turn unresolved designs into requirements. Other SolHunter repositories are outside this maintenance scope.
 
+Owner direction, October 26, 2026: use [SolHunterSource](https://github.com/eliBrownn/SolHunterSource) to resolve game-mechanics questions outside the world-generation engine. Read its relevant implementation, tests, and decision evidence before proposing replacement rules or escalating an apparent gap. See [mechanics reference](mechanics-reference.md) for verified source locations and reconciliation procedure. This permits read-only reference use; it does not authorize maintenance of that repository or replacement of Godot world generation. Preserve explicit Bible canon and flag unresolved source conflicts rather than silently overriding it with legacy behavior.
+
 ## Repository layout
 
 Keep the root small: project entry/configuration, README, agent instructions, and repository tooling. Use the following destinations as content arrives; do not create empty scaffolding or relocate existing assets solely for cosmetic consistency.
@@ -62,7 +64,7 @@ Review binary asset size before adding it. Adopt Git LFS intentionally for selec
 
 For documentation, check links, paths, consistency, and whitespace. For game changes, run relevant automated checks and import/parse validation using the pinned engine, then exercise the affected scene or feature. For exports, smoke-test the actual export. Record commands, results, and checks unavailable locally. Do not add meaningless tests for prose or claim a playable build exists from documentation checks alone.
 
-The shared local/CI entry point is `tools/validate.ps1`, requiring Godot 4.7.2 stable. The proposed GitHub Actions job is `Godot 4.7.2 import and tests` in `.github/workflows/validate.yml`. Confirm its remote success and failure behavior before treating it as an enforced required check. Revalidate the official archive digest whenever deliberately changing the engine pin.
+The shared local/CI entry point is `tools/validate.ps1`, requiring Godot 4.7.2 stable. The GitHub Actions job is `Godot 4.7.2 import and tests` in `.github/workflows/validate.yml`. Its first remote run passed, and a failing assertion in a disposable clone confirmed that the shared validator exits nonzero. The workflow remains subject to PR review; required-check enforcement is a separate repository-settings change. Revalidate the official archive digest whenever deliberately changing the engine pin.
 
 ## Daily maintenance at 7:00 AM Pacific
 

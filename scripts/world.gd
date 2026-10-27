@@ -5,6 +5,8 @@ const Explorer = preload("res://scripts/explorer.gd")
 const CLIMATE_SETTINGS = preload("res://resources/climate_settings.tres")
 const MOVE_SECONDS := 0.135
 const CHUNK_RADIUS := 3
+# Tree upper pieces extend 120 pixels above their ground anchor.
+const VIEW_PROP_MARGIN := 128.0
 
 var host: Node3D
 var terrain := WorldTerrain.new()
@@ -191,8 +193,16 @@ func rebuild_world() -> void:
 	camera.position = explorer.position
 	last_chunk = Vector2i(999999, 999999)
 	plan_chunks()
-	while not pending.is_empty():
-		publish_chunk(pending.pop_front())
+	# Build only what can contribute to the first view. Distant chunks retain the
+	# normal one-per-frame streaming budget instead of blocking load/new seed.
+	var view_size := get_viewport_rect().size
+	var visible_bounds := Rect2(camera.position - view_size * 0.5, view_size).grow(VIEW_PROP_MARGIN)
+	var chunk_pixels := float(WorldTerrain.CHUNK_SIZE * WorldTerrain.CELL_SIZE)
+	for coord: Vector2i in pending.duplicate():
+		var chunk_bounds := Rect2(Vector2(coord) * chunk_pixels, Vector2.ONE * chunk_pixels)
+		if chunk_bounds.intersects(visible_bounds):
+			publish_chunk(coord)
+			pending.erase(coord)
 	update_hud()
 
 func center(at: Vector2i) -> Vector2:
