@@ -24,7 +24,7 @@ func run() -> void:
 	var members: Array = scene.sightings.members
 	var grove: SolOrb = members[0].sprite
 	var gale: SolOrb = members[2].sprite
-	check(grove.affinity == "grove" and gale.affinity == "gale" and grove.tint != gale.tint, "Same-species Seedmotes use different individual affinities, not species or class colors")
+	check(grove.affinity == "earth" and gale.affinity == "air" and grove.tint != gale.tint, "Same-species Seedmotes use different individual affinities, not species or class colors")
 	check(grove.motes.size() == visuals.effect_count and gale.motes.size() == visuals.effect_count, "Effects are bounded by the connected Inspector setting")
 	var snapshot: Dictionary = world.persistent_state.snapshot()
 	grove.animate(0, 1, 0.8)
@@ -34,10 +34,10 @@ func run() -> void:
 	check(not is_equal_approx(before, grove.position.y) and is_equal_approx(ground_before, grove.position.y + grove.shadow.position.y), "Hover moves in real 3D height while the shadow stays on the ground")
 	check(world.persistent_state.snapshot() == snapshot, "Cosmetic hover and effects do not mutate saved identity or simulation")
 	var custom := SolVisualSettings.new()
-	custom.palette["grove"] = Color.MAGENTA
+	custom.palette["earth"] = Color.MAGENTA
 	custom.effect_count = 0
 	var orb := SolOrb.new()
-	orb.configure("grove", custom)
+	orb.configure("earth", custom)
 	check(orb.tint == Color.MAGENTA and orb.motes.is_empty(), "Palette overrides and zero-effect tuning affect the actual visual")
 	orb.free()
 	orb = SolOrb.new()
@@ -46,20 +46,20 @@ func run() -> void:
 	orb.free()
 	custom.effect_count = 13
 	check(not custom.valid(), "Invalid unbounded effect tuning is rejected")
-	check(world.persistent_state.choose_starter(scene.battle_settings.starters[2].snapshot(), 2), "A Tide companion can enter the shared orb battle presentation")
+	check(world.persistent_state.choose_starter(scene.battle_settings.starters[2].snapshot(), 2), "A Water companion can enter the shared orb battle presentation")
 	world.cell = members[2].home + Vector2i.LEFT
 	world.destination = world.cell
 	world.rebuild_world()
 	scene.encounters.approach_nearest()
 	scene.encounters.battle_button.pressed.emit()
 	var battle: Node = scene.battles
-	check(battle.session != null and battle.session.enemy.affinity == "gale", "Wild combat profile retains the actual guarding individual's Gale affinity")
+	check(battle.session != null and battle.session.enemy.affinity == "air", "Wild combat profile retains the actual guarding individual's Air affinity")
 	battle.select_cell(battle.session.deployment_tiles()[0])
 	var displayed: Dictionary = {}
 	for child in battle.visuals.get_children():
 		if child is SolOrb:
 			displayed[child.affinity] = child.tint
-	check(displayed.get("gale") == visuals.color_for("gale") and displayed.get("tide") == visuals.color_for("tide"), "Wild and deployed battle orbs use the same assigned-affinity palette")
+	check(displayed.get("air") == visuals.color_for("air") and displayed.get("water") == visuals.color_for("water"), "Wild and deployed battle orbs use the same assigned-affinity palette")
 	world.smoke_mode = false
 	var elapsed: float = battle.visual_seconds
 	battle._process(0.2)
@@ -71,7 +71,7 @@ func run() -> void:
 	world.cell = scene.sightings.members[2].home + Vector2i(-2, -1)
 	world.rebuild_world()
 	if OS.get_cmdline_user_args().has("--capture-orbs") and DisplayServer.get_name() != "headless":
-		await capture("gale")
+		await capture("air")
 	scene.free()
 	print("SOL ORBS: %d checks, %d failures." % [checks, failures])
 	quit(0 if failures == 0 else 1)

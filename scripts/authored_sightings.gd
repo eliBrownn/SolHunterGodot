@@ -2,9 +2,9 @@ extends Node3D
 ## Affinity orbs over persistent authored individuals, not a wild generator.
 
 const ENTRIES := [
-	{"x": 8, "species": "seedmote", "name": "Seedmote", "lineage": "family_010", "class": "verdant", "affinity": "grove", "reaction": "Wary"},
-	{"x": 26, "species": "bramblepup", "name": "Bramblepup", "lineage": "family_001", "class": "beast", "affinity": "grove", "reaction": "Watching"},
-	{"x": 48, "species": "seedmote", "name": "Seedmote", "lineage": "family_010", "class": "verdant", "affinity": "gale", "reaction": "Guarding", "hostile": true}]
+	{"x": 8, "species": "seedmote", "name": "Seedmote", "lineage": "family_010", "class": "verdant", "affinity": "earth", "reaction": "Wary"},
+	{"x": 26, "species": "bramblepup", "name": "Bramblepup", "lineage": "family_001", "class": "beast", "affinity": "earth", "reaction": "Watching"},
+	{"x": 48, "species": "seedmote", "name": "Seedmote", "lineage": "family_010", "class": "verdant", "affinity": "air", "reaction": "Guarding", "hostile": true}]
 
 var world: Node2D
 var settings: SightingSettings
@@ -135,7 +135,7 @@ func advance_roaming(tick: int) -> void:
 				var home_distance := manhattan(candidate, member.home)
 				if occupied.has(candidate) or (home_distance > settings.home_radius and home_distance >= manhattan(position, member.home)) or home_distance > ExpeditionState.MAX_ROAMING_DISTANCE:
 					continue
-				if not world.terrain.can_step(position, candidate):
+				if not world.can_step(position, candidate):
 					continue
 				if (action == "flee" and manhattan(candidate, goal) > manhattan(target, goal)) or (action != "flee" and manhattan(candidate, goal) < manhattan(target, goal)):
 					target = candidate

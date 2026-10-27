@@ -12,11 +12,11 @@ var shadow: MeshInstance3D
 var motes: Array[Sprite3D] = []
 
 func configure(assigned_affinity: String, settings: SolVisualSettings, phase_offset: float = 0.0) -> void:
-	affinity = assigned_affinity
+	affinity = AffinityImprint.canonical(assigned_affinity)
 	tuning = settings
 	tint = tuning.color_for(affinity)
 	phase = phase_offset
-	texture = sphere_texture(tint)
+	texture = sphere_texture(Color.WHITE if affinity == "quantum" else tint)
 	pixel_size = tuning.diameter / 24.0
 	billboard = BaseMaterial3D.BILLBOARD_ENABLED
 	texture_filter = BaseMaterial3D.TEXTURE_FILTER_NEAREST
@@ -86,12 +86,12 @@ static func disc_texture(color: Color) -> Texture2D:
 
 func mote_texture() -> Texture2D:
 	var patterns := {
-		"ember": ["..x..", "..xx.", ".xxx.", ".xxx.", "..x.."],
-		"tide": ["..x..", "..x..", ".xxx.", ".xxx.", "..x.."],
+		"fire": ["..x..", "..xx.", ".xxx.", ".xxx.", "..x.."],
+		"water": ["..x..", "..x..", ".xxx.", ".xxx.", "..x.."],
 		"grove": ["...xx", "..xxx", ".xxx.", "xxx..", "xx..."],
-		"gale": [".xxx.", "x....", ".xxx.", "....x", ".xxx."],
-		"storm": ["..xx.", ".xx..", ".xxx.", "..x..", ".x..."],
-		"stone": [".....", ".xxx.", ".xxx.", ".xxx.", "....."]}
+		"air": [".xxx.", "x....", ".xxx.", "....x", ".xxx."],
+		"lightning": ["..xx.", ".xx..", ".xxx.", "..x..", ".x..."],
+		"earth": [".....", ".xxx.", ".xxx.", ".xxx.", "....."]}
 	var rows: Array = patterns.get(affinity, ["..x..", "..x..", "xxxxx", "..x..", "..x.."])
 	var image := Image.create(5, 5, false, Image.FORMAT_RGBA8)
 	image.fill(Color.TRANSPARENT)
@@ -102,6 +102,8 @@ func mote_texture() -> Texture2D:
 	return ImageTexture.create_from_image(image)
 
 func animate(seconds: float, bob_pixels: float, bob_cycles: float) -> void:
+	if affinity == "quantum":
+		modulate = tint.lerp(Color("8beae9"), (sin(seconds * TAU * tuning.effect_speed) + 1.0) * 0.5)
 	var bob := sin(seconds * TAU * bob_cycles + phase) * bob_pixels / 24.0
 	var height := tuning.hover_height + bob
 	position.y = ground_y + height
@@ -115,12 +117,12 @@ func animate(seconds: float, bob_pixels: float, bob_cycles: float) -> void:
 		var mote := motes[index]
 		mote.position = Vector3(cos(angle) * radius, sin(angle * 1.5) * radius * 0.35, sin(angle) * radius)
 		mote.modulate.a = 0.5 + 0.5 * absf(sin(angle))
-		if affinity == "ember":
+		if affinity == "fire":
 			mote.position.y = (fposmod(cycle, 1.0) - 0.4) * tuning.diameter * 1.5
 			mote.modulate.a = 1.0 - fposmod(cycle, 1.0)
-		elif affinity == "tide":
+		elif affinity == "water":
 			mote.position.y = -absf(sin(angle)) * radius * 0.6
-		elif affinity == "gale":
+		elif affinity == "air":
 			mote.position.y = sin(angle) * radius * 0.6
-		elif affinity == "storm":
+		elif affinity == "lightning":
 			mote.modulate.a = 1.0 if sin(angle * 3) > 0.6 else 0.15

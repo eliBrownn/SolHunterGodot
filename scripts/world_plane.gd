@@ -23,6 +23,9 @@ const TEXTURE_SIZE := Vector2i(2048, 1536)
 ## Shared hovering orb palette, size, height, halo and effects for wild and deployed Sols.
 @export var sol_visual_settings: SolVisualSettings = preload("res://resources/sol_visual_settings.tres")
 
+## Species move pools, starting loadouts, prototype move effects and condition recovery.
+@export var move_library: MoveLibrary = preload("res://resources/move_library.tres")
+
 @export_group("Camera")
 ## Degrees above the ground plane. Smaller is lower; 35 preserves the selected low-angle presentation. Applied at startup.
 @export_range(35.0, 70.0, 1.0) var camera_elevation := 35.0
@@ -82,6 +85,9 @@ func _ready() -> void:
 	battles = preload("res://scripts/battle_controller.gd").new()
 	add_child(battles)
 	battles.bind(world, encounters, sightings, battle_settings)
+	var affinity_ground := preload("res://scripts/affinity_ground.gd").new()
+	add_child(affinity_ground)
+	affinity_ground.bind(world, sightings.visual_settings)
 	# Match the 2D ground projection to a tilted plane while preserving pixel assets.
 	if OS.get_cmdline_user_args().has("--capture"):
 		_capture.call_deferred()

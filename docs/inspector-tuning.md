@@ -50,6 +50,28 @@ or use Make Unique and save the result. Defaults preserve the current behavior.
 | Aura Opacity / Effect Count / Effect Speed | 0.22 / 5 / 0.6; 0–0.6 / 0–12 / 0–3 cycles per second | Halo strength and bounded decorative motes; zero opacity/count disables the corresponding effect, zero speed freezes effects. |
 | Palette | Ten provisional affinity ID → color entries | Uses the saved individual's affinity, with neutral white for unknown IDs. Custom opaque colors are supported. Species/class never select the color. |
 
+The subsequent [affinity and moves implementation](affinity-moves-imprints.md)
+replaces the ten-color default palette with the eight approved color directions
+(exact RGB remains art tuning), including animated pink/cyan Quantum orbs.
+
+| Move Library control | Range / application |
+| --- | --- |
+| Root Move Library | `resources/move_library.tres`; restart after authoring changes. Invalid libraries fall back to the default prototype library. |
+| Moves: ID / name / affinity / effect | Explicit authored identity and effect kind. Affinity is independent of the learner. Saved remembered definitions do not reroll. |
+| Move power / reach / duration | 0–100 HP power or healing / 1–6 Manhattan cells / 1–1000 tactical rounds. Field actions currently affect a target and its legal cardinal neighbors. |
+| Species Pools / Starting Moves | Up to 32 move IDs per species; starting moves must be in the pool. First four start equipped. Newly admitted books snapshot eligibility and initial definitions. |
+| Recovery Interval | 1–1000 active 0.75-second ticks per recovery stage; default 8. Captured in each saved condition, so later edits do not rewrite existing recovery debt. |
+| Field Damage | 0–10 HP per tactical round; default 2. Shared Fire/Lightning effects; applies to new battles. |
+| Rough Cost | 1–4 movement points per cardinal tile; default 2. Applies to new battles. |
+| Assisted / Resisted Cost | 0–1 / 1–4 movement points; defaults 0 / 2. Currents, winds and warp zones affect both sides. Applies to new battles. |
+
+Move Library also exports World Condition Timing multipliers, each 0.25–4×:
+rough 1.5×; favorable flow 0.75×, opposed flow 1.5×; vertical warp 0.5×,
+horizontal warp 2×. The base Move Seconds remains adjustable. These are prototype
+defaults, not finalized balance or a change to generated terrain legality.
+Sol Visual Settings also exports Imprint Opacity (0–0.5, default 0.22); zero
+hides the local ground tint without deleting saved affinity.
+
 Battle settings are read for each new battle; restart after editing live resources
 to refresh chooser labels and the Enabled switch. Current battle settings and
 profiles are frozen for that battle. Refuge H recovery uses the chosen saved HP

@@ -10,7 +10,7 @@ signal human_activity_applied(event: Dictionary, effect: Dictionary)
 signal discovery_recorded(identity: String)
 signal battle_progress_changed
 
-const VERSION := 6
+const VERSION := 7
 const MAX_DISCOVERIES := 120 # Source journal retention: oldest discovery rows retire, not individuals.
 const MAX_ROAMING_DISTANCE := 5 # Saved movement schema bound; tuning may choose a smaller home range.
 const TERRITORY_SIZE := 16 # Source development setting; independent of render chunk size.
@@ -35,6 +35,8 @@ var _discoveries: Array[Dictionary] = []
 var _roaming: Dictionary = {}
 var _battle := BattleProgress.empty()
 var _battle_enemy := ""
+var _movebooks: Dictionary = {}
+var _affinity_tiles: Dictionary = {}
 # Derived indexes: never saved and never sources of population or individual identity.
 var _known_homes: Dictionary = {}
 var _wild_homes: Dictionary = {}
@@ -115,11 +117,12 @@ func choose_starter(profile: Dictionary, index: int) -> bool:
 		return false
 	var record := {"id": identity, "home": [index, 0], "generation": 0, "species_id": profile.species_id,
 		"lineage_id": profile.lineage_id, "class_id": profile.class_id, "ordinary_form": 1,
-		"footprint": 1, "affinity": profile.affinity, "location": "party"}
+		"footprint": 1, "affinity": AffinityImprint.canonical(profile.affinity), "location": "party"}
 	var candidate := snapshot()
 	candidate.individuals[identity] = record
 	candidate.battle.starter_id = identity
 	candidate.battle.profile = BattleProfile.normalized(profile)
+	candidate.battle.profile.affinity = AffinityImprint.canonical(profile.affinity)
 	candidate.battle.hp = int(profile.max_hp)
 	if not valid_snapshot(candidate, _seed):
 		return false
@@ -130,7 +133,7 @@ func choose_starter(profile: Dictionary, index: int) -> bool:
 	return true
 
 func begin_battle(enemy_id: String) -> int:
-	if _battle.active or _battle.starter_id.is_empty() or _battle.hp <= 0 or not wild_available(enemy_id) or _battle.serial >= MAX_SAFE_INTEGER:
+	if _affinity_tiles.size() > MAX_TILE_DELTAS - 169 or _battle.active or _battle.starter_id.is_empty() or _battle.hp <= 0 or not wild_available(enemy_id) or _battle.serial >= MAX_SAFE_INTEGER:
 		return 0
 	if _individuals[_battle.starter_id].location != "party":
 		return 0
@@ -139,7 +142,7 @@ func begin_battle(enemy_id: String) -> int:
 	_battle_enemy = enemy_id
 	return int(_battle.serial)
 
-func complete_battle(serial: int, hp: int, outcome: String, grace_steps: int) -> bool:
+func complete_battle(serial: int, hp: int, outcome: String, grace_steps: int, imprint: Dictionary = {}) -> bool:
 	if not _battle.active or serial != _battle.serial or not wild_available(_battle_enemy) or outcome not in ["victory", "exhaustion", "retreat"] or not SolSpeciesDefinition.whole(hp, 0, int(_battle.profile.max_hp)) or grace_steps < 0 or grace_steps > 8:
 		return false
 	if (outcome == "exhaustion") != (hp == 0):
@@ -154,7 +157,11 @@ func complete_battle(serial: int, hp: int, outcome: String, grace_steps: int) ->
 		candidate.defeated[_battle_enemy] = true
 	if not BattleProgress.valid(candidate, _individuals):
 		return false
+	var prepared_tiles: Variant = AffinityImprint.apply(_affinity_tiles, imprint, _tick, MAX_TILE_DELTAS)
+	if prepared_tiles == null:
+		return false
 	var enemy := _battle_enemy
+	_affinity_tiles = prepared_tiles
 	_battle = candidate
 	_battle_enemy = ""
 	if outcome == "victory":
@@ -303,7 +310,7 @@ func register_individual(species: SolSpeciesDefinition, home: Vector2i, affinity
 	if identity.is_empty() or _individuals.has(identity):
 		return ""
 	var record := species.snapshot()
-	record.merge({"id": identity, "home": [home.x, home.y], "generation": generation, "affinity": affinity, "location": "wild"})
+	record.merge({"id": identity, "home": [home.x, home.y], "generation": generation, "affinity": AffinityImprint.canonical(affinity), "location": "wild"})
 	var candidate := snapshot()
 	candidate.individuals[identity] = record
 	if not valid_snapshot(candidate, _seed):
@@ -374,6 +381,7 @@ func set_environment(cell: Vector2i, changes: Dictionary) -> bool:
 func environment_view(cell: Vector2i, generated: Dictionary) -> Dictionary:
 	var result := generated.duplicate(true)
 	result.merge(_tile_deltas.get("%d:%d" % [cell.x, cell.y], {}), true)
+	result.merge(_affinity_tiles.get(AffinityImprint.key(cell), {}).duplicate(true), true)
 	return result
 
 func human_activity_view() -> Dictionary:
@@ -437,7 +445,7 @@ func snapshot() -> Dictionary:
 		"territory_size": _territory_size, "territories": _territories.duplicate(true),
 		"individuals": _individuals.duplicate(true), "tile_deltas": _tile_deltas.duplicate(true),
 		"human_activity": _human_activity.duplicate(true), "natural": _natural.duplicate(true),
-		"discoveries": _discoveries.duplicate(true), "roaming": _roaming.duplicate(true), "battle": _battle.duplicate(true)}
+		"discoveries": _discoveries.duplicate(true), "roaming": _roaming.duplicate(true), "battle": _battle.duplicate(true), "movebooks": _movebooks.duplicate(true), "affinity_tiles": _affinity_tiles.duplicate(true)}
 
 static func restore(data: Variant, seed_value: int) -> ExpeditionState:
 	if not valid_snapshot(data, seed_value):
@@ -448,8 +456,21 @@ static func restore(data: Variant, seed_value: int) -> ExpeditionState:
 	state._territories = data.territories.duplicate(true)
 	state._individuals = data.individuals.duplicate(true)
 	state._tile_deltas = data.tile_deltas.duplicate(true)
+	if int(data.version) >= 7:
+		state._movebooks = data.movebooks.duplicate(true)
+		for book in state._movebooks.values():
+			for id in book.learned:
+				book.learned[id] = SolMove.normalized(book.learned[id])
+		state._affinity_tiles = data.affinity_tiles.duplicate(true)
+		for row in state._affinity_tiles.values():
+			for effect in row.conditions.values():
+				for field in ["level", "since", "interval"]:
+					effect[field] = int(effect[field])
+				effect.direction = [int(effect.direction[0]), int(effect.direction[1])]
 	if int(data.version) >= 6:
 		state._battle = BattleProgress.normalized(data.battle)
+		if not state._battle.profile.is_empty():
+			state._battle.profile.affinity = AffinityImprint.canonical(state._battle.profile.affinity)
 	if int(data.version) >= 5:
 		state._roaming = data.roaming.duplicate(true)
 		for identity in state._roaming:
@@ -476,6 +497,7 @@ static func restore(data: Variant, seed_value: int) -> ExpeditionState:
 		state._territories[key].observed_tick = int(state._territories[key].observed_tick)
 	for identity in state._individuals:
 		var record: Dictionary = state._individuals[identity]
+		record.affinity = AffinityImprint.canonical(record.affinity)
 		record.home = [int(record.home[0]), int(record.home[1])]
 		for field in ["generation", "ordinary_form", "footprint"]:
 			record[field] = int(record[field])
@@ -568,6 +590,9 @@ static func valid_snapshot(data: Variant, seed_value: int) -> bool:
 		expected_fields.append("roaming")
 	if int(data.version) >= 6:
 		expected_fields.append("battle")
+	if int(data.version) >= 7:
+		expected_fields.append("movebooks")
+		expected_fields.append("affinity_tiles")
 	if not keys_match(data, expected_fields):
 		return false
 	if not SolSpeciesDefinition.whole(seed_value, 0, 2147483646) or not SolSpeciesDefinition.whole(data.activity_tick, 0, MAX_SAFE_INTEGER) or not SolSpeciesDefinition.whole(data.territory_size, 1, 256):
@@ -639,6 +664,12 @@ static func valid_snapshot(data: Variant, seed_value: int) -> bool:
 		if definitions.has(record.species_id) and definitions[record.species_id] != definition:
 			return false
 		definitions[record.species_id] = definition
+	if int(data.version) >= 7:
+		if not data.movebooks is Dictionary or data.movebooks.size() > data.individuals.size() or not AffinityImprint.valid_tiles(data.affinity_tiles, int(data.activity_tick), MAX_TILE_DELTAS):
+			return false
+		for identity in data.movebooks:
+			if not identity is String or not data.individuals.has(identity) or not MoveLibrary.valid_book(data.movebooks[identity]):
+				return false
 	if int(data.version) >= 6 and not BattleProgress.valid(data.battle, data.individuals):
 		return false
 	if int(data.version) >= 5:
@@ -659,3 +690,52 @@ static func valid_snapshot(data: Variant, seed_value: int) -> bool:
 		if absi(cell.x) > 1000000 or absi(cell.y) > 1000000 or key != "%d:%d" % [cell.x, cell.y]:
 			return false
 	return true
+
+func movebook(identity: String) -> Dictionary:
+	return _movebooks.get(identity, {}).duplicate(true)
+
+func admit_movebook(identity: String, book: Dictionary) -> bool:
+	if _battle.active or not _individuals.has(identity) or _movebooks.has(identity) or not MoveLibrary.valid_book(book):
+		return false
+	_movebooks[identity] = book.duplicate(true)
+	return true
+
+func learn_move(identity: String, move: Dictionary) -> bool:
+	if _battle.active or not _movebooks.has(identity) or _individuals[identity].location not in OWNED_LOCATIONS or not SolMove.valid(move):
+		return false
+	var book: Dictionary = _movebooks[identity]
+	if not book.pool.has(move.id) or book.learned.has(move.id):
+		return false
+	book.learned[move.id] = SolMove.normalized(move)
+	return true
+
+func equip_moves(identity: String, ids: Array) -> bool:
+	if _battle.active or not _movebooks.has(identity) or _individuals[identity].location not in OWNED_LOCATIONS:
+		return false
+	var book := movebook(identity)
+	book.equipped = ids.duplicate()
+	if not MoveLibrary.valid_book(book):
+		return false
+	_movebooks[identity] = book
+	return true
+
+func affinity_tiles() -> Dictionary:
+	return _affinity_tiles.duplicate(true)
+
+func recover_affinity_conditions() -> void:
+	# Bounded round-robin service; elapsed active ticks retain recovery debt.
+	var keys := _affinity_tiles.keys()
+	if keys.is_empty():
+		return
+	for index in range(mini(32, keys.size())):
+		var at: String = keys[(_tick * 32 + index) % keys.size()]
+		var row: Dictionary = _affinity_tiles[at]
+		for kind in row.conditions.keys():
+			var effect: Dictionary = row.conditions[kind]
+			var stages := int((_tick - int(effect.since)) / int(effect.interval))
+			if stages <= 0:
+				continue
+			effect.level = maxi(0, int(effect.level) - stages)
+			effect.since += stages * int(effect.interval)
+			if effect.level == 0:
+				row.conditions.erase(kind)

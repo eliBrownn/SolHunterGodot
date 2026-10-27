@@ -1,5 +1,9 @@
 # Affinity orb presentation
 
+The later [affinity/move slice](affinity-moves-imprints.md) replaces this original
+provisional palette with the owner's eight-affinity roster and approved legacy
+aliases. The original visual validation below remains historical evidence.
+
 Owner direction, October 27, 2026: present Sols as hovering balls with basic
 colors and effects according to their assigned affinity. Wild and deployed Sols
 now share `SolOrb`: an original nearest-filtered shaded pixel sphere, subtle
