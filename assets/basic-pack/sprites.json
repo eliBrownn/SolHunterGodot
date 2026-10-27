@@ -1,0 +1,7083 @@
+{
+  "source": "Cainos / Pixel Art Top Down - Basic v1.2.3",
+  "coordinate_system": "top-left pixels; pivot measured from top-left",
+  "sprites": {
+    "TX Tileset Grass/TX Tileset Grass 0": {
+      "texture": "Texture/TX Tileset Grass.png",
+      "rect": [
+        0,
+        0,
+        32,
+        32
+      ],
+      "pivot": [
+        16.0,
+        16.0
+      ],
+      "unity_id": 21300000,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Tileset Grass/TX Tileset Grass 1": {
+      "texture": "Texture/TX Tileset Grass.png",
+      "rect": [
+        32,
+        0,
+        32,
+        32
+      ],
+      "pivot": [
+        16.0,
+        16.0
+      ],
+      "unity_id": 21300002,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Tileset Grass/TX Tileset Grass 2": {
+      "texture": "Texture/TX Tileset Grass.png",
+      "rect": [
+        64,
+        0,
+        32,
+        32
+      ],
+      "pivot": [
+        16.0,
+        16.0
+      ],
+      "unity_id": 21300004,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Tileset Grass/TX Tileset Grass 3": {
+      "texture": "Texture/TX Tileset Grass.png",
+      "rect": [
+        96,
+        0,
+        32,
+        32
+      ],
+      "pivot": [
+        16.0,
+        16.0
+      ],
+      "unity_id": 21300006,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Tileset Grass/TX Tileset Grass Flower 0": {
+      "texture": "Texture/TX Tileset Grass.png",
+      "rect": [
+        128,
+        0,
+        32,
+        32
+      ],
+      "pivot": [
+        16.0,
+        16.0
+      ],
+      "unity_id": 21300008,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Tileset Grass/TX Tileset Grass Flower 1": {
+      "texture": "Texture/TX Tileset Grass.png",
+      "rect": [
+        160,
+        0,
+        32,
+        32
+      ],
+      "pivot": [
+        16.0,
+        16.0
+      ],
+      "unity_id": 21300010,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Tileset Grass/TX Tileset Grass Flower 2": {
+      "texture": "Texture/TX Tileset Grass.png",
+      "rect": [
+        192,
+        0,
+        32,
+        32
+      ],
+      "pivot": [
+        16.0,
+        16.0
+      ],
+      "unity_id": 21300012,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Tileset Grass/TX Tileset Grass Flower 3": {
+      "texture": "Texture/TX Tileset Grass.png",
+      "rect": [
+        224,
+        0,
+        32,
+        32
+      ],
+      "pivot": [
+        16.0,
+        16.0
+      ],
+      "unity_id": 21300014,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Tileset Grass/TX Tileset Grass 4": {
+      "texture": "Texture/TX Tileset Grass.png",
+      "rect": [
+        0,
+        32,
+        32,
+        32
+      ],
+      "pivot": [
+        16.0,
+        16.0
+      ],
+      "unity_id": 21300016,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Tileset Grass/TX Tileset Grass 5": {
+      "texture": "Texture/TX Tileset Grass.png",
+      "rect": [
+        32,
+        32,
+        32,
+        32
+      ],
+      "pivot": [
+        16.0,
+        16.0
+      ],
+      "unity_id": 21300018,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Tileset Grass/TX Tileset Grass 6": {
+      "texture": "Texture/TX Tileset Grass.png",
+      "rect": [
+        64,
+        32,
+        32,
+        32
+      ],
+      "pivot": [
+        16.0,
+        16.0
+      ],
+      "unity_id": 21300020,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Tileset Grass/TX Tileset Grass Flower 4": {
+      "texture": "Texture/TX Tileset Grass.png",
+      "rect": [
+        128,
+        32,
+        32,
+        32
+      ],
+      "pivot": [
+        16.0,
+        16.0
+      ],
+      "unity_id": 21300024,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Tileset Grass/TX Tileset Grass Flower 5": {
+      "texture": "Texture/TX Tileset Grass.png",
+      "rect": [
+        160,
+        32,
+        32,
+        32
+      ],
+      "pivot": [
+        16.0,
+        16.0
+      ],
+      "unity_id": 21300026,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Tileset Grass/TX Tileset Grass Flower 6": {
+      "texture": "Texture/TX Tileset Grass.png",
+      "rect": [
+        192,
+        32,
+        32,
+        32
+      ],
+      "pivot": [
+        16.0,
+        16.0
+      ],
+      "unity_id": 21300028,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Tileset Grass/TX Tileset Grass Flower 7": {
+      "texture": "Texture/TX Tileset Grass.png",
+      "rect": [
+        224,
+        32,
+        32,
+        32
+      ],
+      "pivot": [
+        16.0,
+        16.0
+      ],
+      "unity_id": 21300030,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Tileset Grass/TX Tileset Grass 7": {
+      "texture": "Texture/TX Tileset Grass.png",
+      "rect": [
+        96,
+        32,
+        32,
+        32
+      ],
+      "pivot": [
+        16.0,
+        16.0
+      ],
+      "unity_id": 21300032,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Tileset Grass/TX Tileset Grass 8": {
+      "texture": "Texture/TX Tileset Grass.png",
+      "rect": [
+        0,
+        64,
+        32,
+        32
+      ],
+      "pivot": [
+        16.0,
+        16.0
+      ],
+      "unity_id": 21300034,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Tileset Grass/TX Tileset Grass 9": {
+      "texture": "Texture/TX Tileset Grass.png",
+      "rect": [
+        32,
+        64,
+        32,
+        32
+      ],
+      "pivot": [
+        16.0,
+        16.0
+      ],
+      "unity_id": 21300036,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Tileset Grass/TX Tileset Grass 10": {
+      "texture": "Texture/TX Tileset Grass.png",
+      "rect": [
+        64,
+        64,
+        32,
+        32
+      ],
+      "pivot": [
+        16.0,
+        16.0
+      ],
+      "unity_id": 21300038,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Tileset Grass/TX Tileset Grass Flower 8": {
+      "texture": "Texture/TX Tileset Grass.png",
+      "rect": [
+        128,
+        64,
+        32,
+        32
+      ],
+      "pivot": [
+        16.0,
+        16.0
+      ],
+      "unity_id": 21300040,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Tileset Grass/TX Tileset Grass Flower 9": {
+      "texture": "Texture/TX Tileset Grass.png",
+      "rect": [
+        160,
+        64,
+        32,
+        32
+      ],
+      "pivot": [
+        16.0,
+        16.0
+      ],
+      "unity_id": 21300042,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Tileset Grass/TX Tileset Grass Flower 10": {
+      "texture": "Texture/TX Tileset Grass.png",
+      "rect": [
+        192,
+        64,
+        32,
+        32
+      ],
+      "pivot": [
+        16.0,
+        16.0
+      ],
+      "unity_id": 21300044,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Tileset Grass/TX Tileset Grass Flower 11": {
+      "texture": "Texture/TX Tileset Grass.png",
+      "rect": [
+        224,
+        64,
+        32,
+        32
+      ],
+      "pivot": [
+        16.0,
+        16.0
+      ],
+      "unity_id": 21300046,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Tileset Grass/TX Tileset Grass 12": {
+      "texture": "Texture/TX Tileset Grass.png",
+      "rect": [
+        0,
+        96,
+        32,
+        32
+      ],
+      "pivot": [
+        16.0,
+        16.0
+      ],
+      "unity_id": 21300048,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Tileset Grass/TX Tileset Grass 13": {
+      "texture": "Texture/TX Tileset Grass.png",
+      "rect": [
+        32,
+        96,
+        32,
+        32
+      ],
+      "pivot": [
+        16.0,
+        16.0
+      ],
+      "unity_id": 21300050,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Tileset Grass/TX Tileset Grass 14": {
+      "texture": "Texture/TX Tileset Grass.png",
+      "rect": [
+        64,
+        96,
+        32,
+        32
+      ],
+      "pivot": [
+        16.0,
+        16.0
+      ],
+      "unity_id": 21300052,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Tileset Grass/TX Tileset Grass 15": {
+      "texture": "Texture/TX Tileset Grass.png",
+      "rect": [
+        96,
+        96,
+        32,
+        32
+      ],
+      "pivot": [
+        16.0,
+        16.0
+      ],
+      "unity_id": 21300054,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Tileset Grass/TX Tileset Grass Flower 12": {
+      "texture": "Texture/TX Tileset Grass.png",
+      "rect": [
+        128,
+        96,
+        32,
+        32
+      ],
+      "pivot": [
+        16.0,
+        16.0
+      ],
+      "unity_id": 21300056,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Tileset Grass/TX Tileset Grass Flower 13": {
+      "texture": "Texture/TX Tileset Grass.png",
+      "rect": [
+        160,
+        96,
+        32,
+        32
+      ],
+      "pivot": [
+        16.0,
+        16.0
+      ],
+      "unity_id": 21300058,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Tileset Grass/TX Tileset Grass Flower 14": {
+      "texture": "Texture/TX Tileset Grass.png",
+      "rect": [
+        192,
+        96,
+        32,
+        32
+      ],
+      "pivot": [
+        16.0,
+        16.0
+      ],
+      "unity_id": 21300060,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Tileset Grass/TX Tileset Grass Flower 15": {
+      "texture": "Texture/TX Tileset Grass.png",
+      "rect": [
+        224,
+        96,
+        32,
+        32
+      ],
+      "pivot": [
+        16.0,
+        16.0
+      ],
+      "unity_id": 21300062,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Tileset Grass/TX Tileset Grass Pavement 0": {
+      "texture": "Texture/TX Tileset Grass.png",
+      "rect": [
+        0,
+        128,
+        32,
+        32
+      ],
+      "pivot": [
+        16.0,
+        16.0
+      ],
+      "unity_id": 21300064,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Tileset Grass/TX Tileset Grass Pavement 1": {
+      "texture": "Texture/TX Tileset Grass.png",
+      "rect": [
+        32,
+        128,
+        32,
+        32
+      ],
+      "pivot": [
+        16.0,
+        16.0
+      ],
+      "unity_id": 21300066,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Tileset Grass/TX Tileset Grass_34": {
+      "texture": "Texture/TX Tileset Grass.png",
+      "rect": [
+        64,
+        128,
+        32,
+        32
+      ],
+      "pivot": [
+        16.0,
+        16.0
+      ],
+      "unity_id": 21300068,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Tileset Grass/TX Tileset Grass_35": {
+      "texture": "Texture/TX Tileset Grass.png",
+      "rect": [
+        96,
+        128,
+        32,
+        32
+      ],
+      "pivot": [
+        16.0,
+        16.0
+      ],
+      "unity_id": 21300070,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Tileset Grass/TX Tileset Grass_36": {
+      "texture": "Texture/TX Tileset Grass.png",
+      "rect": [
+        128,
+        128,
+        32,
+        32
+      ],
+      "pivot": [
+        16.0,
+        16.0
+      ],
+      "unity_id": 21300072,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Tileset Grass/TX Tileset Grass_37": {
+      "texture": "Texture/TX Tileset Grass.png",
+      "rect": [
+        160,
+        128,
+        32,
+        32
+      ],
+      "pivot": [
+        16.0,
+        16.0
+      ],
+      "unity_id": 21300074,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Tileset Grass/TX Tileset Grass_38": {
+      "texture": "Texture/TX Tileset Grass.png",
+      "rect": [
+        192,
+        128,
+        32,
+        32
+      ],
+      "pivot": [
+        16.0,
+        16.0
+      ],
+      "unity_id": 21300076,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Tileset Grass/TX Tileset Grass_39": {
+      "texture": "Texture/TX Tileset Grass.png",
+      "rect": [
+        224,
+        128,
+        32,
+        32
+      ],
+      "pivot": [
+        16.0,
+        16.0
+      ],
+      "unity_id": 21300078,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Tileset Grass/TX Tileset Grass Pavement 2": {
+      "texture": "Texture/TX Tileset Grass.png",
+      "rect": [
+        0,
+        160,
+        32,
+        32
+      ],
+      "pivot": [
+        16.0,
+        16.0
+      ],
+      "unity_id": 21300080,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Tileset Grass/TX Tileset Grass Pavement 3": {
+      "texture": "Texture/TX Tileset Grass.png",
+      "rect": [
+        32,
+        160,
+        32,
+        32
+      ],
+      "pivot": [
+        16.0,
+        16.0
+      ],
+      "unity_id": 21300082,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Tileset Grass/TX Tileset Grass_42": {
+      "texture": "Texture/TX Tileset Grass.png",
+      "rect": [
+        64,
+        160,
+        32,
+        32
+      ],
+      "pivot": [
+        16.0,
+        16.0
+      ],
+      "unity_id": 21300084,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Tileset Grass/TX Tileset Grass_43": {
+      "texture": "Texture/TX Tileset Grass.png",
+      "rect": [
+        96,
+        160,
+        32,
+        32
+      ],
+      "pivot": [
+        16.0,
+        16.0
+      ],
+      "unity_id": 21300086,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Tileset Grass/TX Tileset Grass_44": {
+      "texture": "Texture/TX Tileset Grass.png",
+      "rect": [
+        128,
+        160,
+        32,
+        32
+      ],
+      "pivot": [
+        16.0,
+        16.0
+      ],
+      "unity_id": 21300088,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Tileset Grass/TX Tileset Grass_45": {
+      "texture": "Texture/TX Tileset Grass.png",
+      "rect": [
+        160,
+        160,
+        32,
+        32
+      ],
+      "pivot": [
+        16.0,
+        16.0
+      ],
+      "unity_id": 21300090,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Tileset Grass/TX Tileset Grass_46": {
+      "texture": "Texture/TX Tileset Grass.png",
+      "rect": [
+        192,
+        160,
+        32,
+        32
+      ],
+      "pivot": [
+        16.0,
+        16.0
+      ],
+      "unity_id": 21300092,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Tileset Grass/TX Tileset Grass_47": {
+      "texture": "Texture/TX Tileset Grass.png",
+      "rect": [
+        224,
+        160,
+        32,
+        32
+      ],
+      "pivot": [
+        16.0,
+        16.0
+      ],
+      "unity_id": 21300094,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Tileset Grass/TX Tileset Grass Pavement 4": {
+      "texture": "Texture/TX Tileset Grass.png",
+      "rect": [
+        0,
+        192,
+        32,
+        32
+      ],
+      "pivot": [
+        16.0,
+        16.0
+      ],
+      "unity_id": 21300096,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Tileset Grass/TX Tileset Grass Pavement 5": {
+      "texture": "Texture/TX Tileset Grass.png",
+      "rect": [
+        32,
+        192,
+        32,
+        32
+      ],
+      "pivot": [
+        16.0,
+        16.0
+      ],
+      "unity_id": 21300098,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Tileset Grass/TX Tileset Grass_50": {
+      "texture": "Texture/TX Tileset Grass.png",
+      "rect": [
+        64,
+        192,
+        32,
+        32
+      ],
+      "pivot": [
+        16.0,
+        16.0
+      ],
+      "unity_id": 21300100,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Tileset Grass/TX Tileset Grass_51": {
+      "texture": "Texture/TX Tileset Grass.png",
+      "rect": [
+        96,
+        192,
+        32,
+        32
+      ],
+      "pivot": [
+        16.0,
+        16.0
+      ],
+      "unity_id": 21300102,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Tileset Grass/TX Tileset Grass_52": {
+      "texture": "Texture/TX Tileset Grass.png",
+      "rect": [
+        128,
+        192,
+        32,
+        32
+      ],
+      "pivot": [
+        16.0,
+        16.0
+      ],
+      "unity_id": 21300104,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Tileset Grass/TX Tileset Grass_53": {
+      "texture": "Texture/TX Tileset Grass.png",
+      "rect": [
+        160,
+        192,
+        32,
+        32
+      ],
+      "pivot": [
+        16.0,
+        16.0
+      ],
+      "unity_id": 21300106,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Tileset Grass/TX Tileset Grass_54": {
+      "texture": "Texture/TX Tileset Grass.png",
+      "rect": [
+        192,
+        192,
+        32,
+        32
+      ],
+      "pivot": [
+        16.0,
+        16.0
+      ],
+      "unity_id": 21300108,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Tileset Grass/TX Tileset Grass_55": {
+      "texture": "Texture/TX Tileset Grass.png",
+      "rect": [
+        224,
+        192,
+        32,
+        32
+      ],
+      "pivot": [
+        16.0,
+        16.0
+      ],
+      "unity_id": 21300110,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Tileset Grass/TX Tileset Grass Pavement 6": {
+      "texture": "Texture/TX Tileset Grass.png",
+      "rect": [
+        0,
+        224,
+        32,
+        32
+      ],
+      "pivot": [
+        16.0,
+        16.0
+      ],
+      "unity_id": 21300112,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Tileset Grass/TX Tileset Grass Pavement 7": {
+      "texture": "Texture/TX Tileset Grass.png",
+      "rect": [
+        32,
+        224,
+        32,
+        32
+      ],
+      "pivot": [
+        16.0,
+        16.0
+      ],
+      "unity_id": 21300114,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Tileset Grass/TX Tileset Grass_58": {
+      "texture": "Texture/TX Tileset Grass.png",
+      "rect": [
+        64,
+        224,
+        32,
+        32
+      ],
+      "pivot": [
+        16.0,
+        16.0
+      ],
+      "unity_id": 21300116,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Tileset Grass/TX Tileset Grass_59": {
+      "texture": "Texture/TX Tileset Grass.png",
+      "rect": [
+        96,
+        224,
+        32,
+        32
+      ],
+      "pivot": [
+        16.0,
+        16.0
+      ],
+      "unity_id": 21300118,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Tileset Grass/TX Tileset Grass_60": {
+      "texture": "Texture/TX Tileset Grass.png",
+      "rect": [
+        128,
+        224,
+        32,
+        32
+      ],
+      "pivot": [
+        16.0,
+        16.0
+      ],
+      "unity_id": 21300120,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Tileset Grass/TX Tileset Grass_61": {
+      "texture": "Texture/TX Tileset Grass.png",
+      "rect": [
+        160,
+        224,
+        32,
+        32
+      ],
+      "pivot": [
+        16.0,
+        16.0
+      ],
+      "unity_id": 21300122,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Tileset Grass/TX Tileset Grass_62": {
+      "texture": "Texture/TX Tileset Grass.png",
+      "rect": [
+        192,
+        224,
+        32,
+        32
+      ],
+      "pivot": [
+        16.0,
+        16.0
+      ],
+      "unity_id": 21300124,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Tileset Grass/TX Tileset Grass_63": {
+      "texture": "Texture/TX Tileset Grass.png",
+      "rect": [
+        224,
+        224,
+        32,
+        32
+      ],
+      "pivot": [
+        16.0,
+        16.0
+      ],
+      "unity_id": 21300126,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Tileset Grass/TX Tileset Grass 11": {
+      "texture": "Texture/TX Tileset Grass.png",
+      "rect": [
+        96,
+        64,
+        32,
+        32
+      ],
+      "pivot": [
+        16.0,
+        16.0
+      ],
+      "unity_id": 21300128,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Props/TX Props Chest": {
+      "texture": "Texture/TX Props.png",
+      "rect": [
+        96,
+        30,
+        32,
+        31
+      ],
+      "pivot": [
+        16.0,
+        31
+      ],
+      "unity_id": 21300000,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Props/TX Props Crate": {
+      "texture": "Texture/TX Props.png",
+      "rect": [
+        160,
+        18,
+        32,
+        46
+      ],
+      "pivot": [
+        16.0,
+        46
+      ],
+      "unity_id": 21300034,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Props/TX Props Cube": {
+      "texture": "Texture/TX Props.png",
+      "rect": [
+        32,
+        18,
+        32,
+        46
+      ],
+      "pivot": [
+        16.0,
+        46
+      ],
+      "unity_id": 21300036,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Props/TX Props Crate Small": {
+      "texture": "Texture/TX Props.png",
+      "rect": [
+        163,
+        86,
+        26,
+        39
+      ],
+      "pivot": [
+        13.0,
+        39
+      ],
+      "unity_id": 21300038,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Props/TX Props Chest Opened": {
+      "texture": "Texture/TX Props.png",
+      "rect": [
+        96,
+        77,
+        32,
+        49
+      ],
+      "pivot": [
+        16.0,
+        49
+      ],
+      "unity_id": 21300040,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Props/TX Props Rune Pillar X2": {
+      "texture": "Texture/TX Props.png",
+      "rect": [
+        227,
+        9,
+        26,
+        52
+      ],
+      "pivot": [
+        13.0,
+        52
+      ],
+      "unity_id": 21300042,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Props/TX Props Rune Pillar X2 Glow": {
+      "texture": "Texture/TX Props.png",
+      "rect": [
+        270,
+        29,
+        5,
+        26
+      ],
+      "pivot": [
+        2.5,
+        26
+      ],
+      "unity_id": 21300044,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Props/TX Props Rune Pillar X3": {
+      "texture": "Texture/TX Props.png",
+      "rect": [
+        227,
+        91,
+        26,
+        66
+      ],
+      "pivot": [
+        13.0,
+        66
+      ],
+      "unity_id": 21300058,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Props/TX Props Rune Pillar Broken": {
+      "texture": "Texture/TX Props.png",
+      "rect": [
+        227,
+        183,
+        26,
+        38
+      ],
+      "pivot": [
+        13.0,
+        38
+      ],
+      "unity_id": 21300060,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Props/TX Props Rune Pillar X3 Glow": {
+      "texture": "Texture/TX Props.png",
+      "rect": [
+        270,
+        111,
+        5,
+        40
+      ],
+      "pivot": [
+        2.5,
+        40
+      ],
+      "unity_id": 21300062,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Props/TX Props Rune Pillar Broken Glow": {
+      "texture": "Texture/TX Props.png",
+      "rect": [
+        270,
+        203,
+        5,
+        12
+      ],
+      "pivot": [
+        2.5,
+        12
+      ],
+      "unity_id": 21300064,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Props/TX Props Barrel": {
+      "texture": "Texture/TX Props.png",
+      "rect": [
+        162,
+        153,
+        28,
+        36
+      ],
+      "pivot": [
+        14.0,
+        36
+      ],
+      "unity_id": 21300066,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Props/TX Props Gravestone A": {
+      "texture": "Texture/TX Props.png",
+      "rect": [
+        225,
+        239,
+        30,
+        41
+      ],
+      "pivot": [
+        15.0,
+        41
+      ],
+      "unity_id": 21300068,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Props/TX Props Gravestone B": {
+      "texture": "Texture/TX Props.png",
+      "rect": [
+        227,
+        303,
+        26,
+        40
+      ],
+      "pivot": [
+        13.0,
+        40
+      ],
+      "unity_id": 21300070,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Props/TX Props Gravestone C": {
+      "texture": "Texture/TX Props.png",
+      "rect": [
+        289,
+        251,
+        30,
+        29
+      ],
+      "pivot": [
+        15.0,
+        29
+      ],
+      "unity_id": 21300072,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Props/TX Props Stone Coffin V": {
+      "texture": "Texture/TX Props.png",
+      "rect": [
+        288,
+        158,
+        32,
+        57
+      ],
+      "pivot": [
+        16.0,
+        57
+      ],
+      "unity_id": 21300076,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Props/TX Props Stone Coffin H": {
+      "texture": "Texture/TX Props.png",
+      "rect": [
+        288,
+        87,
+        64,
+        36
+      ],
+      "pivot": [
+        32.0,
+        36
+      ],
+      "unity_id": 21300078,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Props/TX Props Road Sign E": {
+      "texture": "Texture/TX Props.png",
+      "rect": [
+        99,
+        160,
+        27,
+        32
+      ],
+      "pivot": [
+        12.04002414,
+        32.0199890144
+      ],
+      "unity_id": 21300086,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Props/TX Props Road Sign W": {
+      "texture": "Texture/TX Props.png",
+      "rect": [
+        96,
+        224,
+        27,
+        32
+      ],
+      "pivot": [
+        15.1280595,
+        31.9810180672
+      ],
+      "unity_id": 21300088,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Props/TX Props Pot A": {
+      "texture": "Texture/TX Props.png",
+      "rect": [
+        165,
+        217,
+        21,
+        34
+      ],
+      "pivot": [
+        10.5,
+        34
+      ],
+      "unity_id": 21300090,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Props/TX Props Pot B": {
+      "texture": "Texture/TX Props.png",
+      "rect": [
+        164,
+        288,
+        25,
+        27
+      ],
+      "pivot": [
+        12.5,
+        27
+      ],
+      "unity_id": 21300092,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Props/TX Props Pot C": {
+      "texture": "Texture/TX Props.png",
+      "rect": [
+        165,
+        348,
+        21,
+        32
+      ],
+      "pivot": [
+        10.5,
+        32
+      ],
+      "unity_id": 21300094,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Props/TX Props Stone Bench S": {
+      "texture": "Texture/TX Props.png",
+      "rect": [
+        292,
+        19,
+        56,
+        41
+      ],
+      "pivot": [
+        28.0,
+        41
+      ],
+      "unity_id": 21300096,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Props/TX Props Stone Bench W": {
+      "texture": "Texture/TX Props.png",
+      "rect": [
+        387,
+        2,
+        27,
+        61
+      ],
+      "pivot": [
+        13.5,
+        61
+      ],
+      "unity_id": 21300098,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Props/TX Props Stone Bench E": {
+      "texture": "Texture/TX Props.png",
+      "rect": [
+        387,
+        98,
+        27,
+        61
+      ],
+      "pivot": [
+        13.5,
+        61
+      ],
+      "unity_id": 21300100,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Props/TX Props - Stone 01": {
+      "texture": "Texture/TX Props.png",
+      "rect": [
+        10,
+        492,
+        11,
+        10
+      ],
+      "pivot": [
+        5.00000017,
+        3.0000000000000004
+      ],
+      "unity_id": 21300102,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Props/TX Props - Stone 02": {
+      "texture": "Texture/TX Props.png",
+      "rect": [
+        40,
+        490,
+        16,
+        14
+      ],
+      "pivot": [
+        8.0,
+        3.9999997800000004
+      ],
+      "unity_id": 21300104,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Props/TX Props - Stone 03": {
+      "texture": "Texture/TX Props.png",
+      "rect": [
+        68,
+        487,
+        24,
+        19
+      ],
+      "pivot": [
+        12.0,
+        3.999999700000001
+      ],
+      "unity_id": 21300106,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Props/TX Props - Stone 04": {
+      "texture": "Texture/TX Props.png",
+      "rect": [
+        100,
+        487,
+        24,
+        19
+      ],
+      "pivot": [
+        12.0,
+        3.999999700000001
+      ],
+      "unity_id": 21300108,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Props/TX Props - Stone 05": {
+      "texture": "Texture/TX Props.png",
+      "rect": [
+        130,
+        484,
+        27,
+        22
+      ],
+      "pivot": [
+        13.0000005,
+        13.999999859999999
+      ],
+      "unity_id": 21300110,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Props/TX Props - Stone 06": {
+      "texture": "Texture/TX Props.png",
+      "rect": [
+        162,
+        482,
+        27,
+        27
+      ],
+      "pivot": [
+        13.0000005,
+        21.9999996
+      ],
+      "unity_id": 21300112,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Props/TX Props Statue": {
+      "texture": "Texture/TX Props.png",
+      "rect": [
+        445,
+        20,
+        37,
+        73
+      ],
+      "pivot": [
+        18.5,
+        73
+      ],
+      "unity_id": 21300114,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Props/TX Props Stone Lantern": {
+      "texture": "Texture/TX Props.png",
+      "rect": [
+        453,
+        118,
+        22,
+        38
+      ],
+      "pivot": [
+        11.0,
+        38
+      ],
+      "unity_id": 21300116,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Props/TX Props Pillar": {
+      "texture": "Texture/TX Props.png",
+      "rect": [
+        352,
+        174,
+        32,
+        77
+      ],
+      "pivot": [
+        16.0,
+        77
+      ],
+      "unity_id": 21300118,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Props/TX Props Pillar Broken": {
+      "texture": "Texture/TX Props.png",
+      "rect": [
+        416,
+        194,
+        32,
+        57
+      ],
+      "pivot": [
+        16.0,
+        57
+      ],
+      "unity_id": 21300120,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Props/TX Props Stone Cube": {
+      "texture": "Texture/TX Props.png",
+      "rect": [
+        288,
+        306,
+        32,
+        46
+      ],
+      "pivot": [
+        16.0,
+        46
+      ],
+      "unity_id": 21300130,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Props/TX Props Altar": {
+      "texture": "Texture/TX Props.png",
+      "rect": [
+        353,
+        269,
+        94,
+        72
+      ],
+      "pivot": [
+        47.0,
+        72
+      ],
+      "unity_id": 21300142,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Props/TX Props Altar Rune 1": {
+      "texture": "Texture/TX Props.png",
+      "rect": [
+        330,
+        266,
+        5,
+        5
+      ],
+      "pivot": [
+        2.5,
+        2.5
+      ],
+      "unity_id": 21300144,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Props/TX Props Altar Rune 2": {
+      "texture": "Texture/TX Props.png",
+      "rect": [
+        337,
+        266,
+        5,
+        5
+      ],
+      "pivot": [
+        2.5,
+        2.5
+      ],
+      "unity_id": 21300146,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Props/TX Props Altar Rune 3": {
+      "texture": "Texture/TX Props.png",
+      "rect": [
+        330,
+        273,
+        5,
+        5
+      ],
+      "pivot": [
+        2.5,
+        2.5
+      ],
+      "unity_id": 21300148,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Props/TX Props Altar Rune 4": {
+      "texture": "Texture/TX Props.png",
+      "rect": [
+        337,
+        273,
+        5,
+        5
+      ],
+      "pivot": [
+        2.5,
+        2.5
+      ],
+      "unity_id": 21300150,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Props/TX Props - Brick 01": {
+      "texture": "Texture/TX Props.png",
+      "rect": [
+        231,
+        489,
+        18,
+        16
+      ],
+      "pivot": [
+        9.0,
+        5.0
+      ],
+      "unity_id": 21300152,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Props/TX Props - Brick 02": {
+      "texture": "Texture/TX Props.png",
+      "rect": [
+        263,
+        488,
+        19,
+        16
+      ],
+      "pivot": [
+        9.00000018,
+        7.0
+      ],
+      "unity_id": 21300154,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Props/TX Props - Brick 03": {
+      "texture": "Texture/TX Props.png",
+      "rect": [
+        289,
+        486,
+        31,
+        19
+      ],
+      "pivot": [
+        14.99999945,
+        9.99999982
+      ],
+      "unity_id": 21300156,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Props/TX Props Wooden Gate": {
+      "texture": "Texture/TX Props.png",
+      "rect": [
+        29,
+        103,
+        37,
+        50
+      ],
+      "pivot": [
+        18.5,
+        50
+      ],
+      "unity_id": 21300158,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Props/TX Props Wooden Gate Opened": {
+      "texture": "Texture/TX Props.png",
+      "rect": [
+        29,
+        166,
+        37,
+        53
+      ],
+      "pivot": [
+        18.5,
+        53
+      ],
+      "unity_id": 21300160,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Props/TX Props Stone T7": {
+      "texture": "Texture/TX Props.png",
+      "rect": [
+        3,
+        430,
+        57,
+        42
+      ],
+      "pivot": [
+        28.5,
+        42
+      ],
+      "unity_id": 21300162,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Props/TX Props Well": {
+      "texture": "Texture/TX Props.png",
+      "rect": [
+        420,
+        359,
+        58,
+        49
+      ],
+      "pivot": [
+        29.0,
+        49
+      ],
+      "unity_id": 21300164,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Shadow Plant/TX Shadow Tree T3": {
+      "texture": "Texture/TX Shadow Plant.png",
+      "rect": [
+        48,
+        100,
+        86,
+        52
+      ],
+      "pivot": [
+        43.0,
+        52
+      ],
+      "unity_id": 21300030,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Shadow Plant/TX Shadow Bush T6": {
+      "texture": "Texture/TX Shadow Plant.png",
+      "rect": [
+        348,
+        198,
+        41,
+        29
+      ],
+      "pivot": [
+        20.5,
+        29
+      ],
+      "unity_id": 21300040,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Shadow Plant/TX Shadow Tree T1": {
+      "texture": "Texture/TX Shadow Plant.png",
+      "rect": [
+        304,
+        111,
+        74,
+        40
+      ],
+      "pivot": [
+        37.0,
+        40
+      ],
+      "unity_id": 21300080,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Shadow Plant/TX Shadow Tree T2": {
+      "texture": "Texture/TX Shadow Plant.png",
+      "rect": [
+        172,
+        105,
+        83,
+        46
+      ],
+      "pivot": [
+        41.5,
+        46
+      ],
+      "unity_id": 21300082,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Shadow Plant/TX Shadow Bush T1": {
+      "texture": "Texture/TX Shadow Plant.png",
+      "rect": [
+        39,
+        207,
+        22,
+        12
+      ],
+      "pivot": [
+        11.0,
+        12
+      ],
+      "unity_id": 21300086,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Shadow Plant/TX Shadow Bush T5": {
+      "texture": "Texture/TX Shadow Plant.png",
+      "rect": [
+        285,
+        209,
+        38,
+        24
+      ],
+      "pivot": [
+        19.0,
+        24
+      ],
+      "unity_id": 21300088,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Shadow Plant/TX Shadow Bush T2": {
+      "texture": "Texture/TX Shadow Plant.png",
+      "rect": [
+        99,
+        205,
+        28,
+        17
+      ],
+      "pivot": [
+        14.0,
+        17
+      ],
+      "unity_id": 21300090,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Shadow Plant/TX Shadow Bush T4": {
+      "texture": "Texture/TX Shadow Plant.png",
+      "rect": [
+        220,
+        205,
+        48,
+        24
+      ],
+      "pivot": [
+        24.0,
+        24
+      ],
+      "unity_id": 21300092,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Shadow Plant/TX Shadow Bush T3": {
+      "texture": "Texture/TX Shadow Plant.png",
+      "rect": [
+        160,
+        206,
+        37,
+        17
+      ],
+      "pivot": [
+        18.5,
+        17
+      ],
+      "unity_id": 21300094,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Tileset Wall/TX Tileset Wall_0": {
+      "texture": "Texture/TX Tileset Wall.png",
+      "rect": [
+        32,
+        32,
+        32,
+        32
+      ],
+      "pivot": [
+        16.0,
+        16.0
+      ],
+      "unity_id": 21300000,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Tileset Wall/TX Tileset Wall_1": {
+      "texture": "Texture/TX Tileset Wall.png",
+      "rect": [
+        64,
+        32,
+        32,
+        32
+      ],
+      "pivot": [
+        16.0,
+        16.0
+      ],
+      "unity_id": 21300002,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Tileset Wall/TX Tileset Wall_2": {
+      "texture": "Texture/TX Tileset Wall.png",
+      "rect": [
+        96,
+        32,
+        32,
+        32
+      ],
+      "pivot": [
+        16.0,
+        16.0
+      ],
+      "unity_id": 21300004,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Tileset Wall/TX Tileset Wall_3": {
+      "texture": "Texture/TX Tileset Wall.png",
+      "rect": [
+        128,
+        32,
+        32,
+        32
+      ],
+      "pivot": [
+        16.0,
+        16.0
+      ],
+      "unity_id": 21300006,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Tileset Wall/TX Tileset Wall_4": {
+      "texture": "Texture/TX Tileset Wall.png",
+      "rect": [
+        160,
+        32,
+        32,
+        32
+      ],
+      "pivot": [
+        16.0,
+        16.0
+      ],
+      "unity_id": 21300008,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Tileset Wall/TX Tileset Wall_5": {
+      "texture": "Texture/TX Tileset Wall.png",
+      "rect": [
+        192,
+        32,
+        32,
+        32
+      ],
+      "pivot": [
+        16.0,
+        16.0
+      ],
+      "unity_id": 21300010,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Tileset Wall/TX Tileset Wall_6": {
+      "texture": "Texture/TX Tileset Wall.png",
+      "rect": [
+        224,
+        32,
+        32,
+        32
+      ],
+      "pivot": [
+        16.0,
+        16.0
+      ],
+      "unity_id": 21300012,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Tileset Wall/TX Tileset Wall_7": {
+      "texture": "Texture/TX Tileset Wall.png",
+      "rect": [
+        256,
+        32,
+        32,
+        32
+      ],
+      "pivot": [
+        16.0,
+        16.0
+      ],
+      "unity_id": 21300014,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Tileset Wall/TX Tileset Wall_8": {
+      "texture": "Texture/TX Tileset Wall.png",
+      "rect": [
+        32,
+        64,
+        32,
+        32
+      ],
+      "pivot": [
+        16.0,
+        16.0
+      ],
+      "unity_id": 21300016,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Tileset Wall/TX Tileset Wall_9": {
+      "texture": "Texture/TX Tileset Wall.png",
+      "rect": [
+        96,
+        64,
+        32,
+        32
+      ],
+      "pivot": [
+        16.0,
+        16.0
+      ],
+      "unity_id": 21300018,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Tileset Wall/TX Tileset Wall_10": {
+      "texture": "Texture/TX Tileset Wall.png",
+      "rect": [
+        128,
+        64,
+        32,
+        32
+      ],
+      "pivot": [
+        16.0,
+        16.0
+      ],
+      "unity_id": 21300020,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Tileset Wall/TX Tileset Wall_11": {
+      "texture": "Texture/TX Tileset Wall.png",
+      "rect": [
+        160,
+        64,
+        32,
+        32
+      ],
+      "pivot": [
+        16.0,
+        16.0
+      ],
+      "unity_id": 21300022,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Tileset Wall/TX Tileset Wall_12": {
+      "texture": "Texture/TX Tileset Wall.png",
+      "rect": [
+        192,
+        64,
+        32,
+        32
+      ],
+      "pivot": [
+        16.0,
+        16.0
+      ],
+      "unity_id": 21300024,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Tileset Wall/TX Tileset Wall_13": {
+      "texture": "Texture/TX Tileset Wall.png",
+      "rect": [
+        224,
+        64,
+        32,
+        32
+      ],
+      "pivot": [
+        16.0,
+        16.0
+      ],
+      "unity_id": 21300026,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Tileset Wall/TX Tileset Wall_14": {
+      "texture": "Texture/TX Tileset Wall.png",
+      "rect": [
+        256,
+        64,
+        32,
+        32
+      ],
+      "pivot": [
+        16.0,
+        16.0
+      ],
+      "unity_id": 21300028,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Tileset Wall/TX Tileset Wall_15": {
+      "texture": "Texture/TX Tileset Wall.png",
+      "rect": [
+        32,
+        96,
+        32,
+        32
+      ],
+      "pivot": [
+        16.0,
+        16.0
+      ],
+      "unity_id": 21300030,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Tileset Wall/TX Tileset Wall_16": {
+      "texture": "Texture/TX Tileset Wall.png",
+      "rect": [
+        64,
+        96,
+        32,
+        32
+      ],
+      "pivot": [
+        16.0,
+        16.0
+      ],
+      "unity_id": 21300032,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Tileset Wall/TX Tileset Wall_17": {
+      "texture": "Texture/TX Tileset Wall.png",
+      "rect": [
+        96,
+        96,
+        32,
+        32
+      ],
+      "pivot": [
+        16.0,
+        16.0
+      ],
+      "unity_id": 21300034,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Tileset Wall/TX Tileset Wall_18": {
+      "texture": "Texture/TX Tileset Wall.png",
+      "rect": [
+        128,
+        128,
+        32,
+        32
+      ],
+      "pivot": [
+        16.0,
+        16.0
+      ],
+      "unity_id": 21300036,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Tileset Wall/TX Tileset Wall_19": {
+      "texture": "Texture/TX Tileset Wall.png",
+      "rect": [
+        160,
+        128,
+        32,
+        32
+      ],
+      "pivot": [
+        16.0,
+        16.0
+      ],
+      "unity_id": 21300038,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Tileset Wall/TX Tileset Wall_20": {
+      "texture": "Texture/TX Tileset Wall.png",
+      "rect": [
+        192,
+        128,
+        32,
+        32
+      ],
+      "pivot": [
+        16.0,
+        16.0
+      ],
+      "unity_id": 21300040,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Tileset Wall/TX Tileset Wall_21": {
+      "texture": "Texture/TX Tileset Wall.png",
+      "rect": [
+        224,
+        128,
+        32,
+        32
+      ],
+      "pivot": [
+        16.0,
+        16.0
+      ],
+      "unity_id": 21300042,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Tileset Wall/TX Tileset Wall_22": {
+      "texture": "Texture/TX Tileset Wall.png",
+      "rect": [
+        256,
+        128,
+        32,
+        32
+      ],
+      "pivot": [
+        16.0,
+        16.0
+      ],
+      "unity_id": 21300044,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Tileset Wall/TX Tileset Wall_23": {
+      "texture": "Texture/TX Tileset Wall.png",
+      "rect": [
+        32,
+        128,
+        32,
+        32
+      ],
+      "pivot": [
+        16.0,
+        16.0
+      ],
+      "unity_id": 21300046,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Tileset Wall/TX Tileset Wall_24": {
+      "texture": "Texture/TX Tileset Wall.png",
+      "rect": [
+        64,
+        128,
+        32,
+        32
+      ],
+      "pivot": [
+        16.0,
+        16.0
+      ],
+      "unity_id": 21300048,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Tileset Wall/TX Tileset Wall_25": {
+      "texture": "Texture/TX Tileset Wall.png",
+      "rect": [
+        96,
+        128,
+        32,
+        32
+      ],
+      "pivot": [
+        16.0,
+        16.0
+      ],
+      "unity_id": 21300050,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Tileset Wall/TX Tileset Wall_26": {
+      "texture": "Texture/TX Tileset Wall.png",
+      "rect": [
+        128,
+        96,
+        32,
+        32
+      ],
+      "pivot": [
+        16.0,
+        16.0
+      ],
+      "unity_id": 21300052,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Tileset Wall/TX Tileset Wall_27": {
+      "texture": "Texture/TX Tileset Wall.png",
+      "rect": [
+        256,
+        96,
+        32,
+        32
+      ],
+      "pivot": [
+        16.0,
+        16.0
+      ],
+      "unity_id": 21300054,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Tileset Wall/TX Tileset Wall_28": {
+      "texture": "Texture/TX Tileset Wall.png",
+      "rect": [
+        32,
+        192,
+        32,
+        32
+      ],
+      "pivot": [
+        16.0,
+        16.0
+      ],
+      "unity_id": 21300056,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Tileset Wall/TX Tileset Wall_29": {
+      "texture": "Texture/TX Tileset Wall.png",
+      "rect": [
+        64,
+        192,
+        32,
+        32
+      ],
+      "pivot": [
+        16.0,
+        16.0
+      ],
+      "unity_id": 21300058,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Tileset Wall/TX Tileset Wall_30": {
+      "texture": "Texture/TX Tileset Wall.png",
+      "rect": [
+        96,
+        192,
+        32,
+        32
+      ],
+      "pivot": [
+        16.0,
+        16.0
+      ],
+      "unity_id": 21300060,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Tileset Wall/TX Tileset Wall_31": {
+      "texture": "Texture/TX Tileset Wall.png",
+      "rect": [
+        128,
+        192,
+        32,
+        32
+      ],
+      "pivot": [
+        16.0,
+        16.0
+      ],
+      "unity_id": 21300062,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Tileset Wall/TX Tileset Wall_32": {
+      "texture": "Texture/TX Tileset Wall.png",
+      "rect": [
+        32,
+        224,
+        32,
+        32
+      ],
+      "pivot": [
+        16.0,
+        16.0
+      ],
+      "unity_id": 21300064,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Tileset Wall/TX Tileset Wall_33": {
+      "texture": "Texture/TX Tileset Wall.png",
+      "rect": [
+        64,
+        224,
+        32,
+        32
+      ],
+      "pivot": [
+        16.0,
+        16.0
+      ],
+      "unity_id": 21300066,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Tileset Wall/TX Tileset Wall_34": {
+      "texture": "Texture/TX Tileset Wall.png",
+      "rect": [
+        96,
+        224,
+        32,
+        32
+      ],
+      "pivot": [
+        16.0,
+        16.0
+      ],
+      "unity_id": 21300068,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Tileset Wall/TX Tileset Wall_35": {
+      "texture": "Texture/TX Tileset Wall.png",
+      "rect": [
+        128,
+        224,
+        32,
+        32
+      ],
+      "pivot": [
+        16.0,
+        16.0
+      ],
+      "unity_id": 21300070,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Tileset Wall/TX Tileset Wall_36": {
+      "texture": "Texture/TX Tileset Wall.png",
+      "rect": [
+        32,
+        288,
+        32,
+        32
+      ],
+      "pivot": [
+        16.0,
+        16.0
+      ],
+      "unity_id": 21300072,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Tileset Wall/TX Tileset Wall_37": {
+      "texture": "Texture/TX Tileset Wall.png",
+      "rect": [
+        32,
+        320,
+        32,
+        32
+      ],
+      "pivot": [
+        16.0,
+        16.0
+      ],
+      "unity_id": 21300074,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Tileset Wall/TX Tileset Wall_38": {
+      "texture": "Texture/TX Tileset Wall.png",
+      "rect": [
+        64,
+        288,
+        32,
+        32
+      ],
+      "pivot": [
+        16.0,
+        16.0
+      ],
+      "unity_id": 21300076,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Tileset Wall/TX Tileset Wall_39": {
+      "texture": "Texture/TX Tileset Wall.png",
+      "rect": [
+        64,
+        320,
+        32,
+        32
+      ],
+      "pivot": [
+        16.0,
+        16.0
+      ],
+      "unity_id": 21300078,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Tileset Wall/TX Tileset Wall_40": {
+      "texture": "Texture/TX Tileset Wall.png",
+      "rect": [
+        128,
+        288,
+        32,
+        32
+      ],
+      "pivot": [
+        16.0,
+        16.0
+      ],
+      "unity_id": 21300080,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Tileset Wall/TX Tileset Wall_41": {
+      "texture": "Texture/TX Tileset Wall.png",
+      "rect": [
+        128,
+        320,
+        32,
+        32
+      ],
+      "pivot": [
+        16.0,
+        16.0
+      ],
+      "unity_id": 21300082,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Tileset Wall/TX Tileset Wall_42": {
+      "texture": "Texture/TX Tileset Wall.png",
+      "rect": [
+        160,
+        288,
+        32,
+        32
+      ],
+      "pivot": [
+        16.0,
+        16.0
+      ],
+      "unity_id": 21300084,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Tileset Wall/TX Tileset Wall_43": {
+      "texture": "Texture/TX Tileset Wall.png",
+      "rect": [
+        160,
+        320,
+        32,
+        32
+      ],
+      "pivot": [
+        16.0,
+        16.0
+      ],
+      "unity_id": 21300086,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Tileset Wall/TX Tileset Wall_44": {
+      "texture": "Texture/TX Tileset Wall.png",
+      "rect": [
+        288,
+        32,
+        32,
+        32
+      ],
+      "pivot": [
+        16.0,
+        16.0
+      ],
+      "unity_id": 21300088,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Tileset Wall/TX Tileset Wall_45": {
+      "texture": "Texture/TX Tileset Wall.png",
+      "rect": [
+        288,
+        64,
+        32,
+        32
+      ],
+      "pivot": [
+        16.0,
+        16.0
+      ],
+      "unity_id": 21300090,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Tileset Wall/TX Tileset Wall_46": {
+      "texture": "Texture/TX Tileset Wall.png",
+      "rect": [
+        288,
+        96,
+        32,
+        32
+      ],
+      "pivot": [
+        16.0,
+        16.0
+      ],
+      "unity_id": 21300092,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Tileset Wall/TX Tileset Wall_47": {
+      "texture": "Texture/TX Tileset Wall.png",
+      "rect": [
+        320,
+        32,
+        32,
+        32
+      ],
+      "pivot": [
+        16.0,
+        16.0
+      ],
+      "unity_id": 21300094,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Tileset Wall/TX Tileset Wall_48": {
+      "texture": "Texture/TX Tileset Wall.png",
+      "rect": [
+        320,
+        64,
+        32,
+        32
+      ],
+      "pivot": [
+        16.0,
+        16.0
+      ],
+      "unity_id": 21300096,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Tileset Wall/TX Tileset Wall_49": {
+      "texture": "Texture/TX Tileset Wall.png",
+      "rect": [
+        320,
+        96,
+        32,
+        32
+      ],
+      "pivot": [
+        16.0,
+        16.0
+      ],
+      "unity_id": 21300098,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Tileset Wall/TX Tileset Wall_50": {
+      "texture": "Texture/TX Tileset Wall.png",
+      "rect": [
+        384,
+        32,
+        32,
+        32
+      ],
+      "pivot": [
+        16.0,
+        16.0
+      ],
+      "unity_id": 21300100,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Tileset Wall/TX Tileset Wall_51": {
+      "texture": "Texture/TX Tileset Wall.png",
+      "rect": [
+        416,
+        32,
+        32,
+        32
+      ],
+      "pivot": [
+        16.0,
+        16.0
+      ],
+      "unity_id": 21300102,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Tileset Wall/TX Tileset Wall_52": {
+      "texture": "Texture/TX Tileset Wall.png",
+      "rect": [
+        448,
+        32,
+        32,
+        32
+      ],
+      "pivot": [
+        16.0,
+        16.0
+      ],
+      "unity_id": 21300104,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Tileset Wall/TX Tileset Wall_53": {
+      "texture": "Texture/TX Tileset Wall.png",
+      "rect": [
+        384,
+        64,
+        32,
+        32
+      ],
+      "pivot": [
+        16.0,
+        16.0
+      ],
+      "unity_id": 21300106,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Tileset Wall/TX Tileset Wall_54": {
+      "texture": "Texture/TX Tileset Wall.png",
+      "rect": [
+        416,
+        64,
+        32,
+        32
+      ],
+      "pivot": [
+        16.0,
+        16.0
+      ],
+      "unity_id": 21300108,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Tileset Wall/TX Tileset Wall_55": {
+      "texture": "Texture/TX Tileset Wall.png",
+      "rect": [
+        192,
+        192,
+        32,
+        32
+      ],
+      "pivot": [
+        16.0,
+        16.0
+      ],
+      "unity_id": 21300110,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Tileset Wall/TX Tileset Wall_56": {
+      "texture": "Texture/TX Tileset Wall.png",
+      "rect": [
+        192,
+        224,
+        32,
+        32
+      ],
+      "pivot": [
+        16.0,
+        16.0
+      ],
+      "unity_id": 21300112,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Tileset Wall/TX Tileset Wall_57": {
+      "texture": "Texture/TX Tileset Wall.png",
+      "rect": [
+        384,
+        96,
+        32,
+        32
+      ],
+      "pivot": [
+        16.0,
+        16.0
+      ],
+      "unity_id": 21300114,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Tileset Wall/TX Tileset Wall_58": {
+      "texture": "Texture/TX Tileset Wall.png",
+      "rect": [
+        416,
+        96,
+        32,
+        32
+      ],
+      "pivot": [
+        16.0,
+        16.0
+      ],
+      "unity_id": 21300116,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Tileset Wall/TX Tileset Wall_59": {
+      "texture": "Texture/TX Tileset Wall.png",
+      "rect": [
+        384,
+        128,
+        32,
+        32
+      ],
+      "pivot": [
+        16.0,
+        16.0
+      ],
+      "unity_id": 21300118,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Tileset Wall/TX Tileset Wall_60": {
+      "texture": "Texture/TX Tileset Wall.png",
+      "rect": [
+        416,
+        128,
+        32,
+        32
+      ],
+      "pivot": [
+        16.0,
+        16.0
+      ],
+      "unity_id": 21300120,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Tileset Stone Ground/TX Tileset Stone Ground_0": {
+      "texture": "Texture/TX Tileset Stone Ground.png",
+      "rect": [
+        0,
+        0,
+        32,
+        32
+      ],
+      "pivot": [
+        16.0,
+        16.0
+      ],
+      "unity_id": 21300000,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Tileset Stone Ground/TX Tileset Stone Ground_1": {
+      "texture": "Texture/TX Tileset Stone Ground.png",
+      "rect": [
+        32,
+        0,
+        32,
+        32
+      ],
+      "pivot": [
+        16.0,
+        16.0
+      ],
+      "unity_id": 21300002,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Tileset Stone Ground/TX Tileset Stone Ground_2": {
+      "texture": "Texture/TX Tileset Stone Ground.png",
+      "rect": [
+        64,
+        0,
+        32,
+        32
+      ],
+      "pivot": [
+        16.0,
+        16.0
+      ],
+      "unity_id": 21300004,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Tileset Stone Ground/TX Tileset Stone Ground_3": {
+      "texture": "Texture/TX Tileset Stone Ground.png",
+      "rect": [
+        96,
+        0,
+        32,
+        32
+      ],
+      "pivot": [
+        16.0,
+        16.0
+      ],
+      "unity_id": 21300006,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Tileset Stone Ground/TX Tileset Stone Ground_4": {
+      "texture": "Texture/TX Tileset Stone Ground.png",
+      "rect": [
+        128,
+        0,
+        32,
+        32
+      ],
+      "pivot": [
+        16.0,
+        16.0
+      ],
+      "unity_id": 21300008,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Tileset Stone Ground/TX Tileset Stone Ground_5": {
+      "texture": "Texture/TX Tileset Stone Ground.png",
+      "rect": [
+        160,
+        0,
+        32,
+        32
+      ],
+      "pivot": [
+        16.0,
+        16.0
+      ],
+      "unity_id": 21300010,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Tileset Stone Ground/TX Tileset Stone Ground_6": {
+      "texture": "Texture/TX Tileset Stone Ground.png",
+      "rect": [
+        192,
+        0,
+        32,
+        32
+      ],
+      "pivot": [
+        16.0,
+        16.0
+      ],
+      "unity_id": 21300012,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Tileset Stone Ground/TX Tileset Stone Ground_7": {
+      "texture": "Texture/TX Tileset Stone Ground.png",
+      "rect": [
+        224,
+        0,
+        32,
+        32
+      ],
+      "pivot": [
+        16.0,
+        16.0
+      ],
+      "unity_id": 21300014,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Tileset Stone Ground/TX Tileset Stone Ground_8": {
+      "texture": "Texture/TX Tileset Stone Ground.png",
+      "rect": [
+        0,
+        32,
+        32,
+        32
+      ],
+      "pivot": [
+        16.0,
+        16.0
+      ],
+      "unity_id": 21300016,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Tileset Stone Ground/TX Tileset Stone Ground_9": {
+      "texture": "Texture/TX Tileset Stone Ground.png",
+      "rect": [
+        32,
+        32,
+        32,
+        32
+      ],
+      "pivot": [
+        16.0,
+        16.0
+      ],
+      "unity_id": 21300018,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Tileset Stone Ground/TX Tileset Stone Ground_10": {
+      "texture": "Texture/TX Tileset Stone Ground.png",
+      "rect": [
+        64,
+        32,
+        32,
+        32
+      ],
+      "pivot": [
+        16.0,
+        16.0
+      ],
+      "unity_id": 21300020,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Tileset Stone Ground/TX Tileset Stone Ground_11": {
+      "texture": "Texture/TX Tileset Stone Ground.png",
+      "rect": [
+        96,
+        32,
+        32,
+        32
+      ],
+      "pivot": [
+        16.0,
+        16.0
+      ],
+      "unity_id": 21300022,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Tileset Stone Ground/TX Tileset Stone Ground_12": {
+      "texture": "Texture/TX Tileset Stone Ground.png",
+      "rect": [
+        128,
+        32,
+        32,
+        32
+      ],
+      "pivot": [
+        16.0,
+        16.0
+      ],
+      "unity_id": 21300024,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Tileset Stone Ground/TX Tileset Stone Ground_13": {
+      "texture": "Texture/TX Tileset Stone Ground.png",
+      "rect": [
+        160,
+        32,
+        32,
+        32
+      ],
+      "pivot": [
+        16.0,
+        16.0
+      ],
+      "unity_id": 21300026,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Tileset Stone Ground/TX Tileset Stone Ground_14": {
+      "texture": "Texture/TX Tileset Stone Ground.png",
+      "rect": [
+        192,
+        32,
+        32,
+        32
+      ],
+      "pivot": [
+        16.0,
+        16.0
+      ],
+      "unity_id": 21300028,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Tileset Stone Ground/TX Tileset Stone Ground_15": {
+      "texture": "Texture/TX Tileset Stone Ground.png",
+      "rect": [
+        224,
+        32,
+        32,
+        32
+      ],
+      "pivot": [
+        16.0,
+        16.0
+      ],
+      "unity_id": 21300030,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Tileset Stone Ground/TX Tileset Stone Ground_16": {
+      "texture": "Texture/TX Tileset Stone Ground.png",
+      "rect": [
+        0,
+        64,
+        32,
+        32
+      ],
+      "pivot": [
+        16.0,
+        16.0
+      ],
+      "unity_id": 21300032,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Tileset Stone Ground/TX Tileset Stone Ground_17": {
+      "texture": "Texture/TX Tileset Stone Ground.png",
+      "rect": [
+        32,
+        64,
+        32,
+        32
+      ],
+      "pivot": [
+        16.0,
+        16.0
+      ],
+      "unity_id": 21300034,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Tileset Stone Ground/TX Tileset Stone Ground_18": {
+      "texture": "Texture/TX Tileset Stone Ground.png",
+      "rect": [
+        64,
+        64,
+        32,
+        32
+      ],
+      "pivot": [
+        16.0,
+        16.0
+      ],
+      "unity_id": 21300036,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Tileset Stone Ground/TX Tileset Stone Ground_19": {
+      "texture": "Texture/TX Tileset Stone Ground.png",
+      "rect": [
+        96,
+        64,
+        32,
+        32
+      ],
+      "pivot": [
+        16.0,
+        16.0
+      ],
+      "unity_id": 21300038,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Tileset Stone Ground/TX Tileset Stone Ground_20": {
+      "texture": "Texture/TX Tileset Stone Ground.png",
+      "rect": [
+        128,
+        64,
+        32,
+        32
+      ],
+      "pivot": [
+        16.0,
+        16.0
+      ],
+      "unity_id": 21300040,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Tileset Stone Ground/TX Tileset Stone Ground_21": {
+      "texture": "Texture/TX Tileset Stone Ground.png",
+      "rect": [
+        160,
+        64,
+        32,
+        32
+      ],
+      "pivot": [
+        16.0,
+        16.0
+      ],
+      "unity_id": 21300042,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Tileset Stone Ground/TX Tileset Stone Ground_22": {
+      "texture": "Texture/TX Tileset Stone Ground.png",
+      "rect": [
+        192,
+        64,
+        32,
+        32
+      ],
+      "pivot": [
+        16.0,
+        16.0
+      ],
+      "unity_id": 21300044,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Tileset Stone Ground/TX Tileset Stone Ground_23": {
+      "texture": "Texture/TX Tileset Stone Ground.png",
+      "rect": [
+        224,
+        64,
+        32,
+        32
+      ],
+      "pivot": [
+        16.0,
+        16.0
+      ],
+      "unity_id": 21300046,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Tileset Stone Ground/TX Tileset Stone Ground_24": {
+      "texture": "Texture/TX Tileset Stone Ground.png",
+      "rect": [
+        0,
+        96,
+        32,
+        32
+      ],
+      "pivot": [
+        16.0,
+        16.0
+      ],
+      "unity_id": 21300048,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Tileset Stone Ground/TX Tileset Stone Ground_25": {
+      "texture": "Texture/TX Tileset Stone Ground.png",
+      "rect": [
+        32,
+        96,
+        32,
+        32
+      ],
+      "pivot": [
+        16.0,
+        16.0
+      ],
+      "unity_id": 21300050,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Tileset Stone Ground/TX Tileset Stone Ground_26": {
+      "texture": "Texture/TX Tileset Stone Ground.png",
+      "rect": [
+        64,
+        96,
+        32,
+        32
+      ],
+      "pivot": [
+        16.0,
+        16.0
+      ],
+      "unity_id": 21300052,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Tileset Stone Ground/TX Tileset Stone Ground_27": {
+      "texture": "Texture/TX Tileset Stone Ground.png",
+      "rect": [
+        96,
+        96,
+        32,
+        32
+      ],
+      "pivot": [
+        16.0,
+        16.0
+      ],
+      "unity_id": 21300054,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Tileset Stone Ground/TX Tileset Stone Ground_28": {
+      "texture": "Texture/TX Tileset Stone Ground.png",
+      "rect": [
+        128,
+        96,
+        32,
+        32
+      ],
+      "pivot": [
+        16.0,
+        16.0
+      ],
+      "unity_id": 21300056,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Tileset Stone Ground/TX Tileset Stone Ground_29": {
+      "texture": "Texture/TX Tileset Stone Ground.png",
+      "rect": [
+        192,
+        96,
+        32,
+        32
+      ],
+      "pivot": [
+        16.0,
+        16.0
+      ],
+      "unity_id": 21300058,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Tileset Stone Ground/TX Tileset Stone Ground_30": {
+      "texture": "Texture/TX Tileset Stone Ground.png",
+      "rect": [
+        160,
+        128,
+        32,
+        32
+      ],
+      "pivot": [
+        16.0,
+        16.0
+      ],
+      "unity_id": 21300060,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Tileset Stone Ground/TX Tileset Stone Ground_31": {
+      "texture": "Texture/TX Tileset Stone Ground.png",
+      "rect": [
+        192,
+        128,
+        32,
+        32
+      ],
+      "pivot": [
+        16.0,
+        16.0
+      ],
+      "unity_id": 21300062,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Tileset Stone Ground/TX Tileset Stone Ground_32": {
+      "texture": "Texture/TX Tileset Stone Ground.png",
+      "rect": [
+        224,
+        128,
+        32,
+        32
+      ],
+      "pivot": [
+        16.0,
+        16.0
+      ],
+      "unity_id": 21300064,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Tileset Stone Ground/TX Tileset Stone Ground_33": {
+      "texture": "Texture/TX Tileset Stone Ground.png",
+      "rect": [
+        0,
+        160,
+        32,
+        32
+      ],
+      "pivot": [
+        16.0,
+        16.0
+      ],
+      "unity_id": 21300066,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Tileset Stone Ground/TX Tileset Stone Ground_34": {
+      "texture": "Texture/TX Tileset Stone Ground.png",
+      "rect": [
+        32,
+        160,
+        32,
+        32
+      ],
+      "pivot": [
+        16.0,
+        16.0
+      ],
+      "unity_id": 21300068,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Tileset Stone Ground/TX Tileset Stone Ground_35": {
+      "texture": "Texture/TX Tileset Stone Ground.png",
+      "rect": [
+        64,
+        160,
+        32,
+        32
+      ],
+      "pivot": [
+        16.0,
+        16.0
+      ],
+      "unity_id": 21300070,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Tileset Stone Ground/TX Tileset Stone Ground_36": {
+      "texture": "Texture/TX Tileset Stone Ground.png",
+      "rect": [
+        192,
+        160,
+        32,
+        32
+      ],
+      "pivot": [
+        16.0,
+        16.0
+      ],
+      "unity_id": 21300072,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Tileset Stone Ground/TX Tileset Stone Ground_37": {
+      "texture": "Texture/TX Tileset Stone Ground.png",
+      "rect": [
+        0,
+        192,
+        32,
+        32
+      ],
+      "pivot": [
+        16.0,
+        16.0
+      ],
+      "unity_id": 21300074,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Tileset Stone Ground/TX Tileset Stone Ground_38": {
+      "texture": "Texture/TX Tileset Stone Ground.png",
+      "rect": [
+        64,
+        192,
+        32,
+        32
+      ],
+      "pivot": [
+        16.0,
+        16.0
+      ],
+      "unity_id": 21300076,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Tileset Stone Ground/TX Tileset Stone Ground_39": {
+      "texture": "Texture/TX Tileset Stone Ground.png",
+      "rect": [
+        128,
+        192,
+        32,
+        32
+      ],
+      "pivot": [
+        16.0,
+        16.0
+      ],
+      "unity_id": 21300078,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Tileset Stone Ground/TX Tileset Stone Ground_40": {
+      "texture": "Texture/TX Tileset Stone Ground.png",
+      "rect": [
+        160,
+        192,
+        32,
+        32
+      ],
+      "pivot": [
+        16.0,
+        16.0
+      ],
+      "unity_id": 21300080,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Tileset Stone Ground/TX Tileset Stone Ground_41": {
+      "texture": "Texture/TX Tileset Stone Ground.png",
+      "rect": [
+        192,
+        192,
+        32,
+        32
+      ],
+      "pivot": [
+        16.0,
+        16.0
+      ],
+      "unity_id": 21300082,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Tileset Stone Ground/TX Tileset Stone Ground_42": {
+      "texture": "Texture/TX Tileset Stone Ground.png",
+      "rect": [
+        224,
+        192,
+        32,
+        32
+      ],
+      "pivot": [
+        16.0,
+        16.0
+      ],
+      "unity_id": 21300084,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Tileset Stone Ground/TX Tileset Stone Ground_43": {
+      "texture": "Texture/TX Tileset Stone Ground.png",
+      "rect": [
+        0,
+        224,
+        32,
+        32
+      ],
+      "pivot": [
+        16.0,
+        16.0
+      ],
+      "unity_id": 21300086,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Tileset Stone Ground/TX Tileset Stone Ground_44": {
+      "texture": "Texture/TX Tileset Stone Ground.png",
+      "rect": [
+        32,
+        224,
+        32,
+        32
+      ],
+      "pivot": [
+        16.0,
+        16.0
+      ],
+      "unity_id": 21300088,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Tileset Stone Ground/TX Tileset Stone Ground_45": {
+      "texture": "Texture/TX Tileset Stone Ground.png",
+      "rect": [
+        64,
+        224,
+        32,
+        32
+      ],
+      "pivot": [
+        16.0,
+        16.0
+      ],
+      "unity_id": 21300090,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Tileset Stone Ground/TX Tileset Stone Ground_46": {
+      "texture": "Texture/TX Tileset Stone Ground.png",
+      "rect": [
+        128,
+        224,
+        32,
+        32
+      ],
+      "pivot": [
+        16.0,
+        16.0
+      ],
+      "unity_id": 21300092,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Tileset Stone Ground/TX Tileset Stone Ground_47": {
+      "texture": "Texture/TX Tileset Stone Ground.png",
+      "rect": [
+        160,
+        224,
+        32,
+        32
+      ],
+      "pivot": [
+        16.0,
+        16.0
+      ],
+      "unity_id": 21300094,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Tileset Stone Ground/TX Tileset Stone Ground_48": {
+      "texture": "Texture/TX Tileset Stone Ground.png",
+      "rect": [
+        192,
+        224,
+        32,
+        32
+      ],
+      "pivot": [
+        16.0,
+        16.0
+      ],
+      "unity_id": 21300096,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Tileset Stone Ground/TX Tileset Stone Ground_49": {
+      "texture": "Texture/TX Tileset Stone Ground.png",
+      "rect": [
+        224,
+        224,
+        32,
+        32
+      ],
+      "pivot": [
+        16.0,
+        16.0
+      ],
+      "unity_id": 21300098,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Plant/TX Bush T6": {
+      "texture": "Texture/TX Plant.png",
+      "rect": [
+        346,
+        190,
+        40,
+        35
+      ],
+      "pivot": [
+        20.0,
+        35
+      ],
+      "unity_id": 21300080,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Plant/TX Tree T3 Lower": {
+      "texture": "Texture/TX Plant.png",
+      "rect": [
+        24,
+        89,
+        113,
+        64
+      ],
+      "pivot": [
+        56.5,
+        64
+      ],
+      "unity_id": 21300082,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Plant/TX Tree T3 Upper": {
+      "texture": "Texture/TX Plant.png",
+      "rect": [
+        24,
+        14,
+        113,
+        75
+      ],
+      "pivot": [
+        56.5,
+        75
+      ],
+      "unity_id": 21300084,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Plant/TX Tree T1 Lower": {
+      "texture": "Texture/TX Plant.png",
+      "rect": [
+        295,
+        88,
+        79,
+        63
+      ],
+      "pivot": [
+        39.5,
+        63
+      ],
+      "unity_id": 21300122,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Plant/TX Tree T1 Upper": {
+      "texture": "Texture/TX Plant.png",
+      "rect": [
+        295,
+        31,
+        79,
+        57
+      ],
+      "pivot": [
+        39.5,
+        57
+      ],
+      "unity_id": 21300124,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Plant/TX Tree T2 Lower": {
+      "texture": "Texture/TX Plant.png",
+      "rect": [
+        161,
+        90,
+        95,
+        63
+      ],
+      "pivot": [
+        47.5,
+        63
+      ],
+      "unity_id": 21300126,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Plant/TX Tree T2 Upper": {
+      "texture": "Texture/TX Plant.png",
+      "rect": [
+        161,
+        17,
+        95,
+        73
+      ],
+      "pivot": [
+        47.5,
+        73
+      ],
+      "unity_id": 21300128,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Plant/TX Bush T5": {
+      "texture": "Texture/TX Plant.png",
+      "rect": [
+        282,
+        185,
+        39,
+        45
+      ],
+      "pivot": [
+        19.5,
+        45
+      ],
+      "unity_id": 21300132,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Plant/TX Bush T2": {
+      "texture": "Texture/TX Plant.png",
+      "rect": [
+        98,
+        195,
+        27,
+        25
+      ],
+      "pivot": [
+        13.5,
+        25
+      ],
+      "unity_id": 21300134,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Plant/TX Bush T1": {
+      "texture": "Texture/TX Plant.png",
+      "rect": [
+        38,
+        198,
+        22,
+        19
+      ],
+      "pivot": [
+        11.0,
+        19
+      ],
+      "unity_id": 21300136,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Plant/TX Bush T4": {
+      "texture": "Texture/TX Plant.png",
+      "rect": [
+        216,
+        185,
+        47,
+        42
+      ],
+      "pivot": [
+        23.5,
+        42
+      ],
+      "unity_id": 21300138,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Plant/TX Bush T3": {
+      "texture": "Texture/TX Plant.png",
+      "rect": [
+        156,
+        190,
+        38,
+        32
+      ],
+      "pivot": [
+        19.0,
+        32
+      ],
+      "unity_id": 21300140,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Plant/TX Plant - Grass 01": {
+      "texture": "Texture/TX Plant.png",
+      "rect": [
+        8,
+        394,
+        17,
+        9
+      ],
+      "pivot": [
+        8.00000008,
+        9
+      ],
+      "unity_id": 21300144,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Plant/TX Plant - Grass 02": {
+      "texture": "Texture/TX Plant.png",
+      "rect": [
+        41,
+        394,
+        16,
+        10
+      ],
+      "pivot": [
+        8.0,
+        10
+      ],
+      "unity_id": 21300146,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Plant/TX Plant - Grass 03": {
+      "texture": "Texture/TX Plant.png",
+      "rect": [
+        73,
+        394,
+        15,
+        10
+      ],
+      "pivot": [
+        7.0000005,
+        10
+      ],
+      "unity_id": 21300148,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Plant/TX Plant - Grass 04": {
+      "texture": "Texture/TX Plant.png",
+      "rect": [
+        102,
+        394,
+        15,
+        11
+      ],
+      "pivot": [
+        7.0000005,
+        11
+      ],
+      "unity_id": 21300150,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Plant/TX Plant - Grass 05": {
+      "texture": "Texture/TX Plant.png",
+      "rect": [
+        9,
+        426,
+        12,
+        10
+      ],
+      "pivot": [
+        6.0,
+        10
+      ],
+      "unity_id": 21300152,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Plant/TX Plant - Grass 06": {
+      "texture": "Texture/TX Plant.png",
+      "rect": [
+        43,
+        427,
+        13,
+        9
+      ],
+      "pivot": [
+        6.0000005000000005,
+        9
+      ],
+      "unity_id": 21300154,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Plant/TX Plant - Grass 07": {
+      "texture": "Texture/TX Plant.png",
+      "rect": [
+        74,
+        427,
+        13,
+        9
+      ],
+      "pivot": [
+        6.0000005000000005,
+        9
+      ],
+      "unity_id": 21300156,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Plant/TX Plant - Grass 08": {
+      "texture": "Texture/TX Plant.png",
+      "rect": [
+        104,
+        428,
+        14,
+        7
+      ],
+      "pivot": [
+        7.0,
+        7
+      ],
+      "unity_id": 21300158,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Plant/TX Plant - Grass 09": {
+      "texture": "Texture/TX Plant.png",
+      "rect": [
+        9,
+        459,
+        12,
+        8
+      ],
+      "pivot": [
+        6.0,
+        8
+      ],
+      "unity_id": 21300160,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Plant/TX Plant - Grass 10": {
+      "texture": "Texture/TX Plant.png",
+      "rect": [
+        41,
+        458,
+        12,
+        10
+      ],
+      "pivot": [
+        6.0,
+        10
+      ],
+      "unity_id": 21300162,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Plant/TX Plant - Grass 11": {
+      "texture": "Texture/TX Plant.png",
+      "rect": [
+        71,
+        459,
+        14,
+        10
+      ],
+      "pivot": [
+        7.0,
+        10
+      ],
+      "unity_id": 21300164,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Plant/TX Plant - Grass 12": {
+      "texture": "Texture/TX Plant.png",
+      "rect": [
+        106,
+        459,
+        12,
+        9
+      ],
+      "pivot": [
+        6.0,
+        9
+      ],
+      "unity_id": 21300166,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Plant/TX Plant - Grass 13": {
+      "texture": "Texture/TX Plant.png",
+      "rect": [
+        11,
+        491,
+        10,
+        10
+      ],
+      "pivot": [
+        5.0,
+        10
+      ],
+      "unity_id": 21300168,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Plant/TX Plant - Grass 14": {
+      "texture": "Texture/TX Plant.png",
+      "rect": [
+        44,
+        491,
+        10,
+        10
+      ],
+      "pivot": [
+        5.0,
+        10
+      ],
+      "unity_id": 21300170,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Plant/TX Plant - Grass 15": {
+      "texture": "Texture/TX Plant.png",
+      "rect": [
+        76,
+        493,
+        8,
+        8
+      ],
+      "pivot": [
+        4.0,
+        8
+      ],
+      "unity_id": 21300172,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Plant/TX Plant - Flower 01": {
+      "texture": "Texture/TX Plant.png",
+      "rect": [
+        110,
+        495,
+        6,
+        5
+      ],
+      "pivot": [
+        3.0,
+        5
+      ],
+      "unity_id": 21300174,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Struct/TX Stairs M L": {
+      "texture": "Texture/TX Struct.png",
+      "rect": [
+        32,
+        32,
+        8,
+        96
+      ],
+      "pivot": [
+        4.0,
+        96
+      ],
+      "unity_id": 21300000,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Struct/TX Stairs M R": {
+      "texture": "Texture/TX Struct.png",
+      "rect": [
+        88,
+        32,
+        8,
+        96
+      ],
+      "pivot": [
+        4.0,
+        96
+      ],
+      "unity_id": 21300002,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Struct/TX Stairs M M": {
+      "texture": "Texture/TX Struct.png",
+      "rect": [
+        40,
+        32,
+        48,
+        96
+      ],
+      "pivot": [
+        24.0,
+        96
+      ],
+      "unity_id": 21300004,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Struct/TX Stairs L L": {
+      "texture": "Texture/TX Struct.png",
+      "rect": [
+        128,
+        32,
+        8,
+        96
+      ],
+      "pivot": [
+        4.0,
+        96
+      ],
+      "unity_id": 21300010,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Struct/TX Stairs L R": {
+      "texture": "Texture/TX Struct.png",
+      "rect": [
+        185,
+        32,
+        8,
+        96
+      ],
+      "pivot": [
+        4.0,
+        96
+      ],
+      "unity_id": 21300012,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Struct/TX Stairs L M": {
+      "texture": "Texture/TX Struct.png",
+      "rect": [
+        136,
+        32,
+        49,
+        96
+      ],
+      "pivot": [
+        24.5,
+        96
+      ],
+      "unity_id": 21300014,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Struct/TX Struct Gate T2 T": {
+      "texture": "Texture/TX Struct.png",
+      "rect": [
+        408,
+        27,
+        80,
+        19
+      ],
+      "pivot": [
+        40.0,
+        9.5
+      ],
+      "unity_id": 21300016,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Struct/TX Struct Gate T2 B": {
+      "texture": "Texture/TX Struct.png",
+      "rect": [
+        416,
+        46,
+        64,
+        45
+      ],
+      "pivot": [
+        32.0,
+        45
+      ],
+      "unity_id": 21300018,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Struct/TX Stairs R L": {
+      "texture": "Texture/TX Struct.png",
+      "rect": [
+        224,
+        32,
+        8,
+        96
+      ],
+      "pivot": [
+        4.0,
+        96
+      ],
+      "unity_id": 21300020,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Struct/TX Stairs R M": {
+      "texture": "Texture/TX Struct.png",
+      "rect": [
+        232,
+        31,
+        49,
+        96
+      ],
+      "pivot": [
+        24.5,
+        96
+      ],
+      "unity_id": 21300022,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Struct/TX Stairs R R": {
+      "texture": "Texture/TX Struct.png",
+      "rect": [
+        281,
+        32,
+        8,
+        96
+      ],
+      "pivot": [
+        4.0,
+        96
+      ],
+      "unity_id": 21300024,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Struct/TX Struct Gate T1 B": {
+      "texture": "Texture/TX Struct.png",
+      "rect": [
+        416,
+        147,
+        64,
+        45
+      ],
+      "pivot": [
+        32.0,
+        45
+      ],
+      "unity_id": 21300026,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Struct/TX Struct Gate T1 T": {
+      "texture": "Texture/TX Struct.png",
+      "rect": [
+        416,
+        128,
+        64,
+        19
+      ],
+      "pivot": [
+        32.0,
+        9.5
+      ],
+      "unity_id": 21300028,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Struct/TX Stairs Broken M M": {
+      "texture": "Texture/TX Struct.png",
+      "rect": [
+        40,
+        160,
+        48,
+        96
+      ],
+      "pivot": [
+        24.0,
+        96
+      ],
+      "unity_id": 21300030,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Struct/TX Stairs Broken M R": {
+      "texture": "Texture/TX Struct.png",
+      "rect": [
+        88,
+        160,
+        8,
+        96
+      ],
+      "pivot": [
+        4.0,
+        96
+      ],
+      "unity_id": 21300032,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Struct/TX Stairs Broken L L": {
+      "texture": "Texture/TX Struct.png",
+      "rect": [
+        128,
+        160,
+        8,
+        96
+      ],
+      "pivot": [
+        4.0,
+        96
+      ],
+      "unity_id": 21300034,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Struct/TX Stairs Broken L M": {
+      "texture": "Texture/TX Struct.png",
+      "rect": [
+        136,
+        160,
+        49,
+        96
+      ],
+      "pivot": [
+        24.5,
+        96
+      ],
+      "unity_id": 21300036,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Struct/TX Stairs Broken L R": {
+      "texture": "Texture/TX Struct.png",
+      "rect": [
+        185,
+        160,
+        8,
+        96
+      ],
+      "pivot": [
+        4.0,
+        96
+      ],
+      "unity_id": 21300038,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Struct/TX Stairs Broken R L": {
+      "texture": "Texture/TX Struct.png",
+      "rect": [
+        224,
+        160,
+        8,
+        96
+      ],
+      "pivot": [
+        4.0,
+        96
+      ],
+      "unity_id": 21300040,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Struct/TX Stairs Broken R M": {
+      "texture": "Texture/TX Struct.png",
+      "rect": [
+        232,
+        160,
+        49,
+        96
+      ],
+      "pivot": [
+        24.5,
+        96
+      ],
+      "unity_id": 21300042,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Struct/TX Stairs Broken R R": {
+      "texture": "Texture/TX Struct.png",
+      "rect": [
+        281,
+        160,
+        8,
+        96
+      ],
+      "pivot": [
+        4.0,
+        96
+      ],
+      "unity_id": 21300044,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Struct/TX Stairs Broken M L": {
+      "texture": "Texture/TX Struct.png",
+      "rect": [
+        32,
+        160,
+        8,
+        96
+      ],
+      "pivot": [
+        4.0,
+        96
+      ],
+      "unity_id": 21300046,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Struct/TX Stairs W 01 U": {
+      "texture": "Texture/TX Struct.png",
+      "rect": [
+        48,
+        288,
+        90,
+        46
+      ],
+      "pivot": [
+        88.00000200000001,
+        46
+      ],
+      "unity_id": -293941904,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Struct/TX Stairs W 02 U": {
+      "texture": "Texture/TX Struct.png",
+      "rect": [
+        176,
+        288,
+        90,
+        46
+      ],
+      "pivot": [
+        88.00000200000001,
+        46
+      ],
+      "unity_id": -275658010,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Struct/TX Stairs E 01 U": {
+      "texture": "Texture/TX Struct.png",
+      "rect": [
+        184,
+        384,
+        88,
+        46
+      ],
+      "pivot": [
+        0,
+        46
+      ],
+      "unity_id": -1827870714,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Struct/TX Stairs E 02 U": {
+      "texture": "Texture/TX Struct.png",
+      "rect": [
+        56,
+        384,
+        88,
+        46
+      ],
+      "pivot": [
+        0,
+        46
+      ],
+      "unity_id": -1076116132,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Struct/TX Stairs W 01 L": {
+      "texture": "Texture/TX Struct.png",
+      "rect": [
+        48,
+        334,
+        90,
+        50
+      ],
+      "pivot": [
+        88.00000200000001,
+        42.0
+      ],
+      "unity_id": -132900705,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Struct/TX Stairs W 02 L": {
+      "texture": "Texture/TX Struct.png",
+      "rect": [
+        176,
+        334,
+        90,
+        50
+      ],
+      "pivot": [
+        88.00000200000001,
+        42.0
+      ],
+      "unity_id": -461411122,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Struct/TX Stairs E 02 L": {
+      "texture": "Texture/TX Struct.png",
+      "rect": [
+        56,
+        430,
+        88,
+        50
+      ],
+      "pivot": [
+        0,
+        42.0
+      ],
+      "unity_id": -575057542,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Struct/TX Stairs E 01 L": {
+      "texture": "Texture/TX Struct.png",
+      "rect": [
+        184,
+        430,
+        88,
+        50
+      ],
+      "pivot": [
+        0,
+        42.0
+      ],
+      "unity_id": -935552555,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Player/TX Player F": {
+      "texture": "Texture/TX Player.png",
+      "rect": [
+        6,
+        10,
+        21,
+        48
+      ],
+      "pivot": [
+        10.5,
+        48
+      ],
+      "unity_id": 21300000,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 1,
+        "z": 0,
+        "w": 30
+      }
+    },
+    "TX Player/TX Player B": {
+      "texture": "Texture/TX Player.png",
+      "rect": [
+        38,
+        10,
+        21,
+        48
+      ],
+      "pivot": [
+        10.5,
+        48
+      ],
+      "unity_id": 21300002,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 1,
+        "z": 0,
+        "w": 30
+      }
+    },
+    "TX Player/TX Player S": {
+      "texture": "Texture/TX Player.png",
+      "rect": [
+        69,
+        10,
+        21,
+        48
+      ],
+      "pivot": [
+        10.5,
+        48
+      ],
+      "unity_id": 21300004,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 1,
+        "z": 0,
+        "w": 31
+      }
+    },
+    "TX Player/TX Shadow Player": {
+      "texture": "Texture/TX Player.png",
+      "rect": [
+        99,
+        32,
+        27,
+        28
+      ],
+      "pivot": [
+        13.5,
+        28
+      ],
+      "unity_id": 21300006,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Shadow/TX Shadow Chest": {
+      "texture": "Texture/TX Shadow.png",
+      "rect": [
+        97,
+        42,
+        36,
+        19
+      ],
+      "pivot": [
+        18.0,
+        19
+      ],
+      "unity_id": 21300000,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Shadow/TX Shadow Cube": {
+      "texture": "Texture/TX Shadow.png",
+      "rect": [
+        32,
+        30,
+        39,
+        34
+      ],
+      "pivot": [
+        19.5,
+        34
+      ],
+      "unity_id": 21300002,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Shadow/TX Shadow Crate": {
+      "texture": "Texture/TX Shadow.png",
+      "rect": [
+        160,
+        30,
+        39,
+        34
+      ],
+      "pivot": [
+        19.5,
+        34
+      ],
+      "unity_id": 21300004,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Shadow/TX Shadow Crate Small": {
+      "texture": "Texture/TX Shadow.png",
+      "rect": [
+        163,
+        98,
+        31,
+        27
+      ],
+      "pivot": [
+        15.5,
+        27
+      ],
+      "unity_id": 21300006,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Shadow/TX Shadow Chest Opened": {
+      "texture": "Texture/TX Shadow.png",
+      "rect": [
+        97,
+        94,
+        38,
+        31
+      ],
+      "pivot": [
+        19.0,
+        31
+      ],
+      "unity_id": 21300008,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Shadow/TX Shadow Rune Pillar X2": {
+      "texture": "Texture/TX Shadow.png",
+      "rect": [
+        228,
+        29,
+        31,
+        31
+      ],
+      "pivot": [
+        15.5,
+        31
+      ],
+      "unity_id": 21300010,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Shadow/TX Shadow Rune Pillar X3": {
+      "texture": "Texture/TX Shadow.png",
+      "rect": [
+        228,
+        114,
+        36,
+        43
+      ],
+      "pivot": [
+        18.0,
+        43
+      ],
+      "unity_id": 21300012,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Shadow/TX Shadow Rune Pillar Broken": {
+      "texture": "Texture/TX Shadow.png",
+      "rect": [
+        227,
+        196,
+        31,
+        25
+      ],
+      "pivot": [
+        15.5,
+        25
+      ],
+      "unity_id": 21300014,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Shadow/TX Shadow Tileset Wall 3": {
+      "texture": "Texture/TX Shadow.png",
+      "rect": [
+        480,
+        320,
+        32,
+        32
+      ],
+      "pivot": [
+        16.0,
+        16.0
+      ],
+      "unity_id": 21300016,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Shadow/TX Shadow Tileset Wall 2": {
+      "texture": "Texture/TX Shadow.png",
+      "rect": [
+        480,
+        288,
+        32,
+        32
+      ],
+      "pivot": [
+        16.0,
+        16.0
+      ],
+      "unity_id": 21300018,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Shadow/TX Shadow Tileset Wall 1": {
+      "texture": "Texture/TX Shadow.png",
+      "rect": [
+        480,
+        256,
+        32,
+        32
+      ],
+      "pivot": [
+        16.0,
+        16.0
+      ],
+      "unity_id": 21300020,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Shadow/TX Shadow Barrel": {
+      "texture": "Texture/TX Shadow.png",
+      "rect": [
+        163,
+        165,
+        30,
+        26
+      ],
+      "pivot": [
+        15.0,
+        26
+      ],
+      "unity_id": 21300022,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Shadow/TX Shadow Gravestone A": {
+      "texture": "Texture/TX Shadow.png",
+      "rect": [
+        225,
+        257,
+        35,
+        23
+      ],
+      "pivot": [
+        17.5,
+        23
+      ],
+      "unity_id": 21300024,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Shadow/TX Shadow Gravestone C": {
+      "texture": "Texture/TX Shadow.png",
+      "rect": [
+        289,
+        260,
+        32,
+        20
+      ],
+      "pivot": [
+        16.0,
+        20
+      ],
+      "unity_id": 21300026,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Shadow/TX Shadow Gravestone B": {
+      "texture": "Texture/TX Shadow.png",
+      "rect": [
+        231,
+        319,
+        30,
+        24
+      ],
+      "pivot": [
+        15.0,
+        24
+      ],
+      "unity_id": 21300028,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Shadow/TX Shadow Stone Coffin Vert": {
+      "texture": "Texture/TX Shadow.png",
+      "rect": [
+        288,
+        166,
+        35,
+        46
+      ],
+      "pivot": [
+        17.5,
+        46
+      ],
+      "unity_id": 21300036,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Shadow/TX Shadow Stone Coffin Hori": {
+      "texture": "Texture/TX Shadow.png",
+      "rect": [
+        288,
+        95,
+        67,
+        25
+      ],
+      "pivot": [
+        33.5,
+        25
+      ],
+      "unity_id": 21300038,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Shadow/TX Shadow Tileset Wall 4": {
+      "texture": "Texture/TX Shadow.png",
+      "rect": [
+        480,
+        352,
+        32,
+        32
+      ],
+      "pivot": [
+        16.0,
+        16.0
+      ],
+      "unity_id": 21300034,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Shadow/TX Shadow Road Sign E": {
+      "texture": "Texture/TX Shadow.png",
+      "rect": [
+        102,
+        176,
+        26,
+        16
+      ],
+      "pivot": [
+        13.0,
+        16
+      ],
+      "unity_id": 21300042,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Shadow/TX Shadow Road Sign W": {
+      "texture": "Texture/TX Shadow.png",
+      "rect": [
+        100,
+        240,
+        26,
+        16
+      ],
+      "pivot": [
+        13.0,
+        16
+      ],
+      "unity_id": 21300044,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Shadow/TX Shadow Pot A": {
+      "texture": "Texture/TX Shadow.png",
+      "rect": [
+        165,
+        232,
+        23,
+        19
+      ],
+      "pivot": [
+        11.5,
+        19
+      ],
+      "unity_id": 21300046,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Shadow/TX Shadow Pot B": {
+      "texture": "Texture/TX Shadow.png",
+      "rect": [
+        164,
+        299,
+        28,
+        16
+      ],
+      "pivot": [
+        14.0,
+        16
+      ],
+      "unity_id": 21300048,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Shadow/TX Shadow Pot C": {
+      "texture": "Texture/TX Shadow.png",
+      "rect": [
+        166,
+        363,
+        22,
+        17
+      ],
+      "pivot": [
+        11.0,
+        17
+      ],
+      "unity_id": 21300050,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Shadow/TX Shadow Stone Bench S": {
+      "texture": "Texture/TX Shadow.png",
+      "rect": [
+        295,
+        36,
+        60,
+        24
+      ],
+      "pivot": [
+        30.0,
+        24
+      ],
+      "unity_id": 21300052,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Shadow/TX Shadow Stone Bench W": {
+      "texture": "Texture/TX Shadow.png",
+      "rect": [
+        387,
+        15,
+        32,
+        48
+      ],
+      "pivot": [
+        16.0,
+        48
+      ],
+      "unity_id": 21300054,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Shadow/TX Shadow Stone Bench E": {
+      "texture": "Texture/TX Shadow.png",
+      "rect": [
+        393,
+        115,
+        25,
+        44
+      ],
+      "pivot": [
+        12.5,
+        44
+      ],
+      "unity_id": 21300056,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Shadow/TX Shadow - Stone 01": {
+      "texture": "Texture/TX Shadow.png",
+      "rect": [
+        10,
+        495,
+        12,
+        7
+      ],
+      "pivot": [
+        6.0,
+        7
+      ],
+      "unity_id": 21300058,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Shadow/TX Shadow - Stone 02": {
+      "texture": "Texture/TX Shadow.png",
+      "rect": [
+        40,
+        493,
+        17,
+        11
+      ],
+      "pivot": [
+        8.00000008,
+        11
+      ],
+      "unity_id": 21300060,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Shadow/TX Shadow - Stone 03": {
+      "texture": "Texture/TX Shadow.png",
+      "rect": [
+        69,
+        494,
+        24,
+        12
+      ],
+      "pivot": [
+        12.0,
+        12
+      ],
+      "unity_id": 21300062,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Shadow/TX Shadow - Stone 04": {
+      "texture": "Texture/TX Shadow.png",
+      "rect": [
+        100,
+        493,
+        25,
+        13
+      ],
+      "pivot": [
+        12.0,
+        13
+      ],
+      "unity_id": 21300064,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Shadow/TX Shadow - Stone 05": {
+      "texture": "Texture/TX Shadow.png",
+      "rect": [
+        130,
+        491,
+        29,
+        15
+      ],
+      "pivot": [
+        13.9999994,
+        15
+      ],
+      "unity_id": 21300066,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Shadow/TX Shadow - Stone 06": {
+      "texture": "Texture/TX Shadow.png",
+      "rect": [
+        162,
+        493,
+        29,
+        16
+      ],
+      "pivot": [
+        14.99999944,
+        16
+      ],
+      "unity_id": 21300068,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Shadow/TX Shadow Statue": {
+      "texture": "Texture/TX Shadow.png",
+      "rect": [
+        446,
+        54,
+        38,
+        39
+      ],
+      "pivot": [
+        19.0,
+        39
+      ],
+      "unity_id": 21300070,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Shadow/TX Shadow Stone Lantern": {
+      "texture": "Texture/TX Shadow.png",
+      "rect": [
+        453,
+        129,
+        28,
+        26
+      ],
+      "pivot": [
+        14.0,
+        26
+      ],
+      "unity_id": 21300072,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Shadow/TX Shadow Bridge Gate": {
+      "texture": "Texture/TX Shadow.png",
+      "rect": [
+        480,
+        192,
+        32,
+        51
+      ],
+      "pivot": [
+        16.0,
+        51
+      ],
+      "unity_id": 21300074,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Shadow/TX Shadow Pillar": {
+      "texture": "Texture/TX Shadow.png",
+      "rect": [
+        352,
+        206,
+        44,
+        45
+      ],
+      "pivot": [
+        22.0,
+        45
+      ],
+      "unity_id": 21300076,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Shadow/TX Shadow Pillar Broken": {
+      "texture": "Texture/TX Shadow.png",
+      "rect": [
+        416,
+        215,
+        35,
+        36
+      ],
+      "pivot": [
+        17.5,
+        36
+      ],
+      "unity_id": 21300078,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Shadow/TX Shadow Stone Cube": {
+      "texture": "Texture/TX Shadow.png",
+      "rect": [
+        288,
+        318,
+        39,
+        34
+      ],
+      "pivot": [
+        19.5,
+        34
+      ],
+      "unity_id": 21300084,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Shadow/TX Shadow Altar": {
+      "texture": "Texture/TX Shadow.png",
+      "rect": [
+        353,
+        269,
+        97,
+        72
+      ],
+      "pivot": [
+        48.5,
+        72
+      ],
+      "unity_id": 21300096,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Shadow/TX Shadow Wooden Door": {
+      "texture": "Texture/TX Shadow.png",
+      "rect": [
+        29,
+        125,
+        47,
+        28
+      ],
+      "pivot": [
+        23.5,
+        28
+      ],
+      "unity_id": 21300098,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Shadow/TX Shadow Wooden Door Opened": {
+      "texture": "Texture/TX Shadow.png",
+      "rect": [
+        29,
+        194,
+        45,
+        25
+      ],
+      "pivot": [
+        22.5,
+        25
+      ],
+      "unity_id": 21300100,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Shadow/TX Shadow Well": {
+      "texture": "Texture/TX Shadow.png",
+      "rect": [
+        420,
+        365,
+        58,
+        43
+      ],
+      "pivot": [
+        29.0,
+        21.5
+      ],
+      "unity_id": 21300102,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    },
+    "TX Shadow/TX Shadow - Stone 07": {
+      "texture": "Texture/TX Shadow.png",
+      "rect": [
+        3,
+        446,
+        60,
+        26
+      ],
+      "pivot": [
+        30.0,
+        26
+      ],
+      "unity_id": 21300104,
+      "pixels_per_unit": 32,
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      }
+    }
+  }
+}

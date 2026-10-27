@@ -16,18 +16,18 @@ Completion evidence: policy and entry points agree, the daily schedule is active
 
 ## M1 — Preserve the current work and establish Git history
 
-Priority: next. Local branch observed: `codex/exploration-plane`, with no commits and substantial untracked project content.
+Priority: current. Local branch: `codex/exploration-plane`; maintenance baseline commit: `bb7f316`.
 
 - [x] Coordinate with any active implementation work before staging or switching branches.
 - [x] Restore remote inspection and confirm origin's history, default branch, and access rights. A missing tracking ref is not proof of an empty remote.
-- [ ] Review the intended source inventory, Bible, asset provenance/licensing, large binaries, and potential secrets. Keep generated caches, captures, builds, and saves out of history.
-- [ ] If origin has history, reconcile in an isolated checkout without overwriting local work. If origin is empty, prepare an intentional bootstrap commit with an explicit reviewed file list.
+- [x] Review the intended source inventory, Bible, asset provenance/licensing, large binaries, and potential secrets. Keep generated caches, captures, builds, and saves out of history.
+- [x] If origin has history, reconcile in an isolated checkout without overwriting local work. If origin is empty, prepare an intentional bootstrap commit with an explicit reviewed file list.
 - [ ] Commit only agreed, reviewed content; establish the integration branch and upstream consistent with the verified remote state.
 - [ ] Push through the appropriate bootstrap or topic-branch path, then verify the remote commit matches the intended local commit.
 
 Completion evidence: a recorded branch and commit, verified remote reachability and push status, and all remaining local changes accounted for. Never sweep up untracked work merely to make status clean.
 
-Current evidence: app inventory showed the other chat in this checkout idle. Unsandboxed `git ls-remote --symref origin` succeeded with no refs; the GitHub connector independently returned no branches, default branch `main`, public visibility, and push/admin permission. The reviewed maintenance-owned files form a local baseline only; prototype files remain untouched and untracked. Public source redistribution of the supplied art pack is unresolved, so project publication and full M1 completion remain pending.
+Current evidence: app inventory showed the other chat in this checkout idle. Unsandboxed `git ls-remote --symref origin` succeeded with no refs; the GitHub connector independently returned no branches, default branch `main`, public visibility, and push/admin permission. Maintenance baseline `bb7f316` contains seven named maintenance files. The owner subsequently confirmed public source redistribution rights for the supplied art pack; its provenance records that confirmation. The explicit prototype bootstrap inventory comprises README, assets, development notes, the Bible, project configuration, resources, scenes, scripts with UID sidecars, tests/fixtures, and the asset importer. Generated cache, captures, and builds remain excluded.
 
 ## M2 — Make contribution review enforceable
 

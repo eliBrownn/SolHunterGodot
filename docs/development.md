@@ -1,0 +1,70 @@
+# Exploration foundation — October 26, 2026
+
+Implemented in a fresh Godot project:
+
+- A 2D world rendered as a texture onto a horizontal 3D plane, with a separate
+  screen-space HUD and orthographic zoom.
+- Metadata-based asset slicing, anchored/y-sorted props, and directional player art.
+- Seeded, independently salted terrain and decoration using absolute coordinates;
+  new worlds use generation version 4 and save format version 1. Version 1, 2 and 3
+  saves migrate on load, retaining seed and journey progress; a blocked position
+  is relocated to nearby dry ground. Migration does not rewrite the save on load.
+- A reserved refuge, eastern landmark, five-cell-wide winding main trail and a
+  seven-cell-wide network of connected wilderness routes. Routes are defined from
+  absolute coordinates and seeded route offsets, with obstacle-free approaches
+  and shared footprint traversal rules. Water is generated independently in
+  bounded basins inside each area; routes use dry margins around those basins.
+  This deliberately constrained layout guarantees dry corridors and is provisional
+  geography, not general-purpose pathfinding around arbitrary bodies of water.
+- Continuous interpolated eight-way movement, diagonal corner checks, inspection,
+  pause, session notes, and an outbound/return objective.
+- Seeded Perlin moisture shapes dry heath, temperate ground and wet marsh.
+  Frequency and dry/wet thresholds are configured in `resources/climate_settings.tres`
+  for new expeditions and stored in each save. Moisture is independent of both
+  the water-basin layout and the Vastra concentration noise.
+- At most 49 live chunks; generation/publication of one pending chunk per frame,
+  eviction of visual nodes and their data together, and deterministic reconstruction.
+- Validated save loading, temporary-file replacement, and previous-save backup.
+
+The world bible remains the design authority. Vastra concentration and overload
+are separate measurements. Overload is initially zero, and no ecological behavior
+is inferred from a concentration reading. Chunk boundaries have no ecological
+meaning. This milestone implements no creature identity system because there
+are no creatures yet; it will be required before adding collection.
+
+## Validation so far
+
+Godot 4.7.2, Windows, OpenGL compatibility renderer, RTX 3070.
+
+Generation 4 validation includes Perlin moisture and configurable thresholds,
+saved climate reconstruction, 3×3 travel along horizontal and vertical routes,
+junctions, natural water collision, dry route reservations, reverse-order chunk
+reconstruction and migration of older saves. The integration smoke test exercises
+actual outbound and return movement, streaming and saving. F3 reports frame
+p95/p99/max for the current session, including startup and rebuild frames.
+Representative frame-time profiling and manual continuous-travel acceptance on
+target hardware remain outstanding.
+
+## Current limits
+
+- The art is flat on the 3D plane, including actors. There are no upright
+  billboards, elevation traversal, 3D colliders, or dynamic 3D lighting.
+- Noise classifies habitats; grass tint blends smoothly, but terrain boundaries
+  and temporary water are still square cells. Water bodies are constrained to
+  bounded basins; there is no drainage model or arbitrary water-aware route planner.
+- The route network and places are the intended connected backbone; off-route
+  wilderness pockets can be isolated. Tests of large footprints are groundwork
+  for future Sols. The regular provisional network needs design and playtesting
+  before it is treated as final world geography.
+- Authored camp/landmark props are decorative and do not block movement.
+- Player movement uses bobbing directional stills, not a completed walk cycle.
+- First view and explicit load/new-seed rebuild all 49 chunks synchronously.
+  Travel streams one chunk per frame on the main thread. Work is not threaded.
+- Inspection samples a cell without populating the chunk cache. Frame statistics
+  include initialization; no representative p95/p99 acceptance benchmark exists yet.
+- Session field notes are not persisted. No fog-of-war, map, NPCs, encounter,
+  creature collection, combat, ecological simulation, or Python save import.
+
+Next player acceptance: walk the journey manually, judge the 3D plane angle,
+pixel readability and terrain scale, then choose whether actors should stand
+upright on the plane before expanding the content.

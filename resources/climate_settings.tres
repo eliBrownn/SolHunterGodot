@@ -1,0 +1,9 @@
+[gd_resource type="Resource" script_class="ClimateSettings" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/climate_settings.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+moisture_frequency = 0.012
+dry_threshold = 0.42
+wet_threshold = 0.58
