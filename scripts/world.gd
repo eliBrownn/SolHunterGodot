@@ -1,5 +1,9 @@
 extends Node2D
 
+signal chunk_published(coord: Vector2i, cells: Array[Dictionary])
+signal chunk_removed(coord: Vector2i)
+signal rebuilt
+
 const ChunkView = preload("res://scripts/terrain_chunk.gd")
 const Explorer = preload("res://scripts/explorer.gd")
 const CLIMATE_SETTINGS = preload("res://resources/climate_settings.tres")
@@ -204,6 +208,7 @@ func rebuild_world() -> void:
 			publish_chunk(coord)
 			pending.erase(coord)
 	update_hud()
+	rebuilt.emit()
 
 func center(at: Vector2i) -> Vector2:
 	return Vector2(at) * 32.0 + Vector2(16, 16)
@@ -297,6 +302,7 @@ func remove_chunk(coord: Vector2i) -> void:
 	for node in chunks[coord].props:
 		node.free()
 	chunks.erase(coord)
+	chunk_removed.emit(coord)
 
 func publish_chunk(coord: Vector2i) -> void:
 	var start := Time.get_ticks_usec()
@@ -322,6 +328,7 @@ func publish_chunk(coord: Vector2i) -> void:
 		actors.add_child(root)
 		props.append(root)
 	chunks[coord] = {"view": view, "props": props}
+	chunk_published.emit(coord, data)
 	max_publish_ms = maxf(max_publish_ms, (Time.get_ticks_usec() - start) / 1000.0)
 
 func update_hud() -> void:

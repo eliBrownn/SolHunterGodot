@@ -3,6 +3,7 @@ extends Sprite3D
 
 var actor: Node2D
 var terrain_camera: Camera2D
+var ground_height := 0.01
 
 func bind(source: Node2D, source_camera: Camera2D) -> void:
 	actor = source
@@ -27,4 +28,4 @@ func sync_art() -> void:
 	offset = Vector2(texture.get_width() * 0.5 + body.offset.x,
 		-texture.get_height() * 0.5 - body.offset.y - body.position.y)
 	var relative: Vector2 = actor.position - terrain_camera.position
-	position = Vector3(relative.x / WorldTerrain.CELL_SIZE, 0.01, relative.y / WorldTerrain.CELL_SIZE)
+	position = Vector3(relative.x / WorldTerrain.CELL_SIZE, ground_height, relative.y / WorldTerrain.CELL_SIZE)

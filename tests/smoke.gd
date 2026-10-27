@@ -38,7 +38,11 @@ func run() -> void:
 		for x in range(-128, 129):
 			check(terrain.sample(Vector2i(x, terrain.trail_y(x))).walkable, "Travel spine passable")
 	check(WorldTerrain.new(1).extract_chunk(Vector2i(-4, 3)) != WorldTerrain.new(2).extract_chunk(Vector2i(-4, 3)), "Different seeds change wilderness")
-	var packed := load("res://scenes/world.tscn") as PackedScene
+	var scene_path := "res://scenes/world.tscn"
+	for argument in OS.get_cmdline_user_args():
+		if argument.begins_with("--scene="):
+			scene_path = argument.trim_prefix("--scene=")
+	var packed := load(scene_path) as PackedScene
 	var scene := packed.instantiate()
 	root.add_child(scene)
 	current_scene = scene

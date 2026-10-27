@@ -9,6 +9,7 @@ var failures: Array[String] = []
 var report: Dictionary = {}
 var live_chunk_peak := 0
 var static_memory_peak := 0.0
+var output_directory := OUTPUT
 
 func _initialize() -> void:
 	create_timer(180).timeout.connect(func() -> void:
@@ -88,20 +89,26 @@ func capture(name: String) -> void:
 	if DisplayServer.get_name() == "headless":
 		return
 	await RenderingServer.frame_post_draw
-	var error := root.get_texture().get_image().save_png(OUTPUT + "/" + name + ".png")
+	var error := root.get_texture().get_image().save_png(output_directory + "/" + name + ".png")
 	check(error == OK, "Capture saved: " + name)
 
 func run() -> void:
 	Engine.max_fps = FRAME_LIMIT
-	DirAccess.make_dir_recursive_absolute(OUTPUT)
+	var scene_path := "res://scenes/world.tscn"
+	for argument in OS.get_cmdline_user_args():
+		if argument.begins_with("--scene="):
+			scene_path = argument.trim_prefix("--scene=")
+	if scene_path == "res://scenes/world_3d.tscn":
+		output_directory = "res://artifacts/solid3d/profile"
+	DirAccess.make_dir_recursive_absolute(output_directory)
 	var start := Time.get_ticks_usec()
-	scene = (load("res://scenes/world.tscn") as PackedScene).instantiate()
+	scene = (load(scene_path) as PackedScene).instantiate()
 	root.add_child(scene)
 	current_scene = scene
 	world = scene.world
 	world.smoke_mode = true
 	var startup_ms := (Time.get_ticks_usec() - start) / 1000.0
-	report = {"engine": Engine.get_version_info().string, "os": OS.get_name(),
+	report = {"scene": scene_path, "engine": Engine.get_version_info().string, "os": OS.get_name(),
 		"renderer": RenderingServer.get_current_rendering_method(), "display": DisplayServer.get_name(),
 		"adapter": RenderingServer.get_video_adapter_name(), "viewport": [root.size.x, root.size.y],
 		"camera_elevation_degrees": scene.camera_elevation, "camera_azimuth_degrees": scene.camera_azimuth,
@@ -153,13 +160,13 @@ func run() -> void:
 	report["travel_chunk_generation_max_ms"] = streaming_generation_ms
 	report["travel_chunk_publication_max_ms"] = streaming_publication_ms
 	report["failures"] = failures
-	var output := FileAccess.open(OUTPUT + "/profile.json", FileAccess.WRITE)
+	var output := FileAccess.open(output_directory + "/profile.json", FileAccess.WRITE)
 	if output == null:
 		push_error("Cannot write D0 profile")
 		quit(1)
 		return
 	output.store_string(JSON.stringify(report, "\t"))
 	output.close()
-	print("D0 PROFILE: %d failures; report at %s/profile.json" % [failures.size(), OUTPUT])
+	print("D0 PROFILE: %d failures; report at %s/profile.json" % [failures.size(), output_directory])
 	scene.free()
 	quit(0 if failures.is_empty() else 1)

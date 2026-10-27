@@ -14,6 +14,7 @@ var camera := Camera3D.new()
 var world: Node2D
 var target_size := 22.0
 var player_billboard: Sprite3D
+var capture_directory := "res://artifacts"
 
 func _ready() -> void:
 	viewport.size = TEXTURE_SIZE
@@ -67,7 +68,7 @@ func _unhandled_input(event: InputEvent) -> void:
 	world.handle_input(event)
 
 func _capture() -> void:
-	DirAccess.make_dir_recursive_absolute("res://artifacts")
+	DirAccess.make_dir_recursive_absolute(capture_directory)
 	for shot in ["camp", "shore", "landmark", "pause"]:
 		if shot == "shore":
 			var found := false
@@ -90,5 +91,5 @@ func _capture() -> void:
 		for frame in range(5):
 			await get_tree().process_frame
 		await RenderingServer.frame_post_draw
-		get_viewport().get_texture().get_image().save_png("res://artifacts/" + shot + ".png")
+		get_viewport().get_texture().get_image().save_png(capture_directory + "/" + shot + ".png")
 	get_tree().quit()

@@ -1,5 +1,11 @@
 # Exploration foundation — October 26, 2026
 
+The current F5 entry is an experimental [solid 3D view](solid-3d-prototype.md)
+using the same simulation. The earlier sprite-ground presentation remains in
+`scenes/world.tscn` for F6 comparison. The description below documents that shared
+foundation and its earlier presentation; solid-mode limitations are listed in
+the prototype note.
+
 Implemented in a fresh Godot project:
 
 - A 2D world rendered as a texture onto a horizontal 3D plane, with a separate
