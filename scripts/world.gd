@@ -4,6 +4,7 @@ signal chunk_published(coord: Vector2i, cells: Array[Dictionary])
 signal chunk_removed(coord: Vector2i)
 signal rebuilt
 signal state_replaced(state: ExpeditionState)
+signal observe_requested
 
 const ChunkView = preload("res://scripts/terrain_chunk.gd")
 const Explorer = preload("res://scripts/explorer.gd")
@@ -43,6 +44,7 @@ var inspection: Label
 var diagnostic: Label
 var pause_panel: PanelContainer
 var journal_panel: PanelContainer
+var journal_notes := RichTextLabel.new()
 var confirmation := ConfirmationDialog.new()
 var history := RichTextLabel.new()
 var examine := false
@@ -77,7 +79,7 @@ func bind_inputs() -> void:
 		"north": [KEY_W, KEY_UP], "south": [KEY_S, KEY_DOWN],
 		"save_expedition": [KEY_F5], "load_expedition": [KEY_F9],
 		"examine": [KEY_E], "pause_expedition": [KEY_ESCAPE],
-		"diagnostics": [KEY_F3], "journal": [KEY_J]}
+		"diagnostics": [KEY_F3], "journal": [KEY_J], "observe_sol": [KEY_F]}
 	for action: String in bindings:
 		if not InputMap.has_action(action):
 			InputMap.add_action(action)
@@ -126,7 +128,7 @@ func build_ui() -> void:
 	objective = label("", 17)
 	mission_box.add_child(objective)
 	var footer := panel_at(Rect2(24, 726, 1232, 50))
-	footer.add_child(label("WASD / arrows  Walk    Wheel  Zoom    %s  Examine    %s  Journal    %s  Save    %s  Load    Esc  Pause" % [key_label("examine"), key_label("journal"), key_label("save_expedition"), key_label("load_expedition")], 15))
+	footer.add_child(label("WASD / arrows  Walk    Wheel  Zoom    %s  Examine    %s  Observe    %s  Journal    %s  Save    %s  Load    Esc  Pause" % [key_label("examine"), key_label("observe_sol"), key_label("journal"), key_label("save_expedition"), key_label("load_expedition")], 15))
 	toast = label("", 18, Color("ead6a4"))
 	toast.position = Vector2(42, 675)
 	hud.add_child(toast)
@@ -145,10 +147,16 @@ func build_ui() -> void:
 	var journal_box := VBoxContainer.new()
 	journal_panel.add_child(journal_box)
 	journal_box.add_child(label("FIELD NOTES", 18, Color("e1c791")))
-	history.custom_minimum_size = Vector2(360, 275)
+	var tabs := TabContainer.new()
+	tabs.custom_minimum_size = Vector2(360, 275)
+	journal_box.add_child(tabs)
+	journal_notes.name = "Sightings"
+	journal_notes.add_theme_font_size_override("normal_font_size", 16)
+	tabs.add_child(journal_notes)
+	history.name = "Session"
 	history.scroll_following = true
 	history.add_theme_font_size_override("normal_font_size", 16)
-	journal_box.add_child(history)
+	tabs.add_child(history)
 	pause_panel = panel_at(Rect2(440, 190, 400, 400))
 	var menu := VBoxContainer.new()
 	menu.add_theme_constant_override("separation", 14)
@@ -192,6 +200,7 @@ func new_expedition(seed_value: int) -> void:
 	returned = false
 	state_replaced.emit(persistent_state)
 	history.clear()
+	refresh_discoveries()
 	rebuild_world()
 	message("Follow the old stone trail east and find the waystone.")
 
@@ -249,9 +258,12 @@ func build_places() -> void:
 func replace_persistent_state(state: ExpeditionState) -> void:
 	if persistent_state.activity_advanced.is_connected(advance_environment):
 		persistent_state.activity_advanced.disconnect(advance_environment)
+	if persistent_state.discovery_recorded.is_connected(refresh_discoveries):
+		persistent_state.discovery_recorded.disconnect(refresh_discoveries)
 	persistent_state = state
 	persistent_state.set_population_cache_limit(expedition_parameters().population_cache_territories)
 	persistent_state.activity_advanced.connect(advance_environment)
+	persistent_state.discovery_recorded.connect(refresh_discoveries)
 
 func warn_configuration_once(key: String, text: String) -> void:
 	if not configuration_warnings.has(key):
@@ -385,10 +397,24 @@ func update_hud() -> void:
 	var distance := roundi(Vector2(target - cell).length())
 	objective.text = "Journey complete · explore freely" if returned else ("Return to the refuge · %d tiles" % distance if visited else "Find the eastern waystone · %d tiles" % distance)
 
-func message(value: String) -> void:
+func refresh_discoveries(_identity: String = "") -> void:
+	var entries := persistent_state.discovery_entries()
+	if entries.is_empty():
+		journal_notes.text = "Approach a Sol and press %s to record a sighting." % key_label("observe_sol")
+		return
+	var rows := PackedStringArray()
+	for entry in entries:
+		var description: String = entry.description
+		for detail: String in entry.details:
+			description += "\n" + detail
+		rows.append("%s\n%s\nFirst seen: %d, %d" % [entry.title, description, entry.first_seen[0], entry.first_seen[1]])
+	journal_notes.text = "\n\n".join(rows)
+
+func message(value: String, session_note: bool = true) -> void:
 	toast.text = value
 	toast_time = 7
-	history.append_text(value + "\n\n")
+	if session_note:
+		history.append_text(value + "\n\n")
 
 func save_game(path: String = ExpeditionSave.SAVE_PATH) -> void:
 	var error := ExpeditionSave.write(ExpeditionSave.snapshot(terrain.world_seed, cell, visited, returned, terrain.generation_version, terrain.climate, persistent_state.snapshot()), path)
@@ -412,6 +438,7 @@ func load_game(path: String = ExpeditionSave.SAVE_PATH) -> void:
 	visited = data.landmark_visited
 	returned = data.returned
 	state_replaced.emit(persistent_state)
+	refresh_discoveries()
 	rebuild_world()
 	if data.has("migrated_from"):
 		message("Expedition updated to new terrain." + (" Your position moved to nearby dry ground." if data.migration_moved else ""))
@@ -446,6 +473,8 @@ func handle_input(event: InputEvent) -> void:
 	elif event.is_action_pressed("diagnostics"):
 		diagnostic.visible = not diagnostic.visible
 	elif not paused:
+		if event.is_action_pressed("observe_sol"):
+			observe_requested.emit()
 		if event.is_action_pressed("examine"):
 			examine = not examine
 		if event.is_action_pressed("journal"):

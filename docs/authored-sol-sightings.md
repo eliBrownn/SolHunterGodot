@@ -75,3 +75,7 @@ The final shared validator passed Godot 4.7.2 import and all 6,162 headless
 assertions, including both scene journeys and 36 new sighting checks. The rendered
 sighting suite separately passed 36 checks. Existing GPU-only checks from other
 suites remain outside the headless total.
+
+The subsequent [observation/journal slice](sol-observation-journal.md) adds F to
+record a nearby individual and a persistent Sightings tab. It still adds no
+roaming, battle, capture action, or relationship gain.

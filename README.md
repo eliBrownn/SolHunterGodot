@@ -18,7 +18,8 @@ return to the refuge. Names and artwork for these places are temporary.
 | WASD / arrows | Walk, including diagonals |
 | Mouse wheel | Zoom the orthographic 3D camera |
 | E | Toggle tile examination under the pointer |
-| J | Show session field notes |
+| F | Observe a nearby Sol |
+| J | Field Notes: saved sightings and session log |
 | F5 / F9 | Save / load expedition |
 | Escape | Pause, save/load, or start another seed |
 | F3 | Frame-time percentiles and streaming diagnostics |

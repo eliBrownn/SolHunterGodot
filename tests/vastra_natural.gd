@@ -150,6 +150,7 @@ func verify_persistence() -> void:
 		var old := snapshot.duplicate(true)
 		old.version = version
 		old.erase("natural")
+		old.erase("discoveries")
 		if version == 1:
 			old.erase("human_activity")
 		var upgraded := ExpeditionState.restore(old, 17)

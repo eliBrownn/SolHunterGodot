@@ -29,6 +29,7 @@ or use Make Unique and save the result. Defaults preserve the current behavior.
 | `resources/sighting_settings.tres`: Enabled | true | Show/admit the three provisional sightings at startup/new seed/load. Disabling does not delete saved individuals. |
 | Visible Radius / Reaction Distance | 14 / 3; 4–32 / 1–6 cells | Distance culling and Manhattan proximity labels. Presentation only, including loaded worlds. |
 | Bob Pixels / Bob Cycles | 1 / 0.8; 0–3 pixels / 0.1–3 cycles per second | Idle animation amplitude/frequency. Zero pixels disables it; pause freezes it. No simulation or identity change. |
+| Observation Distance | 3; 1–6 Manhattan cells | F selects a nearby settled-player sighting within this range and visibility radius. Applies to loaded sightings; retained first-seen journal records do not change. |
 
 Hover properties for their Inspector tooltips. Recovery defaults are provisional
 development tuning, not finalized ecological balance. Climate, movement, seed,
