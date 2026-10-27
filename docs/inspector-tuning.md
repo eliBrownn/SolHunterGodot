@@ -34,6 +34,9 @@ or use Make Unique and save the result. Defaults preserve the current behavior.
 | Home Radius / Movement Radius | 5 / 7; 1–5 / 4–16 Manhattan cells | Limit distance from fixed home and player-local simulation range. Smaller home range returns gradually; no ID change. |
 | Comfort Distance / Flee Release Distance | 2 / 5; 1–3 / 2–8 cells | Neutral stopping distance and flight hysteresis. Release must be at least Reaction Distance. |
 | Movement Blend Seconds | 0.2; 0.05–0.5 seconds | Visual interpolation per cell. Does not change authoritative movement cadence. |
+| `resources/encounter_settings.tres`: Enabled / Automatic Contact | true / true | Manual R approach and warned later-contact entry for the authored guard. Loaded worlds use current settings; no identity change. |
+| Warning / Contact / Interaction Distance | 3 / 1 / 3; 1–6 / 0–1 / 1–6 cells | Manhattan warning band, later-step automatic contact, and manual R selection. Warning must cover contact. |
+| Withdrawal Safe Steps | 3; 1–8 successful steps | Prototype automatic re-entry protection. Runtime-only; manual approach remains available. |
 
 Hover properties for their Inspector tooltips. Recovery defaults are provisional
 development tuning, not finalized ecological balance. Climate, movement, seed,

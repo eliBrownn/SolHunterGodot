@@ -5,6 +5,9 @@ signal chunk_removed(coord: Vector2i)
 signal rebuilt
 signal state_replaced(state: ExpeditionState)
 signal observe_requested
+signal encounter_requested
+signal withdraw_requested
+signal player_step_completed(from: Vector2i, to: Vector2i)
 
 const ChunkView = preload("res://scripts/terrain_chunk.gd")
 const Explorer = preload("res://scripts/explorer.gd")
@@ -49,6 +52,7 @@ var confirmation := ConfirmationDialog.new()
 var history := RichTextLabel.new()
 var examine := false
 var paused := false
+var encounter_active := false
 var toast_time := 0.0
 var frame_times: Array[float] = []
 var max_publish_ms := 0.0
@@ -79,7 +83,7 @@ func bind_inputs() -> void:
 		"north": [KEY_W, KEY_UP], "south": [KEY_S, KEY_DOWN],
 		"save_expedition": [KEY_F5], "load_expedition": [KEY_F9],
 		"examine": [KEY_E], "pause_expedition": [KEY_ESCAPE],
-		"diagnostics": [KEY_F3], "journal": [KEY_J], "observe_sol": [KEY_F]}
+		"diagnostics": [KEY_F3], "journal": [KEY_J], "observe_sol": [KEY_F], "approach_sol": [KEY_R]}
 	for action: String in bindings:
 		if not InputMap.has_action(action):
 			InputMap.add_action(action)
@@ -128,7 +132,7 @@ func build_ui() -> void:
 	objective = label("", 17)
 	mission_box.add_child(objective)
 	var footer := panel_at(Rect2(24, 726, 1232, 50))
-	footer.add_child(label("WASD / arrows  Walk    Wheel  Zoom    %s  Examine    %s  Observe    %s  Journal    %s  Save    %s  Load    Esc  Pause" % [key_label("examine"), key_label("observe_sol"), key_label("journal"), key_label("save_expedition"), key_label("load_expedition")], 15))
+	footer.add_child(label("WASD / arrows  Walk   Wheel  Zoom   %s  Examine   %s  Observe   %s  Approach   %s  Journal   %s  Save   %s  Load   Esc  Pause" % [key_label("examine"), key_label("observe_sol"), key_label("approach_sol"), key_label("journal"), key_label("save_expedition"), key_label("load_expedition")], 15))
 	toast = label("", 18, Color("ead6a4"))
 	toast.position = Vector2(42, 675)
 	hud.add_child(toast)
@@ -173,19 +177,30 @@ func build_ui() -> void:
 	confirmation.title = "Start another expedition?"
 	confirmation.dialog_text = "Unsaved travel will be lost. Your saved expedition stays available with F9."
 	confirmation.confirmed.connect(func():
+		if encounter_active:
+			return
 		new_expedition(posmod(terrain.world_seed + 104729, 2147483647))
 		paused = false
 		pause_panel.hide())
 	hud.add_child(confirmation)
 
 func ask_new() -> void:
+	if encounter_active:
+		message("Withdraw before starting another expedition.", false)
+		return
 	confirmation.popup_centered(Vector2i(480, 160))
 
 func toggle_pause() -> void:
+	if encounter_active:
+		withdraw_requested.emit()
+		return
 	paused = not paused
 	pause_panel.visible = paused
 
 func new_expedition(seed_value: int) -> void:
+	if encounter_active:
+		message("Withdraw before starting another expedition.", false)
+		return
 	var settings: Dictionary = climate_settings.parameters() if climate_settings != null else {}
 	if not WorldTerrain.valid_climate(settings):
 		settings = WorldTerrain.default_climate()
@@ -304,6 +319,8 @@ func _process(delta: float) -> void:
 		diagnostic.text += "\nActivity tick %d · %d observed territories · %d recorded Sols" % [persistent_state.activity_tick(), stored.territories, stored.individuals]
 
 func advance_movement(delta: float, direction: Vector2) -> void:
+	if encounter_active:
+		return
 	var remaining := delta
 	for iteration in range(8):
 		if not moving:
@@ -322,9 +339,13 @@ func advance_movement(delta: float, direction: Vector2) -> void:
 		remaining -= consumed
 		explorer.position = center(cell).lerp(center(destination), minf(progress, 1.0))
 		if progress >= 0.99999:
+			var previous := cell
 			cell = destination
 			moving = false
 			arrived()
+			player_step_completed.emit(previous, cell)
+			if encounter_active:
+				break
 		if remaining <= 0.00001:
 			break
 	explorer.walking = moving
@@ -417,10 +438,16 @@ func message(value: String, session_note: bool = true) -> void:
 		history.append_text(value + "\n\n")
 
 func save_game(path: String = ExpeditionSave.SAVE_PATH) -> void:
+	if encounter_active:
+		message("Withdraw before saving your expedition.", false)
+		return
 	var error := ExpeditionSave.write(ExpeditionSave.snapshot(terrain.world_seed, cell, visited, returned, terrain.generation_version, terrain.climate, persistent_state.snapshot()), path)
 	message("Expedition saved." if error == OK else "Save failed: " + error_string(error))
 
 func load_game(path: String = ExpeditionSave.SAVE_PATH) -> void:
+	if encounter_active:
+		message("Withdraw before loading an expedition.", false)
+		return
 	var data := ExpeditionSave.read_save(path)
 	if data.is_empty():
 		message("No valid compatible save found. Current expedition kept.")
@@ -464,6 +491,14 @@ func inspect_mouse() -> void:
 func handle_input(event: InputEvent) -> void:
 	if confirmation.visible or (event is InputEventKey and event.echo):
 		return
+	if encounter_active:
+		if event.is_action_pressed("pause_expedition"):
+			withdraw_requested.emit()
+		elif event.is_action_pressed("save_expedition"):
+			save_game()
+		elif event.is_action_pressed("load_expedition"):
+			load_game()
+		return
 	if event.is_action_pressed("pause_expedition"):
 		toggle_pause()
 	elif event.is_action_pressed("save_expedition"):
@@ -473,6 +508,8 @@ func handle_input(event: InputEvent) -> void:
 	elif event.is_action_pressed("diagnostics"):
 		diagnostic.visible = not diagnostic.visible
 	elif not paused:
+		if event.is_action_pressed("approach_sol"):
+			encounter_requested.emit()
 		if event.is_action_pressed("observe_sol"):
 			observe_requested.emit()
 		if event.is_action_pressed("examine"):

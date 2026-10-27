@@ -78,8 +78,8 @@ continuous-travel acceptance remain outstanding.
 - Inspection samples a cell without populating the chunk cache. Frame statistics
   include initialization; the separate D0 harness isolates travel statistics but
   no target-device performance acceptance threshold has been adopted.
-- Session messages are temporary; [recorded Sol observations](sol-observation-journal.md) are saved. No fog-of-war, map, NPCs, encounter,
-  creature collection, combat, ecological simulation, or Python save import.
+- Session messages are temporary; [recorded Sol observations](sol-observation-journal.md) are saved. The [encounter-entry panel](encounter-initiation.md) supports approach and withdrawal. No fog-of-war, map, NPCs,
+  creature collection, tactical battle resolution, ecological population simulation, or Python save import.
 
 Next player acceptance: walk the journey manually and judge the upright character,
 3D plane angle, pixel readability, and terrain scale before expanding content.

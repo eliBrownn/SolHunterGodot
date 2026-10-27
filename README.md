@@ -19,6 +19,7 @@ return to the refuge. Names and artwork for these places are temporary.
 | Mouse wheel | Zoom the orthographic 3D camera |
 | E | Toggle tile examination under the pointer |
 | F | Observe a nearby Sol |
+| R | Approach a nearby Sol; Escape withdraws from the encounter panel |
 | J | Field Notes: saved sightings and session log |
 | F5 / F9 | Save / load expedition |
 | Escape | Pause, save/load, or start another seed |
