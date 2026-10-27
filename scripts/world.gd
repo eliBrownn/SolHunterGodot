@@ -10,12 +10,16 @@ const Explorer = preload("res://scripts/explorer.gd")
 const StructureView = preload("res://scripts/structure_view.gd")
 const CLIMATE_SETTINGS = preload("res://resources/climate_settings.tres")
 const VASTRA_SETTINGS = preload("res://resources/vastra_settings.tres")
-const MOVE_SECONDS := 0.135
+const EXPEDITION_SETTINGS = preload("res://resources/expedition_settings.tres")
 const CHUNK_RADIUS := 3
 # Tree upper pieces extend 120 pixels above their ground anchor.
 const VIEW_PROP_MARGIN := 128.0
 
 var host: Node3D
+var expedition_settings: ExpeditionSettings = EXPEDITION_SETTINGS
+var climate_settings: ClimateSettings = CLIMATE_SETTINGS
+var vastra_settings: VastraSettings = VASTRA_SETTINGS
+var configuration_warnings: Dictionary = {}
 var terrain := WorldTerrain.new()
 var cell := Vector2i.ZERO
 var destination := Vector2i.ZERO
@@ -66,7 +70,7 @@ func _ready() -> void:
 	add_child(hover_outline)
 	host.add_child(hud)
 	build_ui()
-	new_expedition(2601026)
+	new_expedition(int(expedition_parameters().initial_seed))
 
 func bind_inputs() -> void:
 	var bindings := {"west": [KEY_A, KEY_LEFT], "east": [KEY_D, KEY_RIGHT],
@@ -174,12 +178,12 @@ func toggle_pause() -> void:
 	pause_panel.visible = paused
 
 func new_expedition(seed_value: int) -> void:
-	var settings: Dictionary = CLIMATE_SETTINGS.parameters()
+	var settings: Dictionary = climate_settings.parameters() if climate_settings != null else {}
 	if not WorldTerrain.valid_climate(settings):
 		settings = WorldTerrain.default_climate()
 		push_warning("Invalid climate settings; using defaults for this expedition.")
 	terrain = WorldTerrain.new(seed_value, settings)
-	replace_persistent_state(ExpeditionState.new(seed_value))
+	replace_persistent_state(ExpeditionState.new(seed_value, int(expedition_parameters().territory_size)))
 	persistent_state.observe_territory(Vector2i.ZERO)
 	cell = Vector2i.ZERO
 	destination = cell
@@ -246,11 +250,27 @@ func replace_persistent_state(state: ExpeditionState) -> void:
 	if persistent_state.activity_advanced.is_connected(advance_environment):
 		persistent_state.activity_advanced.disconnect(advance_environment)
 	persistent_state = state
+	persistent_state.set_population_cache_limit(expedition_parameters().population_cache_territories)
 	persistent_state.activity_advanced.connect(advance_environment)
+
+func warn_configuration_once(key: String, text: String) -> void:
+	if not configuration_warnings.has(key):
+		configuration_warnings[key] = true
+		push_warning(text)
+
+func expedition_parameters() -> Dictionary:
+	if expedition_settings != null and expedition_settings.valid():
+		return expedition_settings.parameters()
+	warn_configuration_once("expedition", "Invalid expedition tuning; using default expedition settings.")
+	return ExpeditionSettings.new().parameters()
 
 func advance_environment(_tick: int) -> void:
 	# No production regional profile is authored yet; baseline recovery needs none.
-	persistent_state.advance_environment(VASTRA_SETTINGS.parameters())
+	var settings: Dictionary = vastra_settings.parameters() if vastra_settings != null else {}
+	if not VastraNatural.valid_policy(settings):
+		warn_configuration_once("vastra", "Invalid Vastra tuning; using default recovery settings.")
+		settings = VastraSettings.new().parameters()
+	persistent_state.advance_environment(settings)
 
 func _process(delta: float) -> void:
 	if frame_times.size() >= 3600:
@@ -284,7 +304,7 @@ func advance_movement(delta: float, direction: Vector2) -> void:
 			progress = 0.0
 			moving = true
 			explorer.facing = Vector2(step)
-		var duration := MOVE_SECONDS * (sqrt(2.0) if destination.x != cell.x and destination.y != cell.y else 1.0)
+		var duration := float(expedition_parameters().move_seconds) * (sqrt(2.0) if destination.x != cell.x and destination.y != cell.y else 1.0)
 		var consumed := minf(remaining, (1.0 - progress) * duration)
 		progress += consumed / duration
 		remaining -= consumed

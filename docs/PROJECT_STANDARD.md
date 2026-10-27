@@ -65,6 +65,8 @@ After merge, branch deletion is a deliberate cleanup action: verify the PR is me
 
 ## Godot and validation
 
+Owner direction, October 27, 2026: keep implemented gameplay, simulation, and presentation tuning adjustable in Godot. Use typed exported Resource properties under `resources/` or grouped scene-root exports, with Inspector tooltips, meaningful units, valid ranges, and runtime validation. Expose the actually connected setting rather than an unused placeholder. Document whether changes apply immediately, at restart/new expedition, or to loaded saves; persist generation/identity-affecting values before using them. Keep provisional defaults labeled and avoid adding controls for unimplemented mechanics. Schema versions, identity contracts, and corruption/admission safety ceilings remain engineering constraints rather than balance sliders. See [Inspector tuning](inspector-tuning.md) for the current control map. New features should update that map in their implementation PR.
+
 Pin the actual Godot version and any required tooling in README when the runnable project arrives. Track authored scenes, resources, project configuration, import sidecars, and UID sidecars required by that pinned version. Ignore generated `.godot/` caches and builds. Do not blanket-ignore resource metadata or rewrite resource IDs during cleanup.
 
 For public repositories, confirm source redistribution rights before pushing third-party assets or source bundles. A local license to use assets in a game does not establish permission to publish the original source pack. Preserve supplied assets locally while that evidence is unresolved.

@@ -159,7 +159,7 @@ func run() -> void:
 func walk_to(world: Node2D, next: Vector2i) -> void:
 	var from: Vector2i = world.cell
 	var change := next - from
-	var seconds: float = world.MOVE_SECONDS * (sqrt(2.0) if change.x != 0 and change.y != 0 else 1.0)
+	var seconds: float = float(world.expedition_parameters().move_seconds) * (sqrt(2.0) if change.x != 0 and change.y != 0 else 1.0)
 	world.advance_movement(seconds, Vector2(change).normalized())
 	check(world.cell == next and not world.moving, "Actual movement reaches settled destination")
 
