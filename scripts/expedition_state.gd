@@ -6,8 +6,9 @@ signal territory_observed(identity: String)
 signal individual_changed(identity: String)
 signal environment_changed(cell: Vector2i)
 signal activity_advanced(tick: int)
+signal human_activity_applied(event: Dictionary, effect: Dictionary)
 
-const VERSION := 1
+const VERSION := 2
 const TERRITORY_SIZE := 16 # Source development setting; independent of render chunk size.
 const ACTIVITY_INTERVAL := 0.75
 const MAX_CATCH_UP := 2
@@ -24,6 +25,7 @@ var _remainder := 0.0
 var _territories: Dictionary = {}
 var _individuals: Dictionary = {}
 var _tile_deltas: Dictionary = {}
+var _human_activity := HumanVastraActivity.empty_ledger()
 
 func _init(seed_value: int = 0, territory_size: int = TERRITORY_SIZE) -> void:
 	_seed = seed_value
@@ -149,10 +151,36 @@ func environment_view(cell: Vector2i, generated: Dictionary) -> Dictionary:
 	result.merge(_tile_deltas.get("%d:%d" % [cell.x, cell.y], {}), true)
 	return result
 
+func human_activity_view() -> Dictionary:
+	return _human_activity.duplicate(true)
+
+func apply_human_activity(event: Variant, generated: Dictionary = {}, region: String = "", budget: Variant = null) -> Dictionary:
+	if not HumanVastraActivity.valid_event(event):
+		return {}
+	var cell := Vector2i(int(event.cell[0]), int(event.cell[1]))
+	var prepared := HumanVastraActivity.prepare(_human_activity, event, _tick, environment_view(cell, generated), region, budget)
+	if prepared.is_empty():
+		return {}
+	if prepared.effect.replayed:
+		return prepared.effect.duplicate(true)
+	var key := "%d:%d" % [cell.x, cell.y]
+	var candidate := snapshot()
+	candidate.tile_deltas[key] = {"concentration": prepared.effect.concentration, "overload": prepared.effect.overload}
+	candidate.human_activity = prepared.ledger
+	if not valid_snapshot(candidate, _seed):
+		return {}
+	# Install both authorities before observers run; no partial event is visible.
+	_tile_deltas[key] = candidate.tile_deltas[key].duplicate(true)
+	_human_activity = prepared.ledger.duplicate(true)
+	environment_changed.emit(cell)
+	human_activity_applied.emit(HumanVastraActivity.normalized_event(event), prepared.effect.duplicate(true))
+	return prepared.effect.duplicate(true)
+
 func snapshot() -> Dictionary:
 	return {"version": VERSION, "activity_tick": _tick, "remainder_seconds": _remainder,
 		"territory_size": _territory_size, "territories": _territories.duplicate(true),
-		"individuals": _individuals.duplicate(true), "tile_deltas": _tile_deltas.duplicate(true)}
+		"individuals": _individuals.duplicate(true), "tile_deltas": _tile_deltas.duplicate(true),
+		"human_activity": _human_activity.duplicate(true)}
 
 static func restore(data: Variant, seed_value: int) -> ExpeditionState:
 	if not valid_snapshot(data, seed_value):
@@ -163,6 +191,8 @@ static func restore(data: Variant, seed_value: int) -> ExpeditionState:
 	state._territories = data.territories.duplicate(true)
 	state._individuals = data.individuals.duplicate(true)
 	state._tile_deltas = data.tile_deltas.duplicate(true)
+	if int(data.version) >= 2:
+		state._human_activity = HumanVastraActivity.normalized_ledger(data.human_activity)
 	for key in state._territories:
 		state._territories[key].observed_tick = int(state._territories[key].observed_tick)
 	for identity in state._individuals:
@@ -221,9 +251,16 @@ static func valid_relationship(data: Variant, tick: int) -> bool:
 	return true
 
 static func valid_snapshot(data: Variant, seed_value: int) -> bool:
-	if not data is Dictionary or not keys_match(data, ["version", "activity_tick", "remainder_seconds", "territory_size", "territories", "individuals", "tile_deltas"]):
+	if not data is Dictionary or not SolSpeciesDefinition.whole(data.get("version"), 1, VERSION):
 		return false
-	if not SolSpeciesDefinition.whole(seed_value, 0, 2147483646) or not SolSpeciesDefinition.whole(data.version, VERSION, VERSION) or not SolSpeciesDefinition.whole(data.activity_tick, 0, MAX_SAFE_INTEGER) or not SolSpeciesDefinition.whole(data.territory_size, 1, 256):
+	var expected_fields := ["version", "activity_tick", "remainder_seconds", "territory_size", "territories", "individuals", "tile_deltas"]
+	if int(data.version) >= 2:
+		expected_fields.append("human_activity")
+	if not keys_match(data, expected_fields):
+		return false
+	if not SolSpeciesDefinition.whole(seed_value, 0, 2147483646) or not SolSpeciesDefinition.whole(data.activity_tick, 0, MAX_SAFE_INTEGER) or not SolSpeciesDefinition.whole(data.territory_size, 1, 256):
+		return false
+	if int(data.version) >= 2 and not HumanVastraActivity.valid_ledger(data.human_activity, int(data.activity_tick)):
 		return false
 	if not (data.remainder_seconds is float or data.remainder_seconds is int) or not is_finite(float(data.remainder_seconds)) or data.remainder_seconds < 0 or data.remainder_seconds >= ACTIVITY_INTERVAL:
 		return false

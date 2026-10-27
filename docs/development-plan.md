@@ -184,3 +184,5 @@ D0 development has started. The owner selected upright billboards; the explorer 
 Subsequent exploration work delivered [shared building collision and safe migration](building-collision.md), followed by [pixel-art water/banks and player occlusion readability](water-and-visibility.md). These are implemented work packages, not a substitute for the remaining manual/device acceptance gates.
 
 D1 now has an initial [persistent domain and save foundation](d1-persistent-foundation.md): independent territory observations, stable individual IDs, explicit relationship evidence, a bounded activity clock, and save-format migration. Live Sol content, population simulation, and the remaining D1 acceptance work are still outstanding.
+
+D2 has begun with [atomic human Vastra activity](vastra-human-activity.md): shared per-region/tick harvest usage, explicit authored overload effects, saved producer receipts, and replay-safe loading. This reusable interface does not yet add a player harvesting action or production budgets. Natural replenishment/recovery and the rest of D2 remain outstanding; starting this slice does not declare D0 or D1 fully accepted.
