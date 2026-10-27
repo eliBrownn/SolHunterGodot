@@ -4,7 +4,8 @@ Implemented in a fresh Godot project:
 
 - A 2D world rendered as a texture onto a horizontal 3D plane, with a separate
   screen-space HUD, orthographic zoom, and an upright billboard explorer.
-  The camera looks down at 45 degrees with a 20-degree azimuth for diagonal depth.
+  The camera looks down at 35 degrees with zero azimuth: lower toward the plane,
+  with the world axes aligned rather than rotated sideways.
   Its 64-by-48-unit XZ surface uses a 2048-by-1536 texture, preserving 32 pixels
   per world unit. Elevation and azimuth are exposed on the scene root in Godot.
 - Metadata-based asset slicing, anchored/y-sorted props, and directional player art.

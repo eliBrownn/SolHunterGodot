@@ -6,8 +6,8 @@ const World = preload("res://scripts/world.gd")
 const ActorBillboard = preload("res://scripts/actor_billboard.gd")
 const SURFACE_SIZE := Vector2(64, 48)
 const TEXTURE_SIZE := Vector2i(2048, 1536)
-@export_range(35.0, 70.0, 1.0) var camera_elevation := 45.0
-@export_range(-45.0, 45.0, 1.0) var camera_azimuth := 20.0
+@export_range(35.0, 70.0, 1.0) var camera_elevation := 35.0
+@export_range(-45.0, 45.0, 1.0) var camera_azimuth := 0.0
 var surface := MeshInstance3D.new()
 var viewport := SubViewport.new()
 var camera := Camera3D.new()
@@ -37,7 +37,7 @@ func _ready() -> void:
 	camera.projection = Camera3D.PROJECTION_ORTHOGONAL
 	camera.keep_aspect = Camera3D.KEEP_HEIGHT
 	camera.size = target_size
-	# A diagonal view of the real XZ surface makes both ground axes show depth.
+	# Lower the camera toward the XZ plane without rotating the world sideways.
 	var elevation := deg_to_rad(camera_elevation)
 	var azimuth := deg_to_rad(camera_azimuth)
 	camera.position = Vector3(sin(azimuth) * cos(elevation), sin(elevation), cos(azimuth) * cos(elevation)) * 40.0
