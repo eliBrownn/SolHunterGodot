@@ -13,6 +13,8 @@ const TEXTURE_SIZE := Vector2i(2048, 1536)
 @export var climate_settings: ClimateSettings = preload("res://resources/climate_settings.tres")
 ## Natural recovery timing, strength, and CPU work budget; applies to loaded worlds too.
 @export var vastra_settings: VastraSettings = preload("res://resources/vastra_settings.tres")
+## Display range, proximity reactions, and idle animation for the provisional authored trail Sols.
+@export var sighting_settings: SightingSettings = preload("res://resources/sighting_settings.tres")
 
 @export_group("Camera")
 ## Degrees above the ground plane. Smaller is lower; 35 preserves the selected low-angle presentation. Applied at startup.
@@ -25,6 +27,7 @@ var camera := Camera3D.new()
 var world: Node2D
 var target_size := 22.0
 var player_billboard: Sprite3D
+var sightings: Node3D
 var capture_directory := "res://artifacts"
 
 func _ready() -> void:
@@ -61,6 +64,9 @@ func _ready() -> void:
 	player_billboard = ActorBillboard.new()
 	add_child(player_billboard)
 	player_billboard.bind(world.explorer, world.camera)
+	sightings = preload("res://scripts/authored_sightings.gd").new()
+	add_child(sightings)
+	sightings.bind(world, sighting_settings)
 	# Match the 2D ground projection to a tilted plane while preserving pixel assets.
 	if OS.get_cmdline_user_args().has("--capture"):
 		_capture.call_deferred()

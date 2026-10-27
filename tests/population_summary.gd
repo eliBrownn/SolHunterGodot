@@ -115,6 +115,8 @@ func verify_dense_and_negative() -> void:
 
 func verify_persistence() -> void:
 	var scene: Node3D = (load("res://scenes/world_3d.tscn") as PackedScene).instantiate()
+	scene.sighting_settings = SightingSettings.new()
+	scene.sighting_settings.enabled = false # This suite publishes only its explicit home fixture.
 	root.add_child(scene)
 	var world: Node2D = scene.world
 	world.smoke_mode = true

@@ -145,6 +145,8 @@ func malformed_states(source: Dictionary, identity: String) -> Array[Dictionary]
 
 func verify_live_persistence() -> void:
 	var scene: Node3D = (load("res://scenes/world_3d.tscn") as PackedScene).instantiate()
+	scene.sighting_settings = SightingSettings.new()
+	scene.sighting_settings.enabled = false # Isolate the legacy empty-domain fixture.
 	root.add_child(scene)
 	var world: Node2D = scene.world
 	world.smoke_mode = true
