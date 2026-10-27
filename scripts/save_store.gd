@@ -14,7 +14,7 @@ static func validate(data: Variant) -> bool:
 		return false
 	if data.get("save_version") != FORMAT_VERSION or not whole_number(data.get("generation_version")):
 		return false
-	if int(data.generation_version) not in [1, 2, 3, WorldTerrain.GENERATION_VERSION]:
+	if int(data.generation_version) not in [1, 2, 3, 4, WorldTerrain.GENERATION_VERSION]:
 		return false
 	var seed_value: Variant = data.get("seed")
 	if not whole_number(seed_value) or seed_value < 0 or seed_value > 2147483646:
@@ -28,6 +28,9 @@ static func validate(data: Variant) -> bool:
 	if not data.get("landmark_visited") is bool or not data.get("returned") is bool:
 		return false
 	if data.returned and not data.landmark_visited:
+		return false
+	# Version 4 introduced saved climate parameters; preserve and validate them on migration.
+	if int(data.generation_version) >= 4 and not WorldTerrain.valid_climate(data.get("climate")):
 		return false
 	# Previous generations are validated structurally and migrated on read.
 	if int(data.generation_version) < WorldTerrain.GENERATION_VERSION:
@@ -76,7 +79,10 @@ static func read_save(path: String = SAVE_PATH) -> Dictionary:
 static func migrate(data: Dictionary) -> Dictionary:
 	# No source file is changed on load. Keep seed and progress; if the new
 	# geography blocks the saved cell, deterministically choose a nearby dry cell.
-	var terrain := WorldTerrain.new(int(data.seed))
+	var climate_parameters: Dictionary = data.get("climate", {})
+	if not WorldTerrain.valid_climate(climate_parameters):
+		climate_parameters = WorldTerrain.default_climate()
+	var terrain := WorldTerrain.new(int(data.seed), climate_parameters)
 	var original := Vector2i(int(data.player[0]), int(data.player[1]))
 	var destination := original
 	if not terrain.fits(destination):
@@ -101,5 +107,5 @@ static func migrate(data: Dictionary) -> Dictionary:
 	data["migration_moved"] = destination != original
 	data["player"] = [destination.x, destination.y]
 	data["generation_version"] = WorldTerrain.GENERATION_VERSION
-	data["climate"] = WorldTerrain.default_climate()
+	data["climate"] = terrain.climate.duplicate(true)
 	return data if validate(data) else {}

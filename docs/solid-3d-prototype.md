@@ -31,7 +31,7 @@ Publication timing includes subscribed 3D chunk construction. The logical near-p
 
 ## Deliberate limits
 
-- The cabin, bench, and other authored props are decorative mockups. Like the previous decorative props, they do not add blocking footprints; walking through the cabin is possible. Building placement and traversal require a later authored collision contract before production use.
+- The cabin now reserves a blocking footprint shared by its model, movement, Examine, and saving. It is placed clear of protected routes with a traversable approach. See [building collision](building-collision.md). Bench and other small authored props remain decorative; the cabin has no enterable interior yet.
 - Trees, rocks, and water retain their existing logical tile blocking. Locomotion is still the tested grid/footprint traversal system, not a new CharacterBody3D/physics controller.
 - The water recess demonstrates height, but there are no traversable hills, slopes, stairs, or vertical gameplay. Examine uses the existing logical ground-plane projection.
 - Water and banks still need a consistent pixel-art treatment; characters use the placeholder directional sprite set.

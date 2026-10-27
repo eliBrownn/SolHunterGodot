@@ -6,6 +6,7 @@ signal rebuilt
 
 const ChunkView = preload("res://scripts/terrain_chunk.gd")
 const Explorer = preload("res://scripts/explorer.gd")
+const StructureView = preload("res://scripts/structure_view.gd")
 const CLIMATE_SETTINGS = preload("res://resources/climate_settings.tres")
 const MOVE_SECONDS := 0.135
 const CHUNK_RADIUS := 3
@@ -220,6 +221,12 @@ func add_prop(key: String, at: Vector2i) -> void:
 	place_props.append(sprite)
 
 func build_places() -> void:
+	if terrain.cabin_footprint.has_area():
+		var building := StructureView.new()
+		building.footprint = terrain.cabin_footprint
+		building.position = Vector2(terrain.cabin_footprint.end) * 32.0
+		actors.add_child(building)
+		place_props.append(building)
 	add_prop("TX Props/TX Props Road Sign E", Vector2i(4, -2))
 	add_prop("TX Props/TX Props Stone Bench S", Vector2i(-2, -2))
 	add_prop("TX Props/TX Props Crate", Vector2i(-3, -1))
@@ -317,7 +324,7 @@ func publish_chunk(coord: Vector2i) -> void:
 	var props: Array[Node2D] = []
 	for index in range(data.size()):
 		var at := coord * 16 + Vector2i(index % 16, floori(float(index) / 16))
-		if data[index].obstacle == 0:
+		if data[index].obstacle not in [1, 2]:
 			continue
 		var root := Node2D.new()
 		root.position = center(at)
@@ -377,7 +384,8 @@ func inspect_mouse() -> void:
 	hover_outline.position = Vector2(hovered) * 32
 	hover_outline.show()
 	var names := ["Meadow", "Woodland", "Heath", "Marsh", "Water", "Shore"]
-	inspection.text = "EXAMINE · %s %s\nWetness %d / 100\nVastra concentration %d / 100\nEcological overload %d / 100\n%s" % [names[data.ground], hovered, roundi(data.wetness * 100), data.concentration, data.overload, "Passable" if data.walkable else "Blocked"]
+	var access := "Building · blocked" if data.obstacle == 3 else ("Passable" if data.walkable else "Blocked")
+	inspection.text = "EXAMINE · %s %s\nWetness %d / 100\nVastra concentration %d / 100\nEcological overload %d / 100\n%s" % [names[data.ground], hovered, roundi(data.wetness * 100), data.concentration, data.overload, access]
 
 func handle_input(event: InputEvent) -> void:
 	if confirmation.visible or (event is InputEventKey and event.echo):

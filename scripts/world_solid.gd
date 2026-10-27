@@ -110,14 +110,17 @@ func build_solid_places() -> void:
 		place_root.free()
 	place_root = SolidChunk.new()
 	solid_root.add_child(place_root)
-	# A deliberately decorative refuge mockup for judging architectural depth.
-	var cabin := Vector2i(-3, -4)
-	piece("prop", cabin, Vector3(0, 0.12, 0), Vector3(3.0, 0.24, 2.4), Color("777d76"))
-	piece("wall", cabin, Vector3(0, 1.04, 0), Vector3(2.8, 1.60, 2.0), Color.WHITE)
-	piece("roof", cabin, Vector3(0, 2.27, 0), Vector3(3.3, 0.86, 2.5), Color("665a4f"))
-	piece("prop", cabin, Vector3(0, 0.86, 1.015), Vector3(0.64, 1.24, 0.05), Color("594431"))
-	for window_x in [-0.94, 0.94]:
-		piece("prop", cabin, Vector3(window_x, 1.13, 1.025), Vector3(0.48, 0.44, 0.06), Color("d1bb81"))
+	var footprint: Rect2i = world.terrain.cabin_footprint
+	if footprint.has_area():
+		var cabin := Vector2(footprint.position) + Vector2(footprint.size) * 0.5
+		var width := float(footprint.size.x)
+		var depth := float(footprint.size.y)
+		piece("prop", cabin, Vector3(0, 0.12, 0), Vector3(width, 0.24, depth), Color("777d76"))
+		piece("wall", cabin, Vector3(0, 1.04, 0), Vector3(width - 0.2, 1.60, depth - 0.2), Color.WHITE)
+		piece("roof", cabin, Vector3(0, 2.27, 0), Vector3(width + 0.3, 0.86, depth + 0.3), Color("665a4f"))
+		piece("prop", cabin, Vector3(0, 0.86, depth * 0.5 - 0.085), Vector3(0.64, 1.24, 0.05), Color("594431"))
+		for window_x in [-0.94, 0.94]:
+			piece("prop", cabin, Vector3(window_x, 1.13, depth * 0.5 - 0.075), Vector3(0.48, 0.44, 0.06), Color("d1bb81"))
 	# Reuse the authored artwork and anchors instead of re-authoring a low-poly prop set.
 	for prop: Node2D in world.place_props:
 		var key: String = prop.get_meta("asset_key", "")
@@ -126,5 +129,5 @@ func build_solid_places() -> void:
 	place_root.finish()
 	sync_ground()
 
-func piece(kind: String, cell: Vector2i, offset: Vector3, size: Vector3, color: Color) -> void:
-	place_root.add_piece(kind, Vector3(cell.x + 0.5, 0, cell.y + 0.5) + offset, size, color)
+func piece(kind: String, anchor: Vector2, offset: Vector3, size: Vector3, color: Color) -> void:
+	place_root.add_piece(kind, Vector3(anchor.x, 0, anchor.y) + offset, size, color)
