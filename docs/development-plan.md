@@ -44,11 +44,11 @@ Keep all three pillars represented before expanding geography or the roster. Do 
 Depends on: current prototype. First implementation milestone.
 
 - Manually walk the outbound/return journey, test pause/save/load/new-seed behavior, and inspect negative coordinates and route junctions.
-- Decide the presentation direction: current flat actors versus upright billboard actors, camera angle, pixel readability, and terrain scale. Keep that change separate from simulation work.
+- Owner-selected presentation: 3D depth with the 2D pixel-art look, upright characters/foliage, and a low 35-degree camera without sideways rotation. Refine readability and consistent scale within that direction; do not reopen the smooth low-poly alternative as the default.
 - Measure startup/rebuild stalls and continuous-travel frame p95/p99 on available hardware. Agree a target device, workload, memory budget, and acceptable frame budget before claiming portable-device readiness.
 - Confirm the existing tests reproduce from the pinned engine environment. Keep CI merge/protection work on the repository roadmap.
 
-Exit: a manually accepted exploration loop, recorded performance baseline/limitations, and a documented presentation decision. Fix observed blockers; do not rewrite functioning terrain solely to match an architectural preference.
+Exit: a manually accepted exploration loop, recorded performance baseline/limitations, and a documented presentation decision. The visual-direction decision is now recorded; full manual journey and target-budget acceptance remain open. Fix observed blockers; do not rewrite functioning terrain solely to match an architectural preference.
 
 ### D1 — Establish persistent world and Sol contracts
 
@@ -179,4 +179,4 @@ Use stable IDs and clear domain boundaries to leave room for future systems; do 
 
 Deliver one coherent behavior change per topic branch/PR with its acceptance evidence, relevant save migrations, and updated documentation. Add tests for meaningful gameplay contracts and cross-system failures, alongside manual experience acceptance. Keep implementation claims tied to code and observed behavior rather than checked boxes alone.
 
-D0 development has started. The owner selected upright billboards; the explorer now uses one, rebuilds prepare the visible area first, and the rendered journey benchmark records phase-specific performance. See [D0 implementation and evidence](d0-exploration.md). Player acceptance and target-device budgets remain open before declaring D0 complete. D1's territory/individual/save contracts follow that gate.
+D0 development has started. The owner selected upright billboards; the explorer now uses one, rebuilds prepare the visible area first, and the rendered journey benchmark records phase-specific performance. The owner subsequently requested a [solid 3D prototype](solid-3d-prototype.md) to judge genuine environmental depth; it is the current F5 entry while the original view remains available for comparison. See [D0 implementation and evidence](d0-exploration.md). Player acceptance and target-device budgets remain open before declaring D0 complete. D1's territory/individual/save contracts follow that gate.

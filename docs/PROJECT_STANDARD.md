@@ -13,6 +13,12 @@ Owner direction, October 26, 2026: use [SolHunterSource](https://github.com/eliB
 
 ## Repository layout
 
+Owner visual direction, October 26, 2026: retain a 3D world with the low,
+axis-aligned camera while preserving the 2D pixel-art look. Favor original
+nearest-filtered terrain/prop textures and upright sprite foliage/characters;
+do not replace the established artwork with a smooth low-poly aesthetic by
+default. See [the visual direction decision](decisions/2026-10-26-pixel-art-3d.md).
+
 Keep the root small: project entry/configuration, README, agent instructions, and repository tooling. Use the following destinations as content arrives; do not create empty scaffolding or relocate existing assets solely for cosmetic consistency.
 
 | Path | Purpose |
