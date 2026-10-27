@@ -208,6 +208,7 @@ func verify_persistence(snapshot: Dictionary, original: String, path: String) ->
 	legacy.erase("battle")
 	legacy.erase("movebooks")
 	legacy.erase("affinity_tiles")
+	legacy.erase("wild_population")
 	var old := ExpeditionState.restore(legacy, 17)
 	check(old != null and old.starter_view().is_empty() and old.snapshot().individuals == legacy.individuals, "Old domain saves preserve owned history without inferring or rerolling a starter")
 	var file := FileAccess.open(path, FileAccess.WRITE)

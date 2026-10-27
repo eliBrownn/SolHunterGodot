@@ -26,6 +26,9 @@ const TEXTURE_SIZE := Vector2i(2048, 1536)
 ## Species move pools, starting loadouts, prototype move effects and condition recovery.
 @export var move_library: MoveLibrary = preload("res://resources/move_library.tres")
 
+## Saved active-time delays and local successor admission for depleted authored wildlife homes.
+@export var wild_recovery_settings: WildRecoverySettings = preload("res://resources/wild_recovery_settings.tres")
+
 @export_group("Camera")
 ## Degrees above the ground plane. Smaller is lower; 35 preserves the selected low-angle presentation. Applied at startup.
 @export_range(35.0, 70.0, 1.0) var camera_elevation := 35.0
@@ -40,6 +43,7 @@ var player_billboard: Sprite3D
 var sightings: Node3D
 var encounters: Node
 var battles: Node
+var wild_recovery: Node
 var capture_directory := "res://artifacts"
 
 func _ready() -> void:
@@ -85,6 +89,9 @@ func _ready() -> void:
 	battles = preload("res://scripts/battle_controller.gd").new()
 	add_child(battles)
 	battles.bind(world, encounters, sightings, battle_settings)
+	wild_recovery = preload("res://scripts/wild_recovery_controller.gd").new()
+	add_child(wild_recovery)
+	wild_recovery.bind(world, sightings, wild_recovery_settings)
 	var affinity_ground := preload("res://scripts/affinity_ground.gd").new()
 	add_child(affinity_ground)
 	affinity_ground.bind(world, sightings.visual_settings)

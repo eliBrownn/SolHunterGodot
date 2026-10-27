@@ -79,6 +79,8 @@ individual IDs, classes, health and receipts remain unchanged. Other legacy IDs
 are preserved rather than silently reassigned. Known prototype species receive
 their initial authored movebooks on explicit state admission, never render rebuild.
 Unknown species need an authored pool before they can enter this battle slice.
+The later [wild recovery slice](wild-population-recovery.md) adds domain 8 for
+saved local home replacement while retaining movebooks, imprints and old IDs.
 
 ## Authoring and evidence
 

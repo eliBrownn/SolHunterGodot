@@ -10,7 +10,7 @@ signal human_activity_applied(event: Dictionary, effect: Dictionary)
 signal discovery_recorded(identity: String)
 signal battle_progress_changed
 
-const VERSION := 7
+const VERSION := 8
 const MAX_DISCOVERIES := 120 # Source journal retention: oldest discovery rows retire, not individuals.
 const MAX_ROAMING_DISTANCE := 5 # Saved movement schema bound; tuning may choose a smaller home range.
 const TERRITORY_SIZE := 16 # Source development setting; independent of render chunk size.
@@ -37,6 +37,8 @@ var _battle := BattleProgress.empty()
 var _battle_enemy := ""
 var _movebooks: Dictionary = {}
 var _affinity_tiles: Dictionary = {}
+var _wild_population: Dictionary = {}
+var _wild_recovery_delay := 0 # Bare domain instances do not invent a live recovery policy.
 # Derived indexes: never saved and never sources of population or individual identity.
 var _known_homes: Dictionary = {}
 var _wild_homes: Dictionary = {}
@@ -161,7 +163,11 @@ func complete_battle(serial: int, hp: int, outcome: String, grace_steps: int, im
 	if prepared_tiles == null:
 		return false
 	var enemy := _battle_enemy
+	var population := WildPopulation.deplete(_wild_population, enemy, _tick, _wild_recovery_delay) if outcome == "victory" else _wild_population
+	if not WildPopulation.valid(population, _seed, _tick, _individuals, candidate.defeated):
+		population = _wild_population # Historical ID collisions are resolved on explicit local revisit.
 	_affinity_tiles = prepared_tiles
+	_wild_population = population
 	_battle = candidate
 	_battle_enemy = ""
 	if outcome == "victory":
@@ -326,6 +332,9 @@ func acquire(identity: String, location: String = "sealed") -> bool:
 	if _battle.active or not OWNED_LOCATIONS.has(location) or not wild_available(identity):
 		return false
 	_individuals[identity].location = location
+	var population := WildPopulation.deplete(_wild_population, identity, _tick, _wild_recovery_delay)
+	if WildPopulation.valid(population, _seed, _tick, _individuals, _battle.defeated):
+		_wild_population = population
 	_wild_homes.erase(home_identity(identity))
 	_roaming.erase(identity)
 	individual_changed.emit(identity)
@@ -445,7 +454,7 @@ func snapshot() -> Dictionary:
 		"territory_size": _territory_size, "territories": _territories.duplicate(true),
 		"individuals": _individuals.duplicate(true), "tile_deltas": _tile_deltas.duplicate(true),
 		"human_activity": _human_activity.duplicate(true), "natural": _natural.duplicate(true),
-		"discoveries": _discoveries.duplicate(true), "roaming": _roaming.duplicate(true), "battle": _battle.duplicate(true), "movebooks": _movebooks.duplicate(true), "affinity_tiles": _affinity_tiles.duplicate(true)}
+		"discoveries": _discoveries.duplicate(true), "roaming": _roaming.duplicate(true), "battle": _battle.duplicate(true), "movebooks": _movebooks.duplicate(true), "affinity_tiles": _affinity_tiles.duplicate(true), "wild_population": _wild_population.duplicate(true)}
 
 static func restore(data: Variant, seed_value: int) -> ExpeditionState:
 	if not valid_snapshot(data, seed_value):
@@ -456,6 +465,8 @@ static func restore(data: Variant, seed_value: int) -> ExpeditionState:
 	state._territories = data.territories.duplicate(true)
 	state._individuals = data.individuals.duplicate(true)
 	state._tile_deltas = data.tile_deltas.duplicate(true)
+	if int(data.version) >= 8:
+		state._wild_population = WildPopulation.normalized(data.wild_population)
 	if int(data.version) >= 7:
 		state._movebooks = data.movebooks.duplicate(true)
 		for book in state._movebooks.values():
@@ -593,6 +604,8 @@ static func valid_snapshot(data: Variant, seed_value: int) -> bool:
 	if int(data.version) >= 7:
 		expected_fields.append("movebooks")
 		expected_fields.append("affinity_tiles")
+	if int(data.version) >= 8:
+		expected_fields.append("wild_population")
 	if not keys_match(data, expected_fields):
 		return false
 	if not SolSpeciesDefinition.whole(seed_value, 0, 2147483646) or not SolSpeciesDefinition.whole(data.activity_tick, 0, MAX_SAFE_INTEGER) or not SolSpeciesDefinition.whole(data.territory_size, 1, 256):
@@ -652,9 +665,11 @@ static func valid_snapshot(data: Variant, seed_value: int) -> bool:
 			return false
 		if record.location == "wild":
 			var home_id := SolIdentityContract.make(seed_value, Vector2i(origin.home[0], origin.home[1]), origin.species_id)
-			if wild_homes.has(home_id) or record.has("sol_relationship"):
+			var depleted: bool = int(data.version) >= 6 and data.battle is Dictionary and data.battle.get("defeated") is Dictionary and data.battle.defeated.has(identity)
+			if (wild_homes.has(home_id) and not depleted) or record.has("sol_relationship"):
 				return false
-			wild_homes[home_id] = true
+			if not depleted:
+				wild_homes[home_id] = true
 		if record.has("sol_relationship") and not valid_relationship(record.sol_relationship, int(data.activity_tick)):
 			return false
 		if lineage_classes.has(record.lineage_id) and lineage_classes[record.lineage_id] != record.class_id:
@@ -671,6 +686,8 @@ static func valid_snapshot(data: Variant, seed_value: int) -> bool:
 			if not identity is String or not data.individuals.has(identity) or not MoveLibrary.valid_book(data.movebooks[identity]):
 				return false
 	if int(data.version) >= 6 and not BattleProgress.valid(data.battle, data.individuals):
+		return false
+	if int(data.version) >= 8 and not WildPopulation.valid(data.wild_population, seed_value, int(data.activity_tick), data.individuals, data.battle.defeated):
 		return false
 	if int(data.version) >= 5:
 		if not data.roaming is Dictionary or data.roaming.size() > data.individuals.size():
@@ -739,3 +756,61 @@ func recover_affinity_conditions() -> void:
 			effect.since += stages * int(effect.interval)
 			if effect.level == 0:
 				row.conditions.erase(kind)
+
+func configure_wild_recovery(interval_ticks: int) -> bool:
+	if interval_ticks < 0 or interval_ticks > 1000000:
+		return false
+	_wild_recovery_delay = interval_ticks
+	return true
+
+func wild_population_view() -> Dictionary:
+	return _wild_population.duplicate(true)
+
+func home_occupant(home: String) -> String:
+	return _wild_homes.get(home, "")
+
+func schedule_historical_recovery(home: String) -> bool:
+	if _battle.active or _wild_recovery_delay == 0 or _wild_homes.has(home) or not _known_homes.has(home):
+		return false
+	if _wild_population.has(home) and not _wild_population[home].active:
+		return false
+	var latest := ""
+	var generation := -1
+	for identity in _individuals:
+		if home_identity(identity) == home and int(_individuals[identity].generation) > generation:
+			generation = int(_individuals[identity].generation)
+			latest = identity
+	if latest.is_empty():
+		return false
+	var candidate := WildPopulation.deplete(_wild_population, latest, _tick, _wild_recovery_delay)
+	if candidate == _wild_population:
+		return false
+	_wild_population = candidate
+	return true
+
+func activate_wild_home(home: String, species: SolSpeciesDefinition, affinity: String, book: Dictionary, vacant: bool) -> String:
+	if _battle.active or not vacant or _wild_homes.has(home) or not _wild_population.has(home) or _individuals.size() >= MAX_INDIVIDUALS or species == null or not species.valid() or not MoveLibrary.valid_book(book):
+		return ""
+	var row: Dictionary = _wild_population[home]
+	var origin := SolIdentityContract.parse(home)
+	if row.active or _tick < int(row.ready_at) or origin.is_empty() or species.species_id != origin.species_id:
+		return ""
+	var cell := Vector2i(int(origin.home[0]), int(origin.home[1]))
+	var identity := SolIdentityContract.make(_seed, cell, origin.species_id, int(row.generation))
+	if identity.is_empty() or _individuals.has(identity):
+		return ""
+	var record := species.snapshot()
+	record.merge({"id": identity, "home": [cell.x, cell.y], "generation": int(row.generation), "affinity": AffinityImprint.canonical(affinity), "location": "wild"})
+	var candidate := snapshot()
+	candidate.individuals[identity] = record
+	candidate.movebooks[identity] = book.duplicate(true)
+	candidate.wild_population[home].active = true
+	if not valid_snapshot(candidate, _seed):
+		return ""
+	_individuals[identity] = record
+	_movebooks[identity] = book.duplicate(true)
+	_wild_population[home].active = true
+	_known_homes[home] = true
+	_wild_homes[home] = identity
+	individual_changed.emit(identity)
+	return identity

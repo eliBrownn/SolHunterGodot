@@ -69,6 +69,9 @@ inferred starter; active battle snapshots cannot be saved.
 Domain 7 adds saved movebooks and sparse affinity/condition tiles; see
 [affinity, moves and imprints](affinity-moves-imprints.md) for explicit legacy
 affinity migration and recovery semantics.
+Domain 8 adds saved home generations/deadlines for
+[wild population recovery](wild-population-recovery.md), preserving unavailable
+individual history and the one-current-occupant projection.
 Format-1 saves upgrade in memory with
 empty persistent history; generation 1–4 terrain migration remains independent and can
 run in the same load. Loading preserves original file bytes. The next explicit save

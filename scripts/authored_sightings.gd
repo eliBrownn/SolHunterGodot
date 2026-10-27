@@ -60,7 +60,8 @@ func rebuild() -> void:
 		var home := Vector2i(entry.x, world.terrain.trail_y(entry.x))
 		if not world.terrain.fits(home):
 			continue # Never relocate an identity or overwrite terrain to fit a visual.
-		var identity := SolIdentityContract.make(world.terrain.world_seed, home, entry.species)
+		var base := SolIdentityContract.make(world.terrain.world_seed, home, entry.species)
+		var identity: String = world.persistent_state.home_occupant(base)
 		var record: Dictionary = world.persistent_state.individual_view(identity)
 		if identity.is_empty() or not world.persistent_state.wild_available(identity):
 			continue

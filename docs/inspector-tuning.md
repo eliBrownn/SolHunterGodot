@@ -82,6 +82,18 @@ The [battle feedback slice](battle-feedback.md) adds Sol Visual Settings control
 | Feedback Limit | 16; 1–32 cues | Retire oldest cues on admission; bounds visual node growth. |
 | Result Panel Enabled | true | Show the next runtime outcome recap. Does not affect commits, saves, or exploration pause. |
 
+The [wild recovery slice](wild-population-recovery.md) adds the root's Wild
+Recovery Settings resource (`resources/wild_recovery_settings.tres`):
+
+| Control | Default / range | Application |
+| --- | --- | --- |
+| Interval Ticks | 2400; 0–1000000 active ticks | 30 minutes at 0.75 seconds/tick. New victory/acquisition and historical-revisit waits capture an absolute deadline. Zero disables new waits, preserving old commitments. |
+| Local Radius | 14; 4–32 cells | Due authored homes activate only within this distance, on free legal ground. Does not change IDs or deadlines. |
+
+Restart after editing for consistent policy setup; live changes refresh on the
+next active tick. Saved deadlines retain their original timing. Invalid initial
+resources fall back with a warning; invalid live settings suspend admission.
+
 Battle settings are read for each new battle; restart after editing live resources
 to refresh chooser labels and the Enabled switch. Current battle settings and
 profiles are frozen for that battle. Refuge H recovery uses the chosen saved HP

@@ -498,6 +498,11 @@ func inspect_mouse() -> void:
 		inspection.text += "\nAffinity: " + str(data.affinity).capitalize()
 		for kind in data.conditions:
 			inspection.text += "\n%s · recovery stage %d/3" % [str(kind).capitalize(), int(data.conditions[kind].level)]
+	var wildlife: Variant = host.get("wild_recovery") if host != null else null
+	if wildlife != null:
+		var recovery_text: String = wildlife.describe_home(hovered)
+		if not recovery_text.is_empty():
+			inspection.text += "\n" + recovery_text
 
 func handle_input(event: InputEvent) -> void:
 	if confirmation.visible or (event is InputEventKey and event.echo):

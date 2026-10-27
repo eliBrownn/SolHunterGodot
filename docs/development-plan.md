@@ -217,3 +217,10 @@ The next [battle feedback slice](battle-feedback.md) adds capped damage/healing
 numbers, affinity pulses, result/imprint recaps, move tooltips, and keyboard field
 target confirmation/cancellation. It improves D4 readability while preserving
 the existing action, outcome, persistence and balance rules.
+
+[Repeatable authored wildlife homes](wild-population-recovery.md) now recover
+after saved active-time delays through distinct successor identities. Local
+vacant admission, retained old/owned records, fresh guard warnings, population
+projections, legacy full waits, movebooks and persistent imprints are covered.
+This is a bounded source-derived three-home loop, not production wildlife
+generation, affinity inheritance, reproduction, or a finalized rarity system.
