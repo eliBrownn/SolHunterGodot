@@ -121,6 +121,7 @@ func verify_persistence(state: ExpeditionState, latest: Dictionary) -> void:
 	legacy.erase("human_activity")
 	legacy.erase("natural")
 	legacy.erase("discoveries")
+	legacy.erase("roaming")
 	var upgraded := ExpeditionState.restore(legacy, 17)
 	check(upgraded != null and upgraded.snapshot().version == ExpeditionState.VERSION and upgraded.human_activity_view() == HumanVastraActivity.empty_ledger() and upgraded.snapshot().tile_deltas == legacy.tile_deltas, "D1 domain-v1 upgrades without inventing receipts or changing previous deltas")
 	var path := "user://d2-vastra-%d.json" % Time.get_ticks_usec()

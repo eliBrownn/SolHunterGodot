@@ -30,6 +30,10 @@ or use Make Unique and save the result. Defaults preserve the current behavior.
 | Visible Radius / Reaction Distance | 14 / 3; 4–32 / 1–6 cells | Distance culling and Manhattan proximity labels. Presentation only, including loaded worlds. |
 | Bob Pixels / Bob Cycles | 1 / 0.8; 0–3 pixels / 0.1–3 cycles per second | Idle animation amplitude/frequency. Zero pixels disables it; pause freezes it. No simulation or identity change. |
 | Observation Distance | 3; 1–6 Manhattan cells | F selects a nearby settled-player sighting within this range and visibility radius. Applies to loaded sightings; retained first-seen journal records do not change. |
+| Local Movement: Enabled / Interval Ticks | true / 1; 1–8 ticks | Run local responses once per interval of the 0.75-second active clock. Disable without resetting saved cells. |
+| Home Radius / Movement Radius | 5 / 7; 1–5 / 4–16 Manhattan cells | Limit distance from fixed home and player-local simulation range. Smaller home range returns gradually; no ID change. |
+| Comfort Distance / Flee Release Distance | 2 / 5; 1–3 / 2–8 cells | Neutral stopping distance and flight hysteresis. Release must be at least Reaction Distance. |
+| Movement Blend Seconds | 0.2; 0.05–0.5 seconds | Visual interpolation per cell. Does not change authoritative movement cadence. |
 
 Hover properties for their Inspector tooltips. Recovery defaults are provisional
 development tuning, not finalized ecological balance. Climate, movement, seed,

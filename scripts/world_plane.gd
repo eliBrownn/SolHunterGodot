@@ -13,7 +13,7 @@ const TEXTURE_SIZE := Vector2i(2048, 1536)
 @export var climate_settings: ClimateSettings = preload("res://resources/climate_settings.tres")
 ## Natural recovery timing, strength, and CPU work budget; applies to loaded worlds too.
 @export var vastra_settings: VastraSettings = preload("res://resources/vastra_settings.tres")
-## Display range, proximity reactions, and idle animation for the provisional authored trail Sols.
+## Display, observation range, local movement responses, and animation for the provisional trail Sols.
 @export var sighting_settings: SightingSettings = preload("res://resources/sighting_settings.tres")
 
 @export_group("Camera")

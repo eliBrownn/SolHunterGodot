@@ -60,6 +60,8 @@ version-1 compatibility. The subsequent [natural recovery slice](vastra-natural-
 adds domain version 3 with compatibility for both previous domain versions.
 The subsequent [observation journal](sol-observation-journal.md) adds domain
 version 4 while retaining compatibility with domains 1–3.
+The later [local-reaction slice](local-sol-reactions.md) adds domain version 5
+for current wild positions/actions while retaining domains 1–4.
 Format-1 saves upgrade in memory with
 empty persistent history; generation 1–4 terrain migration remains independent and can
 run in the same load. Loading preserves original file bytes. The next explicit save
