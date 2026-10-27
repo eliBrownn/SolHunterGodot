@@ -4,7 +4,7 @@ extends Node3D
 const ENTRIES := [
 	{"x": 8, "species": "seedmote", "name": "Seedmote", "lineage": "family_010", "class": "verdant", "affinity": "grove", "reaction": "Wary"},
 	{"x": 26, "species": "bramblepup", "name": "Bramblepup", "lineage": "family_001", "class": "beast", "affinity": "grove", "reaction": "Watching"},
-	{"x": 48, "species": "seedmote", "name": "Seedmote", "lineage": "family_010", "class": "verdant", "affinity": "gale", "reaction": "Guarding"}]
+	{"x": 48, "species": "seedmote", "name": "Seedmote", "lineage": "family_010", "class": "verdant", "affinity": "gale", "reaction": "Guarding", "hostile": true}]
 
 var world: Node2D
 var settings: SightingSettings
@@ -209,7 +209,7 @@ func sync_views(delta: float = 0.0) -> void:
 		member.sprite.position = Vector3(relative.x / 32.0, 0.08, relative.y / 32.0)
 		member.sprite.offset.y = 9 + sin(elapsed * TAU * settings.bob_cycles + member.home.x) * settings.bob_pixels
 		var reacting: bool = absi(difference.x) + absi(difference.y) <= settings.reaction_distance
-		member.label.visible = reacting
+		member.label.visible = reacting and not world.encounter_active
 		member.label.text = member.entry.name + "\n" + member.entry.reaction if reacting else ""
 		var row: Dictionary = world.persistent_state.roaming_view(member.id)
 		if reacting and row.get("action", "idle") != "idle":

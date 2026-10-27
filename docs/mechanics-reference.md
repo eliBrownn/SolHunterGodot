@@ -29,6 +29,7 @@ These paths were verified in the pinned snapshot. Read the actual relevant files
 | Question | Starting paths in SolHunterSource |
 | --- | --- |
 | Combat and tactics | `src/systems/combat_engine.py`, `src/systems/tactics/sol_combat.py`, `docs/coordination/combat-architecture.md` |
+| Encounter warning/entry and persistence | `src/systems/ai/encounters.py`, `src/core/game.py`, `docs/coordination/warning-movement-continuity.md`, `docs/coordination/encounter-persistence.md` |
 | Capture and sealing | `src/systems/tactics/capture.py`, `src/systems/tactics/seal_placement.py`, `docs/coordination/bp3-seal-relationship-audit.md` |
 | Individual identity and species | `src/systems/world/sol_identity.py`, `src/systems/world/sol_catalog.py`, `SOL_CLASS_AFFINITY_SPEC.md` |
 | Party and transfers | `src/systems/tactics/party.py`, `src/systems/tactics/party_switching.py`, `tests/test_party_transfer_safety.py` |

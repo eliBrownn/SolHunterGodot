@@ -104,3 +104,7 @@ Output: `artifacts/roaming/flee.png`. This is scripted verification, not manual
 acceptance. D3 still needs actual encounter initiation/resolution and broader
 authored behavior/content. Production wild generation and full milestone/device
 acceptance remain open.
+
+The subsequent [encounter-entry prototype](encounter-initiation.md) adds manual
+approach and owner-approved warned guard contact, with record/withdraw choices.
+Tactical battle and capture remain separate unimplemented systems.
