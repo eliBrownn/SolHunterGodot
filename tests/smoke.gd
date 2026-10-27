@@ -127,7 +127,10 @@ func run() -> void:
 	check(ExpeditionSave.read_save(save_path).get("generation_version") == WorldTerrain.GENERATION_VERSION, "Resaving uses the current generator")
 	# Projection round trip at both sides of the viewport, including negative cells.
 	check(scene.surface.mesh is PlaneMesh and scene.surface.rotation == Vector3.ZERO, "Terrain occupies a real horizontal XZ surface")
-	check(is_zero_approx(scene.camera.position.x) and scene.camera.position.y > 0 and scene.camera.position.z > scene.camera.position.y, "Low camera stays aligned with the world axes without sideways rotation")
+	var elevation := deg_to_rad(scene.camera_elevation)
+	var azimuth := deg_to_rad(scene.camera_azimuth)
+	var configured_direction := Vector3(sin(azimuth) * cos(elevation), sin(elevation), cos(azimuth) * cos(elevation))
+	check(scene.camera.position.normalized().is_equal_approx(configured_direction), "Camera honors configured elevation and azimuth without rotating terrain")
 	check(Vector2(scene.TEXTURE_SIZE) / 32.0 == scene.SURFACE_SIZE, "Enlarged 3D surface preserves one unit per terrain tile")
 	for zoom in [16.0, 22.0, 23.0]:
 		scene.camera.size = zoom

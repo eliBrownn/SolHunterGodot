@@ -32,6 +32,22 @@ func find(id: String) -> Dictionary:
 			return move.snapshot()
 	return {}
 
+func definitions() -> Dictionary:
+	var result := {}
+	for move in moves:
+		result[move.move_id] = move.snapshot()
+	return result
+
+func levels_for(species: String, milestones: Array) -> Dictionary:
+	var result := {}
+	var initial: PackedStringArray = starting_moves.get(species, PackedStringArray())
+	var next := 0
+	for id in species_pools.get(species, PackedStringArray()):
+		result[id] = 1 if initial.has(id) else int(milestones[mini(next, milestones.size() - 1)])
+		if not initial.has(id):
+			next += 1
+	return result
+
 func valid() -> bool:
 	if moves.is_empty() or moves.size() > 128 or species_pools.size() > 64 or not SolSpeciesDefinition.whole(recovery_interval, 1, 1000) or not SolSpeciesDefinition.whole(field_damage, 0, 10) or not SolSpeciesDefinition.whole(rough_cost, 1, 4) or not SolSpeciesDefinition.whole(assisted_cost, 0, 1) or not SolSpeciesDefinition.whole(resisted_cost, 1, 4):
 		return false

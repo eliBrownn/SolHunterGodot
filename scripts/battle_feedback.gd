@@ -113,8 +113,8 @@ static func ring_texture() -> Texture2D:
 	return ImageTexture.create_from_image(image)
 
 func show_result(outcome: String, hero: Dictionary, imprint: Dictionary, counts: Dictionary, history: Array[String]) -> void:
-	result_title.text = {"victory": "VICTORY", "exhaustion": "EXHAUSTION", "retreat": "SAFE RETREAT"}[outcome]
-	var lines: Array[String] = ["%s · HP %d/%d" % [hero.profile.display_name, int(hero.hp), int(hero.profile.max_hp)]]
+	result_title.text = {"victory": "VICTORY", "exhaustion": "EXHAUSTION", "retreat": "SAFE RETREAT", "captured": "SOL SEALED"}[outcome]
+	var lines: Array[String] = ["%s · Lv %d · HP %d/%d" % [hero.profile.display_name, int(hero.profile.level), int(hero.hp), int(hero.profile.max_hp)]]
 	if imprint.is_empty():
 		lines.append("No imprint: no successful moves.")
 	else:
@@ -130,6 +130,8 @@ func show_result(outcome: String, hero: Dictionary, imprint: Dictionary, counts:
 				leaders += 1
 		if leaders > 1 and not history.is_empty():
 			lines.append("Tie: the latest move among the tied affinities chose %s." % str(imprint.winner).capitalize())
+	if outcome == "captured":
+		lines.append("The same individual is now held by a Seal. C opens your companions.")
 	if outcome == "exhaustion":
 		lines.append("\nBack at the refuge. Press H to recover your companion.")
 	else:

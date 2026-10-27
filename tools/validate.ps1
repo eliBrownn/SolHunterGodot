@@ -33,6 +33,8 @@ try {
         Invoke-CheckedGodot @('--headless', '--path', $projectRoot, '--script', $suite)
         if ($LASTEXITCODE -ne 0) { throw "Validation failed: $suite" }
     }
+    Write-Host 'Running tests/ai_seals_progression.gd'
+    Invoke-CheckedGodot @('--headless', '--path', $projectRoot, '--script', 'tests/ai_seals_progression.gd')
     Write-Host 'Running smoke journey against solid 3D scene'
     Invoke-CheckedGodot @('--headless', '--path', $projectRoot, '--script', 'tests/smoke.gd', '--', '--scene=res://scenes/world_3d.tscn')
     if ($LASTEXITCODE -ne 0) { throw 'Solid 3D journey validation failed.' }

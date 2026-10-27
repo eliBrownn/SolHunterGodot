@@ -28,6 +28,8 @@ const TEXTURE_SIZE := Vector2i(2048, 1536)
 
 ## Saved active-time delays and local successor admission for depleted authored wildlife homes.
 @export var wild_recovery_settings: WildRecoverySettings = preload("res://resources/wild_recovery_settings.tres")
+## Source-derived battle XP, base-stat growth and approved prototype move unlock milestones.
+@export var progression_settings: ProgressionSettings = preload("res://resources/progression_settings.tres")
 
 @export_group("Camera")
 ## Degrees above the ground plane. Smaller is lower; 35 preserves the selected low-angle presentation. Applied at startup.

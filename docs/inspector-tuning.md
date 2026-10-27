@@ -122,6 +122,24 @@ change rather than treating them as balance values.
 
 ## Standard for future work
 
+The [AI, Seal and progression slice](ai-seals-progression.md) adds:
+
+| Control | Default / range | Application |
+| --- | --- | --- |
+| Battle Settings: Seal Power | 10; 1–100 | Frozen per new battle; same probability in preview and execution. Supply remains unlimited testing supply. |
+| AI Hazard Weight | 2; 0–10 | Penalty per expected shared field damage; lethal risk is tripled. Frozen per new battle. |
+| AI Heal Weight | 0.25; 0–2 | Source aggressive heal benefit relative to damage; frozen per new battle. |
+| AI Field Weight | 2; 0–10 | Provisional useful shared terrain benefit; damaging fields multiply this by 1.5. Frozen per new battle. |
+| Root Progression Settings (`resources/progression_settings.tres`): Threshold Factor | 10; 1–100 | Cumulative XP threshold = factor × current level². Restart/load refreshes policy, retaining saved XP and stats. |
+| Victory Base / XP Per Enemy Level / Minimum XP | 4 / 3 / 5; each 0–100 | Participating victory reward = max(minimum, base + enemy level × per level). Restart/load refreshes policy. |
+| Level Cap | 55; 1–55 | Future growth ceiling; existing higher-level profiles are never downgraded. Restart/load refreshes policy. |
+| HP Growth / Stat Growth | 2 / 1; each 0–10 | Future per-level maximum/current HP and attack/defense/speed increments. Restart/load refreshes policy; saved stats retain prior growth. |
+| Unlock Levels | [4, 8, 14]; three strictly increasing levels 1–55 | Provisional first/second/rest additional species moves. Captured on first individual schedule admission, including capture. Existing saved schedules and remembered moves are preserved. |
+
+Unlock scheduling follows explicit species pool order. Species pools and starting
+move definitions remain in Move Library. These controls do not implement genetics,
+evolution, opening quests or finite Seal economy.
+
 The [project standard](PROJECT_STANDARD.md) now requires future implemented tuning
 to be exposed through typed resources or grouped scene-root properties, with
 tooltips, units, ranges, validation, and documented application/save semantics.
