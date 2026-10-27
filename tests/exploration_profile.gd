@@ -104,6 +104,9 @@ func run() -> void:
 	report = {"engine": Engine.get_version_info().string, "os": OS.get_name(),
 		"renderer": RenderingServer.get_current_rendering_method(), "display": DisplayServer.get_name(),
 		"adapter": RenderingServer.get_video_adapter_name(), "viewport": [root.size.x, root.size.y],
+		"camera_elevation_degrees": scene.camera_elevation, "camera_azimuth_degrees": scene.camera_azimuth,
+		"ground_surface_units": [scene.SURFACE_SIZE.x, scene.SURFACE_SIZE.y],
+		"ground_texture_pixels": [scene.TEXTURE_SIZE.x, scene.TEXTURE_SIZE.y],
 		"frame_cap": FRAME_LIMIT, "seed": world.terrain.world_seed,
 		"generation_version": world.terrain.generation_version, "initial_scene_build_ms": startup_ms,
 		"method": "Real-time waypoint controller, normal interpolated movement, wall-clock frame intervals; no user input or teleport during travel. Not manual acceptance or an uncapped GPU benchmark."}

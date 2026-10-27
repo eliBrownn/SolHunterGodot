@@ -24,6 +24,17 @@ The generated `artifacts/d0/profile.json` records engine, renderer, GPU, viewpor
 
 ## Observed results
 
+Follow-up camera direction: the owner requested an angled view with depth. The
+scene now uses a 45-degree elevation and 20-degree azimuth above the real XZ
+plane, with a 64×48-unit surface and 2048×1536 texture. Both angles are exported
+on the root node for adjustment in Godot. The upright character stays
+camera-facing. Ground-plane picking and full viewport coverage at zooms 16, 22,
+and 23 passed regression checks, alongside 2,389 smoke and 209 generation checks.
+Refuge/landmark captures were regenerated and the diagonal refuge view inspected.
+The timing table below records the preceding camera/texture configuration and
+must not be presented as measurements of this larger angled surface. New profile
+reports include camera and ground-surface settings to make comparisons explicit.
+
 Environment: Windows, Godot 4.7.2 stable, OpenGL compatibility renderer, NVIDIA RTX 3070, 1280×800, 60 FPS cap, seed 2601026, generation version 4. These are individual local runs, not statistically established speedups or portable-device certification.
 
 | Measurement | Original full rebuild | Visible-first rebuild with upright character |

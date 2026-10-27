@@ -122,8 +122,15 @@ func run() -> void:
 	world.save_game(save_path)
 	check(ExpeditionSave.read_save(save_path).get("generation_version") == WorldTerrain.GENERATION_VERSION, "Resaving uses the current generator")
 	# Projection round trip at both sides of the viewport, including negative cells.
+	check(scene.surface.mesh is PlaneMesh and scene.surface.rotation == Vector3.ZERO, "Terrain occupies a real horizontal XZ surface")
+	check(scene.camera.position.x > 0 and scene.camera.position.y > 0 and scene.camera.position.z > 0, "Camera shows terrain from above and diagonally for depth")
+	check(Vector2(scene.TEXTURE_SIZE) / 32.0 == scene.SURFACE_SIZE, "Enlarged 3D surface preserves one unit per terrain tile")
 	for zoom in [16.0, 22.0, 23.0]:
 		scene.camera.size = zoom
+		var screen_size: Vector2 = root.get_visible_rect().size
+		for corner in [Vector2.ZERO, Vector2(screen_size.x, 0), Vector2(0, screen_size.y), screen_size]:
+			var corner_hit: Variant = Plane(Vector3.UP, 0).intersects_ray(scene.camera.project_ray_origin(corner), scene.camera.project_ray_normal(corner))
+			check(corner_hit != null and absf(corner_hit.x) <= scene.SURFACE_SIZE.x * 0.5 and absf(corner_hit.z) <= scene.SURFACE_SIZE.y * 0.5, "Angled camera keeps viewport corners over rendered terrain at zoom %.0f" % zoom)
 		for plane_position in [Vector3.ZERO, Vector3(-8, 0, -5), Vector3(8, 0, 5)]:
 			var screen: Vector2 = scene.camera.unproject_position(plane_position)
 			var ray_origin: Vector3 = scene.camera.project_ray_origin(screen)
