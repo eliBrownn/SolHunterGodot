@@ -1,0 +1,10 @@
+[gd_resource type="Resource" script_class="ExpeditionSettings" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/expedition_settings.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+initial_seed = 2601026
+move_seconds = 0.135
+territory_size = 16
+population_cache_territories = 256

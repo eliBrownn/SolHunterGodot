@@ -63,7 +63,7 @@ func run() -> void:
 	var before: Vector2 = world.explorer.position
 	world.advance_movement(1.0, Vector2.RIGHT)
 	check(world.cell == site.position + Vector2i(-1, 1) and world.explorer.position == before and not world.moving, "Live movement stops before the wall without visual penetration")
-	world.advance_movement(world.MOVE_SECONDS, Vector2.DOWN)
+	world.advance_movement(float(world.expedition_parameters().move_seconds), Vector2.DOWN)
 	check(world.cell == site.position + Vector2i(-1, 2), "A blocked step does not prevent the next legal direction")
 	if DisplayServer.get_name() != "headless":
 		var foundation: Transform3D = scene.place_root.get_node("prop").multimesh.get_instance_transform(0)

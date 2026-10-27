@@ -75,7 +75,7 @@ func traverse(target: Vector2i) -> Dictionary:
 			last = now
 			var change: Vector2i = path[i] - world.cell
 			check(absi(change.x) <= 1 and absi(change.y) <= 1, "Controller does not skip route cells")
-			var duration: float = world.MOVE_SECONDS * (sqrt(2.0) if change.x != 0 and change.y != 0 else 1.0)
+			var duration: float = float(world.expedition_parameters().move_seconds) * (sqrt(2.0) if change.x != 0 and change.y != 0 else 1.0)
 			# Use normal interpolated movement, limiting only to this controller's next waypoint.
 			world.advance_movement(minf(wall_delta, (1.0 - world.progress) * duration if world.moving else duration), Vector2(change).normalized())
 			observe()

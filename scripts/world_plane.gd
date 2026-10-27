@@ -6,7 +6,18 @@ const World = preload("res://scripts/world.gd")
 const ActorBillboard = preload("res://scripts/actor_billboard.gd")
 const SURFACE_SIZE := Vector2(64, 48)
 const TEXTURE_SIZE := Vector2i(2048, 1536)
+@export_group("Expedition Tuning")
+## Movement, starting seed, new-world territory size, and runtime population-summary capacity.
+@export var expedition_settings: ExpeditionSettings = preload("res://resources/expedition_settings.tres")
+## New-expedition habitat settings. Loaded expeditions retain their saved climate.
+@export var climate_settings: ClimateSettings = preload("res://resources/climate_settings.tres")
+## Natural recovery timing, strength, and CPU work budget; applies to loaded worlds too.
+@export var vastra_settings: VastraSettings = preload("res://resources/vastra_settings.tres")
+
+@export_group("Camera")
+## Degrees above the ground plane. Smaller is lower; 35 preserves the selected low-angle presentation. Applied at startup.
 @export_range(35.0, 70.0, 1.0) var camera_elevation := 35.0
+## Sideways camera rotation. Zero keeps world axes aligned. Applied at startup.
 @export_range(-45.0, 45.0, 1.0) var camera_azimuth := 0.0
 var surface := MeshInstance3D.new()
 var viewport := SubViewport.new()
@@ -24,6 +35,9 @@ func _ready() -> void:
 	add_child(viewport)
 	world = World.new()
 	world.host = self
+	world.expedition_settings = expedition_settings
+	world.climate_settings = climate_settings
+	world.vastra_settings = vastra_settings
 	viewport.add_child(world)
 	var plane := PlaneMesh.new()
 	plane.size = SURFACE_SIZE
