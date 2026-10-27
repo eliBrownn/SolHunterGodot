@@ -1,0 +1,171 @@
+[gd_resource type="Resource" script_class="MoveLibrary" load_steps=18 format=3]
+
+[ext_resource type="Script" path="res://scripts/move_library.gd" id="1"]
+[ext_resource type="Script" path="res://scripts/sol_move.gd" id="2"]
+
+[sub_resource type="Resource" id="strike"]
+script = ExtResource("2")
+move_id = "strike"
+display_name = "Strike"
+affinity = "earth"
+effect = "damage"
+power = 6
+reach = 2
+duration = 8
+
+[sub_resource type="Resource" id="cinder_claw"]
+script = ExtResource("2")
+move_id = "cinder_claw"
+display_name = "Cinder Claw"
+affinity = "fire"
+effect = "damage"
+power = 6
+reach = 2
+duration = 8
+
+[sub_resource type="Resource" id="fin_strike"]
+script = ExtResource("2")
+move_id = "fin_strike"
+display_name = "Fin Strike"
+affinity = "water"
+effect = "damage"
+power = 6
+reach = 2
+duration = 8
+
+[sub_resource type="Resource" id="vine_whip"]
+script = ExtResource("2")
+move_id = "vine_whip"
+display_name = "Vine Whip"
+affinity = "earth"
+effect = "damage"
+power = 6
+reach = 2
+duration = 8
+
+[sub_resource type="Resource" id="mend"]
+script = ExtResource("2")
+move_id = "mend"
+display_name = "Renewing Current"
+affinity = "water"
+effect = "heal"
+power = 6
+reach = 2
+duration = 8
+
+[sub_resource type="Resource" id="heat"]
+script = ExtResource("2")
+move_id = "heat"
+display_name = "Heat & Smoke"
+affinity = "fire"
+effect = "field"
+power = 0
+reach = 3
+duration = 8
+
+[sub_resource type="Resource" id="current"]
+script = ExtResource("2")
+move_id = "current"
+display_name = "Current"
+affinity = "water"
+effect = "field"
+power = 0
+reach = 3
+duration = 8
+
+[sub_resource type="Resource" id="barrier"]
+script = ExtResource("2")
+move_id = "barrier"
+display_name = "Raised Ground"
+affinity = "earth"
+effect = "field"
+power = 0
+reach = 3
+duration = 8
+
+[sub_resource type="Resource" id="wind"]
+script = ExtResource("2")
+move_id = "wind"
+display_name = "Crosswind"
+affinity = "air"
+effect = "field"
+power = 0
+reach = 3
+duration = 8
+
+[sub_resource type="Resource" id="charge"]
+script = ExtResource("2")
+move_id = "charge"
+display_name = "Charged Path"
+affinity = "lightning"
+effect = "field"
+power = 0
+reach = 3
+duration = 8
+
+[sub_resource type="Resource" id="warp"]
+script = ExtResource("2")
+move_id = "warp"
+display_name = "Warp Zone"
+affinity = "void"
+effect = "field"
+power = 0
+reach = 3
+duration = 8
+
+[sub_resource type="Resource" id="phase"]
+script = ExtResource("2")
+move_id = "phase"
+display_name = "Thin Passage"
+affinity = "spectral"
+effect = "phase"
+power = 0
+reach = 3
+duration = 8
+
+[sub_resource type="Resource" id="superpose"]
+script = ExtResource("2")
+move_id = "superpose"
+display_name = "Superposition"
+affinity = "quantum"
+effect = "quantum"
+power = 0
+reach = 3
+duration = 8
+
+[sub_resource type="Resource" id="entangle"]
+script = ExtResource("2")
+move_id = "entangle"
+display_name = "Entangled Ground"
+affinity = "quantum"
+effect = "field"
+power = 0
+reach = 3
+duration = 8
+
+[sub_resource type="Resource" id="anchor"]
+script = ExtResource("2")
+move_id = "anchor"
+display_name = "Stable Footing"
+affinity = "earth"
+effect = "anchor"
+power = 0
+reach = 1
+duration = 3
+
+[resource]
+script = ExtResource("1")
+moves = Array[ExtResource("2")]([SubResource("strike"), SubResource("cinder_claw"), SubResource("fin_strike"), SubResource("vine_whip"), SubResource("mend"), SubResource("heat"), SubResource("current"), SubResource("barrier"), SubResource("wind"), SubResource("charge"), SubResource("warp"), SubResource("phase"), SubResource("superpose"), SubResource("entangle"), SubResource("anchor")])
+species_pools = {
+"bramblepup": PackedStringArray("strike", "heat", "current", "barrier", "anchor", "wind", "charge", "phase", "warp", "superpose", "entangle", "mend"),
+"ashkit": PackedStringArray("cinder_claw", "heat", "wind", "charge", "current", "warp", "superpose", "entangle", "phase"),
+"rillfin": PackedStringArray("fin_strike", "current", "mend", "wind", "charge", "barrier", "warp", "phase", "superpose", "entangle"),
+"seedmote": PackedStringArray("vine_whip", "barrier", "wind", "mend", "anchor", "current", "heat", "phase", "warp", "superpose", "entangle"),
+}
+starting_moves = {
+"bramblepup": PackedStringArray("strike", "heat", "current", "barrier"),
+"ashkit": PackedStringArray("cinder_claw", "heat", "wind", "charge"),
+"rillfin": PackedStringArray("fin_strike", "current", "mend", "wind"),
+"seedmote": PackedStringArray("vine_whip", "barrier", "wind", "mend"),
+}
+recovery_interval = 8

@@ -205,3 +205,10 @@ The owner's subsequent [affinity orb direction](affinity-orbs.md) replaces Sol
 silhouettes with hovering pixel spheres and basic affinity colors/effects in
 exploration and battle. Shared Inspector settings control presentation; saved
 individual affinity remains authoritative and no combat bonuses are added.
+
+The [affinity/move/imprint slice](affinity-moves-imprints.md) records the owner's
+eight-affinity decisions in the Bible and connects four-slot remembered movebooks,
+explicit species eligibility, shared field prototypes, lasting battle-wide tile
+imprints, and independent condition recovery. This advances D4/D5 with migration
+and save contracts; production progression, wildlife rarity rates, broader ability
+content and manual milestone acceptance remain open.

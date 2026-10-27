@@ -175,6 +175,8 @@ func verify_schema(snapshot: Dictionary, original: String, path: String) -> void
 	old.version = 4
 	old.erase("roaming")
 	old.erase("battle")
+	old.erase("movebooks")
+	old.erase("affinity_tiles")
 	var restored := ExpeditionState.restore(old, seed_value)
 	check(restored != null and restored.snapshot().roaming.is_empty() and restored.snapshot().individuals == old.individuals, "Domain-v4 saves load at existing homes without invented movement history")
 	var identity: String = snapshot.roaming.keys()[0]

@@ -1,5 +1,9 @@
 # First playable battle
 
+The subsequent [affinity/move slice](affinity-moves-imprints.md) adds four equipped
+moves, species learnsets, field effects, permanent tile imprints, and domain 7.
+It supersedes this original slice's neutral-basic and domain-6 limitations.
+
 Implemented October 27, 2026: explicit starter choice, persistent companion and
 deployment, tactical movement/basic attacks/enemy turns, and durable victory,
 exhaustion, and retreat outcomes. This is a two-unit D4 prototype in the existing

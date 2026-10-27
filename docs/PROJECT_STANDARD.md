@@ -22,7 +22,8 @@ default. See [the visual direction decision](decisions/2026-10-26-pixel-art-3d.m
 Owner direction, October 27, 2026: Sols use hovering balls with basic colors and
 effects from the individual’s assigned affinity, in exploration and battles.
 Preserve the pixel-art presentation and real 3D placement. The editable palette
-is provisional visual tuning, not a species/class mapping or new combat rule.
+follows the approved Bible color directions; exact RGB values remain editable
+art tuning. Colors never derive from species/class.
 See [affinity orb presentation](affinity-orbs.md).
 
 Keep the root small: project entry/configuration, README, agent instructions, and repository tooling. Use the following destinations as content arrives; do not create empty scaffolding or relocate existing assets solely for cosmetic consistency.
@@ -82,6 +83,10 @@ Review binary asset size before adding it. Adopt Git LFS intentionally for selec
 For documentation, check links, paths, consistency, and whitespace. For game changes, run relevant automated checks and import/parse validation using the pinned engine, then exercise the affected scene or feature. For exports, smoke-test the actual export. Record commands, results, and checks unavailable locally. Do not add meaningless tests for prose or claim a playable build exists from documentation checks alone.
 
 The shared local/CI entry point is `tools/validate.ps1`, requiring Godot 4.7.2 stable. The GitHub Actions job is `Godot 4.7.2 import and tests` in `.github/workflows/validate.yml`. Its first remote run passed, and a failing assertion in a disposable clone confirmed that the shared validator exits nonzero. The workflow remains subject to PR review; required-check enforcement is a separate repository-settings change. Revalidate the official archive digest whenever deliberately changing the engine pin.
+
+The validator also rejects `SCRIPT ERROR:` and `ERROR:` output even when Godot
+returns zero. Expected warning fixtures remain permitted. This closes the
+zero-exit script-error gap observed during October 27 affinity implementation.
 
 ## Daily maintenance at 7:00 AM Pacific
 

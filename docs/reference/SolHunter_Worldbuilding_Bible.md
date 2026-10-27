@@ -142,7 +142,7 @@ Vastra currents can be visibly perceived in the environment under normal conditi
 
 This provides a basis for environmental art direction, affinity effects, magical phenomena, and visual storytelling.
 
-The exact color assigned to each affinity has not been fully established.
+The initial eight-affinity palette was approved on October 27, 2026; see the owner-approved affinity and move rules below. Distinctive replacement names remain unresolved.
 
 ### 10. Concentration and overload
 
@@ -1103,7 +1103,7 @@ Open canon and implementation questions
 These are genuine gaps, not decisions I have silently filled in.
 
 - Full final names and definitions of all 18 classes.
-- Exact affinity-color assignments.
+- Distinctive display names for the approved eight-affinity roster; numerical color values remain editable art tuning.
 - Vastra concentration-to-damage scaling formula.
 - Storm thresholds, probabilities, severity, and cooldowns.
 - Exact ecological carrying-capacity and restoration formulas.
@@ -1181,3 +1181,67 @@ The exact complete 18-class roster, original narrative passages, detailed move l
 No project files or GitHub documents have been edited as part of this compilation.
 
 SolHunter Worldbuilding Bible — consolidated research edition. Confirmed canon, provisional design, and deferred concepts remain distinct until incorporated into the authoritative project documents.
+
+## Owner-approved affinity, move, and battle-imprint rules — October 27, 2026
+
+These explicit owner decisions supersede earlier provisional affinity lists,
+neutral-move assumptions, and any suggestion that battle imprints naturally revert.
+They do not finalize unspecified numerical balance or distinctive replacement names.
+
+### Affinity roster and identity
+
+Each individual Sol has an affinity independent of its species and fixed class.
+The ordinary roster is Fire, Water, Earth, Air, and Lightning. Void and Spectral
+are rare special affinities; Quantum is the rarest. Special affinities offer
+unusual capabilities with meaningful tradeoffs, not greater overall power.
+Environment and combat are equally important uses, with combat emphasizing
+terrain and battlefield conditions. Conditions generally affect both sides;
+positioning determines the advantage.
+
+| Working name | Approved color direction | Approved role |
+| --- | --- | --- |
+| Fire | Orange | Spreading heat, prepared bursts, smoke and embers |
+| Water | Blue | Currents and wet terrain, with a smaller role for each |
+| Earth | Ochre | Barriers, rough ground, stable footing |
+| Air | Pale cyan | Directional winds, displacement, dispersing smoke |
+| Lightning | Yellow | Conductive paths, warned charge/discharge zones, action and movement disruption |
+| Void | Deep violet | Warp zones shorten some routes and lengthen others, affecting both sides |
+| Spectral | Mint | Cross thin obstacles, but finish on legal open ground |
+| Quantum | Shifting pink/cyan | Mix superposition, probability, and entanglement; player-chosen outcomes within clear limits, little randomness |
+
+Explore distinctive names without changing these meanings. Exact rarity rates,
+ability costs, durations, ranges, learning progression, and effect interactions
+remain authoring/balance decisions. Ordinary Sol activity does not originate
+unnatural ecological overload; that remains separate from natural terrain changes.
+
+### Moves and species learnsets
+
+A Sol equips at most four moves. Additional learned moves remain remembered and
+can be swapped outside battle. A species has an explicit learnable move pool;
+that pool determines eligibility even when a move differs from the individual's
+affinity. Every move has an assigned affinity. Innate abilities remain distinct
+from equipped combat moves.
+
+### Battle activity and lasting tile affinity
+
+Only successful moves contribute activity, using the move's assigned affinity,
+not the acting Sol's affinity. A move is successful if it produces at least one
+intended effect: damage, healing, status, or a terrain/field change. Movement,
+deployment, and waiting contribute nothing. A successful move contributes one
+activity event; hitting more tiles does not create extra move events.
+
+Track the union of successful moves' target/effect tiles. Include the user's tile
+only when the move affects it. At every resolved battle outcome—victory,
+exhaustion, or retreat—the most active affinity replaces affinity on every tile
+in that union. Break an activity-count tie using the latest successful move
+belonging to one of the tied affinities. With no successful moves, there is no
+imprint. This rule replaces the earlier acting-Sol contribution proposal.
+
+The new tile affinity persists and does not naturally revert. Other terrain
+conditions persist after battle and gradually recover through simulation.
+Recovery must preserve the new affinity. Saving/loading must retain learned and
+equipped moves, tile imprints, and remaining condition recovery without replaying
+battle completion or introducing unnatural overload.
+
+Owner-approved legacy migration: Grove → Earth, Ember → Fire, Tide → Water,
+Gale → Air. Preserve individual identity, species/class, health, and progress.

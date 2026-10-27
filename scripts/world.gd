@@ -302,6 +302,7 @@ func advance_environment(_tick: int) -> void:
 		warn_configuration_once("vastra", "Invalid Vastra tuning; using default recovery settings.")
 		settings = VastraSettings.new().parameters()
 	persistent_state.advance_environment(settings)
+	persistent_state.recover_affinity_conditions()
 
 func _process(delta: float) -> void:
 	if frame_times.size() >= 3600:
@@ -331,13 +332,14 @@ func advance_movement(delta: float, direction: Vector2) -> void:
 			if direction.length_squared() < 0.1:
 				break
 			var step := Vector2i(signi(roundi(direction.x * 2)), signi(roundi(direction.y * 2)))
-			if not terrain.can_step(cell, cell + step):
+			if not can_step(cell, cell + step):
 				break
 			destination = cell + step
 			progress = 0.0
 			moving = true
 			explorer.facing = Vector2(step)
 		var duration := float(expedition_parameters().move_seconds) * (sqrt(2.0) if destination.x != cell.x and destination.y != cell.y else 1.0)
+		duration *= condition_move_multiplier(cell, destination)
 		var consumed := minf(remaining, (1.0 - progress) * duration)
 		progress += consumed / duration
 		remaining -= consumed
@@ -491,6 +493,10 @@ func inspect_mouse() -> void:
 	var names := ["Meadow", "Woodland", "Heath", "Marsh", "Water", "Shore"]
 	var access := "Building · blocked" if data.obstacle == 3 else ("Passable" if data.walkable else "Blocked")
 	inspection.text = "EXAMINE · %s %s\nWetness %d / 100\nVastra concentration %d / 100\nEcological overload %d / 100\n%s" % [names[data.ground], hovered, roundi(data.wetness * 100), data.concentration, data.overload, access]
+	if data.has("affinity"):
+		inspection.text += "\nAffinity: " + str(data.affinity).capitalize()
+		for kind in data.conditions:
+			inspection.text += "\n%s · recovery stage %d/3" % [str(kind).capitalize(), int(data.conditions[kind].level)]
 
 func handle_input(event: InputEvent) -> void:
 	if confirmation.visible or (event is InputEventKey and event.echo):
@@ -528,3 +534,32 @@ func handle_input(event: InputEvent) -> void:
 		if event.is_action_pressed("journal"):
 			journal_panel.visible = not journal_panel.visible
 
+
+func can_step(from: Vector2i, to: Vector2i) -> bool:
+	if not terrain.can_step(from, to):
+		return false
+	var conditions: Dictionary = persistent_state.environment_view(to, {}).get("conditions", {})
+	if conditions.has("barrier"):
+		return false
+	if from.x != to.x and from.y != to.y:
+		for side in [Vector2i(from.x, to.y), Vector2i(to.x, from.y)]:
+			if persistent_state.environment_view(side, {}).get("conditions", {}).has("barrier"):
+				return false
+	return true
+
+func condition_move_multiplier(from: Vector2i, to: Vector2i) -> float:
+	var library: MoveLibrary = host.get("move_library") if host != null else null
+	if library == null or not library.valid():
+		library = preload("res://resources/move_library.tres")
+	var conditions: Dictionary = persistent_state.environment_view(to, {}).get("conditions", {})
+	if conditions.has("rough"):
+		return library.world_rough_multiplier
+	if conditions.has("warp"):
+		return library.world_warp_short if from.x == to.x else library.world_warp_long
+	for kind in ["wet", "wind"]:
+		if conditions.has(kind):
+			var d: Array = conditions[kind].direction
+			var delta := to - from
+			var dot := delta.x * int(d[0]) + delta.y * int(d[1])
+			return library.world_flow_assisted if dot > 0 else (library.world_flow_resisted if dot < 0 else 1.0)
+	return 1.0

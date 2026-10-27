@@ -20,9 +20,9 @@ return to the refuge. Names and artwork for these places are temporary.
 | E | Toggle tile examination under the pointer |
 | F | Observe a nearby Sol |
 | R | Approach a nearby Sol; Escape withdraws from the encounter panel |
-| C / 1–3 | Open companion selection / explicitly choose a starter |
+| C / 1–3 | Choose a starter; C afterward opens move learning and four-slot loadouts |
 | H | Recover companion health at the refuge |
-| Battle controls | Click blue tiles or use arrows; Enter deploys/ends turn, Space attacks, Escape retreats |
+| Battle controls | 1–4 use moves; click highlighted field targets; arrows move; Enter deploys/ends turn, Space uses slot 1, Escape retreats |
 | J | Field Notes: saved sightings and session log |
 | F5 / F9 | Save / load expedition |
 | Escape | Pause, save/load, or start another seed |
