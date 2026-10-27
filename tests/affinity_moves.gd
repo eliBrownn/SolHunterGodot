@@ -136,6 +136,7 @@ func verify_live() -> void:
 	legacy.version = 6
 	legacy.erase("movebooks")
 	legacy.erase("affinity_tiles")
+	legacy.erase("wild_population")
 	legacy.individuals[hero.id].affinity = "grove"
 	legacy.battle.profile.affinity = "grove"
 	var upgraded := ExpeditionState.restore(legacy, 17)

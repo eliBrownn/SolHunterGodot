@@ -155,6 +155,7 @@ func verify_persistence() -> void:
 		old.erase("battle")
 		old.erase("movebooks")
 		old.erase("affinity_tiles")
+		old.erase("wild_population")
 		if version == 1:
 			old.erase("human_activity")
 		var upgraded := ExpeditionState.restore(old, 17)

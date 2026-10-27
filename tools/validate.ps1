@@ -28,7 +28,7 @@ try {
     Invoke-CheckedGodot @('--headless', '--path', $projectRoot, '--editor', '--import', '--quit')
     if ($LASTEXITCODE -ne 0) { throw 'Godot import failed.' }
 
-    foreach ($suite in @('tests/smoke.gd', 'tests/world_generation.gd', 'tests/solid_geometry.gd', 'tests/building_collision.gd', 'tests/presentation.gd', 'tests/persistent_foundation.gd', 'tests/human_vastra_activity.gd', 'tests/vastra_natural.gd', 'tests/population_summary.gd', 'tests/inspector_tuning.gd', 'tests/authored_sightings.gd', 'tests/sol_observation.gd', 'tests/local_sol_reactions.gd', 'tests/encounter_initiation.gd', 'tests/first_playable_battle.gd', 'tests/sol_orbs.gd', 'tests/affinity_moves.gd', 'tests/battle_feedback.gd')) {
+    foreach ($suite in @('tests/smoke.gd', 'tests/world_generation.gd', 'tests/solid_geometry.gd', 'tests/building_collision.gd', 'tests/presentation.gd', 'tests/persistent_foundation.gd', 'tests/human_vastra_activity.gd', 'tests/vastra_natural.gd', 'tests/population_summary.gd', 'tests/inspector_tuning.gd', 'tests/authored_sightings.gd', 'tests/sol_observation.gd', 'tests/local_sol_reactions.gd', 'tests/encounter_initiation.gd', 'tests/first_playable_battle.gd', 'tests/sol_orbs.gd', 'tests/affinity_moves.gd', 'tests/battle_feedback.gd', 'tests/wild_population_recovery.gd')) {
         Write-Host "Running $suite"
         Invoke-CheckedGodot @('--headless', '--path', $projectRoot, '--script', $suite)
         if ($LASTEXITCODE -ne 0) { throw "Validation failed: $suite" }
