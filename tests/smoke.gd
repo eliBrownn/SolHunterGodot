@@ -42,9 +42,14 @@ func run() -> void:
 	var scene := packed.instantiate()
 	root.add_child(scene)
 	current_scene = scene
-	await process_frame
 	var world: Node2D = scene.world
 	world.smoke_mode = true
+	check(world.chunks.size() < 49 and not world.pending.is_empty(), "Initial build leaves offscreen chunks for bounded streaming")
+	check_visible_chunks(world)
+	check(not world.explorer.body.visible, "Ground texture does not duplicate the billboard character")
+	check(scene.player_billboard.billboard == BaseMaterial3D.BILLBOARD_ENABLED, "Character remains camera-facing")
+	check(is_equal_approx(scene.player_billboard.pixel_size, 1.0 / 32.0), "Billboard uses the terrain pixel scale")
+	await process_frame
 	var path := route(world.terrain, 1)
 	for i in range(1, path.size()):
 		walk_to(world, path[i])
@@ -57,10 +62,18 @@ func run() -> void:
 		walk_to(world, path[i])
 		await process_frame
 	check(world.returned, "Movement triggers return to camp")
+	world.explorer.facing = Vector2.LEFT
+	world.explorer._process(0.0)
+	scene.player_billboard.sync_art()
+	check(scene.player_billboard.flip_h, "Upright character retains left-facing art")
+	check(scene.player_billboard.texture == world.explorer.body.texture, "Billboard reuses the authored directional atlas")
+	check(Vector2(scene.player_billboard.position.x, scene.player_billboard.position.z).distance_to((world.explorer.position - world.camera.position) / 32.0) < 0.001, "Billboard feet track the ground shadow")
 	var expected: Array = world.terrain.extract_chunk(Vector2i.ZERO)
 	world.cell = Vector2i(-100, -100)
 	world.plan_chunks()
 	check(not world.chunks.has(Vector2i.ZERO), "Distant chunk eviction")
+	world.rebuild_world()
+	check_visible_chunks(world)
 	world.cell = Vector2i.ZERO
 	world.rebuild_world()
 	check(world.chunks[Vector2i.ZERO].view.cells == expected, "Evicted defaults reconstruct exactly")
@@ -70,7 +83,9 @@ func run() -> void:
 	var snapshot := ExpeditionSave.read_save(save_path)
 	check(not snapshot.is_empty() and snapshot.returned, "Save and validate expedition")
 	world.new_expedition(7)
+	check_visible_chunks(world)
 	world.load_game(save_path)
+	check_visible_chunks(world)
 	check(world.terrain.world_seed == 2601026 and world.returned and world.cell == Vector2i.ZERO, "Restore complete live state")
 	world.save_game(save_path)
 	check(FileAccess.file_exists(save_path + ".bak"), "Replacement preserves backup")
@@ -136,3 +151,12 @@ func walk_to(world: Node2D, next: Vector2i) -> void:
 	var seconds: float = world.MOVE_SECONDS * (sqrt(2.0) if change.x != 0 and change.y != 0 else 1.0)
 	world.advance_movement(seconds, Vector2(change).normalized())
 	check(world.cell == next and not world.moving, "Actual movement reaches settled destination")
+
+func check_visible_chunks(world: Node2D) -> void:
+	# Include the largest current tree canopy, whose anchor can be offscreen.
+	var half_view: Vector2 = world.get_viewport_rect().size * 0.5 + Vector2(40, 120)
+	for y in [-1.0, 0.0, 1.0]:
+		for x in [-1.0, 0.0, 1.0]:
+			var point: Vector2 = world.camera.position + half_view * Vector2(x, y)
+			var cell := Vector2i(floori(point.x / 32.0), floori(point.y / 32.0))
+			check(world.chunks.has(world.terrain.chunk_of(cell)), "Visible viewport covered immediately after rebuild")

@@ -3,6 +3,7 @@ extends Node3D
 ## HUD is a sibling of the SubViewport and remains in screen space.
 
 const World = preload("res://scripts/world.gd")
+const ActorBillboard = preload("res://scripts/actor_billboard.gd")
 const SURFACE_SIZE := Vector2(48, 30)
 const TEXTURE_SIZE := Vector2i(1536, 960)
 var surface := MeshInstance3D.new()
@@ -10,6 +11,7 @@ var viewport := SubViewport.new()
 var camera := Camera3D.new()
 var world: Node2D
 var target_size := 22.0
+var player_billboard: Sprite3D
 
 func _ready() -> void:
 	viewport.size = TEXTURE_SIZE
@@ -36,6 +38,9 @@ func _ready() -> void:
 	camera.position = Vector3(0, 35, 25)
 	camera.look_at(Vector3.ZERO)
 	camera.current = true
+	player_billboard = ActorBillboard.new()
+	add_child(player_billboard)
+	player_billboard.bind(world.explorer, world.camera)
 	# Match the 2D ground projection to a tilted plane while preserving pixel assets.
 	if OS.get_cmdline_user_args().has("--capture"):
 		_capture.call_deferred()
