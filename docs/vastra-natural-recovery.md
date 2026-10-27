@@ -97,3 +97,7 @@ exposure, and a full D2 acceptance claim are outside this slice. The current gam
 does not produce damage through a player tool, so normal pristine expeditions
 remain healthy; test fixtures exercise recovery without installing a production
 disturbance mechanic.
+
+The subsequent [population-summary slice](population-summaries.md) supplies a
+bounded non-generating query contract. It does not enable assistance or use cache
+presence to alter baseline recovery.
