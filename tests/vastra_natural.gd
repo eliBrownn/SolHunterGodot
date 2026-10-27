@@ -187,6 +187,8 @@ func verify_persistence() -> void:
 
 func verify_live_scene() -> void:
 	var scene: Node3D = (load("res://scenes/world_3d.tscn") as PackedScene).instantiate()
+	scene.sighting_settings = SightingSettings.new()
+	scene.sighting_settings.enabled = false # Keep the manually replaced recovery fixture content-free.
 	root.add_child(scene)
 	var world: Node2D = scene.world
 	world.smoke_mode = true

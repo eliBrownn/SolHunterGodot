@@ -26,6 +26,9 @@ or use Make Unique and save the result. Defaults preserve the current behavior.
 | Tiles Per Tick | 32; 1–1024 | Maximum changed cells serviced per tick. Larger values reduce queue delay but cost more CPU. Applies to loaded worlds. |
 | Root Camera Elevation | 35; 35–70 degrees | Applied at startup. Lower is closer to the plane; 35 is the selected low-angle presentation. |
 | Root Camera Azimuth | 0; -45–45 degrees | Applied at startup. Zero preserves aligned world axes; changing it rotates the camera sideways. |
+| `resources/sighting_settings.tres`: Enabled | true | Show/admit the three provisional sightings at startup/new seed/load. Disabling does not delete saved individuals. |
+| Visible Radius / Reaction Distance | 14 / 3; 4–32 / 1–6 cells | Distance culling and Manhattan proximity labels. Presentation only, including loaded worlds. |
+| Bob Pixels / Bob Cycles | 1 / 0.8; 0–3 pixels / 0.1–3 cycles per second | Idle animation amplitude/frequency. Zero pixels disables it; pause freezes it. No simulation or identity change. |
 
 Hover properties for their Inspector tooltips. Recovery defaults are provisional
 development tuning, not finalized ecological balance. Climate, movement, seed,
