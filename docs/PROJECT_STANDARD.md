@@ -62,6 +62,8 @@ Review binary asset size before adding it. Adopt Git LFS intentionally for selec
 
 For documentation, check links, paths, consistency, and whitespace. For game changes, run relevant automated checks and import/parse validation using the pinned engine, then exercise the affected scene or feature. For exports, smoke-test the actual export. Record commands, results, and checks unavailable locally. Do not add meaningless tests for prose or claim a playable build exists from documentation checks alone.
 
+The shared local/CI entry point is `tools/validate.ps1`, requiring Godot 4.7.2 stable. The proposed GitHub Actions job is `Godot 4.7.2 import and tests` in `.github/workflows/validate.yml`. Confirm its remote success and failure behavior before treating it as an enforced required check. Revalidate the official archive digest whenever deliberately changing the engine pin.
+
 ## Daily maintenance at 7:00 AM Pacific
 
 The scheduled chat maintenance runs daily at 07:00 America/Los_Angeles, including weekends. Inspect before changing anything:

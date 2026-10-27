@@ -16,18 +16,20 @@ Completion evidence: policy and entry points agree, the daily schedule is active
 
 ## M1 — Preserve the current work and establish Git history
 
-Priority: current. Local branch: `codex/exploration-plane`; maintenance baseline commit: `bb7f316`.
+Completed baseline: remote `main` at `ac656ce`; subsequent maintenance uses topic branches and PRs.
 
 - [x] Coordinate with any active implementation work before staging or switching branches.
 - [x] Restore remote inspection and confirm origin's history, default branch, and access rights. A missing tracking ref is not proof of an empty remote.
 - [x] Review the intended source inventory, Bible, asset provenance/licensing, large binaries, and potential secrets. Keep generated caches, captures, builds, and saves out of history.
 - [x] If origin has history, reconcile in an isolated checkout without overwriting local work. If origin is empty, prepare an intentional bootstrap commit with an explicit reviewed file list.
-- [ ] Commit only agreed, reviewed content; establish the integration branch and upstream consistent with the verified remote state.
-- [ ] Push through the appropriate bootstrap or topic-branch path, then verify the remote commit matches the intended local commit.
+- [x] Commit only agreed, reviewed content; establish the integration branch and upstream consistent with the verified remote state.
+- [x] Push through the appropriate bootstrap or topic-branch path, then verify the remote commit matches the intended local commit.
 
 Completion evidence: a recorded branch and commit, verified remote reachability and push status, and all remaining local changes accounted for. Never sweep up untracked work merely to make status clean.
 
 Current evidence: app inventory showed the other chat in this checkout idle. Unsandboxed `git ls-remote --symref origin` succeeded with no refs; the GitHub connector independently returned no branches, default branch `main`, public visibility, and push/admin permission. Maintenance baseline `bb7f316` contains seven named maintenance files. The owner subsequently confirmed public source redistribution rights for the supplied art pack; its provenance records that confirmation. The explicit prototype bootstrap inventory comprises README, assets, development notes, the Bible, project configuration, resources, scenes, scripts with UID sidecars, tests/fixtures, and the asset importer. Generated cache, captures, and builds remain excluded.
+
+Completion recorded: `main` was initialized without force at `ac656ce7eba063a303e0c93c1001f385647181d4`, matching the verified remote HEAD and main ref. The working tree was clean. A separate clone from remote main passed import and both suites and remained clean afterward.
 
 ## M2 — Make contribution review enforceable
 
@@ -46,15 +48,17 @@ Completion evidence: a reviewed example PR and a verified protection summary. A 
 Depends on M1; can proceed alongside M2.
 
 - [x] Verify the README's Godot 4.7.2 environment and record a reproducible installation/version check.
-- [ ] Run the documented headless import, smoke, and world-generation checks on a clean checkout; record results and prerequisites.
+- [x] Run the documented headless import, smoke, and world-generation checks on a clean checkout; record results and prerequisites.
 - [x] Define one repeatable validation entry point using those existing checks, with meaningful failure exit codes.
-- [ ] Add CI using the verified engine version and required asset/import setup; do not expose credentials or upload proprietary source assets as public artifacts.
+- [x] Add CI using the verified engine version and required asset/import setup; do not expose credentials or upload proprietary source assets as public artifacts.
 - [ ] Verify a passing run and that an actual validation failure blocks the check, then select the working check names for branch rules.
 - [ ] Keep manual playtesting, presentation acceptance, and target-hardware performance measurements explicit where automation cannot establish them.
 
 Completion evidence: a fresh checkout can reproduce checks and CI reports the same checks accurately.
 
 Preparation evidence: `tools/validate.ps1` verifies Godot 4.7.2 stable, imports the project, and runs both suites. On the current working tree it passed 2,331 smoke checks and 209 generation checks across ten seeds. A missing-engine probe returned exit code 1. These are working-tree results, not clean-checkout or CI evidence; the full milestone remains open.
+
+Clean-checkout evidence: a fresh clone of remote main at `ac656ce` passed the same 2,540 checks and retained a clean Git status. CI now proposes a Windows job using the exact official Godot archive, its release API SHA-256 digest, a pinned checkout action commit, read-only repository permission, and a ten-minute timeout. Remote CI results and required-check enforcement remain separate completion gates.
 
 ## M4 — Keep project growth organized
 

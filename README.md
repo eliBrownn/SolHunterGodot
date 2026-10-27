@@ -78,6 +78,10 @@ python tools/import_basic_pack.py 'path/to/Pixel Art Top Down - Basic v1.2.3.zip
 
 ## Validation
 
+The proposed `Godot validation` GitHub Actions workflow runs the same entry point
+on pull requests to `main` and pushes to `main` or `codex/` branches. It pins the
+engine archive checksum and uploads no source assets or build artifacts.
+
 Run the existing import and test suites together (requires Godot 4.7.2 stable):
 
 ```powershell
