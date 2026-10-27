@@ -27,6 +27,7 @@ Keep the root small: project entry/configuration, README, agent instructions, an
 | `ROADMAP.md` | Repository management milestones and completion evidence |
 | `scenes/` | Reusable and game-specific scenes |
 | `scripts/` | Game code, grouped by feature |
+| `shaders/` | Godot shader resources for the pixel-art 3D presentation |
 | `assets/` | Runtime art, audio, fonts, and source asset metadata |
 | `resources/` | Authored Godot resources and game data |
 | `addons/` | Deliberately adopted editor/runtime plugins with licenses |
