@@ -77,6 +77,7 @@ godot --path . --script tests/sol_observation.gd -- --capture-journal
 ```
 
 Output: `artifacts/observation/journal.png`. This is scripted visual/input-routing
-verification, not native keyboard or accessibility acceptance. Actual roaming,
-battle initiation, capture interaction, and production wildlife generation remain
-future work; D3 is not declared complete.
+verification, not native keyboard or accessibility acceptance. The subsequent
+[local-reaction slice](local-sol-reactions.md) adds bounded movement. Battle
+initiation, capture interaction, and production wildlife generation remain future
+work; D3 is not declared complete.

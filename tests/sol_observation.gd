@@ -101,6 +101,7 @@ func verify_schema(snapshot: Dictionary, original: String, path: String) -> void
 		var legacy := snapshot.duplicate(true)
 		legacy.version = version
 		legacy.erase("discoveries")
+		legacy.erase("roaming")
 		if version < 3:
 			legacy.erase("natural")
 		if version < 2:

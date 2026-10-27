@@ -45,6 +45,11 @@ static func validate(data: Variant) -> bool:
 	if not WorldTerrain.valid_climate(data.get("climate")):
 		return false
 	var terrain := WorldTerrain.new(int(seed_value), data.climate)
+	for identity in data.get("world_state", {}).get("roaming", {}):
+		var row: Dictionary = data.world_state.roaming[identity]
+		var individual: Dictionary = data.world_state.individuals[identity]
+		if not terrain.fits(Vector2i(int(row.cell[0]), int(row.cell[1])), int(individual.footprint)):
+			return false
 	return terrain.fits(Vector2i(int(cell[0]), int(cell[1])))
 
 static func whole_number(value: Variant) -> bool:

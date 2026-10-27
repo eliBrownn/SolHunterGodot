@@ -9,8 +9,9 @@ signal activity_advanced(tick: int)
 signal human_activity_applied(event: Dictionary, effect: Dictionary)
 signal discovery_recorded(identity: String)
 
-const VERSION := 4
+const VERSION := 5
 const MAX_DISCOVERIES := 120 # Source journal retention: oldest discovery rows retire, not individuals.
+const MAX_ROAMING_DISTANCE := 5 # Saved movement schema bound; tuning may choose a smaller home range.
 const TERRITORY_SIZE := 16 # Source development setting; independent of render chunk size.
 const ACTIVITY_INTERVAL := 0.75
 const MAX_CATCH_UP := 2
@@ -30,6 +31,7 @@ var _tile_deltas: Dictionary = {}
 var _human_activity := HumanVastraActivity.empty_ledger()
 var _natural := VastraNatural.empty_schedule()
 var _discoveries: Array[Dictionary] = []
+var _roaming: Dictionary = {}
 # Derived indexes: never saved and never sources of population or individual identity.
 var _known_homes: Dictionary = {}
 var _wild_homes: Dictionary = {}
@@ -89,6 +91,27 @@ func territory_view(cell: Vector2i) -> Dictionary:
 
 func individual_view(identity: String) -> Dictionary:
 	return _individuals.get(identity, {}).duplicate(true)
+
+func roaming_view(identity: String) -> Dictionary:
+	var record: Dictionary = _individuals.get(identity, {})
+	if record.get("location") != "wild":
+		return {}
+	return _roaming.get(identity, {"cell": record.home, "action": "idle", "tick": -1}).duplicate(true)
+
+func record_roaming_step(identity: String, target: Vector2i, action: String) -> bool:
+	var previous := roaming_view(identity)
+	if previous.is_empty() or int(previous.tick) >= _tick:
+		return false
+	var from := Vector2i(int(previous.cell[0]), int(previous.cell[1]))
+	var change := target - from
+	if absi(change.x) + absi(change.y) > 1:
+		return false
+	var candidate := {"cell": [target.x, target.y], "action": action, "tick": _tick}
+	if not valid_roaming(candidate, _individuals[identity], _tick):
+		return false
+	_roaming[identity] = candidate
+	individual_changed.emit(identity)
+	return true
 
 func discovery_entries() -> Array[Dictionary]:
 	return _discoveries.duplicate(true)
@@ -212,6 +235,7 @@ func acquire(identity: String, location: String = "sealed") -> bool:
 		return false
 	_individuals[identity].location = location
 	_wild_homes.erase(home_identity(identity))
+	_roaming.erase(identity)
 	individual_changed.emit(identity)
 	return true
 
@@ -328,7 +352,7 @@ func snapshot() -> Dictionary:
 		"territory_size": _territory_size, "territories": _territories.duplicate(true),
 		"individuals": _individuals.duplicate(true), "tile_deltas": _tile_deltas.duplicate(true),
 		"human_activity": _human_activity.duplicate(true), "natural": _natural.duplicate(true),
-		"discoveries": _discoveries.duplicate(true)}
+		"discoveries": _discoveries.duplicate(true), "roaming": _roaming.duplicate(true)}
 
 static func restore(data: Variant, seed_value: int) -> ExpeditionState:
 	if not valid_snapshot(data, seed_value):
@@ -339,6 +363,12 @@ static func restore(data: Variant, seed_value: int) -> ExpeditionState:
 	state._territories = data.territories.duplicate(true)
 	state._individuals = data.individuals.duplicate(true)
 	state._tile_deltas = data.tile_deltas.duplicate(true)
+	if int(data.version) >= 5:
+		state._roaming = data.roaming.duplicate(true)
+		for identity in state._roaming:
+			var row: Dictionary = state._roaming[identity]
+			row.cell = [int(row.cell[0]), int(row.cell[1])]
+			row.tick = int(row.tick)
 	if int(data.version) >= 4:
 		for entry in data.discoveries:
 			var copy: Dictionary = entry.duplicate(true)
@@ -416,6 +446,15 @@ static func valid_relationship(data: Variant, tick: int) -> bool:
 		previous = int(memory.tick)
 	return true
 
+static func valid_roaming(row: Variant, individual: Dictionary, tick: int) -> bool:
+	if not row is Dictionary or not keys_match(row, ["cell", "action", "tick"]) or individual.get("location") != "wild":
+		return false
+	if row.action not in ["idle", "flee", "approach", "guard", "return"] or not SolSpeciesDefinition.whole(row.tick, 0, tick) or not row.cell is Array or row.cell.size() != 2:
+		return false
+	if not SolSpeciesDefinition.whole(row.cell[0], -1000000, 1000000) or not SolSpeciesDefinition.whole(row.cell[1], -1000000, 1000000):
+		return false
+	return absi(int(row.cell[0]) - int(individual.home[0])) + absi(int(row.cell[1]) - int(individual.home[1])) <= MAX_ROAMING_DISTANCE
+
 static func valid_discovery(entry: Variant, individuals: Dictionary) -> bool:
 	if not entry is Dictionary or not keys_match(entry, ["key", "title", "category", "description", "details", "first_seen"]):
 		return false
@@ -438,6 +477,8 @@ static func valid_snapshot(data: Variant, seed_value: int) -> bool:
 		expected_fields.append("natural")
 	if int(data.version) >= 4:
 		expected_fields.append("discoveries")
+	if int(data.version) >= 5:
+		expected_fields.append("roaming")
 	if not keys_match(data, expected_fields):
 		return false
 	if not SolSpeciesDefinition.whole(seed_value, 0, 2147483646) or not SolSpeciesDefinition.whole(data.activity_tick, 0, MAX_SAFE_INTEGER) or not SolSpeciesDefinition.whole(data.territory_size, 1, 256):
@@ -509,6 +550,12 @@ static func valid_snapshot(data: Variant, seed_value: int) -> bool:
 		if definitions.has(record.species_id) and definitions[record.species_id] != definition:
 			return false
 		definitions[record.species_id] = definition
+	if int(data.version) >= 5:
+		if not data.roaming is Dictionary or data.roaming.size() > data.individuals.size():
+			return false
+		for identity in data.roaming:
+			if not identity is String or not data.individuals.has(identity) or not valid_roaming(data.roaming[identity], data.individuals[identity], int(data.activity_tick)):
+				return false
 	for key in data.tile_deltas:
 		if not key is String or not valid_delta(data.tile_deltas[key]):
 			return false

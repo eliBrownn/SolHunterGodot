@@ -79,3 +79,6 @@ suites remain outside the headless total.
 The subsequent [observation/journal slice](sol-observation-journal.md) adds F to
 record a nearby individual and a persistent Sightings tab. It still adds no
 roaming, battle, capture action, or relationship gain.
+
+The later [local-reaction slice](local-sol-reactions.md) adds bounded flee,
+approach, guard/return behavior and saved current positions without changing homes.
