@@ -58,6 +58,8 @@ Save format 2 originally introduced version-1 `world_state`; the subsequent
 [human activity slice](vastra-human-activity.md) adds domain version 2 while retaining
 version-1 compatibility. The subsequent [natural recovery slice](vastra-natural-recovery.md)
 adds domain version 3 with compatibility for both previous domain versions.
+The subsequent [observation journal](sol-observation-journal.md) adds domain
+version 4 while retaining compatibility with domains 1–3.
 Format-1 saves upgrade in memory with
 empty persistent history; generation 1–4 terrain migration remains independent and can
 run in the same load. Loading preserves original file bytes. The next explicit save

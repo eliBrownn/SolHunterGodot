@@ -7,8 +7,10 @@ signal individual_changed(identity: String)
 signal environment_changed(cell: Vector2i)
 signal activity_advanced(tick: int)
 signal human_activity_applied(event: Dictionary, effect: Dictionary)
+signal discovery_recorded(identity: String)
 
-const VERSION := 3
+const VERSION := 4
+const MAX_DISCOVERIES := 120 # Source journal retention: oldest discovery rows retire, not individuals.
 const TERRITORY_SIZE := 16 # Source development setting; independent of render chunk size.
 const ACTIVITY_INTERVAL := 0.75
 const MAX_CATCH_UP := 2
@@ -27,6 +29,7 @@ var _individuals: Dictionary = {}
 var _tile_deltas: Dictionary = {}
 var _human_activity := HumanVastraActivity.empty_ledger()
 var _natural := VastraNatural.empty_schedule()
+var _discoveries: Array[Dictionary] = []
 # Derived indexes: never saved and never sources of population or individual identity.
 var _known_homes: Dictionary = {}
 var _wild_homes: Dictionary = {}
@@ -86,6 +89,28 @@ func territory_view(cell: Vector2i) -> Dictionary:
 
 func individual_view(identity: String) -> Dictionary:
 	return _individuals.get(identity, {}).duplicate(true)
+
+func discovery_entries() -> Array[Dictionary]:
+	return _discoveries.duplicate(true)
+
+func has_discovery(identity: String) -> bool:
+	for entry in _discoveries:
+		if entry.key == identity:
+			return true
+	return false
+
+func record_sol_discovery(identity: String, title: String, description: String, seen_at: Vector2i) -> bool:
+	if not _individuals.has(identity) or _individuals[identity].location != "wild" or has_discovery(identity):
+		return false
+	var entry := {"key": identity, "title": title, "category": "Wild Sol", "description": description,
+		"details": [], "first_seen": [seen_at.x, seen_at.y]}
+	if not valid_discovery(entry, _individuals):
+		return false
+	_discoveries.append(entry)
+	if _discoveries.size() > MAX_DISCOVERIES:
+		_discoveries.pop_front()
+	discovery_recorded.emit(identity)
+	return true
 
 func home_identity(identity: String) -> String:
 	var origin := SolIdentityContract.parse(identity)
@@ -302,7 +327,8 @@ func snapshot() -> Dictionary:
 	return {"version": VERSION, "activity_tick": _tick, "remainder_seconds": _remainder,
 		"territory_size": _territory_size, "territories": _territories.duplicate(true),
 		"individuals": _individuals.duplicate(true), "tile_deltas": _tile_deltas.duplicate(true),
-		"human_activity": _human_activity.duplicate(true), "natural": _natural.duplicate(true)}
+		"human_activity": _human_activity.duplicate(true), "natural": _natural.duplicate(true),
+		"discoveries": _discoveries.duplicate(true)}
 
 static func restore(data: Variant, seed_value: int) -> ExpeditionState:
 	if not valid_snapshot(data, seed_value):
@@ -313,6 +339,11 @@ static func restore(data: Variant, seed_value: int) -> ExpeditionState:
 	state._territories = data.territories.duplicate(true)
 	state._individuals = data.individuals.duplicate(true)
 	state._tile_deltas = data.tile_deltas.duplicate(true)
+	if int(data.version) >= 4:
+		for entry in data.discoveries:
+			var copy: Dictionary = entry.duplicate(true)
+			copy.first_seen = [int(copy.first_seen[0]), int(copy.first_seen[1])]
+			state._discoveries.append(copy)
 	if int(data.version) >= 2:
 		state._human_activity = HumanVastraActivity.normalized_ledger(data.human_activity)
 	if int(data.version) >= 3:
@@ -385,6 +416,18 @@ static func valid_relationship(data: Variant, tick: int) -> bool:
 		previous = int(memory.tick)
 	return true
 
+static func valid_discovery(entry: Variant, individuals: Dictionary) -> bool:
+	if not entry is Dictionary or not keys_match(entry, ["key", "title", "category", "description", "details", "first_seen"]):
+		return false
+	if not entry.key is String or not individuals.has(entry.key) or not SolSpeciesDefinition.text(entry.title, 80) or entry.category != "Wild Sol" or not SolSpeciesDefinition.text(entry.description, 400):
+		return false
+	if not entry.details is Array or entry.details.size() > 8 or not entry.first_seen is Array or entry.first_seen.size() != 2:
+		return false
+	for detail in entry.details:
+		if not SolSpeciesDefinition.text(detail, 120):
+			return false
+	return SolSpeciesDefinition.whole(entry.first_seen[0], -1000000, 1000000) and SolSpeciesDefinition.whole(entry.first_seen[1], -1000000, 1000000)
+
 static func valid_snapshot(data: Variant, seed_value: int) -> bool:
 	if not data is Dictionary or not SolSpeciesDefinition.whole(data.get("version"), 1, VERSION):
 		return false
@@ -393,6 +436,8 @@ static func valid_snapshot(data: Variant, seed_value: int) -> bool:
 		expected_fields.append("human_activity")
 	if int(data.version) >= 3:
 		expected_fields.append("natural")
+	if int(data.version) >= 4:
+		expected_fields.append("discoveries")
 	if not keys_match(data, expected_fields):
 		return false
 	if not SolSpeciesDefinition.whole(seed_value, 0, 2147483646) or not SolSpeciesDefinition.whole(data.activity_tick, 0, MAX_SAFE_INTEGER) or not SolSpeciesDefinition.whole(data.territory_size, 1, 256):
@@ -403,6 +448,14 @@ static func valid_snapshot(data: Variant, seed_value: int) -> bool:
 		return false
 	if not data.territories is Dictionary or data.territories.size() > MAX_TERRITORIES or not data.individuals is Dictionary or data.individuals.size() > MAX_INDIVIDUALS or not data.tile_deltas is Dictionary or data.tile_deltas.size() > MAX_TILE_DELTAS:
 		return false
+	if int(data.version) >= 4:
+		if not data.discoveries is Array or data.discoveries.size() > MAX_DISCOVERIES:
+			return false
+		var discovery_keys: Dictionary = {}
+		for entry in data.discoveries:
+			if not valid_discovery(entry, data.individuals) or discovery_keys.has(entry.key):
+				return false
+			discovery_keys[entry.key] = true
 	if int(data.version) >= 3:
 		# Tile fields are checked below before schedule validation reads their values.
 		for value in data.tile_deltas.values():

@@ -7,5 +7,6 @@ script = ExtResource("1")
 enabled = true
 visible_radius = 14
 reaction_distance = 3
+observation_distance = 3
 bob_pixels = 1.0
 bob_cycles = 0.8

@@ -19,6 +19,7 @@ func bind(source: Node2D, tuning: SightingSettings) -> void:
 		push_warning("Invalid sighting tuning; using default sighting settings.")
 	world.rebuilt.connect(rebuild)
 	world.state_replaced.connect(initialize_individuals)
+	world.observe_requested.connect(observe_nearest)
 	initialize_individuals(world.persistent_state)
 	rebuild()
 
@@ -96,6 +97,33 @@ func _process(delta: float) -> void:
 		elapsed += delta
 	sync_views()
 
+func observable_member() -> Dictionary:
+	if not settings.valid() or not settings.enabled or world.paused or world.moving or world.confirmation.visible:
+		return {}
+	var nearest: Dictionary = {}
+	var best := 2147483647
+	for member in members:
+		var offset: Vector2i = member.home - world.cell
+		var distance := absi(offset.x) + absi(offset.y)
+		if distance > settings.observation_distance or Vector2(offset).length() > settings.visible_radius or world.persistent_state.individual_view(member.id).get("location") != "wild":
+			continue
+		if distance < best or (distance == best and str(member.id) < str(nearest.get("id", ""))):
+			nearest = member
+			best = distance
+	return nearest
+
+func observe_nearest() -> void:
+	var member := observable_member()
+	if member.is_empty():
+		world.message("Stop near a Sol to observe it.", false)
+		return
+	var description: String = {"Wary": "It keeps a wary watch as you approach.", "Watching": "It watches you from the trail.", "Guarding": "It holds its place and watches your approach."}[member.entry.reaction]
+	if world.persistent_state.record_sol_discovery(member.id, member.entry.name, description, member.home):
+		world.message("%s sighting recorded. Open Field Notes with %s." % [member.entry.name, world.key_label("journal")])
+	else:
+		world.message("This individual is already recorded in Field Notes.", false)
+	sync_views()
+
 func sync_views() -> void:
 	var safe := settings != null and settings.valid() and settings.enabled
 	for member in members:
@@ -110,3 +138,5 @@ func sync_views() -> void:
 		var reacting: bool = absi(difference.x) + absi(difference.y) <= settings.reaction_distance
 		member.label.visible = reacting
 		member.label.text = member.entry.name + "\n" + member.entry.reaction if reacting else ""
+		if reacting and absi(difference.x) + absi(difference.y) <= settings.observation_distance:
+			member.label.text += "\n%s · %s" % [world.key_label("observe_sol"), "Recorded" if world.persistent_state.has_discovery(member.id) else "Observe"]
