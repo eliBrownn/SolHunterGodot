@@ -2,11 +2,13 @@ extends "res://scripts/world_plane.gd"
 ## Optional solid-3D view over the unchanged generated world and expedition simulation.
 
 const SolidChunk = preload("res://scripts/solid_chunk.gd")
+const PlayerVisibility = preload("res://scripts/player_visibility.gd")
 var solid_root := Node3D.new()
 var place_root: Node3D
 var solid_chunks: Dictionary = {}
 var selection := Node3D.new()
 var player_shadow := MeshInstance3D.new()
+var visibility_aid: MeshInstance3D
 
 func _ready() -> void:
 	capture_directory = "res://artifacts/solid3d"
@@ -22,6 +24,9 @@ func _ready() -> void:
 	add_child(solid_root)
 	build_selection()
 	build_player_shadow()
+	visibility_aid = PlayerVisibility.new()
+	add_child(visibility_aid)
+	visibility_aid.bind(player_billboard, camera)
 	world.chunk_published.connect(publish_solid)
 	world.chunk_removed.connect(remove_solid)
 	world.rebuilt.connect(build_solid_places)
@@ -53,6 +58,10 @@ func _process(_delta: float) -> void:
 
 func sync_ground() -> void:
 	solid_root.position = Vector3(-world.camera.position.x / 32.0, 0, -world.camera.position.y / 32.0)
+	var origin: Vector2 = world.camera.position / 32.0
+	for kind in ["water", "bank", "shore_rim"]:
+		if SolidChunk.meshes.has(kind):
+			SolidChunk.meshes[kind].material.set_shader_parameter("world_origin", origin)
 	var player_relative: Vector2 = (world.explorer.position - world.camera.position) / 32.0
 	player_shadow.position = Vector3(player_relative.x, 0.045, player_relative.y)
 	selection.visible = world.hover_outline.visible
@@ -96,7 +105,7 @@ func publish_solid(coord: Vector2i, cells: Array[Dictionary]) -> void:
 	remove_solid(coord)
 	var chunk := SolidChunk.new()
 	chunk.position = Vector3(coord.x * 16, 0, coord.y * 16)
-	chunk.build(cells)
+	chunk.build(cells, world.terrain, coord)
 	solid_root.add_child(chunk)
 	solid_chunks[coord] = chunk
 

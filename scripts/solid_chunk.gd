@@ -5,6 +5,7 @@ static var meshes: Dictionary = {}
 var batches: Dictionary = {}
 var tile_count := 0
 var obstacle_count := 0
+var shoreline_edges := 0
 
 static func mesh_for(kind: String) -> Mesh:
 	if meshes.has(kind):
@@ -34,8 +35,15 @@ static func mesh_for(kind: String) -> Mesh:
 		if kind == "wall":
 			material.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
 	if kind == "water":
-		material.roughness = 0.28
-	mesh.material = material
+		var water := ShaderMaterial.new()
+		water.shader = preload("res://shaders/pixel_water.gdshader")
+		mesh.material = water
+	elif kind == "bank" or kind == "shore_rim":
+		var bank := ShaderMaterial.new()
+		bank.shader = preload("res://shaders/pixel_bank.gdshader")
+		mesh.material = bank
+	else:
+		mesh.material = material
 	meshes[kind] = mesh
 	return mesh
 
@@ -115,7 +123,7 @@ func finish() -> void:
 		add_child(view)
 	batches.clear()
 
-func build(cells: Array[Dictionary]) -> void:
+func build(cells: Array[Dictionary], terrain: WorldTerrain = null, coord: Vector2i = Vector2i.ZERO) -> void:
 	var palette := [Color("647d51"), Color("4c6949"), Color("938164"), Color("55796e"), Color("367e89"), Color("c4b183")]
 	for index in range(cells.size()):
 		var data: Dictionary = cells[index]
@@ -124,6 +132,13 @@ func build(cells: Array[Dictionary]) -> void:
 		var color: Color = palette[data.ground].lightened(shade)
 		if data.ground == WorldTerrain.Ground.WATER:
 			add_piece("water", at + Vector3(0, -0.30, 0), Vector3(1.002, 0.16, 1.002), color)
+			for direction in [Vector2i.LEFT, Vector2i.RIGHT, Vector2i.UP, Vector2i.DOWN]:
+				if neighbor_is_land(cells, index, direction, terrain, coord):
+					var edge := Vector3(direction.x, 0, direction.y)
+					var along_x: bool = direction.y != 0
+					add_piece("bank", at + edge * 0.5 + Vector3(0, -0.11, 0), Vector3(1.0, 0.22, 0.025) if along_x else Vector3(0.025, 0.22, 1.0), Color.WHITE)
+					add_piece("shore_rim", at + edge * 0.49 + Vector3(0, 0.006, 0), Vector3(1.0, 0.012, 0.06) if along_x else Vector3(0.06, 0.012, 1.0), Color.WHITE)
+					shoreline_edges += 1
 		else:
 			add_piece("ground", at + Vector3(0, -0.35, 0), Vector3(1.002, 0.70, 1.002), color)
 			add_piece("grass_%d" % (int(data.variation) % 4), at + Vector3(0, 0.002, 0), Vector3.ONE, data.get("tint", Color.WHITE))
@@ -138,3 +153,11 @@ func build(cells: Array[Dictionary]) -> void:
 			obstacle_count += 1
 		tile_count += 1
 	finish()
+
+static func neighbor_is_land(cells: Array[Dictionary], index: int, direction: Vector2i, terrain: WorldTerrain, coord: Vector2i) -> bool:
+	var neighbor := Vector2i(index % 16, floori(float(index) / 16)) + direction
+	if neighbor.x >= 0 and neighbor.x < 16 and neighbor.y >= 0 and neighbor.y < 16:
+		return cells[neighbor.y * 16 + neighbor.x].ground != WorldTerrain.Ground.WATER
+	if terrain != null:
+		return terrain.sample(coord * 16 + neighbor).ground != WorldTerrain.Ground.WATER
+	return false

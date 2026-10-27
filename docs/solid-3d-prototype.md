@@ -34,7 +34,7 @@ Publication timing includes subscribed 3D chunk construction. The logical near-p
 - The cabin now reserves a blocking footprint shared by its model, movement, Examine, and saving. It is placed clear of protected routes with a traversable approach. See [building collision](building-collision.md). Bench and other small authored props remain decorative; the cabin has no enterable interior yet.
 - Trees, rocks, and water retain their existing logical tile blocking. Locomotion is still the tested grid/footprint traversal system, not a new CharacterBody3D/physics controller.
 - The water recess demonstrates height, but there are no traversable hills, slopes, stairs, or vertical gameplay. Examine uses the existing logical ground-plane projection.
-- Water and banks still need a consistent pixel-art treatment; characters use the placeholder directional sprite set.
+- Water and banks now have pixel-stepped ripple/bank shaders, and a depth-based silhouette keeps the player readable behind foreground art. See [water and visibility](water-and-visibility.md). Characters still use the placeholder directional sprite set.
 - The hybrid 3D/pixel-art direction is approved, but final asset quality, manual journey acceptance, and portable-device performance targets remain open. The alternate view remains a reference.
 
 ## Verification
