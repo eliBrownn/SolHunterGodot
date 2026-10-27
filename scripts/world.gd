@@ -215,6 +215,7 @@ func center(at: Vector2i) -> Vector2:
 
 func add_prop(key: String, at: Vector2i) -> void:
 	var sprite := PackArt.sprite(key, center(at))
+	sprite.set_meta("asset_key", key)
 	actors.add_child(sprite)
 	place_props.append(sprite)
 

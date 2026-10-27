@@ -27,9 +27,12 @@ func run() -> void:
 	check(chunk.tile_count == 256, "Every prepared cell contributes one ground or water tile")
 	check(chunk.get_node("ground").multimesh.instance_count == 255, "Land is solid batched geometry")
 	check(chunk.get_node("water").multimesh.instance_count == 1, "Water replaces rather than overlaps its land tile")
-	check(chunk.get_node("paving").multimesh.instance_count == 4, "Authored trail mask produces solid paving")
-	check(chunk.get_node("trunk").multimesh.instance_count == 1 and chunk.get_node("crown").multimesh.instance_count == 2, "Tree uses a volumetric trunk and canopy")
-	check(chunk.get_node("rock").multimesh.instance_count == 1 and chunk.obstacle_count == 2, "Existing obstacles map to solid props")
+	check(chunk.get_node("trail_3").multimesh.instance_count == 1, "Trail mask preserves the original pixel-art paving")
+	check(chunk.get_node("sprite_tree_lower").multimesh.instance_count == 1 and chunk.get_node("sprite_tree_upper").multimesh.instance_count == 1, "Upright tree retains both authored pixel-art pieces")
+	check(chunk.get_node("sprite_rock").multimesh.instance_count == 1 and chunk.obstacle_count == 2, "Existing obstacles retain their pixel art and placement")
+	check(chunk.get_node("grass_3").multimesh.instance_count == 255, "Original grass artwork covers every land tile")
+	var tree_material: StandardMaterial3D = chunk.get_node("sprite_tree_lower").multimesh.mesh.surface_get_material(0)
+	check(tree_material.texture_filter == BaseMaterial3D.TEXTURE_FILTER_NEAREST and tree_material.billboard_mode == BaseMaterial3D.BILLBOARD_FIXED_Y, "Pixel foliage stays crisp and upright in 3D")
 	# The headless dummy renderer returns identity instead of retaining GPU instance transforms.
 	if DisplayServer.get_name() != "headless":
 		var land: Transform3D = chunk.get_node("ground").multimesh.get_instance_transform(0)

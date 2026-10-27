@@ -41,7 +41,8 @@ func _ready() -> void:
 	environment.ambient_light_source = Environment.AMBIENT_SOURCE_COLOR
 	environment.ambient_light_color = Color("c6d2db")
 	environment.ambient_light_energy = 0.35
-	environment.tonemap_mode = Environment.TONE_MAPPER_FILMIC
+	# Preserve authored sprite colors instead of applying a cinematic contrast curve.
+	environment.tonemap_mode = Environment.TONE_MAPPER_LINEAR
 	var atmosphere := WorldEnvironment.new()
 	atmosphere.environment = environment
 	add_child(atmosphere)
@@ -109,30 +110,19 @@ func build_solid_places() -> void:
 		place_root.free()
 	place_root = SolidChunk.new()
 	solid_root.add_child(place_root)
-	var stone := Color("adae9d")
-	var wood := Color("8a6849")
 	# A deliberately decorative refuge mockup for judging architectural depth.
 	var cabin := Vector2i(-3, -4)
 	piece("prop", cabin, Vector3(0, 0.12, 0), Vector3(3.0, 0.24, 2.4), Color("777d76"))
-	piece("prop", cabin, Vector3(0, 1.04, 0), Vector3(2.8, 1.60, 2.0), Color("a59677"))
+	piece("wall", cabin, Vector3(0, 1.04, 0), Vector3(2.8, 1.60, 2.0), Color.WHITE)
 	piece("roof", cabin, Vector3(0, 2.27, 0), Vector3(3.3, 0.86, 2.5), Color("665a4f"))
 	piece("prop", cabin, Vector3(0, 0.86, 1.015), Vector3(0.64, 1.24, 0.05), Color("594431"))
 	for window_x in [-0.94, 0.94]:
 		piece("prop", cabin, Vector3(window_x, 1.13, 1.025), Vector3(0.48, 0.44, 0.06), Color("d1bb81"))
-	# Solid versions of the existing decorative anchors; they add no collision rules.
-	for leg in [-0.72, 0.72]:
-		piece("prop", Vector2i(-2, -2), Vector3(leg, 0.25, 0), Vector3(0.18, 0.5, 0.60), stone)
-	piece("prop", Vector2i(-2, -2), Vector3(0, 0.56, 0), Vector3(1.85, 0.20, 0.70), stone)
-	piece("prop", Vector2i(-3, -1), Vector3(0, 0.43, 0), Vector3(0.80, 0.86, 0.80), wood)
-	piece("prop", Vector2i(1, -3), Vector3(0, 0.55, 0), Vector3(0.32, 1.10, 0.32), stone)
-	piece("prop", Vector2i(1, -3), Vector3(0, 1.16, 0), Vector3(0.53, 0.18, 0.53), wood)
-	for sign in [Vector2i(4, -2), world.terrain.landmark() + Vector2i(-4, 2)]:
-		piece("prop", sign, Vector3(0, 0.60, 0), Vector3(0.13, 1.20, 0.13), wood)
-		piece("prop", sign, Vector3(0, 1.04, 0), Vector3(0.90, 0.30, 0.12), Color("b69c70"))
-	var landmark: Vector2i = world.terrain.landmark()
-	piece("prop", landmark + Vector2i(0, -1), Vector3(0, 0.18, 0), Vector3(2.1, 0.36, 1.8), stone)
-	for offset in [Vector2i(-2, -2), Vector2i(2, -2)]:
-		piece("prop", landmark + offset, Vector3(0, 0.90, 0), Vector3(0.55, 1.80, 0.55), stone)
+	# Reuse the authored artwork and anchors instead of re-authoring a low-poly prop set.
+	for prop: Node2D in world.place_props:
+		var key: String = prop.get_meta("asset_key", "")
+		if not key.is_empty():
+			place_root.add_piece("asset:" + key, Vector3(prop.position.x / 32.0, 0.04, prop.position.y / 32.0), Vector3.ONE, Color.WHITE)
 	place_root.finish()
 	sync_ground()
 

@@ -1,6 +1,6 @@
 # Solid 3D exploration prototype
 
-October 26, 2026. Experimental presentation study requested by the owner. This is not a replacement of world-generation or gameplay rules.
+October 26, 2026. The owner selected this 3D direction with a clarification to preserve the 2D pixel-art look. This is not a replacement of world-generation or gameplay rules. See [the visual direction decision](decisions/2026-10-26-pixel-art-3d.md).
 
 ## Try and compare
 
@@ -12,14 +12,14 @@ For the previous presentation, open `scenes/world.tscn` and press **F6**. Switch
 
 - Land has solid box geometry with its walkable top at Y=0.
 - Water is recessed to Y=-0.22, exposing the sides of neighboring land as banks.
-- Trails are raised stone pavers.
-- Trees have cylindrical trunks and volumetric low-poly canopies; rocks have solid meshes.
-- The refuge has a simple building mockup, bench, crate, lantern, and signs; the waystone has solid stone props.
-- Directional light, ambient fill, and real cast shadows make height and occlusion visible.
+- Land and trails reuse the original nearest-filtered grass/paving atlas on 3D surface quads, preserving biome tint and pixel detail.
+- Trees and rocks use upright pixel-art cutouts placed in 3D. Tree pieces retain their source pivots and vertical join instead of using smooth primitive canopies.
+- The refuge building remains a simple solid mockup with pixel-textured walls/roof. Existing bench, crate, lantern, signs, and waystone props reuse their original sprite artwork and source anchors.
+- Ground/foliage artwork preserves its baked palette rather than being lit twice. Directional lighting remains on geometric building/bank surfaces; occlusion and the character ground shadow retain spatial cues.
 - The character remains an upright camera-facing sprite, anchored to the same ground coordinates, with a separate ground shadow.
 - The camera remains at 35 degrees above the plane with zero sideways rotation, following the owner's correction.
 
-These are native Godot primitive meshes and materials. No new external art dependency or asset download is required. They are placeholders for judging depth, scale, visibility, and art direction, not final production assets or new world canon.
+These combine native Godot geometry with the supplied pixel-art pack. No new external art dependency or asset download is required. They are placeholders for judging depth, scale, and visibility, not final production assets or new world canon.
 
 ## Connection to the existing world
 
@@ -34,8 +34,8 @@ Publication timing includes subscribed 3D chunk construction. The logical near-p
 - The cabin, bench, and other authored props are decorative mockups. Like the previous decorative props, they do not add blocking footprints; walking through the cabin is possible. Building placement and traversal require a later authored collision contract before production use.
 - Trees, rocks, and water retain their existing logical tile blocking. Locomotion is still the tested grid/footprint traversal system, not a new CharacterBody3D/physics controller.
 - The water recess demonstrates height, but there are no traversable hills, slopes, stairs, or vertical gameplay. Examine uses the existing logical ground-plane projection.
-- Biome colors and ground edges are intentionally simple, and characters still use the placeholder directional sprite set.
-- No portable-device performance target or final art-direction acceptance is claimed. The alternate view remains available for comparison.
+- Water and banks still need a consistent pixel-art treatment; characters use the placeholder directional sprite set.
+- The hybrid 3D/pixel-art direction is approved, but final asset quality, manual journey acceptance, and portable-device performance targets remain open. The alternate view remains a reference.
 
 ## Verification
 
@@ -61,11 +61,12 @@ That command uses isolated temporary saves and writes ignored JSON/screenshots t
 
 Initial verification: both scenes completed 2,389 smoke checks each; generation completed 209 checks; headless geometry completed 15 checks (two GPU readbacks explicitly skipped). A rendered geometry run completed all 17 checks with zero failures. These are evidence for the prototype's contracts, not final player acceptance.
 
-The rendered solid-scene expedition also completed with zero failures at 1280×800,
+Before the pixel-art follow-up, the rendered solid-scene expedition completed with zero failures at 1280×800,
 60 FPS cap, Godot 4.7.2/OpenGL compatibility, RTX 3070. Observed outbound/return
 p99 frame intervals were 16.69/16.69 ms; live chunks peaked at 49. Scene construction
 took 165.99 ms, new seed 99.88 ms, and load 91.45 ms. Warmup included a 195.33 ms
 outlier. These are one local run with frame pacing included, not cold-start or
 portable-device acceptance. The detailed report includes environment and camera
 settings; do not compare it directly with earlier lower-resolution ground views
-as if rendering workload were identical.
+as if rendering workload were identical. These figures describe the earlier
+primitive/flat-color renderer, not a fresh measurement of the pixel-art update.

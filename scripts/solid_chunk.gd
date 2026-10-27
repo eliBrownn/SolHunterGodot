@@ -9,26 +9,16 @@ var obstacle_count := 0
 static func mesh_for(kind: String) -> Mesh:
 	if meshes.has(kind):
 		return meshes[kind]
+	if kind.begins_with("grass_") or kind.begins_with("trail_") or kind.begins_with("sprite_") or kind.begins_with("asset:"):
+		var pixel_mesh := pixel_mesh_for(kind)
+		meshes[kind] = pixel_mesh
+		return pixel_mesh
 	var mesh: Mesh
 	match kind:
 		"roof":
 			var prism := PrismMesh.new()
 			prism.size = Vector3.ONE
 			mesh = prism
-		"trunk":
-			var cylinder := CylinderMesh.new()
-			cylinder.top_radius = 0.10
-			cylinder.bottom_radius = 0.16
-			cylinder.height = 1.5
-			cylinder.radial_segments = 6
-			mesh = cylinder
-		"crown", "rock":
-			var sphere := SphereMesh.new()
-			sphere.radius = 1.0
-			sphere.height = 2.0
-			sphere.radial_segments = 7
-			sphere.rings = 3
-			mesh = sphere
 		_:
 			var box := BoxMesh.new()
 			box.size = Vector3.ONE
@@ -36,10 +26,69 @@ static func mesh_for(kind: String) -> Mesh:
 	var material := StandardMaterial3D.new()
 	material.vertex_color_use_as_albedo = true
 	material.roughness = 0.92
+	material.texture_filter = BaseMaterial3D.TEXTURE_FILTER_NEAREST
+	if kind == "wall" or kind == "roof":
+		var tile: AtlasTexture = PackArt.atlas("TX Tileset Wall/TX Tileset Wall_11")
+		material.albedo_texture = ImageTexture.create_from_image(tile.atlas.get_image().get_region(Rect2i(tile.region)))
+		material.uv1_scale = Vector3(3, 2, 1)
+		if kind == "wall":
+			material.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
 	if kind == "water":
 		material.roughness = 0.28
 	mesh.material = material
 	meshes[kind] = mesh
+	return mesh
+
+static func pixel_mesh_for(kind: String) -> ArrayMesh:
+	var standing := kind.begins_with("sprite_") or kind.begins_with("asset:")
+	var key: String
+	if kind.begins_with("asset:"):
+		key = kind.trim_prefix("asset:")
+	elif kind.begins_with("grass_"):
+		key = "TX Tileset Grass/TX Tileset Grass " + kind.trim_prefix("grass_")
+	elif kind.begins_with("trail_"):
+		key = "TX Tileset Grass/TX Tileset Grass Pavement " + kind.trim_prefix("trail_")
+	else:
+		key = {"sprite_tree_lower": "TX Plant/TX Tree T1 Lower", "sprite_tree_upper": "TX Plant/TX Tree T1 Upper", "sprite_rock": "TX Props/TX Props Stone T7"}[kind]
+	var atlas: AtlasTexture = PackArt.atlas(key)
+	var entry: Dictionary = PackArt.entry(key)
+	var vertices: PackedVector3Array
+	if standing:
+		var left := -float(entry.pivot[0]) / 32.0
+		var right := (float(entry.rect[2]) - float(entry.pivot[0])) / 32.0
+		var top := float(entry.pivot[1]) / 32.0
+		var bottom := (float(entry.pivot[1]) - float(entry.rect[3])) / 32.0
+		vertices = PackedVector3Array([Vector3(left, top, 0), Vector3(right, top, 0), Vector3(right, bottom, 0), Vector3(left, bottom, 0)])
+	else:
+		vertices = PackedVector3Array([Vector3(-0.5, 0, -0.5), Vector3(0.5, 0, -0.5), Vector3(0.5, 0, 0.5), Vector3(-0.5, 0, 0.5)])
+	# Inset half a texel to prevent neighboring atlas sprites bleeding into the quad.
+	var texture_size := Vector2(atlas.atlas.get_width(), atlas.atlas.get_height())
+	var first := (atlas.region.position + Vector2(0.5, 0.5)) / texture_size
+	var last := (atlas.region.end - Vector2(0.5, 0.5)) / texture_size
+	var arrays: Array = []
+	arrays.resize(Mesh.ARRAY_MAX)
+	arrays[Mesh.ARRAY_VERTEX] = vertices
+	var normal := Vector3.BACK if standing else Vector3.UP
+	arrays[Mesh.ARRAY_NORMAL] = PackedVector3Array([normal, normal, normal, normal])
+	arrays[Mesh.ARRAY_TEX_UV] = PackedVector2Array([first, Vector2(last.x, first.y), last, Vector2(first.x, last.y)])
+	arrays[Mesh.ARRAY_INDEX] = PackedInt32Array([0, 2, 1, 0, 3, 2])
+	var mesh := ArrayMesh.new()
+	mesh.add_surface_from_arrays(Mesh.PRIMITIVE_TRIANGLES, arrays)
+	var material := StandardMaterial3D.new()
+	material.albedo_texture = atlas.atlas
+	material.texture_filter = BaseMaterial3D.TEXTURE_FILTER_NEAREST
+	material.vertex_color_use_as_albedo = true
+	material.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA_SCISSOR
+	material.alpha_scissor_threshold = 0.35
+	material.cull_mode = BaseMaterial3D.CULL_DISABLED
+	material.roughness = 1.0
+	material.metallic_specular = 0.0
+	# The source artwork already carries its lighting and palette; retain it exactly.
+	material.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+	if standing:
+		material.billboard_mode = BaseMaterial3D.BILLBOARD_FIXED_Y
+		material.billboard_keep_scale = true
+	mesh.surface_set_material(0, material)
 	return mesh
 
 func add_piece(kind: String, at: Vector3, size: Vector3, color: Color, yaw: float = 0.0) -> void:
@@ -61,7 +110,7 @@ func finish() -> void:
 			# MultiMesh instance colors are supplied in linear space.
 			instances.set_instance_color(index, entries[index].color.srgb_to_linear())
 		var view := MultiMeshInstance3D.new()
-		view.name = kind
+		view.name = kind.replace(":", "_").replace("/", "_")
 		view.multimesh = instances
 		add_child(view)
 	batches.clear()
@@ -77,17 +126,15 @@ func build(cells: Array[Dictionary]) -> void:
 			add_piece("water", at + Vector3(0, -0.30, 0), Vector3(1.002, 0.16, 1.002), color)
 		else:
 			add_piece("ground", at + Vector3(0, -0.35, 0), Vector3(1.002, 0.70, 1.002), color)
+			add_piece("grass_%d" % (int(data.variation) % 4), at + Vector3(0, 0.002, 0), Vector3.ONE, data.get("tint", Color.WHITE))
 			if data.trail_visible:
-				for z in [-0.24, 0.24]:
-					for x in [-0.24, 0.24]:
-						add_piece("paving", at + Vector3(x, 0.018, z), Vector3(0.44, 0.036, 0.44), Color("999b86").lightened(shade))
+				add_piece("trail_%d" % (int(data.variation) % 8), at + Vector3(0, 0.035, 0), Vector3.ONE, Color("b2b29d"))
 		if data.obstacle == 1:
-			add_piece("trunk", at + Vector3(0, 0.75, 0), Vector3.ONE, Color("76573b"))
-			add_piece("crown", at + Vector3(0, 1.80, 0), Vector3(0.94, 0.86, 0.85), Color("52784b").lightened(shade))
-			add_piece("crown", at + Vector3(0.20, 2.37, 0.05), Vector3(0.65, 0.65, 0.67), Color("71904f").lightened(shade))
+			add_piece("sprite_tree_lower", at, Vector3.ONE, Color.WHITE)
+			add_piece("sprite_tree_upper", at + Vector3(0, 63.0 / 32.0, 0), Vector3.ONE, Color.WHITE)
 			obstacle_count += 1
 		elif data.obstacle == 2:
-			add_piece("rock", at + Vector3(0, 0.26, 0), Vector3(0.52, 0.38, 0.43), Color("93958c"), float(data.variation) * 0.5)
+			add_piece("sprite_rock", at, Vector3.ONE, Color.WHITE)
 			obstacle_count += 1
 		tile_count += 1
 	finish()

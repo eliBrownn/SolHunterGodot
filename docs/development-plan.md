@@ -44,11 +44,11 @@ Keep all three pillars represented before expanding geography or the roster. Do 
 Depends on: current prototype. First implementation milestone.
 
 - Manually walk the outbound/return journey, test pause/save/load/new-seed behavior, and inspect negative coordinates and route junctions.
-- Decide the presentation direction: current flat actors versus upright billboard actors, camera angle, pixel readability, and terrain scale. Keep that change separate from simulation work.
+- Owner-selected presentation: 3D depth with the 2D pixel-art look, upright characters/foliage, and a low 35-degree camera without sideways rotation. Refine readability and consistent scale within that direction; do not reopen the smooth low-poly alternative as the default.
 - Measure startup/rebuild stalls and continuous-travel frame p95/p99 on available hardware. Agree a target device, workload, memory budget, and acceptable frame budget before claiming portable-device readiness.
 - Confirm the existing tests reproduce from the pinned engine environment. Keep CI merge/protection work on the repository roadmap.
 
-Exit: a manually accepted exploration loop, recorded performance baseline/limitations, and a documented presentation decision. Fix observed blockers; do not rewrite functioning terrain solely to match an architectural preference.
+Exit: a manually accepted exploration loop, recorded performance baseline/limitations, and a documented presentation decision. The visual-direction decision is now recorded; full manual journey and target-budget acceptance remain open. Fix observed blockers; do not rewrite functioning terrain solely to match an architectural preference.
 
 ### D1 — Establish persistent world and Sol contracts
 
