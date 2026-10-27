@@ -16,7 +16,7 @@ try {
     & $engine --headless --path $projectRoot --editor --import --quit
     if ($LASTEXITCODE -ne 0) { throw 'Godot import failed.' }
 
-    foreach ($suite in @('tests/smoke.gd', 'tests/world_generation.gd', 'tests/solid_geometry.gd', 'tests/building_collision.gd', 'tests/presentation.gd', 'tests/persistent_foundation.gd', 'tests/human_vastra_activity.gd')) {
+    foreach ($suite in @('tests/smoke.gd', 'tests/world_generation.gd', 'tests/solid_geometry.gd', 'tests/building_collision.gd', 'tests/presentation.gd', 'tests/persistent_foundation.gd', 'tests/human_vastra_activity.gd', 'tests/vastra_natural.gd')) {
         Write-Host "Running $suite"
         & $engine --headless --path $projectRoot --script $suite
         if ($LASTEXITCODE -ne 0) { throw "Validation failed: $suite" }

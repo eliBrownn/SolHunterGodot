@@ -81,5 +81,7 @@ excluded from that count; this slice changes no rendering code.
 The live scene already projects sparse Vastra changes through Examine. Normal
 play does not produce human events yet: fixtures do not install production budgets
 or impose costs on ordinary healing, movement, or terrain safety operations.
-Bounded natural replenishment and recovery are the next independent D2 work;
-production human interactions still need authored content and end-to-end acceptance.
+[Bounded natural replenishment and recovery](vastra-natural-recovery.md) now follow
+this slice. Production human interactions still need authored content and
+end-to-end acceptance. The subsequent domain version 3 retains these version-2
+receipts while adding a saved natural schedule.

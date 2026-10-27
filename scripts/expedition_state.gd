@@ -8,7 +8,7 @@ signal environment_changed(cell: Vector2i)
 signal activity_advanced(tick: int)
 signal human_activity_applied(event: Dictionary, effect: Dictionary)
 
-const VERSION := 2
+const VERSION := 3
 const TERRITORY_SIZE := 16 # Source development setting; independent of render chunk size.
 const ACTIVITY_INTERVAL := 0.75
 const MAX_CATCH_UP := 2
@@ -26,6 +26,7 @@ var _territories: Dictionary = {}
 var _individuals: Dictionary = {}
 var _tile_deltas: Dictionary = {}
 var _human_activity := HumanVastraActivity.empty_ledger()
+var _natural := VastraNatural.empty_schedule()
 
 func _init(seed_value: int = 0, territory_size: int = TERRITORY_SIZE) -> void:
 	_seed = seed_value
@@ -142,7 +143,11 @@ func set_environment(cell: Vector2i, changes: Dictionary) -> bool:
 		combined[field] = int(changes[field])
 	if _tile_deltas.get(key) == combined:
 		return false
+	if not _tile_deltas.has(key):
+		_natural.order.append(key)
 	_tile_deltas[key] = combined
+	if combined.get("overload", 0) == 0:
+		_natural.recovery_ticks.erase(key)
 	environment_changed.emit(cell)
 	return true
 
@@ -167,20 +172,51 @@ func apply_human_activity(event: Variant, generated: Dictionary = {}, region: St
 	var candidate := snapshot()
 	candidate.tile_deltas[key] = {"concentration": prepared.effect.concentration, "overload": prepared.effect.overload}
 	candidate.human_activity = prepared.ledger
+	if not _tile_deltas.has(key):
+		candidate.natural.order.append(key)
+	if prepared.effect.overload > 0 and not candidate.natural.recovery_ticks.has(key):
+		candidate.natural.recovery_ticks[key] = _tick
+	elif prepared.effect.overload == 0:
+		candidate.natural.recovery_ticks.erase(key)
 	if not valid_snapshot(candidate, _seed):
 		return {}
 	# Install both authorities before observers run; no partial event is visible.
 	_tile_deltas[key] = candidate.tile_deltas[key].duplicate(true)
 	_human_activity = prepared.ledger.duplicate(true)
+	_natural = candidate.natural.duplicate(true)
 	environment_changed.emit(cell)
 	human_activity_applied.emit(HumanVastraActivity.normalized_event(event), prepared.effect.duplicate(true))
 	return prepared.effect.duplicate(true)
+
+func natural_view() -> Dictionary:
+	return _natural.duplicate(true)
+
+func advance_environment(policy: Dictionary, profile_resolver: Callable = Callable()) -> int:
+	var prepared := VastraNatural.prepare(_tile_deltas, _natural, _tick, policy, profile_resolver)
+	if prepared.is_empty():
+		return -1
+	if not prepared.has("cursor"):
+		return 0
+	# All bounded candidates are prepared before any update or signal is published.
+	for key in prepared.changes:
+		_tile_deltas[key] = prepared.changes[key]
+	for key in prepared.stamps:
+		if prepared.stamps[key] == null:
+			_natural.recovery_ticks.erase(key)
+		else:
+			_natural.recovery_ticks[key] = prepared.stamps[key]
+	_natural.cursor = prepared.cursor
+	_natural.last_tick = _tick
+	for key: String in prepared.changes:
+		var parts := key.split(":")
+		environment_changed.emit(Vector2i(int(parts[0]), int(parts[1])))
+	return int(prepared.processed)
 
 func snapshot() -> Dictionary:
 	return {"version": VERSION, "activity_tick": _tick, "remainder_seconds": _remainder,
 		"territory_size": _territory_size, "territories": _territories.duplicate(true),
 		"individuals": _individuals.duplicate(true), "tile_deltas": _tile_deltas.duplicate(true),
-		"human_activity": _human_activity.duplicate(true)}
+		"human_activity": _human_activity.duplicate(true), "natural": _natural.duplicate(true)}
 
 static func restore(data: Variant, seed_value: int) -> ExpeditionState:
 	if not valid_snapshot(data, seed_value):
@@ -193,6 +229,15 @@ static func restore(data: Variant, seed_value: int) -> ExpeditionState:
 	state._tile_deltas = data.tile_deltas.duplicate(true)
 	if int(data.version) >= 2:
 		state._human_activity = HumanVastraActivity.normalized_ledger(data.human_activity)
+	if int(data.version) >= 3:
+		state._natural = data.natural.duplicate(true)
+		state._natural.cursor = int(state._natural.cursor)
+		state._natural.last_tick = int(state._natural.last_tick)
+		for key in state._natural.recovery_ticks:
+			state._natural.recovery_ticks[key] = int(state._natural.recovery_ticks[key])
+	else:
+		# Older envelopes have no scheduling order or known damage ages.
+		state._natural.order = state._tile_deltas.keys()
 	for key in state._territories:
 		state._territories[key].observed_tick = int(state._territories[key].observed_tick)
 	for identity in state._individuals:
@@ -256,6 +301,8 @@ static func valid_snapshot(data: Variant, seed_value: int) -> bool:
 	var expected_fields := ["version", "activity_tick", "remainder_seconds", "territory_size", "territories", "individuals", "tile_deltas"]
 	if int(data.version) >= 2:
 		expected_fields.append("human_activity")
+	if int(data.version) >= 3:
+		expected_fields.append("natural")
 	if not keys_match(data, expected_fields):
 		return false
 	if not SolSpeciesDefinition.whole(seed_value, 0, 2147483646) or not SolSpeciesDefinition.whole(data.activity_tick, 0, MAX_SAFE_INTEGER) or not SolSpeciesDefinition.whole(data.territory_size, 1, 256):
@@ -266,6 +313,13 @@ static func valid_snapshot(data: Variant, seed_value: int) -> bool:
 		return false
 	if not data.territories is Dictionary or data.territories.size() > MAX_TERRITORIES or not data.individuals is Dictionary or data.individuals.size() > MAX_INDIVIDUALS or not data.tile_deltas is Dictionary or data.tile_deltas.size() > MAX_TILE_DELTAS:
 		return false
+	if int(data.version) >= 3:
+		# Tile fields are checked below before schedule validation reads their values.
+		for value in data.tile_deltas.values():
+			if not valid_delta(value):
+				return false
+		if not VastraNatural.valid_schedule(data.natural, data.tile_deltas, int(data.activity_tick)):
+			return false
 	for key in data.territories:
 		if not key is String:
 			return false

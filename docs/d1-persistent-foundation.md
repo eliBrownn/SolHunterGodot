@@ -56,7 +56,9 @@ terrain generation intact. Ecology rates and disturbance behavior remain future 
 
 Save format 2 originally introduced version-1 `world_state`; the subsequent
 [human activity slice](vastra-human-activity.md) adds domain version 2 while retaining
-version-1 compatibility. Format-1 saves upgrade in memory with
+version-1 compatibility. The subsequent [natural recovery slice](vastra-natural-recovery.md)
+adds domain version 3 with compatibility for both previous domain versions.
+Format-1 saves upgrade in memory with
 empty persistent history; generation 1–4 terrain migration remains independent and can
 run in the same load. Loading preserves original file bytes. The next explicit save
 retains the previous file as `.bak`. Python save importing is not implemented.
