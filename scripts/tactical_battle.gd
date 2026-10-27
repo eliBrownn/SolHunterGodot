@@ -1,5 +1,6 @@
 class_name TacticalBattle
 extends RefCounted
+signal presentation_event(event: Dictionary)
 ## Two-unit deterministic battle domain. Rendering, input and persistent outcomes live outside it.
 
 var phase := "deployment"
@@ -259,6 +260,7 @@ func auto_enemy() -> void:
 				var amount := mini(int(move.power), int(enemy.max_hp) - enemy_hp)
 				if amount > 0:
 					enemy_hp += amount
+					feedback("heal", enemy_cell, amount, move.affinity, move.name)
 					record_move(move, [enemy_cell])
 					log.append("%s restores %d HP." % [enemy.display_name, amount])
 					healed = true
@@ -266,6 +268,7 @@ func auto_enemy() -> void:
 		if not healed and chosen.effect == "damage" and in_range(enemy_cell, ally_cell, int(chosen.reach)):
 			var amount := mini(ally_hp, maxi(1, int(enemy.attack) + int(chosen.power) - int(ally.defense)))
 			ally_hp -= amount
+			feedback("damage", ally_cell, amount, chosen.get("affinity", enemy.affinity), chosen.name)
 			if not enemy_moves.is_empty():
 				record_move(chosen, [ally_cell])
 			log.append("%s uses %s: %d damage." % [enemy.display_name, chosen.name, amount])
@@ -297,6 +300,8 @@ func record_move(move: Dictionary, tiles: Array) -> void:
 	last_activity.append(affinity)
 	for cell: Vector2i in tiles:
 		affected[cell] = true
+	if move.effect not in ["damage", "heal"] and not tiles.is_empty():
+		feedback("field", tiles[0], 0, affinity, move.name)
 
 func winner() -> String:
 	var highest := 0
@@ -349,12 +354,14 @@ func use_move(slot: int, target: Vector2i) -> bool:
 	if move.effect == "damage":
 		var amount := mini(enemy_hp, maxi(1, int(ally.attack) + int(move.power) - int(enemy.defense)))
 		enemy_hp -= amount
+		feedback("damage", enemy_cell, amount, move.affinity, move.name)
 		log.append("%s: %d damage." % [move.name, amount])
 	elif move.effect == "heal":
 		var amount := mini(int(ally.max_hp) - ally_hp, int(move.power))
 		if amount <= 0:
 			return false
 		ally_hp += amount
+		feedback("heal", ally_cell, amount, move.affinity, move.name)
 		log.append("%s restores %d HP." % [move.name, amount])
 	elif move.effect == "anchor":
 		anchored.ally = round_number + int(move.duration)
@@ -428,9 +435,9 @@ func tick_fields() -> void:
 			continue
 		if field.kind == "heat":
 			if cell == ally_cell:
-				ally_hp = maxi(0, ally_hp - field_damage)
+				hurt("ally", field_damage, "fire")
 			if cell == enemy_cell:
-				enemy_hp = maxi(0, enemy_hp - field_damage)
+				hurt("enemy", field_damage, "fire")
 		elif field.kind == "charge":
 			var conductive := {cell: true}
 			var pending: Array[Vector2i] = [cell]
@@ -445,11 +452,11 @@ func tick_fields() -> void:
 						pending.append(next)
 			if conductive.has(ally_cell) and not charged_hits.has("ally"):
 				charged_hits.ally = true
-				ally_hp = maxi(0, ally_hp - field_damage)
+				hurt("ally", field_damage, "lightning")
 				disrupted.ally = true
 			if conductive.has(enemy_cell) and not charged_hits.has("enemy"):
 				charged_hits.enemy = true
-				enemy_hp = maxi(0, enemy_hp - field_damage)
+				hurt("enemy", field_damage, "lightning")
 				disrupted.enemy = true
 			field.kind = "rough" # Discharged ground; no repeated burst from one charge.
 	# Heat spreads one cardinal step per round, but never past its original expiry.
@@ -474,3 +481,15 @@ func tick_fields() -> void:
 
 func passable(cell: Vector2i) -> bool:
 	return cells.get(cell, false) and fields.get(cell, {}).get("kind") != "barrier"
+
+func feedback(kind: String, cell: Vector2i, amount: int, affinity: String, caption: String) -> void:
+	presentation_event.emit({"kind": kind, "cell": cell, "amount": amount, "affinity": affinity, "caption": caption})
+
+func hurt(side: String, amount: int, affinity: String) -> void:
+	var actual := mini(ally_hp if side == "ally" else enemy_hp, amount)
+	if side == "ally":
+		ally_hp -= actual
+	else:
+		enemy_hp -= actual
+	if actual > 0:
+		feedback("damage", ally_cell if side == "ally" else enemy_cell, actual, affinity, "")

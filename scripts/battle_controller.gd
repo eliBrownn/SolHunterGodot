@@ -28,6 +28,7 @@ var loadout: Node
 var move_buttons: Array[Button] = []
 var aimed_slot := -1
 var quantum_choice: OptionButton
+var feedback_view: Node3D
 
 
 func bind(source: Node2D, entry: Node, actors: Node3D, tuning: BattleSettings) -> void:
@@ -40,6 +41,9 @@ func bind(source: Node2D, entry: Node, actors: Node3D, tuning: BattleSettings) -
 	library = world.host.move_library if world.host.move_library != null and world.host.move_library.valid() else preload("res://resources/move_library.tres")
 	world.host.add_child(visuals)
 	build_ui()
+	feedback_view = preload("res://scripts/battle_feedback.gd").new()
+	world.host.add_child(feedback_view)
+	feedback_view.bind(world, sightings.visual_settings)
 	loadout = preload("res://scripts/move_loadout.gd").new()
 	add_child(loadout)
 	loadout.bind(self)
@@ -98,7 +102,8 @@ func build_ui() -> void:
 		quantum_choice.add_item(option)
 	quantum_choice.item_selected.connect(func(index: int) -> void:
 		if session != null:
-			session.quantum_mode = ["position", "stabilize", "entangle"][index])
+			session.quantum_mode = ["position", "stabilize", "entangle"][index]
+			update_view())
 	actions.add_child(quantum_choice)
 	wait_button = button("End turn · Enter", wait_turn, actions)
 	button("Retreat · Escape", retreat, actions)
@@ -125,6 +130,7 @@ func on_state(state: ExpeditionState) -> void:
 	battle_panel.hide()
 	sightings.battle_hidden_ids.clear()
 	clear_visuals()
+	feedback_view.reset()
 	refresh_companion()
 
 func refresh_companion() -> void:
@@ -230,7 +236,10 @@ func begin_battle(target: Dictionary) -> void:
 	if token == 0:
 		world.message("Battle cannot start: check party health or persistent terrain capacity.", false)
 		return
+	feedback_view.reset()
 	session = prepared
+	quantum_choice.select(0)
+	session.presentation_event.connect(feedback_view.receive)
 	aimed_slot = -1
 	serial = token
 	enemy_id = target.id
@@ -269,6 +278,7 @@ func attack() -> void:
 
 func wait_turn() -> void:
 	if session != null:
+		aimed_slot = -1
 		session.wait_turn()
 		after_command()
 
@@ -282,8 +292,11 @@ func after_command() -> void:
 		return
 	if session.phase in ["victory", "exhaustion", "retreat"]:
 		var outcome := session.phase
+		var imprint := session.imprint()
+		var counts := session.activity.duplicate()
+		var history := session.last_activity.duplicate()
 		var protection: int = encounters.settings.withdrawal_safe_steps if encounters.settings.valid() else 3
-		if not source_state.complete_battle(serial, session.ally_hp, outcome, protection, session.imprint()):
+		if not source_state.complete_battle(serial, session.ally_hp, outcome, protection, imprint):
 			world.message("Battle result could not be committed. The encounter remains open.", false)
 			return
 		session = null
@@ -301,6 +314,7 @@ func after_command() -> void:
 			world.moving = false
 		world.rebuild_world()
 		refresh_companion()
+		feedback_view.show_result(outcome, source_state.starter_view(), imprint, counts, history)
 		world.message({"victory": "Victory. The wild Sol is exhausted. Save your expedition with F5.", "exhaustion": "Your companion is exhausted, not lost. Back at the refuge: press H to recover.", "retreat": "Retreated safely. Your companion's remaining health is retained."}[outcome])
 		return
 	update_view()
@@ -322,18 +336,23 @@ func handle_input(event: InputEvent) -> void:
 		if event.physical_keycode in [KEY_1, KEY_2, KEY_3, KEY_4]:
 			choose_move(int(event.physical_keycode) - int(KEY_1))
 		elif event.physical_keycode == KEY_ESCAPE:
-			retreat()
+			if aimed_slot >= 0:
+				aimed_slot = -1
+				world.battle_input_consumed = true
+				update_view()
+			else:
+				retreat()
 		elif event.physical_keycode == KEY_SPACE:
 			attack()
 		elif event.physical_keycode == KEY_ENTER:
-			if session.phase == "deployment":
+			if session.phase == "deployment" or aimed_slot >= 0:
 				select_cell(cursor)
 			else:
 				wait_turn()
 		else:
 			var direction: Vector2i = {KEY_W: Vector2i.UP, KEY_UP: Vector2i.UP, KEY_A: Vector2i.LEFT, KEY_LEFT: Vector2i.LEFT, KEY_S: Vector2i.DOWN, KEY_DOWN: Vector2i.DOWN, KEY_D: Vector2i.RIGHT, KEY_RIGHT: Vector2i.RIGHT}.get(event.physical_keycode, Vector2i.ZERO)
 			if direction != Vector2i.ZERO:
-				if session.phase == "deployment":
+				if session.phase == "deployment" or aimed_slot >= 0:
 					if session.bounds.has_point(cursor + direction):
 						cursor += direction
 					update_view()
@@ -392,9 +411,10 @@ func update_view() -> void:
 		var move: Dictionary = session.ally_moves[slot]
 		entry.text = "%d · %s · %s" % [slot + 1, move.name, str(move.affinity).capitalize()]
 		entry.disabled = session.phase != "active"
+		entry.tooltip_text = move_description(move)
 	quantum_choice.visible = session.ally_moves.any(func(move: Dictionary) -> bool: return move.affinity == "quantum")
 	if aimed_slot >= 0:
-		status_label.text += "\nClick a target tile · " + str(session.ally_moves[aimed_slot].name)
+		status_label.text += "\nAim: arrows + Enter / click · Esc cancels"
 	if not session.activity.is_empty():
 		intent_label.text += "\nImprint leader: " + session.winner().capitalize()
 	wait_button.disabled = session.phase != "active"
@@ -418,7 +438,7 @@ func update_view() -> void:
 			color = Color(0.2, 0.65, 0.9, 0.45)
 		if cell == session.enemy_cell:
 			color = Color(0.9, 0.25, 0.2, 0.6)
-		elif session.phase == "deployment" and cell == cursor:
+		elif (session.phase == "deployment" or aimed_slot >= 0) and cell == cursor:
 			color = Color(0.9, 0.8, 0.3, 0.65)
 		elif session.phase == "active" and cell == session.ally_cell:
 			color = Color(0.3, 0.9, 0.6, 0.65)
@@ -448,6 +468,7 @@ func ensure_movebooks() -> void:
 func choose_move(slot: int) -> void:
 	if session == null or session.phase != "active" or slot >= session.ally_moves.size():
 		return
+	aimed_slot = -1
 	var move: Dictionary = session.ally_moves[slot]
 	var target := session.ally_cell if move.effect in ["heal", "phase", "anchor"] else session.enemy_cell
 	if move.effect in ["damage", "heal", "phase", "anchor"]:
@@ -455,4 +476,15 @@ func choose_move(slot: int) -> void:
 			world.message("No valid effect: check range, health or current status.", false)
 	else:
 		aimed_slot = slot
+		cursor = session.ally_cell
 	after_command()
+
+func move_description(move: Dictionary) -> String:
+	var descriptions := {
+		"damage": "Damage the opponent. Terrain and range must permit the hit.",
+		"heal": "Recover your own HP. At full health, this has no effect.",
+		"phase": "Cross a thin obstacle on your next movement; land on open ground.",
+		"anchor": "Hold your footing against wind displacement.",
+		"quantum": "Choose position, field stabilization, or linked terrain using the Quantum selector.",
+		"field": "Shape shared terrain. Both sides are affected."}
+	return "%s · %s\n%s\nRange: %d cells · Power: %d" % [move.name, str(move.affinity).capitalize(), descriptions[move.effect], int(move.reach), int(move.power)]

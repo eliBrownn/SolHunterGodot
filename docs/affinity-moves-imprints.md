@@ -19,7 +19,8 @@ Close the panel and press F5 to save these changes to the expedition slot.
 
 In battle, buttons or 1–4 select moves. Damage moves target the opponent; healing
 and footing/phasing target self. Field moves highlight legal target tiles for a
-click. Space uses slot one; Enter ends the turn; Escape retreats. A Quantum move
+click, or arrows/WASD and Enter. Escape cancels an active aim; otherwise it
+retreats. Space uses slot one; Enter outside aiming ends the turn. A Quantum move
 offers explicit position, stabilization, or entanglement choices. All actions use
 the existing one-action-per-turn contract; no new unapproved mana economy is added.
 
@@ -43,6 +44,10 @@ optimize all field/Quantum combinations. There is no type-effectiveness chart,
 automatic same-affinity immunity, or new concentration damage curve. Rare
 individual affinities are not intrinsically stronger. Prototype learning access
 to special-affinity moves does not specify their eventual acquisition rarity.
+
+The subsequent [battle feedback slice](battle-feedback.md) adds actual HP-change
+cues, move tooltips, and a dismissible recap explaining committed results and
+imprints. It does not alter activity or tile-affinity rules.
 
 ## Activity, persistence, and recovery
 

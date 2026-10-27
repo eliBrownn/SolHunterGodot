@@ -72,6 +72,16 @@ defaults, not finalized balance or a change to generated terrain legality.
 Sol Visual Settings also exports Imprint Opacity (0–0.5, default 0.22); zero
 hides the local ground tint without deleting saved affinity.
 
+The [battle feedback slice](battle-feedback.md) adds Sol Visual Settings controls:
+
+| Control | Default / range | Application |
+| --- | --- | --- |
+| Feedback Enabled | true | Suppress new floating cues when false; existing cues finish fading. |
+| Feedback Seconds | 0.9; 0.25–2.5 seconds | Real-time cue lifetime, including while exploration is paused for battle. |
+| Feedback Rise | 0.6; 0.1–2 world cells | Floating text travel; applies to active cues. |
+| Feedback Limit | 16; 1–32 cues | Retire oldest cues on admission; bounds visual node growth. |
+| Result Panel Enabled | true | Show the next runtime outcome recap. Does not affect commits, saves, or exploration pause. |
+
 Battle settings are read for each new battle; restart after editing live resources
 to refresh chooser labels and the Enabled switch. Current battle settings and
 profiles are frozen for that battle. Refuge H recovery uses the chosen saved HP

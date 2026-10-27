@@ -11,6 +11,7 @@ signal player_step_completed(from: Vector2i, to: Vector2i)
 signal companion_requested
 signal refuge_recovery_requested
 signal battle_input_requested(event: InputEvent)
+var battle_input_consumed := false
 
 const ChunkView = preload("res://scripts/terrain_chunk.gd")
 const Explorer = preload("res://scripts/explorer.gd")
@@ -502,8 +503,9 @@ func handle_input(event: InputEvent) -> void:
 	if confirmation.visible or (event is InputEventKey and event.echo):
 		return
 	if encounter_active:
+		battle_input_consumed = false
 		battle_input_requested.emit(event)
-		if not encounter_active:
+		if battle_input_consumed or not encounter_active:
 			return
 		if event.is_action_pressed("pause_expedition"):
 			withdraw_requested.emit()
