@@ -8,8 +8,9 @@ signal environment_changed(cell: Vector2i)
 signal activity_advanced(tick: int)
 signal human_activity_applied(event: Dictionary, effect: Dictionary)
 signal discovery_recorded(identity: String)
+signal battle_progress_changed
 
-const VERSION := 5
+const VERSION := 6
 const MAX_DISCOVERIES := 120 # Source journal retention: oldest discovery rows retire, not individuals.
 const MAX_ROAMING_DISTANCE := 5 # Saved movement schema bound; tuning may choose a smaller home range.
 const TERRITORY_SIZE := 16 # Source development setting; independent of render chunk size.
@@ -32,6 +33,8 @@ var _human_activity := HumanVastraActivity.empty_ledger()
 var _natural := VastraNatural.empty_schedule()
 var _discoveries: Array[Dictionary] = []
 var _roaming: Dictionary = {}
+var _battle := BattleProgress.empty()
+var _battle_enemy := ""
 # Derived indexes: never saved and never sources of population or individual identity.
 var _known_homes: Dictionary = {}
 var _wild_homes: Dictionary = {}
@@ -92,9 +95,91 @@ func territory_view(cell: Vector2i) -> Dictionary:
 func individual_view(identity: String) -> Dictionary:
 	return _individuals.get(identity, {}).duplicate(true)
 
+func wild_available(identity: String) -> bool:
+	return _individuals.get(identity, {}).get("location") == "wild" and not _battle.defeated.has(identity)
+
+func battle_progress() -> Dictionary:
+	return _battle.duplicate(true)
+
+func starter_view() -> Dictionary:
+	return {} if _battle.starter_id.is_empty() else {"id": _battle.starter_id, "profile": _battle.profile.duplicate(true), "hp": _battle.hp}
+
+func choose_starter(profile: Dictionary, index: int) -> bool:
+	if _battle.active or not _battle.starter_id.is_empty() or index < 0 or index > 2 or not BattleProfile.valid_snapshot(profile):
+		return false
+	for record in _individuals.values():
+		if record.location in OWNED_LOCATIONS:
+			return false # Do not infer/rewrite a legacy owned collection as a new starter.
+	var identity := SolIdentityContract.make(_seed, Vector2i(index, 0), profile.species_id)
+	if _individuals.has(identity) or _individuals.size() >= MAX_INDIVIDUALS:
+		return false
+	var record := {"id": identity, "home": [index, 0], "generation": 0, "species_id": profile.species_id,
+		"lineage_id": profile.lineage_id, "class_id": profile.class_id, "ordinary_form": 1,
+		"footprint": 1, "affinity": profile.affinity, "location": "party"}
+	var candidate := snapshot()
+	candidate.individuals[identity] = record
+	candidate.battle.starter_id = identity
+	candidate.battle.profile = BattleProfile.normalized(profile)
+	candidate.battle.hp = int(profile.max_hp)
+	if not valid_snapshot(candidate, _seed):
+		return false
+	_individuals[identity] = record
+	_known_homes[home_identity(identity)] = true
+	_battle = candidate.battle
+	battle_progress_changed.emit()
+	return true
+
+func begin_battle(enemy_id: String) -> int:
+	if _battle.active or _battle.starter_id.is_empty() or _battle.hp <= 0 or not wild_available(enemy_id) or _battle.serial >= MAX_SAFE_INTEGER:
+		return 0
+	if _individuals[_battle.starter_id].location != "party":
+		return 0
+	_battle.serial += 1
+	_battle.active = true
+	_battle_enemy = enemy_id
+	return int(_battle.serial)
+
+func complete_battle(serial: int, hp: int, outcome: String, grace_steps: int) -> bool:
+	if not _battle.active or serial != _battle.serial or not wild_available(_battle_enemy) or outcome not in ["victory", "exhaustion", "retreat"] or not SolSpeciesDefinition.whole(hp, 0, int(_battle.profile.max_hp)) or grace_steps < 0 or grace_steps > 8:
+		return false
+	if (outcome == "exhaustion") != (hp == 0):
+		return false
+	var candidate := _battle.duplicate(true)
+	candidate.active = false
+	candidate.hp = hp
+	candidate[{"victory": "wins", "exhaustion": "losses", "retreat": "retreats"}[outcome]] += 1
+	candidate.last_result = {"serial": serial, "enemy_id": _battle_enemy, "outcome": outcome}
+	candidate.grace_steps = grace_steps
+	if outcome == "victory":
+		candidate.defeated[_battle_enemy] = true
+	if not BattleProgress.valid(candidate, _individuals):
+		return false
+	var enemy := _battle_enemy
+	_battle = candidate
+	_battle_enemy = ""
+	if outcome == "victory":
+		_roaming.erase(enemy)
+		_wild_homes.erase(home_identity(enemy))
+	battle_progress_changed.emit()
+	individual_changed.emit(enemy)
+	return true
+
+func recover_starter() -> bool:
+	if _battle.active or _battle.starter_id.is_empty() or _battle.hp == _battle.profile.max_hp:
+		return false
+	_battle.hp = int(_battle.profile.max_hp)
+	battle_progress_changed.emit()
+	return true
+
+func battle_grace() -> int:
+	return int(_battle.grace_steps)
+
+func consume_battle_grace() -> void:
+	_battle.grace_steps = maxi(0, int(_battle.grace_steps) - 1)
+
 func roaming_view(identity: String) -> Dictionary:
 	var record: Dictionary = _individuals.get(identity, {})
-	if record.get("location") != "wild":
+	if not wild_available(identity):
 		return {}
 	return _roaming.get(identity, {"cell": record.home, "action": "idle", "tick": -1}).duplicate(true)
 
@@ -123,7 +208,7 @@ func has_discovery(identity: String) -> bool:
 	return false
 
 func record_sol_discovery(identity: String, title: String, description: String, seen_at: Vector2i) -> bool:
-	if not _individuals.has(identity) or _individuals[identity].location != "wild" or has_discovery(identity):
+	if not wild_available(identity) or has_discovery(identity):
 		return false
 	var entry := {"key": identity, "title": title, "category": "Wild Sol", "description": description,
 		"details": [], "first_seen": [seen_at.x, seen_at.y]}
@@ -231,7 +316,7 @@ func register_individual(species: SolSpeciesDefinition, home: Vector2i, affinity
 	return identity
 
 func acquire(identity: String, location: String = "sealed") -> bool:
-	if not OWNED_LOCATIONS.has(location) or not _individuals.has(identity) or _individuals[identity].location != "wild":
+	if _battle.active or not OWNED_LOCATIONS.has(location) or not wild_available(identity):
 		return false
 	_individuals[identity].location = location
 	_wild_homes.erase(home_identity(identity))
@@ -240,7 +325,7 @@ func acquire(identity: String, location: String = "sealed") -> bool:
 	return true
 
 func relocate_owned(identity: String, location: String) -> bool:
-	if not OWNED_LOCATIONS.has(location) or not _individuals.has(identity) or not OWNED_LOCATIONS.has(_individuals[identity].location) or _individuals[identity].location == location:
+	if _battle.active or not OWNED_LOCATIONS.has(location) or not _individuals.has(identity) or not OWNED_LOCATIONS.has(_individuals[identity].location) or _individuals[identity].location == location:
 		return false
 	_individuals[identity].location = location
 	individual_changed.emit(identity)
@@ -352,7 +437,7 @@ func snapshot() -> Dictionary:
 		"territory_size": _territory_size, "territories": _territories.duplicate(true),
 		"individuals": _individuals.duplicate(true), "tile_deltas": _tile_deltas.duplicate(true),
 		"human_activity": _human_activity.duplicate(true), "natural": _natural.duplicate(true),
-		"discoveries": _discoveries.duplicate(true), "roaming": _roaming.duplicate(true)}
+		"discoveries": _discoveries.duplicate(true), "roaming": _roaming.duplicate(true), "battle": _battle.duplicate(true)}
 
 static func restore(data: Variant, seed_value: int) -> ExpeditionState:
 	if not valid_snapshot(data, seed_value):
@@ -363,6 +448,8 @@ static func restore(data: Variant, seed_value: int) -> ExpeditionState:
 	state._territories = data.territories.duplicate(true)
 	state._individuals = data.individuals.duplicate(true)
 	state._tile_deltas = data.tile_deltas.duplicate(true)
+	if int(data.version) >= 6:
+		state._battle = BattleProgress.normalized(data.battle)
 	if int(data.version) >= 5:
 		state._roaming = data.roaming.duplicate(true)
 		for identity in state._roaming:
@@ -396,7 +483,7 @@ static func restore(data: Variant, seed_value: int) -> ExpeditionState:
 			record.sol_relationship = normalized_relationship(record.sol_relationship)
 		var base := state.home_identity(identity)
 		state._known_homes[base] = true
-		if record.location == "wild":
+		if state.wild_available(identity):
 			state._wild_homes[base] = identity
 	for key in state._tile_deltas:
 		for field in state._tile_deltas[key]:
@@ -479,6 +566,8 @@ static func valid_snapshot(data: Variant, seed_value: int) -> bool:
 		expected_fields.append("discoveries")
 	if int(data.version) >= 5:
 		expected_fields.append("roaming")
+	if int(data.version) >= 6:
+		expected_fields.append("battle")
 	if not keys_match(data, expected_fields):
 		return false
 	if not SolSpeciesDefinition.whole(seed_value, 0, 2147483646) or not SolSpeciesDefinition.whole(data.activity_tick, 0, MAX_SAFE_INTEGER) or not SolSpeciesDefinition.whole(data.territory_size, 1, 256):
@@ -550,10 +639,14 @@ static func valid_snapshot(data: Variant, seed_value: int) -> bool:
 		if definitions.has(record.species_id) and definitions[record.species_id] != definition:
 			return false
 		definitions[record.species_id] = definition
+	if int(data.version) >= 6 and not BattleProgress.valid(data.battle, data.individuals):
+		return false
 	if int(data.version) >= 5:
 		if not data.roaming is Dictionary or data.roaming.size() > data.individuals.size():
 			return false
 		for identity in data.roaming:
+			if int(data.version) >= 6 and data.battle.defeated.has(identity):
+				return false
 			if not identity is String or not data.individuals.has(identity) or not valid_roaming(data.roaming[identity], data.individuals[identity], int(data.activity_tick)):
 				return false
 	for key in data.tile_deltas:

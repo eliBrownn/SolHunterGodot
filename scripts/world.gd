@@ -8,6 +8,9 @@ signal observe_requested
 signal encounter_requested
 signal withdraw_requested
 signal player_step_completed(from: Vector2i, to: Vector2i)
+signal companion_requested
+signal refuge_recovery_requested
+signal battle_input_requested(event: InputEvent)
 
 const ChunkView = preload("res://scripts/terrain_chunk.gd")
 const Explorer = preload("res://scripts/explorer.gd")
@@ -83,7 +86,8 @@ func bind_inputs() -> void:
 		"north": [KEY_W, KEY_UP], "south": [KEY_S, KEY_DOWN],
 		"save_expedition": [KEY_F5], "load_expedition": [KEY_F9],
 		"examine": [KEY_E], "pause_expedition": [KEY_ESCAPE],
-		"diagnostics": [KEY_F3], "journal": [KEY_J], "observe_sol": [KEY_F], "approach_sol": [KEY_R]}
+		"diagnostics": [KEY_F3], "journal": [KEY_J], "observe_sol": [KEY_F], "approach_sol": [KEY_R],
+		"companion": [KEY_C], "refuge_recovery": [KEY_H]}
 	for action: String in bindings:
 		if not InputMap.has_action(action):
 			InputMap.add_action(action)
@@ -132,7 +136,7 @@ func build_ui() -> void:
 	objective = label("", 17)
 	mission_box.add_child(objective)
 	var footer := panel_at(Rect2(24, 726, 1232, 50))
-	footer.add_child(label("WASD / arrows  Walk   Wheel  Zoom   %s  Examine   %s  Observe   %s  Approach   %s  Journal   %s  Save   %s  Load   Esc  Pause" % [key_label("examine"), key_label("observe_sol"), key_label("approach_sol"), key_label("journal"), key_label("save_expedition"), key_label("load_expedition")], 15))
+	footer.add_child(label("WASD Walk  Wheel Zoom  %s Examine  %s Observe  %s Approach  %s Companion  %s Rest  %s Notes  %s Save  %s Load  Esc Pause" % [key_label("examine"), key_label("observe_sol"), key_label("approach_sol"), key_label("companion"), key_label("refuge_recovery"), key_label("journal"), key_label("save_expedition"), key_label("load_expedition")], 14))
 	toast = label("", 18, Color("ead6a4"))
 	toast.position = Vector2(42, 675)
 	hud.add_child(toast)
@@ -492,6 +496,9 @@ func handle_input(event: InputEvent) -> void:
 	if confirmation.visible or (event is InputEventKey and event.echo):
 		return
 	if encounter_active:
+		battle_input_requested.emit(event)
+		if not encounter_active:
+			return
 		if event.is_action_pressed("pause_expedition"):
 			withdraw_requested.emit()
 		elif event.is_action_pressed("save_expedition"):
@@ -508,6 +515,10 @@ func handle_input(event: InputEvent) -> void:
 	elif event.is_action_pressed("diagnostics"):
 		diagnostic.visible = not diagnostic.visible
 	elif not paused:
+		if event.is_action_pressed("companion"):
+			companion_requested.emit()
+		if event.is_action_pressed("refuge_recovery"):
+			refuge_recovery_requested.emit()
 		if event.is_action_pressed("approach_sol"):
 			encounter_requested.emit()
 		if event.is_action_pressed("observe_sol"):

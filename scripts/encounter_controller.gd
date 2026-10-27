@@ -18,6 +18,10 @@ var steps := 0
 var safe_steps := 0
 var active_target: Dictionary = {}
 var encounter_state: ExpeditionState
+signal battle_requested(target: Dictionary)
+signal battle_retreat_requested
+var battle_running := false
+var battle_button: Button
 
 func bind(source: Node2D, actors: Node3D, tuning: EncounterSettings) -> void:
 	world = source
@@ -30,7 +34,7 @@ func bind(source: Node2D, actors: Node3D, tuning: EncounterSettings) -> void:
 	warning_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	warning_panel.add_child(warning_label)
 	warning_panel.hide()
-	encounter_panel = world.panel_at(Rect2(405, 215, 470, 340))
+	encounter_panel = world.panel_at(Rect2(405, 190, 470, 410))
 	var box := VBoxContainer.new()
 	box.add_theme_constant_override("separation", 16)
 	encounter_panel.add_child(box)
@@ -45,6 +49,13 @@ func bind(source: Node2D, actors: Node3D, tuning: EncounterSettings) -> void:
 	observe_button.custom_minimum_size.y = 42
 	observe_button.pressed.connect(observe_target)
 	box.add_child(observe_button)
+	battle_button = Button.new()
+	battle_button.text = "Battle"
+	battle_button.custom_minimum_size.y = 42
+	battle_button.pressed.connect(func() -> void:
+		if not active_target.is_empty():
+			battle_requested.emit(active_target.duplicate(true)))
+	box.add_child(battle_button)
 	withdraw_button = Button.new()
 	withdraw_button.text = "Withdraw"
 	withdraw_button.custom_minimum_size.y = 42
@@ -65,11 +76,12 @@ func reset(_state: ExpeditionState) -> void:
 	encounter_state = null
 	encounter_panel.hide()
 	world.encounter_active = false
+	battle_running = false
 
 func _process(_delta: float) -> void:
 	if not active_target.is_empty():
 		var record: Dictionary = world.persistent_state.individual_view(active_target.id)
-		if world.persistent_state != encounter_state or record.get("location") != "wild":
+		if world.persistent_state != encounter_state or not world.persistent_state.wild_available(active_target.id):
 			withdraw()
 		return
 	refresh_warning()
@@ -79,7 +91,7 @@ func candidates(radius: int, hostile_only: bool = false) -> Array[Dictionary]:
 	if not settings.valid() or not settings.enabled or not sightings.settings.valid() or not sightings.settings.enabled:
 		return result
 	for member in sightings.members:
-		if world.persistent_state.individual_view(member.id).get("location") != "wild" or (hostile_only and not member.entry.get("hostile", false)):
+		if not world.persistent_state.wild_available(member.id) or (hostile_only and not member.entry.get("hostile", false)):
 			continue
 		var cell: Vector2i = sightings.current_cell(member)
 		var distance: int = sightings.manhattan(cell, world.cell)
@@ -97,7 +109,7 @@ func clear_warning() -> void:
 		warning_panel.hide()
 
 func refresh_warning() -> void:
-	if world.encounter_active or world.paused or world.smoke_mode or not settings.valid() or not settings.enabled or not settings.automatic_contact or safe_steps > 0 or world.terrain.is_camp(world.cell):
+	if world.encounter_active or world.paused or world.smoke_mode or not settings.valid() or not settings.enabled or not settings.automatic_contact or safe_steps > 0 or world.persistent_state.battle_grace() > 0 or world.terrain.is_camp(world.cell):
 		clear_warning()
 		return
 	var threats := candidates(settings.warning_distance, true)
@@ -119,6 +131,10 @@ func mark_warning_presented() -> void:
 
 func on_player_step(_from: Vector2i, _to: Vector2i) -> void:
 	steps += 1
+	if world.persistent_state.battle_grace() > 0:
+		world.persistent_state.consume_battle_grace()
+		clear_warning()
+		return
 	if safe_steps > 0:
 		safe_steps -= 1
 		clear_warning()
@@ -144,7 +160,7 @@ func approach_nearest() -> void:
 	open_encounter(targets[0])
 
 func open_encounter(target: Dictionary) -> void:
-	if world.encounter_active or world.moving or world.persistent_state.individual_view(target.id).get("location") != "wild":
+	if world.encounter_active or world.moving or not world.persistent_state.wild_available(target.id):
 		return
 	active_target = target.duplicate(true)
 	encounter_state = world.persistent_state
@@ -155,7 +171,7 @@ func open_encounter(target: Dictionary) -> void:
 	world.journal_panel.hide()
 	clear_warning()
 	title.text = "FACE TO FACE · " + str(target.name)
-	description.text = "%s watches your approach.\n\nYou can record the sighting or withdraw." % target.name
+	description.text = "%s watches your approach.\n\nRecord the sighting, deploy your companion, or withdraw." % target.name
 	observe_button.disabled = world.persistent_state.has_discovery(target.id)
 	encounter_panel.show()
 	withdraw_button.grab_focus()
@@ -168,6 +184,9 @@ func observe_target() -> void:
 		world.message("Sighting recorded in Field Notes.")
 
 func withdraw() -> void:
+	if battle_running:
+		battle_retreat_requested.emit()
+		return
 	if active_target.is_empty():
 		return
 	active_target.clear()

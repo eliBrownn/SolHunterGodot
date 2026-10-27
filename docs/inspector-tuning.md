@@ -37,6 +37,22 @@ or use Make Unique and save the result. Defaults preserve the current behavior.
 | `resources/encounter_settings.tres`: Enabled / Automatic Contact | true / true | Manual R approach and warned later-contact entry for the authored guard. Loaded worlds use current settings; no identity change. |
 | Warning / Contact / Interaction Distance | 3 / 1 / 3; 1–6 / 0–1 / 1–6 cells | Manhattan warning band, later-step automatic contact, and manual R selection. Warning must cover contact. |
 | Withdrawal Safe Steps | 3; 1–8 successful steps | Prototype automatic re-entry protection. Runtime-only; manual approach remains available. |
+| `resources/battle_settings.tres`: Enabled | true | Enable companion choice and Battle button. Applies at scene startup; disabling preserves saved companions. |
+| Starters / Opponents | Three unique starters / 1–16 unique opponent profiles | Authored resolved profiles. Starters are snapshotted when explicitly chosen; opponents when a battle begins. Loaded chosen profiles retain saved values. |
+| Arena Radius | 4; 3–6 cells | Half-width/height around trainer; default 9×9 arena. Applies to new battles, using existing terrain. |
+| Movement Points / Release Range | 3 / 3; 1–8 / 1–4 cells | Shared cardinal movement per turn / Manhattan deployment distance. Snapshotted at battle entry. |
+| `BattleProfile`: identity and display fields | Species, lineage, class, affinity, name, move name | Must be compatible with existing individual metadata. Changing resources does not rewrite saved individuals. |
+| Level / Max HP | 3 starters, 1 wild / 36–50 HP; 1–55 / 1–1000 | Authored level and resolved health ceiling; no automatic level scaling. Selected starter profile and current HP persist. |
+| Attack / Defense / Speed | Per-profile defaults; 0–1000 | Resolved physical stats and initiative. Saved for chosen starter; snapshotted per new wild battle. |
+| Move Power / Move Range | 6 / 2; 1–100 / 1–6 cells | Neutral physical basic damage and Manhattan targeting, subject to terrain line blocking. |
+
+Battle settings are read for each new battle; restart after editing live resources
+to refresh chooser labels and the Enabled switch. Current battle settings and
+profiles are frozen for that battle. Refuge H recovery uses the chosen saved HP
+ceiling. The same Withdrawal Safe Steps tuning controls saved post-battle
+protection, while preview withdrawal protection remains runtime-only. See
+[first playable battle](first-playable-battle.md) for provisional stat scope,
+controls, persistence, and validation evidence.
 
 Hover properties for their Inspector tooltips. Recovery defaults are provisional
 development tuning, not finalized ecological balance. Climate, movement, seed,
