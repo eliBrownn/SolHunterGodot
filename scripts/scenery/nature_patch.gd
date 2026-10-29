@@ -1,6 +1,8 @@
 class_name NaturePatch
 extends Resource
-## Bounded visual treatment of existing habitats. Never saved; no collision/ecology.
+const CLEARING_RADIUS := 2 # Required observation space around each authored anchor, in cells.
+## Bounded visual treatment of existing habitats. No ecological state.
+## Clearings own required space; expeditions capture those layout constraints.
 @export var patch_id := "woodland"
 ## Absolute cell rectangle; never relative to streaming chunks.
 @export var bounds := Rect2i(20, 4, 24, 24)

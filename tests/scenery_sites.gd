@@ -27,6 +27,10 @@ func run() -> void:
 			continue
 		admitted += 1
 		check(result.elements.size() <= definition.element_budget, "Siblings share the site's module budget")
+		var inputs: Dictionary = result.definition
+		if seed_value == int(inputs.clearing_seed):
+			for row in inputs.clearings:
+				check(not result.reservation.intersects(Rect2i(int(row[0]), int(row[1]), int(row[2]), int(row[3]))), "Site cannot overlap the existing observation/encounter clearing")
 		var no_detail := definition.duplicate()
 		no_detail.roof_trim = false
 		var plain: Dictionary = no_detail.plan(terrain)
@@ -82,6 +86,15 @@ func run() -> void:
 	var invalid := Template.new()
 	invalid.element_budget = 4
 	check(not invalid.plan(WorldTerrain.new()).admitted, "Insufficient required budget rejects the entire site")
+	var obstructed := Template.new()
+	var blocked_inputs := obstructed.parameters()
+	blocked_inputs.clearing_seed = 2601026
+	blocked_inputs.clearings = [[0, -40, 100, 100]]
+	check(obstructed.configure(blocked_inputs) and not obstructed.plan(WorldTerrain.new()).admitted, "Required clearing rejects every overlapping candidate without publishing geometry")
+	var capture := ExpeditionSave.snapshot(2601026, Vector2i.ZERO, false, false, WorldTerrain.GENERATION_VERSION, {}, {}, {}, blocked_inputs)
+	check(ExpeditionSave.validate(capture), "Captured required spaces are admitted with the saved layout")
+	var captured_terrain := WorldTerrain.new(2601026, {}, {}, capture.scenery)
+	check(not captured_terrain.scenery_site.admitted, "Loaded required spaces override current authoring defaults during reconstruction")
 	var scene: Node3D = load("res://scenes/world_3d.tscn").instantiate()
 	root.add_child(scene)
 	var site: Dictionary = scene.world.terrain.scenery_site.duplicate(true)

@@ -5,8 +5,10 @@
 The world scene's `scenery_settings` references
 `resources/scenery/woodland_shelter.tres`. Its stable key, absolute preferred X
 cell, bounded candidate count and shared module budget apply to new expeditions
-and are captured in save format 4 / generation 8. Loaded expeditions retain those
-captured layout settings. `shelter_roof_trim` on the solid world scene is cosmetic;
+and are captured in save format 4 / generation 9. Required clearings come from
+the existing bounded nature composition and are captured with their seed and
+absolute bounds. Loaded expeditions retain those layout settings, including
+required spaces. `shelter_roof_trim` on the solid world scene is cosmetic;
 rebuild/restart applies it to both new and loaded worlds without changing
 reservations or identity. The default site is an open woodland shelter with no
 interaction/reward rules.

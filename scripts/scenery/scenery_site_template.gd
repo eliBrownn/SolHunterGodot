@@ -13,18 +13,52 @@ extends Resource
 @export_range(5, 16) var element_budget := 8
 ## Cosmetic optional roof trim. Does not affect identity, reservations or blockers.
 var roof_trim := true
+var _captured_spaces: Dictionary = {}
 
 func parameters() -> Dictionary:
-	return {"site_key": site_key, "preferred_x": preferred_x, "search_candidates": search_candidates, "element_budget": element_budget}
+	var protection := _captured_spaces.duplicate(true)
+	if protection.is_empty():
+		# Existing composition owns these authored spaces. Capture its relevant
+		# inputs for reconstruction; changing cosmetic density never changes them.
+		var nature: NatureSettings = load("res://resources/nature_cohesive_sample.tres")
+		var spaces: Array = []
+		var seed_value := -1
+		if nature != null and nature.composition != null:
+			seed_value = nature.composition.world_seed
+			for patch in nature.composition.patches:
+				for clearing in patch.clearings:
+					var radius := NaturePatch.CLEARING_RADIUS
+					spaces.append([clearing.x - radius, clearing.y - radius, radius * 2 + 1, radius * 2 + 1])
+		protection = {"clearing_seed": seed_value, "clearings": spaces}
+	return {"site_key": site_key, "preferred_x": preferred_x, "search_candidates": search_candidates, "element_budget": element_budget, "clearing_seed": protection.clearing_seed, "clearings": protection.clearings}
+
+func configure(value: Dictionary) -> bool:
+	if not valid_parameters(value):
+		return false
+	site_key = value.site_key
+	preferred_x = int(value.preferred_x)
+	search_candidates = int(value.search_candidates)
+	element_budget = int(value.element_budget)
+	var spaces: Array = []
+	for row in value.clearings:
+		spaces.append([int(row[0]), int(row[1]), int(row[2]), int(row[3])])
+	_captured_spaces = {"clearing_seed": int(value.clearing_seed), "clearings": spaces}
+	return true
 
 static func valid_parameters(value: Variant) -> bool:
-	return value is Dictionary and value.size() == 4 and value.get("site_key") == "woodland_shelter" and SolSpeciesDefinition.whole(value.get("preferred_x"), -1000000, 1000000) and SolSpeciesDefinition.whole(value.get("search_candidates"), 1, 48) and SolSpeciesDefinition.whole(value.get("element_budget"), 5, 16)
+	if not value is Dictionary or value.size() != 6 or value.get("site_key") != "woodland_shelter" or not SolSpeciesDefinition.whole(value.get("preferred_x"), -1000000, 1000000) or not SolSpeciesDefinition.whole(value.get("search_candidates"), 1, 48) or not SolSpeciesDefinition.whole(value.get("element_budget"), 5, 16) or not SolSpeciesDefinition.whole(value.get("clearing_seed"), -1, 2147483646) or not value.get("clearings") is Array or value.clearings.size() > 32:
+		return false
+	for row in value.clearings:
+		if not row is Array or row.size() != 4 or not SolSpeciesDefinition.whole(row[0], -1000000, 1000000) or not SolSpeciesDefinition.whole(row[1], -1000000, 1000000) or not SolSpeciesDefinition.whole(row[2], 1, 128) or not SolSpeciesDefinition.whole(row[3], 1, 128):
+			return false
+	return true
 
 func valid() -> bool:
 	return valid_parameters(parameters())
 
 func plan(terrain: WorldTerrain) -> Dictionary:
-	if not valid():
+	var inputs := parameters()
+	if not valid_parameters(inputs):
 		return {"admitted": false, "reason": "invalid_definition", "attempts": 0}
 	var reasons: Dictionary = {}
 	for index in range(search_candidates):
@@ -34,16 +68,21 @@ func plan(terrain: WorldTerrain) -> Dictionary:
 		var anchor := Vector2i(x, terrain.trail_y(x) + 10)
 		var footprint := Rect2i(anchor - Vector2i(2, 0), Vector2i(5, 5))
 		var approach := Rect2i(Vector2i(x - 1, terrain.trail_y(x)), Vector2i(3, 10))
-		var reason := rejection(terrain, footprint, approach)
+		var reason := rejection(terrain, footprint, approach, inputs)
 		if not reason.is_empty():
 			reasons[reason] = int(reasons.get(reason, 0)) + 1
 			continue
 		return assemble(terrain, footprint, approach, index + 1, reasons)
 	return {"admitted": false, "reason": "no_suitable_site", "attempts": search_candidates, "rejections": reasons}
 
-func rejection(terrain: WorldTerrain, footprint: Rect2i, approach: Rect2i) -> String:
+func rejection(terrain: WorldTerrain, footprint: Rect2i, approach: Rect2i, inputs: Dictionary) -> String:
 	if footprint.grow(1).intersects(terrain.cabin_footprint.grow(1)):
 		return "reserved_site"
+	if terrain.world_seed == int(inputs.clearing_seed):
+		for row in inputs.clearings:
+			var clearing := Rect2i(int(row[0]), int(row[1]), int(row[2]), int(row[3]))
+			if footprint.grow(1).intersects(clearing):
+				return "reserved_clearing"
 	var low := INF
 	var high := -INF
 	var woodland := false

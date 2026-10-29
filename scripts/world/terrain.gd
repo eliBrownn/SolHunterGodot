@@ -2,7 +2,7 @@ class_name WorldTerrain
 extends RefCounted
 ## Immutable generated defaults. All decisions use seed, version and absolute cells.
 
-const GENERATION_VERSION := 8 # Admitted woodland site and shared access reservations.
+const GENERATION_VERSION := 9 # Preserve captured authored clearings during site admission.
 const Structures = preload("res://scripts/scenery/authored_structures.gd")
 const CELL_SIZE := 32
 const CHUNK_SIZE := 16
@@ -79,8 +79,7 @@ func _init(seed_value: int = 2601026, climate_parameters: Dictionary = {}, relie
 	cabin_layout = Structures.cabin_layout(self)
 	scenery_parameters = (site_parameters if ScenerySiteTemplate.valid_parameters(site_parameters) else default_scenery()).duplicate(true)
 	var site_template := ScenerySiteTemplate.new()
-	for key in scenery_parameters:
-		site_template.set(key, int(scenery_parameters[key]) if key != "site_key" else scenery_parameters[key])
+	site_template.configure(scenery_parameters)
 	scenery_site = site_template.plan(self)
 
 func scenery_reserved(cell: Vector2i) -> bool:
