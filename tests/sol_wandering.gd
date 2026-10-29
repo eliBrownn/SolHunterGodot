@@ -96,10 +96,7 @@ func run() -> void:
 		check(ExpeditionState.restore(bad, seed_value) == null, "Malformed patrol %s rejects before restore" % field)
 	var old := before.duplicate(true)
 	old.version = 10
-	for entry in old.roaming.values():
-		entry.erase("patrol")
-		entry.action = "idle"
-	check(ExpeditionState.restore(old, seed_value) != null, "Version 10 saves upgrade without invented patrol history")
+	check(ExpeditionState.restore(old, seed_value) == null, "Incompatible development state requires a new expedition")
 	var bad := before.duplicate(true)
 	bad.roaming[member.id].patrol.goal = [member.home.x + 6, member.home.y]
 	check(ExpeditionState.restore(bad, seed_value) == null, "Out-of-envelope patrol goals reject")

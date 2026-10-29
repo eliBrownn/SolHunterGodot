@@ -1,5 +1,5 @@
 extends SceneTree
-## D1 invariants, detached reads, atomic persistence and legacy save upgrade.
+## D1 invariants, detached reads, atomic persistence and incompatible-save rejection.
 
 var checks := 0
 var failures := 0

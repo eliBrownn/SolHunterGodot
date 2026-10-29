@@ -90,12 +90,8 @@ func verify_persistence_and_training() -> void:
 	check(ExpeditionState.restore(corrupt, 17) == null, "Over-cap training rejects")
 	var legacy := saved.duplicate(true)
 	legacy.version = 9
-	legacy.erase("sol_stats")
-	legacy.erase("retraining_items")
-	var migrated := ExpeditionState.restore(legacy, 17)
-	check(migrated != null, "Version-nine saves migrate individual rolls once")
-	if migrated != null:
-		check(ExpeditionState.restore(migrated.snapshot(), 17).snapshot() == migrated.snapshot(), "A migrated save does not reroll or reapply IV multipliers")
+	check(ExpeditionState.restore(legacy, 17) == null, "Incompatible development stat state is rejected")
+	check(ExpeditionState.restore(saved, 17).snapshot() == saved, "Current restoration preserves individual rolls without reapplying IV multipliers")
 
 func fixture(hero_class: String, hero_potency: int, enemy_class: String = "", enemy_potency: int = 0) -> TacticalBattle:
 	var battle := TacticalBattle.new()

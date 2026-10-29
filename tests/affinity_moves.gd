@@ -83,7 +83,7 @@ func run() -> void:
 
 func verify_live() -> void:
 	var scene: Node3D = (load("res://scenes/world_3d.tscn") as PackedScene).instantiate()
-	# The synthetic version-6 migration fixture predates catalog traversal rows.
+	# Use an isolated editable catalog while exercising the current save contract.
 	scene.sighting_settings = preload("res://resources/sighting_settings.tres").duplicate(true)
 	root.add_child(scene)
 	var world: Node2D = scene.world

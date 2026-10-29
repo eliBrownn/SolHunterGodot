@@ -149,22 +149,7 @@ func verify_persistence() -> void:
 	for version in [1, 2]:
 		var old := snapshot.duplicate(true)
 		old.version = version
-		old.erase("natural")
-		old.erase("discoveries")
-		old.erase("roaming")
-		old.erase("battle")
-		old.erase("movebooks")
-		old.erase("affinity_tiles")
-		old.erase("wild_population")
-		old.erase("collection")
-		old.erase("sol_stats")
-		old.erase("retraining_items")
-		if old.has("battle"):
-			old.battle.erase("captures")
-		if version == 1:
-			old.erase("human_activity")
-		var upgraded := ExpeditionState.restore(old, 17)
-		check(upgraded != null and upgraded.natural_view().recovery_ticks.is_empty() and upgraded.snapshot().tile_deltas == old.tile_deltas, "Legacy domain envelopes preserve deltas without fabricated damage ages")
+		check(ExpeditionState.restore(old, 17) == null, "Incompatible development scheduler state is rejected")
 	var path := "user://natural-vastra-%d.json" % Time.get_ticks_usec()
 	var save := ExpeditionSave.snapshot(17, Vector2i.ZERO, false, false, WorldTerrain.GENERATION_VERSION, {}, snapshot)
 	check(ExpeditionSave.write(save, path) == OK, "Portable save accepts scheduler state without changing outer save format")

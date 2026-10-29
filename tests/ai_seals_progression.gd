@@ -176,16 +176,8 @@ func verify_live() -> void:
 	check(ExpeditionState.restore(malformed, 17) == null, "Corrupt captured HP rejects during save admission")
 	var legacy := saved.duplicate(true)
 	legacy.version = 8
-	legacy.erase("collection")
-	legacy.erase("sol_stats")
-	legacy.erase("retraining_items")
-	legacy.battle.captures = 0
-	legacy.battle.serial = 0
-	legacy.battle.last_result = {}
-	legacy.battle.erase("captures")
-	var migrated := ExpeditionState.restore(legacy, 17)
-	check(migrated != null and migrated.companion_view(starter.id).xp == 0, "Legacy migration retains original starter without inventing historical XP")
-	check(ExpeditionState.valid_snapshot(migrated.snapshot(), 17) and migrated.individual_view(starter.id).location == "storage", "Legacy stored starter stays stored with a portable collection migration")
+	check(ExpeditionState.restore(legacy, 17) == null, "Incompatible development collection state is rejected")
+	check(ExpeditionState.restore(saved, 17).snapshot() == saved, "Current collection preserves captured identity, storage, health and progression exactly")
 	var next: Dictionary = scene.sightings.members[0].duplicate(true)
 	approach(scene, next)
 	check(controller.session != null and controller.session.ally == owned.profile and controller.session.ally_hp == 7, "Next battle deploys captured stats and health rather than regenerating a starter")

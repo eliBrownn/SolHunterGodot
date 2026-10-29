@@ -648,76 +648,63 @@ static func restore(data: Variant, seed_value: int) -> ExpeditionState:
 		return null
 	var state := ExpeditionState.new(seed_value, int(data.territory_size))
 	state._tick = int(data.activity_tick)
-	if int(data.version) >= 17:
-		state._story = data.story.duplicate(true)
-		for row in state._story.decisions.values():
-			row.tick = int(row.tick)
+	state._story = data.story.duplicate(true)
+	for row in state._story.decisions.values():
+		row.tick = int(row.tick)
 	state._remainder = float(data.remainder_seconds)
 	state._territories = data.territories.duplicate(true)
 	state._individuals = data.individuals.duplicate(true)
 	state._tile_deltas = data.tile_deltas.duplicate(true)
-	if int(data.version) >= 10:
-		state._sol_stats = data.sol_stats.duplicate(true)
-		for id in state._sol_stats:
-			state._sol_stats[id] = SolStats.normalized(state._sol_stats[id])
-		state._retraining_items = int(data.retraining_items)
-	if int(data.version) >= 9:
-		state._collection = CollectionProgress.normalized(data.collection)
-	if int(data.version) >= 8:
-		state._wild_population = WildPopulation.normalized(data.wild_population)
-	if int(data.version) >= 7:
-		state._movebooks = data.movebooks.duplicate(true)
-		for book in state._movebooks.values():
-			for id in book.learned:
-				book.learned[id] = SolMove.normalized(book.learned[id])
-		state._affinity_tiles = data.affinity_tiles.duplicate(true)
-		for row in state._affinity_tiles.values():
-			for effect in row.conditions.values():
-				for field in ["level", "since", "interval"]:
-					effect[field] = int(effect[field])
-				effect.direction = [int(effect.direction[0]), int(effect.direction[1])]
-	if int(data.version) >= 6:
-		state._battle = BattleProgress.normalized(data.battle)
-		if not state._battle.profile.is_empty():
-			state._battle.profile.affinity = AffinityImprint.canonical(state._battle.profile.affinity)
-	if int(data.version) >= 5:
-		state._roaming = data.roaming.duplicate(true)
-		for identity in state._roaming:
-			var row: Dictionary = state._roaming[identity]
-			row.cell = [int(row.cell[0]), int(row.cell[1])]
-			row.tick = int(row.tick)
-			if row.has("traversal"):
-				row.traversal.mode_tick = int(row.traversal.mode_tick)
-				row.traversal.from = [int(row.traversal.from[0]), int(row.traversal.from[1])]
-			if row.has("response"):
-				row.response.until = int(row.response.until)
-				row.response.move_after = int(row.response.move_after)
-				if row.response.has("attention_until"):
-					row.response.attention_until = int(row.response.attention_until)
-				if row.response.has("routine_until"):
-					row.response.routine_until = int(row.response.routine_until)
-			if row.has("patrol"):
-				row.patrol.goal = [int(row.patrol.goal[0]), int(row.patrol.goal[1])]
-				for field in ["leg", "expires", "rest_until"]:
-					row.patrol[field] = int(row.patrol[field])
-				if row.patrol.has("blocked_since"):
-					row.patrol.blocked_since = int(row.patrol.blocked_since)
-	if int(data.version) >= 4:
-		for entry in data.discoveries:
-			var copy: Dictionary = entry.duplicate(true)
-			copy.first_seen = [int(copy.first_seen[0]), int(copy.first_seen[1])]
-			state._discoveries.append(copy)
-	if int(data.version) >= 2:
-		state._human_activity = HumanVastraActivity.normalized_ledger(data.human_activity)
-	if int(data.version) >= 3:
-		state._natural = data.natural.duplicate(true)
-		state._natural.cursor = int(state._natural.cursor)
-		state._natural.last_tick = int(state._natural.last_tick)
-		for key in state._natural.recovery_ticks:
-			state._natural.recovery_ticks[key] = int(state._natural.recovery_ticks[key])
-	else:
-		# Older envelopes have no scheduling order or known damage ages.
-		state._natural.order = state._tile_deltas.keys()
+	state._sol_stats = data.sol_stats.duplicate(true)
+	for id in state._sol_stats:
+		state._sol_stats[id] = SolStats.normalized(state._sol_stats[id])
+	state._retraining_items = int(data.retraining_items)
+	state._collection = CollectionProgress.normalized(data.collection)
+	state._wild_population = WildPopulation.normalized(data.wild_population)
+	state._movebooks = data.movebooks.duplicate(true)
+	for book in state._movebooks.values():
+		for id in book.learned:
+			book.learned[id] = SolMove.normalized(book.learned[id])
+	state._affinity_tiles = data.affinity_tiles.duplicate(true)
+	for row in state._affinity_tiles.values():
+		for effect in row.conditions.values():
+			for field in ["level", "since", "interval"]:
+				effect[field] = int(effect[field])
+			effect.direction = [int(effect.direction[0]), int(effect.direction[1])]
+	state._battle = BattleProgress.normalized(data.battle)
+	if not state._battle.profile.is_empty():
+		state._battle.profile.affinity = AffinityImprint.canonical(state._battle.profile.affinity)
+	state._roaming = data.roaming.duplicate(true)
+	for identity in state._roaming:
+		var row: Dictionary = state._roaming[identity]
+		row.cell = [int(row.cell[0]), int(row.cell[1])]
+		row.tick = int(row.tick)
+		if row.has("traversal"):
+			row.traversal.mode_tick = int(row.traversal.mode_tick)
+			row.traversal.from = [int(row.traversal.from[0]), int(row.traversal.from[1])]
+		if row.has("response"):
+			row.response.until = int(row.response.until)
+			row.response.move_after = int(row.response.move_after)
+			if row.response.has("attention_until"):
+				row.response.attention_until = int(row.response.attention_until)
+			if row.response.has("routine_until"):
+				row.response.routine_until = int(row.response.routine_until)
+		if row.has("patrol"):
+			row.patrol.goal = [int(row.patrol.goal[0]), int(row.patrol.goal[1])]
+			for field in ["leg", "expires", "rest_until"]:
+				row.patrol[field] = int(row.patrol[field])
+			if row.patrol.has("blocked_since"):
+				row.patrol.blocked_since = int(row.patrol.blocked_since)
+	for entry in data.discoveries:
+		var copy: Dictionary = entry.duplicate(true)
+		copy.first_seen = [int(copy.first_seen[0]), int(copy.first_seen[1])]
+		state._discoveries.append(copy)
+	state._human_activity = HumanVastraActivity.normalized_ledger(data.human_activity)
+	state._natural = data.natural.duplicate(true)
+	state._natural.cursor = int(state._natural.cursor)
+	state._natural.last_tick = int(state._natural.last_tick)
+	for key in state._natural.recovery_ticks:
+		state._natural.recovery_ticks[key] = int(state._natural.recovery_ticks[key])
 	for key in state._territories:
 		state._territories[key].observed_tick = int(state._territories[key].observed_tick)
 	for identity in state._individuals:
@@ -735,20 +722,6 @@ static func restore(data: Variant, seed_value: int) -> ExpeditionState:
 	for key in state._tile_deltas:
 		for field in state._tile_deltas[key]:
 			state._tile_deltas[key][field] = int(state._tile_deltas[key][field])
-	if int(data.version) < 9 and not state._battle.starter_id.is_empty():
-		state._collection.selected = state._battle.starter_id
-		state._collection.owned[state._battle.starter_id] = CollectionProgress.entry(state._battle.profile, int(state._battle.hp))
-	if int(data.version) < 10:
-		# One-time deterministic migration, never a roll during rendering or battle construction.
-		for id in state._individuals:
-			state._sol_stats[id] = state.new_stat_record(id, state._individuals[id].class_id)
-			state._sol_stats[id].forms = maxi(3, int(state._individuals[id].ordinary_form))
-			if state._collection.owned.has(id):
-				var row: Dictionary = state._collection.owned[id]
-				state._sol_stats[id].base = BattleProfile.normalized(row.profile)
-				row.profile = SolStats.resolve(state._sol_stats[id], int(row.profile.level))
-				row.hp = mini(int(row.hp), int(row.profile.max_hp))
-		state.sync_starter()
 	if not valid_snapshot(state.snapshot(), seed_value):
 		return null
 	return state
@@ -869,57 +842,45 @@ static func valid_discovery(entry: Variant, individuals: Dictionary) -> bool:
 	return SolSpeciesDefinition.whole(entry.first_seen[0], -1000000, 1000000) and SolSpeciesDefinition.whole(entry.first_seen[1], -1000000, 1000000)
 
 static func valid_snapshot(data: Variant, seed_value: int) -> bool:
-	if not data is Dictionary or not SolSpeciesDefinition.whole(data.get("version"), 1, VERSION):
+	if not data is Dictionary or not SolSpeciesDefinition.whole(data.get("version"), VERSION, VERSION):
 		return false
 	var expected_fields := ["version", "activity_tick", "remainder_seconds", "territory_size", "territories", "individuals", "tile_deltas"]
-	if int(data.version) >= 2:
-		expected_fields.append("human_activity")
-	if int(data.version) >= 3:
-		expected_fields.append("natural")
-	if int(data.version) >= 4:
-		expected_fields.append("discoveries")
-	if int(data.version) >= 5:
-		expected_fields.append("roaming")
-	if int(data.version) >= 6:
-		expected_fields.append("battle")
-	if int(data.version) >= 7:
-		expected_fields.append("movebooks")
-		expected_fields.append("affinity_tiles")
-	if int(data.version) >= 8:
-		expected_fields.append("wild_population")
-	if int(data.version) >= 9:
-		expected_fields.append("collection")
-	if int(data.version) >= 10:
-		expected_fields.append_array(["sol_stats", "retraining_items"])
-	if int(data.version) >= 17:
-		expected_fields.append("story")
+	expected_fields.append("human_activity")
+	expected_fields.append("natural")
+	expected_fields.append("discoveries")
+	expected_fields.append("roaming")
+	expected_fields.append("battle")
+	expected_fields.append("movebooks")
+	expected_fields.append("affinity_tiles")
+	expected_fields.append("wild_population")
+	expected_fields.append("collection")
+	expected_fields.append_array(["sol_stats", "retraining_items"])
+	expected_fields.append("story")
 	if not keys_match(data, expected_fields):
 		return false
 	if not SolSpeciesDefinition.whole(seed_value, 0, 2147483646) or not SolSpeciesDefinition.whole(data.activity_tick, 0, MAX_SAFE_INTEGER) or not SolSpeciesDefinition.whole(data.territory_size, 1, 256):
 		return false
-	if int(data.version) >= 17 and not StoryLedger.valid(data.story, int(data.activity_tick)):
+	if not StoryLedger.valid(data.story, int(data.activity_tick)):
 		return false
-	if int(data.version) >= 2 and not HumanVastraActivity.valid_ledger(data.human_activity, int(data.activity_tick)):
+	if not HumanVastraActivity.valid_ledger(data.human_activity, int(data.activity_tick)):
 		return false
 	if not (data.remainder_seconds is float or data.remainder_seconds is int) or not is_finite(float(data.remainder_seconds)) or data.remainder_seconds < 0 or data.remainder_seconds >= ACTIVITY_INTERVAL:
 		return false
 	if not data.territories is Dictionary or data.territories.size() > MAX_TERRITORIES or not data.individuals is Dictionary or data.individuals.size() > MAX_INDIVIDUALS or not data.tile_deltas is Dictionary or data.tile_deltas.size() > MAX_TILE_DELTAS:
 		return false
-	if int(data.version) >= 4:
-		if not data.discoveries is Array or data.discoveries.size() > MAX_DISCOVERIES:
+	if not data.discoveries is Array or data.discoveries.size() > MAX_DISCOVERIES:
+		return false
+	var discovery_keys: Dictionary = {}
+	for entry in data.discoveries:
+		if not valid_discovery(entry, data.individuals) or discovery_keys.has(entry.key):
 			return false
-		var discovery_keys: Dictionary = {}
-		for entry in data.discoveries:
-			if not valid_discovery(entry, data.individuals) or discovery_keys.has(entry.key):
-				return false
-			discovery_keys[entry.key] = true
-	if int(data.version) >= 3:
-		# Tile fields are checked below before schedule validation reads their values.
-		for value in data.tile_deltas.values():
-			if not valid_delta(value) or (int(data.version) < 16 and value.get("overload", 0) < 0):
-				return false
-		if not VastraNatural.valid_schedule(data.natural, data.tile_deltas, int(data.activity_tick)):
+		discovery_keys[entry.key] = true
+	# Tile fields are checked below before schedule validation reads their values.
+	for value in data.tile_deltas.values():
+		if not valid_delta(value):
 			return false
+	if not VastraNatural.valid_schedule(data.natural, data.tile_deltas, int(data.activity_tick)):
+		return false
 	for key in data.territories:
 		if not key is String:
 			return false
@@ -946,7 +907,7 @@ static func valid_snapshot(data: Variant, seed_value: int) -> bool:
 		var expected := ["id", "home", "generation", "species_id", "lineage_id", "class_id", "ordinary_form", "footprint", "affinity", "location"]
 		if record.has("sol_relationship"):
 			expected.append("sol_relationship")
-		if int(data.version) >= 10 and record.has("birth_species_id"):
+		if record.has("birth_species_id"):
 			expected.append("birth_species_id")
 		if not keys_match(record, expected) or record.id != identity or not SolSpeciesDefinition.valid_record(record) or not SolSpeciesDefinition.text(record.affinity) or not record.location in ["wild", "sealed", "party", "storage"]:
 			return false
@@ -956,7 +917,7 @@ static func valid_snapshot(data: Variant, seed_value: int) -> bool:
 			return false
 		if record.location == "wild":
 			var home_id := SolIdentityContract.make(seed_value, Vector2i(origin.home[0], origin.home[1]), origin.species_id)
-			var depleted: bool = int(data.version) >= 6 and data.battle is Dictionary and data.battle.get("defeated") is Dictionary and data.battle.defeated.has(identity)
+			var depleted: bool = data.battle is Dictionary and data.battle.get("defeated") is Dictionary and data.battle.defeated.has(identity)
 			if (wild_homes.has(home_id) and not depleted) or record.has("sol_relationship"):
 				return false
 			if not depleted:
@@ -970,39 +931,36 @@ static func valid_snapshot(data: Variant, seed_value: int) -> bool:
 		if definitions.has(record.species_id) and definitions[record.species_id] != definition:
 			return false
 		definitions[record.species_id] = definition
-	if int(data.version) >= 10:
-		if not data.sol_stats is Dictionary or data.sol_stats.size() != data.individuals.size() or not SolSpeciesDefinition.whole(data.retraining_items, 0, 9999):
-			return false
-		for id in data.sol_stats:
-			if not data.individuals.has(id) or not SolStats.valid(data.sol_stats[id], data.individuals[id]):
-				return false
-			if data.individuals[id].location == "wild" and (data.sol_stats[id].earned != 0 or SolStats.spent(data.sol_stats[id]) != 0):
-				return false
-		if data.collection is Dictionary and data.collection.get("owned") is Dictionary:
-			for id in data.collection.owned:
-				var owned_row: Variant = data.collection.owned[id]
-				if not data.sol_stats.has(id) or not owned_row is Dictionary or not owned_row.get("profile") is Dictionary or not BattleProfile.valid_snapshot(owned_row.profile) or SolStats.resolve(data.sol_stats[id], int(owned_row.profile.level)) != BattleProfile.normalized(owned_row.profile):
-					return false
-	if int(data.version) >= 7:
-		if not data.movebooks is Dictionary or data.movebooks.size() > data.individuals.size() or not AffinityImprint.valid_tiles(data.affinity_tiles, int(data.activity_tick), MAX_TILE_DELTAS):
-			return false
-		for identity in data.movebooks:
-			if not identity is String or not data.individuals.has(identity) or not MoveLibrary.valid_book(data.movebooks[identity]):
-				return false
-	if int(data.version) >= 6 and not BattleProgress.valid(data.battle, data.individuals):
+	if not data.sol_stats is Dictionary or data.sol_stats.size() != data.individuals.size() or not SolSpeciesDefinition.whole(data.retraining_items, 0, 9999):
 		return false
-	if int(data.version) >= 9 and (not data.battle.has("captures") or not CollectionProgress.valid(data.collection, data.individuals, data.battle)):
-		return false
-	if int(data.version) >= 8 and not WildPopulation.valid(data.wild_population, seed_value, int(data.activity_tick), data.individuals, data.battle.defeated):
-		return false
-	if int(data.version) >= 5:
-		if not data.roaming is Dictionary or data.roaming.size() > data.individuals.size():
+	for id in data.sol_stats:
+		if not data.individuals.has(id) or not SolStats.valid(data.sol_stats[id], data.individuals[id]):
 			return false
-		for identity in data.roaming:
-			if int(data.version) >= 6 and data.battle.defeated.has(identity):
+		if data.individuals[id].location == "wild" and (data.sol_stats[id].earned != 0 or SolStats.spent(data.sol_stats[id]) != 0):
+			return false
+	if data.collection is Dictionary and data.collection.get("owned") is Dictionary:
+		for id in data.collection.owned:
+			var owned_row: Variant = data.collection.owned[id]
+			if not data.sol_stats.has(id) or not owned_row is Dictionary or not owned_row.get("profile") is Dictionary or not BattleProfile.valid_snapshot(owned_row.profile) or SolStats.resolve(data.sol_stats[id], int(owned_row.profile.level)) != BattleProfile.normalized(owned_row.profile):
 				return false
-			if not identity is String or not data.individuals.has(identity) or not valid_roaming(data.roaming[identity], data.individuals[identity], int(data.activity_tick), int(data.version) >= 11, int(data.version) >= 12, 2147483646 if int(data.version) >= 13 else 3, int(data.version) >= 14, int(data.version) >= 15):
-				return false
+	if not data.movebooks is Dictionary or data.movebooks.size() > data.individuals.size() or not AffinityImprint.valid_tiles(data.affinity_tiles, int(data.activity_tick), MAX_TILE_DELTAS):
+		return false
+	for identity in data.movebooks:
+		if not identity is String or not data.individuals.has(identity) or not MoveLibrary.valid_book(data.movebooks[identity]):
+			return false
+	if not BattleProgress.valid(data.battle, data.individuals):
+		return false
+	if (not data.battle.has("captures") or not CollectionProgress.valid(data.collection, data.individuals, data.battle)):
+		return false
+	if not WildPopulation.valid(data.wild_population, seed_value, int(data.activity_tick), data.individuals, data.battle.defeated):
+		return false
+	if not data.roaming is Dictionary or data.roaming.size() > data.individuals.size():
+		return false
+	for identity in data.roaming:
+		if data.battle.defeated.has(identity):
+			return false
+		if not identity is String or not data.individuals.has(identity) or not valid_roaming(data.roaming[identity], data.individuals[identity], int(data.activity_tick), true, true, 2147483646, true, true):
+			return false
 	for key in data.tile_deltas:
 		if not key is String or not valid_delta(data.tile_deltas[key]):
 			return false
