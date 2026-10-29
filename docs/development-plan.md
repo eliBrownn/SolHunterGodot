@@ -60,93 +60,23 @@ questionnaire items as decisions.
 
 ## Approved hierarchical framework — October 28, 2026
 
-Owner approval: save and apply the game-wide principle of hierarchical ownership,
-relevant inherited standards, controlled variation, explicit exceptions and
-contained changes. The operative rule is in
+Owner approval: apply hierarchical ownership, relevant inherited standards,
+controlled variation, explicit exceptions and contained changes across the existing
+project. The operative principle remains in
 [PROJECT_STANDARD.md](PROJECT_STANDARD.md#hierarchical-ownership-and-composition).
-Different domains retain separate hierarchies and explicit relationships. This
-records direction and safeguards; the construction sequence below is an
-engineering proposal, not a claim that the framework is implemented.
 
-### Establish ownership before shared abstractions
+Owner follow-up: reformat the project around that plan, efficiently, without
+duplicate systems or repeated checks of unchanged work. The
+[project reformat roadmap](reformat-roadmap.md) is the single execution sequence
+for this structural work, including ownership/data contracts, migration phases,
+dependencies, validation reuse and completion evidence. It replaces the earlier
+construction outline here. Feature roadmaps continue to own their gameplay and
+visual acceptance requirements.
 
-Begin with the existing owners, adding responsibility only where the prototype
-demonstrates a gap. These are integration starting points, not replacement systems:
-
-| Concern | Existing starting point | Boundary to preserve |
-| --- | --- | --- |
-| Ground, geography and traversal legality | `scripts/terrain.gd`, `scripts/terrain_geography.gd` | Scenery queries canonical final terrain; it cannot create a conflicting surface or route authority |
-| Scenery definitions and placement | `scripts/nature_composition.gd`, `scripts/nature_patch.gd`, `scripts/nature_asset_entry.gd` | Current bounded cosmetic patches remain distinct from future versioned building/site layouts |
-| Persistent expedition outcomes | `scripts/expedition_state.gd`, `scripts/save_store.gd` | Generated defaults and mutable saved outcomes have separate ownership; scenery cannot duplicate individuals or territories |
-| Species definitions | `scripts/sol_species_catalog.gd`, `scripts/sol_species_record.gd` | Reference shared species content while retaining independent individual identity and affinity |
-| Visible chunk geometry | `scripts/solid_chunk.gd` | Stream admitted placement results; do not decide permanent site layouts from chunk visitation order |
-
-For each affected fact, identify its owner, readers, permitted writer and lifetime.
-Cross-system changes go through that owner's existing interface. Do not let the
-renderer, collision and interaction layers invent independent building footprints.
-Agree the authoritative placement first, then make those layers consume it.
-Consult SolHunterSource under the existing evidence rules before changing any
-non-generation mechanic; architectural organization alone changes no rules.
-
-### Minimum framework for the first scenery slice
-
-Use three separate kinds of data, extending existing typed Godot Resources where
-appropriate. Names and exact module boundaries remain implementation choices:
-
-1. **Authored definitions:** regional palettes, asset contracts and location
-   templates. Record stable keys, compatible elements, mandatory requirements,
-   soft preferences, required/optional children, access reservations and bounded
-   work/size budgets. Mark defaults and named exceptions explicitly. Expose only
-   implemented tuning through the Inspector, following the project standard.
-2. **Generated placement records:** stable identity, parent identity, template key,
-   world-space bounds/transform, reserved space, resolved asset references and
-   generation/settings version. Resolve applicable parent constraints before
-   placement; child rules may narrow them. Independent properties use references,
-   not additional ancestry. Share the admitted results across rendering, collision
-   and interaction. Rendering chunks and the Godot scene tree are delivery details,
-   not the authoritative ownership hierarchy.
-3. **Persistent changes:** save mutable outcomes against stable placement identities
-   through the expedition/save owners. Reconstruct unchanged layout from its seed,
-   version and captured generation settings. Treat cosmetic palette edits separately
-   from identity, footprint or route changes; do not silently reinterpret a save.
-
-Use the [scenery hierarchy](terrain-roadmap.md#required-generation-hierarchy) for
-the first proof. Resolve inherited rules, plan sites, reserve approaches and zones,
-place assemblies/elements, then add detail. Validate children and siblings before
-publishing a site. A failed mandatory element rejects an optional site; optional
-details can be omitted. Bound retries and shared budgets. Keep mandatory access
-and integrity rules distinct from preferences such as symmetry or decoration
-density. Broader planning owns shared reservations and cross-boundary conflicts;
-independent streaming chunks must not each approve overlapping sites.
-
-Derive variation independently from the saved world seed, stable owner/child keys
-and purpose. Do not use list position or one shared advancing random sequence for
-unrelated elements. Detail edits must preserve parent layouts; loading order,
-cache eviction and reload must preserve admitted placements. Preserve deliberate
-generation-version changes when the actual layout contract changes.
-
-### Delivery and evidence
-
-First map ownership and add only the definitions/records needed for one woodland
-approach and one small secondary-site template. Reuse the current art and terrain;
-choose the site's purpose/style during authoring. Connect layout consumers and
-save behavior before extending the template library. Provide a development-only
-inspection view/report with parent IDs, inherited constraints, reservations,
-budget usage and rejection reasons so failures can be traced to their owner.
-
-Then demonstrate distinct coherent results over several seeds, safe rejection of
-unsuitable sites, shared-budget/overlap handling, clear foundations/entrances and
-essential travel, correct picking/collision and existing encounter readability.
-Include a site crossing a streaming boundary, changed loading order, eviction and
-save/load, plus a detail-only edit that preserves building and parent layout.
-Measure relevant travel/streaming/rendering costs against a matched baseline and
-record unresolved desktop/device budgets rather than inventing acceptance limits.
-
-Only after that proof, extend the demonstrated pattern to the next affected domain
-with its own owner map and focused checks. Avoid a universal base class, speculative
-empty folders or an up-front game-wide refactor. Current T4a/T5, connected-expedition
-and device acceptance gates remain in force. Documentation approval is not runtime
-implementation, a passing build or completion of those gates.
+The reformat proceeds through bounded, reviewable changes with a usable connected
+expedition. Existing design/mechanics authorities remain binding. This records the
+approved direction. Current runtime phase status and validation evidence are
+recorded in the reformat roadmap; documentation alone closes no feature/device gate.
 
 ## Approved creative direction — October 28, 2026
 

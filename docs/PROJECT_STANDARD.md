@@ -32,12 +32,21 @@ at the owning level, but cannot bypass required access, data integrity or other
 hard invariants. Small detail changes must not reroll unrelated parent layouts.
 Create a hierarchy level only when it owns a useful decision, rule or budget.
 
-Apply this incrementally to changed systems and prove the first scenery slice
-before wider adoption. The [framework plan](development-plan.md#approved-hierarchical-framework--october-28-2026)
-records implementation proposals; [the terrain roadmap](terrain-roadmap.md#required-generation-hierarchy)
-specializes the principle for scenery. This does not authorize a wholesale rewrite
-or establish new mechanics; the Bible and mechanics-reference authorities above
-remain binding.
+Owner follow-up, October 28: reformat the existing project around this principle
+through the [project reformat roadmap](reformat-roadmap.md). Prove the first
+scenery slice, then migrate the remaining domains in bounded, reviewable changes.
+The roadmap owns the structural delivery sequence; feature roadmaps retain their
+design and acceptance criteria. The Bible and mechanics-reference authorities
+above remain binding; structural approval establishes no new mechanics.
+
+Keep one owner per responsibility and one evidence index for the reformat. Reuse
+verified contracts, mechanics evidence and matching validation results. Select
+checks from the actual change and its dependencies; invalidate evidence when
+relevant inputs, contracts or execution conditions change. Do not rerun unrelated
+systems at every phase or duplicate an existing implementation/test. Run broader
+integration checks at shared-contract changes and final integration as warranted,
+and keep configured CI checks unchanged. See the roadmap's
+[validation reuse rules](reformat-roadmap.md#validation-and-evidence-reuse).
 
 ## Repository layout
 

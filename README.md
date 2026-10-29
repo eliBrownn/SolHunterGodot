@@ -16,6 +16,8 @@ The [flight/swimming pilot](docs/sol-flight-and-swimming.md) adds live wild
 traversal; `scenes/sol_traversal_pilot.tscn` starts beside the generated pond bank.
 
 Repository organization and Git workflow follow [the project standard](docs/PROJECT_STANDARD.md).
+The [project reformat roadmap](docs/reformat-roadmap.md) sequences the approved
+hierarchical restructuring, with shared ownership and validation evidence reuse.
 See the [repository management roadmap](ROADMAP.md) for milestones and completion gates.
 
 Continue creature design with the [design handoff](docs/sol-creature-design-handoff.md).

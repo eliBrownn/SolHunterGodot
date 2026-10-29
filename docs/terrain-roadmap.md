@@ -61,8 +61,8 @@ This develops the existing Godot generation engine and T4a placement contracts.
 ### Required generation hierarchy
 
 This specializes the approved [game-wide ownership principle](PROJECT_STANDARD.md#hierarchical-ownership-and-composition).
-See the [framework plan](development-plan.md#approved-hierarchical-framework--october-28-2026)
-for owner boundaries, authored/generated/saved data contracts and delivery sequence.
+See the [project reformat roadmap](reformat-roadmap.md) for owner boundaries,
+authored/generated/saved data contracts, delivery sequence and validation reuse.
 
 Owner follow-up: maintain a hierarchy throughout procedural scenery authoring,
 generation and validation. Compose from broad context to individual detail;
@@ -233,7 +233,7 @@ Inspected October 28; this is source inspection rather than a fresh test result.
 
 | Area | Implemented baseline | Open acceptance/dependency |
 | --- | --- | --- |
-| Generation/save | `scripts/terrain.gd` generation 7; `scripts/save_store.gd` format 3, saved relief/geography tuning and rejection of incompatible outer formats/generations | Keep current-contract reconstruction; no legacy generators or migration project. The older variable named `height` still serves habitat classification independently. |
+| Generation/save | `scripts/world/terrain.gd` generation 7; `scripts/persistence/save_store.gd` format 3, saved relief/geography tuning and rejection of incompatible outer formats/generations | Keep current-contract reconstruction; no legacy generators or migration project. The older variable named `height` still serves habitat classification independently. |
 | Final terrain | `TerrainHeightfield` supplies raw noise; `WorldTerrain` applies pond/foundation shaping; `solid_chunk.gd` publishes curved textured meshes | Verify independently built production borders and overlap cases; raw preview checks alone are insufficient. |
 | Grounding/picking | Shared final height queries, `terrain_ray.gd`, vertical streaming bounds and grounded actor/overlay adapters | Camera damping, all-prop slope fit and worst-angle readability remain specific review items; do not mark the whole T2 wish list accepted. |
 | Traversal | `fits`/`can_step`, per-triangle standing slopes, essential 3x3 route admission and default-relief fallback | Broader grading and junction/cross-slope evidence; graph changes only if new edge-specific rules are introduced. |
