@@ -58,11 +58,11 @@ func verify_content() -> void:
 		check(resolved.profile_id == entry.ecology.profile_id and resolved.behaviors.has("idle"), "Ecology resolves the catalog default through existing behavior branches")
 		sight.behavior_profile = "missing_override"
 		check(SolEcology.profile_for(sight, ecology) == null, "Missing named override never silently becomes a species default")
-		var view := SolSpeciesView.create(entry.species_id, "water", SolVisualSettings.new(), 0.0, Catalog)
+		var view: Node3D = SolSpeciesView.create(entry.species_id, "water", SolVisualSettings.new(), 0.0, Catalog)
 		check(view != null and view.get_meta("species_id") == entry.species_id and view.affinity == "water", "Presentation scene lookup receives the individual's actual affinity")
 		if view != null:
 			view.free()
-	var legacy := SolSpeciesView.create("seedmote", "earth", SolVisualSettings.new())
+	var legacy: Node3D = SolSpeciesView.create("seedmote", "earth", SolVisualSettings.new())
 	check(legacy != null and legacy.affinity == "earth" and legacy.mesh == null and not legacy.halo.visible and legacy.has_method("sync_locomotion"), "Existing saved species use a creature fallback with their original affinity")
 	legacy.free()
 	var before := SolEcology.configuration(ecology)
@@ -131,7 +131,8 @@ func verify_rejection() -> void:
 	sightings.catalog_sightings[0].trail_x = 8
 	var actors := preload("res://scripts/sols/presentation/authored_sightings.gd").new()
 	actors.settings = sightings
-	check(actors.local_entries().is_empty(), "A catalog placement colliding with an established trail home rejects the complete layout")
+	# This is an authored-layout rejection fixture, without a bound runtime world.
+	check(sightings.valid() and actors.build_local_entries().is_empty(), "A catalog placement colliding with an established trail home rejects the complete layout")
 	actors.free()
 
 func verify_capacity() -> void:
@@ -257,7 +258,9 @@ func verify_journey() -> void:
 	if OS.get_cmdline_user_args().has("--capture") and DisplayServer.get_name() != "headless":
 		await capture_pilots(world, pilot_ids)
 	await process_frame
-	scene.free()
+	scene.environment.sky = null
+	scene.queue_free()
+	await process_frame
 
 func capture_pilots(world: Node2D, pilot_ids: Array[String]) -> void:
 	root.mode = Window.MODE_WINDOWED

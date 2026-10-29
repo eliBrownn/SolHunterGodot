@@ -91,7 +91,10 @@ foreach ($case in $cases) {
     if ($null -eq $exitCode) { throw 'Cannot determine process exit status' }
     $after = Get-SourceFingerprint
     $after | ConvertTo-Json -Depth 4 | Set-Content -LiteralPath "$caseDirectory/source_after.json" -Encoding utf8
-    $lines = @(Get-Content "$caseDirectory/stdout.log") + @(Get-Content "$caseDirectory/stderr.log")
+    # Get-Content lines carry provider metadata in Windows PowerShell. Serializing
+    # those extended strings at depth 12 can traverse the provider/type graph.
+    # Read plain .NET strings so summaries/errors remain bounded evidence.
+    $lines = [IO.File]::ReadAllLines("$caseDirectory/stdout.log") + [IO.File]::ReadAllLines("$caseDirectory/stderr.log")
     $errors = @($lines | Where-Object { $_ -match '^(SCRIPT ERROR|ERROR):' })
     $summaries = @($lines | Where-Object { $_ -match 'checks, \d+ failures|CURRENT EXPEDITION:|CONNECTED EXPEDITION:|Import, geometry' })
     $entry = [ordered]@{name=$case.name; script=$case.script; executable=$executable; arguments=$arguments; started_utc=$started.ToUniversalTime().ToString('o'); elapsed_seconds=((Get-Date)-$started).TotalSeconds; exit_code=$exitCode; timed_out=$timedOut; engine_errors=$errors; summary=$summaries; sampled_process_peak_working_set_bytes=$peak; source_changed=((ConvertTo-Json $before -Compress) -cne (ConvertTo-Json $after -Compress))}

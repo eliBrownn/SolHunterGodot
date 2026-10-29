@@ -90,8 +90,11 @@ func run() -> void:
 	for slot in range(16):
 		var first: String = controller.weather_at(slot)
 		check(first in ["clear", "cloudy", "rain"] and controller.weather_at(slot) == first, "Automatic weather is stable for a seed/time interval")
-	var material: StandardMaterial3D = preload("res://scripts/presentation/solid_chunk.gd").mesh_for("grass_3").surface_get_material(0)
-	check(material.shading_mode == BaseMaterial3D.SHADING_MODE_PER_PIXEL, "Retained terrain textures now receive daylight, moonlight and scenery shadows")
+	var material: Material = preload("res://scripts/presentation/solid_chunk.gd").mesh_for("grass_3").surface_get_material(0)
+	var lit: bool = material is StandardMaterial3D and material.shading_mode == BaseMaterial3D.SHADING_MODE_PER_PIXEL
+	if material is ShaderMaterial:
+		lit = material.shader != null and material.shader.get_mode() == Shader.MODE_SPATIAL and not material.shader.code.contains("unshaded")
+	check(lit, "Retained terrain uses a lit material, including the shoreline shader")
 	if OS.get_cmdline_user_args().has("--capture-atmosphere") and DisplayServer.get_name() != "headless":
 		settings.cycle_enabled = false
 		settings.rain_particles = 500
@@ -102,9 +105,10 @@ func run() -> void:
 			scene.apply_atmosphere_settings()
 			await capture(scene, sample[0], false)
 			if sample[0] == "day":
-				day_ground = ground_light(root.get_texture().get_image())
+				day_ground = ground_light(root.get_texture().get_image(), scene)
 			if sample[0] == "night":
-				var night_ground := ground_light(root.get_texture().get_image())
+				var night_ground := ground_light(root.get_texture().get_image(), scene)
+				print("ATMOSPHERE GROUND: day %.5f night %.5f" % [day_ground, night_ground])
 				check(day_ground > night_ground * 2.5, "Rendered retained terrain is substantially brighter in sunlight than at night")
 				check(night_ground > 0.003, "Rendered moonlit ground remains visible at night")
 			if sample[0] in ["day", "night"]:
@@ -147,11 +151,18 @@ func capture(scene: Node3D, name: String, sky_only: bool) -> void:
 	DirAccess.make_dir_recursive_absolute("res://artifacts/atmosphere")
 	root.get_texture().get_image().save_png("res://artifacts/atmosphere/%s.png" % name)
 
-func ground_light(image: Image) -> float:
-	var total := 0.0
-	var count := 0
-	for y in range(430, 550, 4):
-		for x in range(80, 300, 4):
-			total += image.get_pixel(x, y).get_luminance()
-			count += 1
-	return total / count
+func ground_light(image: Image, scene: Node3D) -> float:
+	# Compare the same protected camp ground under each lighting condition.
+	# Project world samples; fixed screen pixels can hit trees/sky after resizing.
+	var values: Array[float] = []
+	for y in range(-3, 4):
+		for x in range(-3, 4):
+			var at := Vector2(x + 0.5, y + 0.5)
+			if at.length() < 2.0 or at.length() > 4.0:
+				continue
+			var pixel: Vector2 = scene.camera.unproject_position(Vector3(at.x, scene.world.terrain.surface_height(at) + 0.01, at.y))
+			if Rect2(Vector2.ZERO, Vector2(image.get_size())).has_point(pixel):
+				values.append(image.get_pixelv(Vector2i(pixel)).get_luminance())
+	values.sort()
+	check(not values.is_empty(), "Lighting comparison contains projected camp-ground samples")
+	return values[values.size() / 2] if not values.is_empty() else 0.0

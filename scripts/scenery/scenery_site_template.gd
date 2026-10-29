@@ -20,7 +20,7 @@ func parameters() -> Dictionary:
 	if protection.is_empty():
 		# Existing composition owns these authored spaces. Capture its relevant
 		# inputs for reconstruction; changing cosmetic density never changes them.
-		var nature: NatureSettings = load("res://resources/nature_cohesive_sample.tres")
+		var nature: Resource = load("res://resources/nature_cohesive_sample.tres")
 		var spaces: Array = []
 		var seed_value := -1
 		if nature != null and nature.composition != null:
@@ -56,7 +56,7 @@ static func valid_parameters(value: Variant) -> bool:
 func valid() -> bool:
 	return valid_parameters(parameters())
 
-func plan(terrain: WorldTerrain) -> Dictionary:
+func plan(terrain: RefCounted) -> Dictionary:
 	var inputs := parameters()
 	if not valid_parameters(inputs):
 		return {"admitted": false, "reason": "invalid_definition", "attempts": 0}
@@ -75,7 +75,7 @@ func plan(terrain: WorldTerrain) -> Dictionary:
 		return assemble(terrain, footprint, approach, index + 1, reasons)
 	return {"admitted": false, "reason": "no_suitable_site", "attempts": search_candidates, "rejections": reasons}
 
-func rejection(terrain: WorldTerrain, footprint: Rect2i, approach: Rect2i, inputs: Dictionary) -> String:
+func rejection(terrain: RefCounted, footprint: Rect2i, approach: Rect2i, inputs: Dictionary) -> String:
 	if footprint.grow(1).intersects(terrain.cabin_footprint.grow(1)):
 		return "reserved_site"
 	if terrain.world_seed == int(inputs.clearing_seed):
@@ -94,7 +94,7 @@ func rejection(terrain: WorldTerrain, footprint: Rect2i, approach: Rect2i, input
 			if terrain.natural_ground(at) == WorldTerrain.Ground.WATER or not terrain.slope_fits(at):
 				return "ground_or_obstacle"
 			woodland = woodland or terrain.natural_ground(at) == WorldTerrain.Ground.FOREST
-			var height := terrain.surface_height(Vector2(at) + Vector2(0.5, 0.5))
+			var height: float = terrain.surface_height(Vector2(at) + Vector2(0.5, 0.5))
 			low = minf(low, height)
 			high = maxf(high, height)
 	if not woodland:
@@ -108,7 +108,7 @@ func rejection(terrain: WorldTerrain, footprint: Rect2i, approach: Rect2i, input
 				return "approach_blocked"
 	return ""
 
-func assemble(terrain: WorldTerrain, footprint: Rect2i, approach: Rect2i, attempts: int, reasons: Dictionary) -> Dictionary:
+func assemble(terrain: RefCounted, footprint: Rect2i, approach: Rect2i, attempts: int, reasons: Dictionary) -> Dictionary:
 	var id := "%d/site/%s" % [terrain.world_seed, site_key]
 	var region_size: int = terrain.geography.REGION
 	var parent := "%d/region/%d,%d" % [terrain.world_seed, WorldTerrain.floor_div(footprint.position.x, region_size), WorldTerrain.floor_div(footprint.position.y, region_size)]
@@ -119,7 +119,7 @@ func assemble(terrain: WorldTerrain, footprint: Rect2i, approach: Rect2i, attemp
 	var elements: Array[Dictionary] = []
 	for i in range(posts.size()):
 		var at := Vector2(posts[i]) + Vector2(0.5, 0.5)
-		var ground := terrain.surface_height(at)
+		var ground: float = terrain.surface_height(at)
 		elements.append(element(id + "/building/post_%d" % i, id + "/building", "post", Vector3(at.x, (ground + top) * 0.5, at.y), Vector3(0.3, top - ground, 0.3), Color("72523b")))
 	var center := Vector2(footprint.position) + Vector2(footprint.size) * 0.5
 	elements.append(element(id + "/building/roof", id + "/building", "roof", Vector3(center.x, top + 0.35, center.y), Vector3(5.0, 0.7, 5.0), Color("665a4f")))

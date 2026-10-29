@@ -50,7 +50,7 @@ func run() -> void:
 	var companion: Node3D = scene.companion
 	companion.set_process(false)
 	check(companion.identity.is_empty(), "No unowned placeholder is shown before selection")
-	var species: SolSpeciesRecord = preload("res://resources/sol_species/crown_ear.tres")
+	var species: Resource = load("res://resources/sol_species/crown_ear.tres")
 	check(world.persistent_state.choose_starter(species.battle_profile("air"), 0), "Fixture selects a real owned Crown-Ear through domain admission")
 	var state: ExpeditionState = world.persistent_state
 	var original := state.snapshot()

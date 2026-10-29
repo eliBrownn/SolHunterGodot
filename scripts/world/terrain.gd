@@ -53,7 +53,9 @@ static func valid_climate(value: Variant) -> bool:
 	return value.moisture_frequency >= 0.001 and value.moisture_frequency <= 0.1 and value.dry_threshold >= 0.0 and value.wet_threshold <= 1.0 and value.dry_threshold < value.wet_threshold
 
 static func default_scenery() -> Dictionary:
-	return preload("res://resources/scenery/woodland_shelter.tres").parameters()
+	# The definition references terrain queries. Load after script registration,
+	# avoiding a typed Resource/script preload cycle during native shutdown.
+	return load("res://resources/scenery/woodland_shelter.tres").parameters()
 
 func _init(seed_value: int = 2601026, climate_parameters: Dictionary = {}, relief_parameters: Dictionary = {}, site_parameters: Dictionary = {}) -> void:
 	world_seed = seed_value
