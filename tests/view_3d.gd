@@ -34,7 +34,7 @@ func run() -> void:
 	material.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA_SCISSOR
 	material.albedo_texture = ImageTexture.create_from_image(image)
 	cutout.material = material
-	var picking := preload("res://scripts/mesh_picking.gd")
+	var picking := preload("res://scripts/presentation/mesh_picking.gd")
 	check(picking.ray(cutout, Vector3(-0.5, 1, 0), Vector3.DOWN) != null, "Scenery triangle picking accepts opaque texture pixels")
 	check(picking.ray(cutout, Vector3(0.5, 1, 0), Vector3.DOWN) == null, "Scenery triangle picking passes through transparent foliage gaps")
 	var scene: Node3D = load("res://scenes/world_3d.tscn").instantiate()

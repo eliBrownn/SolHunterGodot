@@ -1,5 +1,5 @@
 extends SceneTree
-## Structure placement, movement/render agreement, and forward save migration.
+## Structure placement, movement/render agreement, and incompatible-save rejection.
 
 var failures := 0
 var checks := 0

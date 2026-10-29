@@ -51,7 +51,7 @@ func run() -> void:
 	open_on(scene, first)
 	world.observation_menu.id_pressed.emit(0)
 	check(world.persistent_state.has_discovery(first.id) and not world.encounter_active, "Observe records precisely the selected Sol without engaging")
-	check(world.inspection_card.appearance.visible and world.inspection_card.appearance.text.contains("orb") and not world.inspection_card.metrics.visible and not world.inspection_card.access.visible, "Observe displays the current Sol appearance without environmental readings")
+	check(world.inspection_card.appearance.visible and world.inspection_card.appearance.text.contains(first.entry.name) and world.inspection_card.appearance.text.contains(str(first.sprite.affinity)) and not world.inspection_card.metrics.visible and not world.inspection_card.access.visible, "Observe displays the selected Sol and its individual affinity without environmental readings")
 	var card: PanelContainer = world.inspection_card
 	card.set_process(false)
 	check(is_equal_approx(card.settings.observe_seconds, 3.0), "Observe defaults to a three-second lifetime")

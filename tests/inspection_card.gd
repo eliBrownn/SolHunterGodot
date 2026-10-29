@@ -101,7 +101,7 @@ func run() -> void:
 	if captures():
 		await capture("barrier")
 	for tick in range(3):
-		world.persistent_state.advance_time(ExpeditionState.ACTIVITY_INTERVAL)
+		world.persistent_state.advance_time(ExpeditionContract.ACTIVITY_INTERVAL)
 		world.persistent_state.recover_affinity_conditions()
 		world.describe_cell(barrier_cell)
 		check(card.access.text == ("Blocked" if tick < 2 else "Passable") and world.can_step(Vector2i.ZERO, barrier_cell) == (tick == 2), "Inspection and traversal agree throughout barrier recovery")

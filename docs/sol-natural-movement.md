@@ -38,7 +38,7 @@ and connected. Invalid tuning suspends simulation under the existing validation.
 
 ## Display route and persistence ownership
 
-`scripts/sol_motion_track.gd` replays each committed cardinal step in order.
+`scripts/sols/sol_motion_track.gd` replays each committed cardinal step in order.
 The sighting controller subscribes to individual changes on the active state,
 with an ID lookup and a bound-state guard. Thus two simulation ticks before one
 view update retain their turn instead of interpolating diagonally to the latest

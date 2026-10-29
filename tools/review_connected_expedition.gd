@@ -68,7 +68,7 @@ func capture(name: String) -> void:
 		scene.gamepad.preferences_path = output_directory + "/controller.cfg"
 		scene.gamepad.settings = ControllerSettings.new()
 		scene.gamepad.settings.install_actions()
-		record(world.terrain.generation_version == 7 and scene.sightings.settings.species_profiles_enabled and scene.sightings.settings.movement_enabled and scene.sightings.settings.wilderness_enabled, "Generation 7 and normal species profiles, movement and wilderness remain enabled")
+		record(world.terrain.generation_version == WorldTerrain.GENERATION_VERSION and scene.sightings.settings.species_profiles_enabled and scene.sightings.settings.movement_enabled and scene.sightings.settings.wilderness_enabled, "Current generation and normal species profiles, movement and wilderness remain enabled")
 		await personal_controls()
 		await camera_controls()
 		await encounter_cases()
@@ -283,6 +283,14 @@ func move_closer() -> void:
 func use_move(slot: int, target_enemy: bool) -> bool:
 	var controller: Node = scene.battles
 	if controller.session == null: return false
+	# Real actions share AP with movement. Finish the turn through the actual UI
+	# before requesting an action the remaining budget cannot pay for.
+	var moves: Array[Dictionary] = controller.session.moves_for("ally")
+	if slot < 0 or slot >= moves.size(): return false
+	if controller.session.actions_remaining < SolMove.cost(moves[slot]):
+		controller.wait_button.pressed.emit()
+		await ready()
+		if controller.session == null: return false
 	var targets: Array[Vector2i] = controller.legal_targets(slot)
 	if targets.is_empty(): return false
 	var target: Vector2i = controller.session.enemy_cell if target_enemy else controller.session.ally_cell
@@ -331,6 +339,10 @@ func encounter_cases() -> void:
 			if battle == null: break
 			if battle.ally_hp < int(battle.ally.max_hp) * 0.6:
 				await use_move(2, false)
+				if scene.battles.session == null: break
+			if battle.actions_remaining < battle.seal_action_points:
+				scene.battles.wait_button.pressed.emit()
+				await ready()
 				if scene.battles.session == null: break
 			connected.capture_rolls.append({"seed": battle.capture_seed, "attempt": battle.capture_attempts, "chance": battle.capture_chance(), "enemy_id": first.id})
 			scene.battles.capture_button.pressed.emit()

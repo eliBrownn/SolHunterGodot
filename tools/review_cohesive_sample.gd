@@ -90,7 +90,7 @@ func measured_frames(count: int) -> Dictionary:
 func geometry_counts() -> Dictionary:
 	var result := {"mesh_parts":0,"instances":0,"shadow_casters":0,"cosmetic_instances":0}
 	for chunk in scene.solid_root.get_children():
-		if chunk.get_script() == preload("res://scripts/solid_chunk.gd"):
+		if chunk.get_script() == preload("res://scripts/presentation/solid_chunk.gd"):
 			result.cosmetic_instances += chunk.cosmetic_records.size()
 		for view in chunk.get_children():
 			var amount := 0

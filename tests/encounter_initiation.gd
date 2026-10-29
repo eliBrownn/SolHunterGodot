@@ -86,10 +86,10 @@ func run() -> void:
 	guard = scene.sightings.members[2]
 	position(world, guard.home + Vector2i(-2, 0))
 	encounters.refresh_warning()
-	world.journal_panel.show()
+	world.menu.open("guide")
 	encounters.mark_warning_presented()
 	check(not encounters.warning_presented, "A covered journal state cannot acknowledge the warning")
-	world.journal_panel.hide()
+	world.menu.close()
 	walk(world, Vector2.RIGHT)
 	check(not world.encounter_active, "Contact before warning presentation never forces an encounter")
 	encounters.mark_warning_presented()

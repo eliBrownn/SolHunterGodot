@@ -1,6 +1,6 @@
 [gd_resource type="Resource" script_class="SolVisualSettings" load_steps=2 format=3]
 
-[ext_resource type="Script" path="res://scripts/sol_visual_settings.gd" id="1"]
+[ext_resource type="Script" path="res://scripts/sols/presentation/sol_visual_settings.gd" id="1"]
 
 [resource]
 script = ExtResource("1")

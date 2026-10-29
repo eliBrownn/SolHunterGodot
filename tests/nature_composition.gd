@@ -1,6 +1,6 @@
 extends SceneTree
-const Art = preload("res://scripts/nature_art.gd")
-const Chunk = preload("res://scripts/solid_chunk.gd")
+const Art = preload("res://scripts/scenery/nature_art.gd")
+const Chunk = preload("res://scripts/presentation/solid_chunk.gd")
 const Settings = preload("res://resources/nature_cohesive_sample.tres")
 var failures: Array[String] = []
 var checks := 0
@@ -150,7 +150,6 @@ func run() -> void:
 	var negative_patch: NaturePatch = Settings.composition.patches[0].duplicate(true)
 	negative_patch.bounds = Rect2i(-44,-44,24,24)
 	negative_patch.habitats.assign([0,1,2,3,5])
-	negative_patch.clearings.clear()
 	negative.composition.patches.assign([negative_patch])
 	var negative_count := 0
 	for coord in [Vector2i(-3,-3),Vector2i(-2,-3),Vector2i(-3,-2),Vector2i(-2,-2)]:

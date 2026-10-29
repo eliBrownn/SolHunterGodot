@@ -4,8 +4,8 @@
 [ext_resource type="PackedScene" path="res://assets/nature/CommonTree_2.gltf" id="2_p1gl2"]
 [ext_resource type="PackedScene" path="res://assets/nature/Pine_1.gltf" id="3_1yu8h"]
 [ext_resource type="PackedScene" path="res://assets/nature/Pine_2.gltf" id="4_yd1yd"]
-[ext_resource type="Script" path="res://scripts/nature_patch.gd" id="5_4feut"]
-[ext_resource type="Script" path="res://scripts/nature_asset_entry.gd" id="6_sfwlc"]
+[ext_resource type="Script" path="res://scripts/scenery/nature_patch.gd" id="5_4feut"]
+[ext_resource type="Script" path="res://scripts/scenery/nature_asset_entry.gd" id="6_sfwlc"]
 [ext_resource type="PackedScene" path="res://assets/biome_placeholders/fern.tscn" id="7_fnv7c"]
 [ext_resource type="PackedScene" path="res://assets/biome_placeholders/mushroom_cluster.tscn" id="8_vnvks"]
 [ext_resource type="PackedScene" path="res://assets/biome_placeholders/flower_patch.tscn" id="9_0e50l"]
@@ -17,13 +17,13 @@
 [ext_resource type="PackedScene" path="res://assets/biome_placeholders/reeds.tscn" id="15_dtgua"]
 [ext_resource type="PackedScene" path="res://assets/biome_placeholders/rush_cluster.tscn" id="16_emn2h"]
 [ext_resource type="PackedScene" path="res://assets/biome_placeholders/lily_pad.tscn" id="17_8s61s"]
-[ext_resource type="Script" path="res://scripts/nature_composition.gd" id="18_2h8sg"]
+[ext_resource type="Script" path="res://scripts/scenery/nature_composition.gd" id="18_2h8sg"]
 [ext_resource type="PackedScene" path="res://assets/biome_placeholders/dry_tree.tscn" id="19_uvty3"]
 [ext_resource type="PackedScene" path="res://assets/nature/DeadTree_1.gltf" id="20_sgq68"]
 [ext_resource type="PackedScene" path="res://assets/nature/Rock_Medium_1.gltf" id="21_2ngp7"]
 [ext_resource type="PackedScene" path="res://assets/nature/Rock_Medium_2.gltf" id="22_xxng8"]
 [ext_resource type="PackedScene" path="res://assets/nature/Rock_Medium_3.gltf" id="23_lpgix"]
-[ext_resource type="Script" path="res://scripts/nature_settings.gd" id="24_a04ja"]
+[ext_resource type="Script" path="res://scripts/scenery/nature_settings.gd" id="24_a04ja"]
 [ext_resource type="PackedScene" path="res://assets/nature/Bush_Common.gltf" id="25_vbfxu"]
 [ext_resource type="PackedScene" path="res://assets/nature/Bush_Common_Flowers.gltf" id="26_bid1w"]
 [ext_resource type="PackedScene" path="res://assets/nature/Grass_Common_Short.gltf" id="27_axh7e"]
@@ -64,7 +64,6 @@ script = ExtResource("5_4feut")
 habitats = Array[int]([1, 0])
 entries = Array[ExtResource("6_sfwlc")]([SubResource("Resource_jsnty"), SubResource("Resource_ji7pn"), SubResource("Resource_eh4sf"), SubResource("Resource_eotkb"), SubResource("Resource_n3b1k")])
 density_percent = 36
-clearings = Array[Vector2i]([Vector2i(32, 16)])
 
 [sub_resource type="Resource" id="Resource_802m4"]
 script = ExtResource("6_sfwlc")
@@ -91,7 +90,6 @@ bounds = Rect2i(92, 12, 24, 24)
 habitats = Array[int]([2])
 entries = Array[ExtResource("6_sfwlc")]([SubResource("Resource_802m4"), SubResource("Resource_7htjm"), SubResource("Resource_38klr")])
 density_percent = 16
-clearings = Array[Vector2i]([Vector2i(104, 24)])
 
 [sub_resource type="Resource" id="Resource_4wov4"]
 script = ExtResource("6_sfwlc")
@@ -126,7 +124,6 @@ bounds = Rect2i(24, 28, 40, 40)
 habitats = Array[int]([3, 5, 0, 1, 4])
 entries = Array[ExtResource("6_sfwlc")]([SubResource("Resource_4wov4"), SubResource("Resource_enryt"), SubResource("Resource_ncbqh"), SubResource("Resource_11c3o")])
 density_percent = 40
-clearings = Array[Vector2i]([Vector2i(32, 32)])
 
 [sub_resource type="Resource" id="Resource_xu6br"]
 script = ExtResource("18_2h8sg")

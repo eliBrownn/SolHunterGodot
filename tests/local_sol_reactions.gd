@@ -178,18 +178,7 @@ func verify_schema(snapshot: Dictionary, original: String, path: String) -> void
 	var seed_value := int(JSON.parse_string(original).seed)
 	var old := snapshot.duplicate(true)
 	old.version = 4
-	old.erase("roaming")
-	old.erase("battle")
-	old.erase("movebooks")
-	old.erase("affinity_tiles")
-	old.erase("wild_population")
-	old.erase("collection")
-	old.erase("sol_stats")
-	old.erase("retraining_items")
-	if old.has("battle"):
-		old.battle.erase("captures")
-	var restored := ExpeditionState.restore(old, seed_value)
-	check(restored != null and restored.snapshot().roaming.is_empty() and restored.snapshot().individuals == old.individuals, "Domain-v4 saves load at existing homes without invented movement history")
+	check(ExpeditionState.restore(old, seed_value) == null, "Incompatible development movement state is rejected")
 	var identity: String = snapshot.roaming.keys()[0]
 	var malformed: Array[Dictionary] = []
 	for field in ["cell", "tick", "action"]:

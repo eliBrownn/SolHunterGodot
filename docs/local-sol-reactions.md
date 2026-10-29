@@ -1,5 +1,11 @@
 # Local Sol movement and reactions
 
+Historical feature-slice record: controls, schema versions and validation below
+refer to its original delivery. Current save admission uses format 4, generation
+9 and world state 17; incompatible development saves require a new expedition.
+See the [reformat evidence](reformat-roadmap.md#execution-and-evidence-index) and
+[current controls/tuning](inspector-tuning.md) for the integrated project.
+
 Update, October 27, 2026: autonomous patrol/rest and bounded cardinal obstacle
 detours now extend this original proximity-only slice. See the
 [behavior roadmap](sol-behavior-roadmap.md) and

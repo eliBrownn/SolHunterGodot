@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://dngsuemxnygjw"]
 
-[ext_resource type="Script" uid="uid://knlrfb50ckmr" path="res://scripts/world_solid.gd" id="1"]
+[ext_resource type="Script" uid="uid://knlrfb50ckmr" path="res://scripts/application/world_solid.gd" id="1"]
 [ext_resource type="Resource" path="res://resources/nature_cohesive_sample.tres" id="2_nature"]
 [ext_resource type="Resource" path="res://resources/sol_world_sightings.tres" id="3_sols"]
 [ext_resource type="Resource" path="res://resources/owned_companion_settings.tres" id="4_companion"]

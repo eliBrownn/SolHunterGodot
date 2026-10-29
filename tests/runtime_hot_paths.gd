@@ -1,8 +1,8 @@
 extends SceneTree
-const Validation = preload("res://scripts/runtime_validation_cache.gd")
-const Ground = preload("res://scripts/streaming_ground.gd")
-const Streaming = preload("res://scripts/view_streaming.gd")
-const Overlay = preload("res://scripts/affinity_ground.gd")
+const Validation = preload("res://scripts/core/runtime_validation_cache.gd")
+const Ground = preload("res://scripts/presentation/streaming_ground.gd")
+const Streaming = preload("res://scripts/presentation/view_streaming.gd")
+const Overlay = preload("res://scripts/presentation/affinity_ground.gd")
 var checks := 0
 var failures := 0
 
@@ -175,7 +175,7 @@ func run() -> void:
 	# Exercise the enabled overlay regardless of the production visibility default.
 	overlay.palette = overlay.palette.duplicate()
 	overlay.palette.imprint_opacity = 0.2
-	counting._affinity_tiles = AffinityImprint.apply({}, report, counting.activity_tick(), ExpeditionState.MAX_TILE_DELTAS)
+	counting._affinity_tiles = AffinityImprint.apply({}, report, counting.activity_tick(), ExpeditionContract.MAX_TILE_DELTAS)
 	overlay.refresh()
 	check(overlay.tiles.size() == 2, "Only nearby imprints receive overlay geometry")
 	var first: MeshInstance3D = overlay.tiles[Vector2i.ZERO]

@@ -1,7 +1,7 @@
 extends SceneTree
 ## Render-contract checks independent of GPU timing or art judgement.
 
-const SolidChunk = preload("res://scripts/solid_chunk.gd")
+const SolidChunk = preload("res://scripts/presentation/solid_chunk.gd")
 var failures := 0
 var checks := 0
 

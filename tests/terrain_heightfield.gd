@@ -1,7 +1,7 @@
 extends SceneTree
 ## Contracts needed before elevation can become gameplay terrain.
 
-const StudyMesh = preload("res://scripts/terrain_study_mesh.gd")
+const StudyMesh = preload("res://scripts/development/terrain_study_mesh.gd")
 var checks := 0
 var failures := 0
 

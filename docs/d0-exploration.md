@@ -4,7 +4,7 @@ October 26, 2026. Status: implementation validated; final player acceptance and 
 
 ## Changes
 
-The owner selected upright billboard characters. `scripts/actor_billboard.gd` displays the explorer as a camera-facing Sprite3D, using the existing directional atlas, nearest filtering, source foot pivot, horizontal flip, and walking bob. The ground texture retains the existing flat shadow and hides the duplicate 2D body. Movement, terrain coordinates, saving, and ground-plane picking retain their existing authority. Trees and decorative props remain flat; no general 3D collision or elevation system is introduced.
+The owner selected upright billboard characters. `scripts/sols/presentation/actor_billboard.gd` displays the explorer as a camera-facing Sprite3D, using the existing directional atlas, nearest filtering, source foot pivot, horizontal flip, and walking bob. The ground texture retains the existing flat shadow and hides the duplicate 2D body. Movement, terrain coordinates, saving, and ground-plane picking retain their existing authority. Trees and decorative props remain flat; no general 3D collision or elevation system is introduced.
 
 `World.rebuild_world` now builds chunks intersecting the visible SubViewport plus a 128-pixel prop margin. The margin covers the current tree canopy's 120-pixel overhang. Remaining offscreen chunks use the existing one-per-frame queue. The live chunk budget remains 49. New seed and load no longer synchronously build the entire render radius.
 

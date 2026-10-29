@@ -1,5 +1,5 @@
 extends SceneTree
-## D1 invariants, detached reads, atomic persistence and legacy save upgrade.
+## D1 invariants, detached reads, atomic persistence and incompatible-save rejection.
 
 var checks := 0
 var failures := 0
@@ -103,7 +103,7 @@ func run() -> void:
 	var bounded := ExpeditionState.restore(full, 17)
 	check(bounded != null and not bounded.observe_territory(Vector2i(-16, 0)) and bounded.counts().territories == ExpeditionState.MAX_TERRITORIES, "Admission limits reject without evicting recorded territories")
 	var oversized := ExpeditionState.new(17).snapshot()
-	for index in range(ExpeditionState.MAX_TILE_DELTAS + 1):
+	for index in range(ExpeditionContract.MAX_TILE_DELTAS + 1):
 		oversized.tile_deltas["%d:0" % index] = {"overload": 0}
 	check(not ExpeditionState.valid_snapshot(oversized, 17), "Oversized sparse state rejects rather than silently discarding deltas")
 	await verify_live_persistence()

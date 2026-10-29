@@ -244,17 +244,7 @@ func verify_all_starters(tuning: BattleSettings) -> void:
 func verify_persistence(snapshot: Dictionary, original: String, path: String) -> void:
 	var legacy := snapshot.duplicate(true)
 	legacy.version = 5
-	legacy.erase("battle")
-	legacy.erase("movebooks")
-	legacy.erase("affinity_tiles")
-	legacy.erase("wild_population")
-	legacy.erase("collection")
-	legacy.erase("sol_stats")
-	legacy.erase("retraining_items")
-	if legacy.has("battle"):
-		legacy.battle.erase("captures")
-	var old := ExpeditionState.restore(legacy, 17)
-	check(old != null and old.starter_view().is_empty() and old.snapshot().individuals == legacy.individuals, "Old domain saves preserve owned history without inferring or rerolling a starter")
+	check(ExpeditionState.restore(legacy, 17) == null, "Incompatible development state requires a new expedition")
 	var file := FileAccess.open(path, FileAccess.WRITE)
 	file.store_string(original)
 	file.close()

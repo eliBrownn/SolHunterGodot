@@ -1,7 +1,7 @@
 [gd_resource type="Resource" script_class="ClassBuffSettings" load_steps=22 format=3]
 
-[ext_resource type="Script" path="res://scripts/class_buff_settings.gd" id="1"]
-[ext_resource type="Script" path="res://scripts/class_buff_definition.gd" id="2"]
+[ext_resource type="Script" path="res://scripts/sols/class_buff_settings.gd" id="1"]
+[ext_resource type="Script" path="res://scripts/sols/class_buff_definition.gd" id="2"]
 
 [sub_resource type="Resource" id="beast"]
 script = ExtResource("2")

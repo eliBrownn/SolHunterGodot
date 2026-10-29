@@ -32,12 +32,21 @@ at the owning level, but cannot bypass required access, data integrity or other
 hard invariants. Small detail changes must not reroll unrelated parent layouts.
 Create a hierarchy level only when it owns a useful decision, rule or budget.
 
-Apply this incrementally to changed systems and prove the first scenery slice
-before wider adoption. The [framework plan](development-plan.md#approved-hierarchical-framework--october-28-2026)
-records implementation proposals; [the terrain roadmap](terrain-roadmap.md#required-generation-hierarchy)
-specializes the principle for scenery. This does not authorize a wholesale rewrite
-or establish new mechanics; the Bible and mechanics-reference authorities above
-remain binding.
+Owner follow-up, October 28: reformat the existing project around this principle
+through the [project reformat roadmap](reformat-roadmap.md). Prove the first
+scenery slice, then migrate the remaining domains in bounded, reviewable changes.
+The roadmap owns the structural delivery sequence; feature roadmaps retain their
+design and acceptance criteria. The Bible and mechanics-reference authorities
+above remain binding; structural approval establishes no new mechanics.
+
+Keep one owner per responsibility and one evidence index for the reformat. Reuse
+verified contracts, mechanics evidence and matching validation results. Select
+checks from the actual change and its dependencies; invalidate evidence when
+relevant inputs, contracts or execution conditions change. Do not rerun unrelated
+systems at every phase or duplicate an existing implementation/test. Run broader
+integration checks at shared-contract changes and final integration as warranted,
+and keep configured CI checks unchanged. See the roadmap's
+[validation reuse rules](reformat-roadmap.md#validation-and-evidence-reuse).
 
 ## Repository layout
 
@@ -120,6 +129,17 @@ Keep the root small: project entry/configuration, README, agent instructions, an
 | `builds/` | Ignored generated exports |
 
 Use descriptive snake_case names for new game files/folders and follow established class naming in code. Avoid case-only renames on Windows. Keep related resources together and update references through Godot when moving scenes/assets. Validate moved paths and resource identifiers before committing. Do not keep duplicate authoritative documents or daily copies of the same status.
+
+Reformat execution, October 28, 2026: scripts now live under `application`,
+`world`, `scenery`, `persistence`, `sols` (with separate presentation consumers),
+`combat`, `presentation`, `ui`, `story`, `development` and the demonstrated shared
+`core` helpers. The exact ownership/move map and validation evidence live in
+[the reformat roadmap](reformat-roadmap.md#execution-ownership-and-migration-map).
+Keep authored resource groups and third-party asset paths intact. Reference-aware
+script moves preserve `.gd.uid` sidecars, update all consumers together, verify
+reference-only logic equivalence and finish with engine import/entry validation.
+`tools/check_script_ownership.py` checks the map, literal script paths and unique
+UIDs locally; the configured Godot CI entry point remains `tools/validate.ps1`.
 
 ## Branches and synchronization
 

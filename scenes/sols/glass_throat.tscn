@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3]
 
-[ext_resource type="Script" path="res://scripts/sol_glass_throat.gd" id="1"]
+[ext_resource type="Script" path="res://scripts/sols/presentation/sol_glass_throat.gd" id="1"]
 
 [node name="GlassThroat" type="MeshInstance3D"]
 script = ExtResource("1")

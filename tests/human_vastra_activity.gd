@@ -106,7 +106,7 @@ func verify_limits() -> void:
 	state.advance_time(0.75)
 	check(not state.apply_human_activity(command(), ambient(), "new", 3).is_empty(), "Fresh activity window frees old regional usage capacity")
 	baseline = ExpeditionState.new(17).snapshot()
-	for index in range(ExpeditionState.MAX_TILE_DELTAS):
+	for index in range(ExpeditionContract.MAX_TILE_DELTAS):
 		baseline.tile_deltas["%d:0" % index] = {"overload": 0}
 	baseline.natural.order = baseline.tile_deltas.keys()
 	state = ExpeditionState.restore(baseline, 17)
@@ -118,21 +118,7 @@ func verify_persistence(state: ExpeditionState, latest: Dictionary) -> void:
 	check(restored != null and restored.snapshot() == snapshot and restored.apply_human_activity(latest).replayed, "JSON reload preserves integer-normalized budget and replay receipts")
 	var legacy := snapshot.duplicate(true)
 	legacy.version = 1
-	legacy.erase("human_activity")
-	legacy.erase("natural")
-	legacy.erase("discoveries")
-	legacy.erase("roaming")
-	legacy.erase("battle")
-	legacy.erase("movebooks")
-	legacy.erase("affinity_tiles")
-	legacy.erase("wild_population")
-	legacy.erase("collection")
-	legacy.erase("sol_stats")
-	legacy.erase("retraining_items")
-	if legacy.has("battle"):
-		legacy.battle.erase("captures")
-	var upgraded := ExpeditionState.restore(legacy, 17)
-	check(upgraded != null and upgraded.snapshot().version == ExpeditionState.VERSION and upgraded.human_activity_view() == HumanVastraActivity.empty_ledger() and upgraded.snapshot().tile_deltas == legacy.tile_deltas, "D1 domain-v1 upgrades without inventing receipts or changing previous deltas")
+	check(ExpeditionState.restore(legacy, 17) == null, "Incompatible development state requires a new expedition")
 	var path := "user://d2-vastra-%d.json" % Time.get_ticks_usec()
 	var save := ExpeditionSave.snapshot(17, Vector2i.ZERO, false, false, WorldTerrain.GENERATION_VERSION, {}, snapshot)
 	check(ExpeditionSave.write(save, path) == OK, "Portable save accepts the new domain envelope without an outer format bump")

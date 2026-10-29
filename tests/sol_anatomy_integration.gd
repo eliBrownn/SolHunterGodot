@@ -68,7 +68,7 @@ func run() -> void:
 		var stats: Dictionary = state.stat_view(identity)
 		var book: Dictionary = state.movebook(identity)
 		check(before.ordinary_form == 1 and before.class_id == species.class_id and before.lineage_id == species.lineage_id, "New stable identity has its approved class and first stage")
-		check(expected_script.resource_path == "res://scripts/sol_%s.gd" % builder_name and is_equal_approx(member.sprite.model_scale, 0.65), "Wild view uses the actual small first-form builder")
+		check(expected_script.resource_path == "res://scripts/sols/presentation/sol_%s.gd" % builder_name and is_equal_approx(member.sprite.model_scale, 0.65), "Wild view uses the actual small first-form builder")
 		check(species.traversal.kind == "ground" and state.roaming_view(identity).get("traversal", {}).is_empty(), "Bird and fin anatomy grant no implicit flight/swimming")
 		put_player(world, member.home + Vector2i.LEFT)
 		world.rebuild_world()

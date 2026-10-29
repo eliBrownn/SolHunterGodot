@@ -14,7 +14,7 @@ func _initialize() -> void:
 	run.call_deferred()
 
 func run() -> void:
-	var interval := ExpeditionState.ACTIVITY_INTERVAL
+	var interval := ExpeditionContract.ACTIVITY_INTERVAL
 	for fps in [30, 60, 144]:
 		var track := SolMotionTrack.new()
 		track.reset(Vector2i.ZERO)

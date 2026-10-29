@@ -1,7 +1,7 @@
 extends Node3D
 ## Development contact sheet with supplied-kit references. No world or save writes.
 
-const NatureArt = preload("res://scripts/nature_art.gd")
+const NatureArt = preload("res://scripts/scenery/nature_art.gd")
 const STUDIES := ["broadleaf_tree", "conifer", "dry_tree", "snow_conifer", "palm", "cactus", "reeds", "rock_cluster",
 	"birch_tree", "willow_tree", "dead_snag", "stump", "fallen_log", "bush", "grass_tuft", "flower_patch",
 	"mangrove_tree", "fern", "mushroom_cluster", "lily_pad", "boulder", "stone_spire", "ice_cluster", "rush_cluster"]

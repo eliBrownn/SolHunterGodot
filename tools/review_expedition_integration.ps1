@@ -1,11 +1,13 @@
 param(
     [string]$Godot = 'godot',
-    [ValidateSet('Rendered', 'Journey', 'Validate')][string]$Phase = 'Rendered',
+    [ValidateSet('Rendered', 'Journey', 'Cost', 'Validate')][string]$Phase = 'Rendered',
     [string]$RunLabel = (Get-Date -Format 'yyyyMMdd-HHmmss'),
     [string]$Only = ''
 )
 $ErrorActionPreference = 'Stop'
 $projectRoot = Split-Path -Parent $PSScriptRoot
+# The complete configured suite exceeds ten minutes on this desktop.
+$timeoutSeconds = if ($Phase -eq 'Validate') { 1800 } else { 600 }
 $git = 'C:/Program Files/Git/cmd/git.exe'
 $engine = (Get-Command $Godot -CommandType Application -ErrorAction Stop).Source
 $version = (& $engine --version | Out-String).Trim()
@@ -42,11 +44,13 @@ $cases = @(
     @{name='pacing'; script='tests/combat_pacing.gd'; flags=@()}
 )
 if ($Phase -eq 'Journey') { $cases = @(@{name='connected'; script='tools/review_connected_expedition.gd'; flags=@("--output=res://artifacts/integration_readiness/$RunLabel/Journey/connected", '--cap=60')}) }
+if ($Phase -eq 'Cost') { $cases = @(@{name='connected_cost'; script='tools/review_reformat_cost.gd'; flags=@("--output=res://artifacts/integration_readiness/$RunLabel/Cost/connected_cost", '--cap=60')}) }
 if ($Phase -eq 'Validate') { $cases = @(@{name='shared_validator'; script='tools/validate.ps1'; flags=@()}) }
 if ($Only) { $cases = @($cases | Where-Object { $_.name -eq $Only }); if ($cases.Count -eq 0) { throw "Unknown case $Only" } }
 $manifest = [ordered]@{
     started_utc = (Get-Date).ToUniversalTime().ToString('o')
     phase = $Phase
+    timeout_seconds = $timeoutSeconds
     engine = $version
     branch = (& $git -C $projectRoot branch --show-current | Out-String).Trim()
     base_commit = (& $git -C $projectRoot rev-parse HEAD | Out-String).Trim()
@@ -82,7 +86,7 @@ foreach ($case in $cases) {
     while (-not $process.HasExited) {
         $process.Refresh()
         $peak = [Math]::Max($peak, $process.PeakWorkingSet64)
-        if (((Get-Date) - $started).TotalSeconds -gt 600) { $timedOut = $true; $process.Kill($true); break }
+        if (((Get-Date) - $started).TotalSeconds -gt $timeoutSeconds) { $timedOut = $true; $process.Kill($true); break }
         Start-Sleep -Milliseconds 200
     }
     $process.WaitForExit()
@@ -90,7 +94,10 @@ foreach ($case in $cases) {
     if ($null -eq $exitCode) { throw 'Cannot determine process exit status' }
     $after = Get-SourceFingerprint
     $after | ConvertTo-Json -Depth 4 | Set-Content -LiteralPath "$caseDirectory/source_after.json" -Encoding utf8
-    $lines = @(Get-Content "$caseDirectory/stdout.log") + @(Get-Content "$caseDirectory/stderr.log")
+    # Get-Content lines carry provider metadata in Windows PowerShell. Serializing
+    # those extended strings at depth 12 can traverse the provider/type graph.
+    # Read plain .NET strings so summaries/errors remain bounded evidence.
+    $lines = [IO.File]::ReadAllLines("$caseDirectory/stdout.log") + [IO.File]::ReadAllLines("$caseDirectory/stderr.log")
     $errors = @($lines | Where-Object { $_ -match '^(SCRIPT ERROR|ERROR):' })
     $summaries = @($lines | Where-Object { $_ -match 'checks, \d+ failures|CURRENT EXPEDITION:|CONNECTED EXPEDITION:|Import, geometry' })
     $entry = [ordered]@{name=$case.name; script=$case.script; executable=$executable; arguments=$arguments; started_utc=$started.ToUniversalTime().ToString('o'); elapsed_seconds=((Get-Date)-$started).TotalSeconds; exit_code=$exitCode; timed_out=$timedOut; engine_errors=$errors; summary=$summaries; sampled_process_peak_working_set_bytes=$peak; source_changed=((ConvertTo-Json $before -Compress) -cne (ConvertTo-Json $after -Compress))}

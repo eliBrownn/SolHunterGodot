@@ -80,7 +80,7 @@ func run() -> void:
 	verify_retention()
 	if OS.get_cmdline_user_args().has("--capture-journal") and DisplayServer.get_name() != "headless":
 		world.load_game(path)
-		world.journal_panel.show()
+		world.menu.open("guide")
 		world.cell = scene.sightings.members[0].home + Vector2i(-1, 0)
 		world.rebuild_world()
 		DirAccess.make_dir_recursive_absolute("res://artifacts/observation")
@@ -100,23 +100,7 @@ func verify_schema(snapshot: Dictionary, original: String, path: String) -> void
 	for version in [1, 2, 3]:
 		var legacy := snapshot.duplicate(true)
 		legacy.version = version
-		legacy.erase("discoveries")
-		legacy.erase("roaming")
-		legacy.erase("battle")
-		legacy.erase("movebooks")
-		legacy.erase("affinity_tiles")
-		legacy.erase("wild_population")
-		legacy.erase("collection")
-		legacy.erase("sol_stats")
-		legacy.erase("retraining_items")
-		if legacy.has("battle"):
-			legacy.battle.erase("captures")
-		if version < 3:
-			legacy.erase("natural")
-		if version < 2:
-			legacy.erase("human_activity")
-		var upgraded := ExpeditionState.restore(legacy, seed_value)
-		check(upgraded != null and upgraded.discovery_entries().is_empty() and upgraded.snapshot().individuals == legacy.individuals, "Old domain upgrades preserve individuals without fabricating discovery history")
+		check(ExpeditionState.restore(legacy, seed_value) == null, "Incompatible development discovery state is rejected")
 	var malformed: Array[Dictionary] = []
 	var bad := snapshot.duplicate(true)
 	bad.discoveries.append(bad.discoveries[0].duplicate(true))

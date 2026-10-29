@@ -1,5 +1,5 @@
 [gd_resource type="Resource" script_class="CombatPacingFixture" load_steps=3 format=3]
-[ext_resource type="Script" path="res://scripts/combat_pacing_fixture.gd" id="1"]
+[ext_resource type="Script" path="res://scripts/combat/combat_pacing_fixture.gd" id="1"]
 [ext_resource type="Resource" path="res://resources/wild_bramblepup.tres" id="2"]
 [resource]
 script = ExtResource("1")

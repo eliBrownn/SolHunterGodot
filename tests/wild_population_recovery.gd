@@ -179,14 +179,9 @@ func verify_legacy_and_validation(state: ExpeditionState, base: String) -> void:
 	var snapshot := state.snapshot()
 	var legacy := snapshot.duplicate(true)
 	legacy.version = 7
-	legacy.erase("wild_population")
-	legacy.erase("collection")
-	legacy.erase("sol_stats")
-	legacy.erase("retraining_items")
-	if legacy.has("battle"):
-		legacy.battle.erase("captures")
-	var old := ExpeditionState.restore(legacy, 17)
-	check(old != null and old.wild_population_view().is_empty() and old.snapshot().individuals == snapshot.individuals, "Legacy saves preserve history without inventing depletion dates")
+	check(ExpeditionState.restore(legacy, 17) == null, "Incompatible development population state is rejected")
+	var old := ExpeditionState.restore(snapshot, 17)
+	check(old != null and old.snapshot() == snapshot, "Current population reconstruction preserves all identities and depletion dates")
 	var current := old.home_occupant(base)
 	old.configure_wild_recovery(3)
 	check(old.acquire(current, "party"), "Acquisition preserves the current successor as an owned individual")

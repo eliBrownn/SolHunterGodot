@@ -1,7 +1,7 @@
 [gd_resource type="Resource" script_class="SolBehaviorLibrary" load_steps=21 format=3]
 
-[ext_resource type="Script" path="res://scripts/sol_behavior_library.gd" id="1"]
-[ext_resource type="Script" path="res://scripts/sol_behavior_definition.gd" id="2"]
+[ext_resource type="Script" path="res://scripts/sols/sol_behavior_library.gd" id="1"]
+[ext_resource type="Script" path="res://scripts/sols/sol_behavior_definition.gd" id="2"]
 
 [sub_resource type="Resource" id="idle"]
 script = ExtResource("2")

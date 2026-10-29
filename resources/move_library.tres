@@ -1,7 +1,7 @@
 [gd_resource type="Resource" script_class="MoveLibrary" format=3 uid="uid://cuj7el16vc5wt"]
 
-[ext_resource type="Script" uid="uid://csqi2ob8pn3de" path="res://scripts/move_library.gd" id="1"]
-[ext_resource type="Script" uid="uid://bqt7banw44xbp" path="res://scripts/sol_move.gd" id="2"]
+[ext_resource type="Script" uid="uid://csqi2ob8pn3de" path="res://scripts/combat/move_library.gd" id="1"]
+[ext_resource type="Script" uid="uid://bqt7banw44xbp" path="res://scripts/combat/sol_move.gd" id="2"]
 
 [ext_resource type="Resource" path="res://resources/sol_species/catalog.tres" id="3"]
 

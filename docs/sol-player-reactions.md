@@ -64,7 +64,7 @@ tuning. Manual Engage and successful-step withdrawal protection retain their rul
 
 ## Ownership and persistence
 
-`scripts/sol_reaction_policy.gd` owns pure responses and captions. `SolRoamingPolicy`
+`scripts/sols/sol_reaction_policy.gd` owns pure responses and captions. `SolRoamingPolicy`
 composes those with home return and patrol. The sighting controller commits one
 legal step and response atomically. The encounter controller alone owns warning
 presentation and encounter entry.

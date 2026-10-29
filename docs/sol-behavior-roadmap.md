@@ -82,7 +82,7 @@ Exact rescue species, companion interactions and storm failure rules remain open
 ## Original baseline and source evidence
 
 Before phase 1, inspection found limited flee, approach, guard, and return decisions in
-`scripts/authored_sightings.gd`, but no autonomous idle patrol. The owner's observed
+`scripts/sols/presentation/authored_sightings.gd`, but no autonomous idle patrol. The owner's observed
 problem is that Sols sit still. Existing reactions do not establish that normal
 exploration feels active; verify their live behavior during implementation.
 See [local Sol reactions](local-sol-reactions.md) for existing contracts and tests.
@@ -308,8 +308,8 @@ with each implementation delivery. All initial balance values remain provisional
 
 Phases 1–2 now implement autonomous cardinal patrols, stable individual rest phases,
 arrival rests, blocked-goal expiry, bounded BFS detours, occupancy reservations,
-home return, and interrupting player reactions. `scripts/sol_roaming_policy.gd`
-owns decisions; `scripts/sol_local_navigation.gd` owns path steps. The existing
+home return, and interrupting player reactions. `scripts/sols/sol_roaming_policy.gd`
+owns decisions; `scripts/sols/sol_local_navigation.gd` owns path steps. The existing
 sighting controller orchestrates them. Domain version 11 stores optional patrol
 goal, leg, rest deadline, and expiry without resetting older saved individuals.
 
@@ -342,7 +342,7 @@ Warning Delay Seconds adds a minimum uncovered display period to the existing
 displayed-warning/later-player-step contract. Timer expiry and AI movement cannot
 start encounters. All new behavior values are connected Inspector controls.
 
-`scripts/sol_reaction_policy.gd` owns response decisions; domain version 12 persists
+`scripts/sols/sol_reaction_policy.gd` owns response decisions; domain version 12 persists
 optional response state. See [Sol player reactions](sol-player-reactions.md) for
 behavior, settings, source evidence, save ownership, and tests. New durations remain
 provisional tuning. At that delivery, phases 4–7 remained open.
