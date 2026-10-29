@@ -110,11 +110,11 @@ func catalog_record(species_id: String) -> Resource:
 func valid() -> bool:
 	if catalog_sightings.size() > MAX_CATALOG_SIGHTINGS or (species_catalog == null and (not catalog_sightings.is_empty() or not species_catalog_path.is_empty() or _catalog_override_set)):
 		return false
-	if species_catalog != null and (not script_matches(species_catalog, "res://scripts/sol_species_catalog.gd") or not species_catalog.call("valid")):
+	if species_catalog != null and (not script_matches(species_catalog, "res://scripts/sols/sol_species_catalog.gd") or not species_catalog.call("valid")):
 		return false
 	var placement_cells := {}
 	for placement in catalog_sightings:
-		if not script_matches(placement, "res://scripts/sol_catalog_sighting.gd") or not placement.call("valid", species_catalog) or placement_cells.has(placement.get("trail_x")):
+		if not script_matches(placement, "res://scripts/sols/sol_catalog_sighting.gd") or not placement.call("valid", species_catalog) or placement_cells.has(placement.get("trail_x")):
 			return false
 		placement_cells[placement.get("trail_x")] = true
 	if species_catalog != null:

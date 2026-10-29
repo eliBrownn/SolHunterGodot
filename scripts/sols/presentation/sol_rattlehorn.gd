@@ -1,4 +1,4 @@
-extends "res://scripts/sol_creature.gd"
+extends "res://scripts/sols/presentation/sol_creature.gd"
 ## Approved direction B: elevated chest, narrow steps, short ring horns and mane.
 
 func build_model() -> void:

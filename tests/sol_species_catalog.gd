@@ -129,7 +129,7 @@ func verify_rejection() -> void:
 	check(not sightings.valid(), "Missing catalog path rejects without attempting a failing resource load")
 	sightings = preload("res://resources/sol_pilot_sightings.tres").duplicate(true)
 	sightings.catalog_sightings[0].trail_x = 8
-	var actors := preload("res://scripts/authored_sightings.gd").new()
+	var actors := preload("res://scripts/sols/presentation/authored_sightings.gd").new()
 	actors.settings = sightings
 	check(actors.local_entries().is_empty(), "A catalog placement colliding with an established trail home rejects the complete layout")
 	actors.free()

@@ -62,7 +62,7 @@ func presentation_valid() -> bool:
 		if scene_state.get_node_property_name(0, index) == "script":
 			root_script = scene_state.get_node_property_value(0, index) as Script
 	while root_script != null:
-		if root_script.resource_path == "res://scripts/sol_creature.gd":
+		if root_script.resource_path == "res://scripts/sols/presentation/sol_creature.gd":
 			return creature_configuration_valid(scene_state)
 		root_script = root_script.get_base_script()
 	return false

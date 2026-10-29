@@ -17,7 +17,7 @@ The shared species records now select three separate scenes:
 | Reedback | [Amphibian blockout](../scenes/sols/reedback.tscn) | Four webbed feet, overlapping plates, flexible reeds, two-part paddle tail |
 | Bellroot | [Botanical blockout](../scenes/sols/bellroot.tscn) | Four root feet, bulb and low face, six leaf base/tip pairs and canopy |
 
-[SolCreature](../scripts/sol_creature.gd) builds low-resolution original meshes
+[SolCreature](../scripts/sols/presentation/sol_creature.gd) builds low-resolution original meshes
 and named Node3D pivots when the shared presentation factory configures a scene.
 These are rigid articulated parts, without a skinned mesh or external skeleton.
 Each limb has a knee, foot pivot and `Contact` marker for the next movement step.

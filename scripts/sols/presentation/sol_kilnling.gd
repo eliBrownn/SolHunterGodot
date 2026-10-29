@@ -1,5 +1,5 @@
-extends "res://scripts/sol_creature.gd"
-const Parts = preload("res://scripts/sol_model_parts.gd")
+extends "res://scripts/sols/presentation/sol_creature.gd"
+const Parts = preload("res://scripts/sols/presentation/sol_model_parts.gd")
 
 func build_model() -> void:
 	var ceramic := skin("bb9b7b")

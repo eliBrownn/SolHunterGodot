@@ -12,7 +12,7 @@ static func create(species_id: String, assigned_affinity: String, tuning: SolVis
 		view = entry.presentation_scene.instantiate() as SolOrb
 	else:
 		# Preserve legacy/unknown identity while replacing the old sphere fallback.
-		view = load("res://scripts/sol_prototype_creature.gd").new()
+		view = load("res://scripts/sols/presentation/sol_prototype_creature.gd").new()
 		view.prototype_kind = {"seedmote": 1, "bramblepup": 2, "ashkit": 3, "rillfin": 4}.get(species_id, 0)
 		view.set_meta("provisional_creature_art", true)
 	if view == null:

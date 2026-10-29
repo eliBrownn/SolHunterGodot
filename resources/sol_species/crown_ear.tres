@@ -1,9 +1,9 @@
 [gd_resource type="Resource" script_class="SolSpeciesRecord" load_steps=7 format=3]
 
-[ext_resource type="Script" path="res://scripts/sol_species_record.gd" id="1"]
-[ext_resource type="Script" path="res://scripts/sol_ecology_profile.gd" id="2"]
+[ext_resource type="Script" path="res://scripts/sols/sol_species_record.gd" id="1"]
+[ext_resource type="Script" path="res://scripts/sols/sol_ecology_profile.gd" id="2"]
 [ext_resource type="PackedScene" path="res://scenes/sols/crown_ear.tscn" id="3"]
-[ext_resource type="Script" path="res://scripts/sol_traversal_profile.gd" id="4"]
+[ext_resource type="Script" path="res://scripts/sols/sol_traversal_profile.gd" id="4"]
 
 [sub_resource type="Resource" id="traversal"]
 script = ExtResource("4")

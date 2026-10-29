@@ -1,4 +1,4 @@
-extends "res://scripts/sol_creature.gd"
+extends "res://scripts/sols/presentation/sol_creature.gd"
 ## Approved direction B: broad forebody, four supports, separately moving soft fins.
 
 func build_model() -> void:

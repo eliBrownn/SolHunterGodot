@@ -98,7 +98,7 @@ func run() -> void:
 	world.destination = world.cell
 	settings.admission_side = "west"
 	check(world.persistent_state.choose_starter(catalog.find("sol_species_0002").battle_profile("fire"), 0), "Controller fixture owns a real Reedback with independent fire affinity")
-	var companion: Node3D = load("res://scripts/owned_companion.gd").new()
+	var companion: Node3D = load("res://scripts/sols/presentation/owned_companion.gd").new()
 	host.add_child(companion)
 	companion.bind(world, settings)
 	companion.set_process(false)

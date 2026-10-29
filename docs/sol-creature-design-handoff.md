@@ -79,13 +79,13 @@ F5 runs `scenes/world_3d.tscn`. Normal sightings use
 present. Reedback's home uses a real generated bank. The isolated species and
 traversal pilot scenes remain available for focused review.
 
-The shared `scripts/sol_species_view.gd` factory serves wild Sols, combat, companion
+The shared `scripts/sols/presentation/sol_species_view.gd` factory serves wild Sols, combat, companion
 and menu views. Catalog records use their own authored scene. Every other identity
 gets a creature body, never an orb. The compatibility class name `SolOrb` still
 exists underneath the rig for affinity effects and battle interfaces; it does not
 mean a visible orb should return. The placeholder scene is also a creature.
 
-`scripts/sol_prototype_creature.gd` provides these **provisional** replacements:
+`scripts/sols/presentation/sol_prototype_creature.gd` provides these **provisional** replacements:
 
 | Existing identity | Existing class | Temporary anatomical direction |
 | --- | --- | --- |

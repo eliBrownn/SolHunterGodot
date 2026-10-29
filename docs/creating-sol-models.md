@@ -46,7 +46,7 @@ settings on the root. This reuses the same generated geometry; changing those
 settings alone will not make a new silhouette or skin palette.
 
 **Create a distinct body from primitives:** add a new script extending
-`res://scripts/sol_creature.gd`. Override `build_model()`, `animate_features()` and
+`res://scripts/sols/presentation/sol_creature.gd`. Override `build_model()`, `animate_features()` and
 `preview_bounds()` as shown below. Give a new MeshInstance3D scene root that script.
 Do not edit an existing builder to create an unrelated species: its other scenes
 would change too. The inherited Body Plan may remain at its default; these three
@@ -95,7 +95,7 @@ a MeshInstance3D root in `scenes/sols/my_sol.tscn`. The name is illustrative;
 choose a working name from the Bible when making an actual species.
 
 ```gdscript
-extends "res://scripts/sol_creature.gd"
+extends "res://scripts/sols/presentation/sol_creature.gd"
 
 func build_model() -> void:
     var hide := skin("8b7f69")

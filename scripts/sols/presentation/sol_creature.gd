@@ -30,7 +30,7 @@ var head: Node3D
 var joints: Dictionary = {}
 var rest_rotations: Dictionary = {}
 var rest_transforms: Dictionary = {}
-var ground_motion = preload("res://scripts/sol_ground_motion.gd").new()
+var ground_motion = preload("res://scripts/sols/sol_ground_motion.gd").new()
 var traversal_visual: Dictionary = {}
 var turn_velocity := 0.0
 var wing_surfaces: Array[Dictionary] = []

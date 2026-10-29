@@ -776,7 +776,7 @@ terrain is rewritten. The separate pond pilot uses this setting and a review-onl
 fresh start near Reedback. Ordinary expedition spawn and pilot homes stay intact.
 
 
-Provisional creature art: scripts/sol_prototype_creature.gd exposes Prototype Kind
+Provisional creature art: scripts/sols/presentation/sol_prototype_creature.gd exposes Prototype Kind
 (Unassigned/Seedmote/Bramblepup/Ashkit/Rillfin) alongside the inherited model and
 procedural pose settings. The shared view factory selects the kind for existing
 species IDs; it does not change class, stats or movement capability. Rebuild views

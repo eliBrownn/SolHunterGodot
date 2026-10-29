@@ -1,7 +1,7 @@
 [gd_resource type="Resource" script_class="SolSpeciesCatalog" load_steps=21 format=3]
 
-[ext_resource type="Script" path="res://scripts/sol_species_catalog.gd" id="1"]
-[ext_resource type="Script" path="res://scripts/sol_species_record.gd" id="2"]
+[ext_resource type="Script" path="res://scripts/sols/sol_species_catalog.gd" id="1"]
+[ext_resource type="Script" path="res://scripts/sols/sol_species_record.gd" id="2"]
 [ext_resource type="Resource" path="res://resources/sol_species/crown_ear.tres" id="3"]
 [ext_resource type="Resource" path="res://resources/sol_species/reedback.tres" id="4"]
 [ext_resource type="Resource" path="res://resources/sol_species/bellroot.tres" id="5"]

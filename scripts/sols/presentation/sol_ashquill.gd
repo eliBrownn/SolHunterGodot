@@ -1,4 +1,4 @@
-extends "res://scripts/sol_creature.gd"
+extends "res://scripts/sols/presentation/sol_creature.gd"
 ## Approved direction B: upright bird, two supports and a long arched feather tail.
 
 func build_model() -> void:
