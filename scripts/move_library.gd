@@ -1,5 +1,7 @@
 class_name MoveLibrary
 extends Resource
+## Shared species learnsets. Defaults reference the same catalog as battle and sighting settings.
+@export var species_catalog: SolSpeciesCatalog = SolSpeciesCatalog.new()
 ## Explicit species eligibility and starter learnsets. Numeric defaults are prototype tuning.
 @export var moves: Array[SolMove] = []
 ## Species ID to learnable move IDs, independent of individual affinity.
@@ -40,16 +42,18 @@ func definitions() -> Dictionary:
 
 func levels_for(species: String, milestones: Array) -> Dictionary:
 	var result := {}
-	var initial: PackedStringArray = starting_moves.get(species, PackedStringArray())
+	var initial: PackedStringArray = initial_for(species)
 	var next := 0
-	for id in species_pools.get(species, PackedStringArray()):
+	for id in pool_for(species):
 		result[id] = 1 if initial.has(id) else int(milestones[mini(next, milestones.size() - 1)])
 		if not initial.has(id):
 			next += 1
 	return result
 
 func valid() -> bool:
-	if moves.is_empty() or moves.size() > 128 or species_pools.size() > 64 or not SolSpeciesDefinition.whole(recovery_interval, 1, 1000) or not SolSpeciesDefinition.whole(field_damage, 0, 10) or not SolSpeciesDefinition.whole(rough_cost, 1, 4) or not SolSpeciesDefinition.whole(assisted_cost, 0, 1) or not SolSpeciesDefinition.whole(resisted_cost, 1, 4):
+	if species_catalog == null or not species_catalog.valid():
+		return false
+	if moves.is_empty() or moves.size() > 128 or species_pools.size() + species_catalog.entries.size() > SolSpeciesCatalog.MAX_SPECIES or not SolSpeciesDefinition.whole(recovery_interval, 1, 1000) or not SolSpeciesDefinition.whole(field_damage, 0, 10) or not SolSpeciesDefinition.whole(rough_cost, 1, 4) or not SolSpeciesDefinition.whole(assisted_cost, 0, 1) or not SolSpeciesDefinition.whole(resisted_cost, 1, 4):
 		return false
 	var ids := {}
 	for value in [world_rough_multiplier, world_flow_assisted, world_flow_resisted, world_warp_short, world_warp_long]:
@@ -59,7 +63,11 @@ func valid() -> bool:
 		if move == null or not SolMove.valid(move.snapshot()) or ids.has(move.move_id):
 			return false
 		ids[move.move_id] = true
+	if not species_catalog.moves_valid(ids):
+		return false
 	for species in species_pools:
+		if species_catalog.find(species) != null:
+			return false # Reject competing definitions rather than choosing silently.
 		var pool: PackedStringArray = species_pools[species]
 		var initial: PackedStringArray = starting_moves.get(species, PackedStringArray())
 		if pool.is_empty() or pool.size() > 32 or initial.is_empty() or initial.size() > 32:
@@ -76,16 +84,24 @@ func valid() -> bool:
 			seen[id] = true
 	return true
 
+func pool_for(species: String) -> PackedStringArray:
+	var authored := species_catalog.find(species) if species_catalog != null else null
+	return authored.learnable_moves if authored != null else species_pools.get(species, PackedStringArray())
+
+func initial_for(species: String) -> PackedStringArray:
+	var authored := species_catalog.find(species) if species_catalog != null else null
+	return authored.starting_moves if authored != null else starting_moves.get(species, PackedStringArray())
+
 func book(species: String) -> Dictionary:
-	if not valid() or not species_pools.has(species):
+	if not valid() or pool_for(species).is_empty():
 		return {}
 	var learned := {}
 	var equipped: Array = []
-	for id in starting_moves[species]:
+	for id in initial_for(species):
 		learned[id] = find(id)
 		if equipped.size() < 4:
 			equipped.append(id)
-	return {"pool": Array(species_pools[species]), "learned": learned, "equipped": equipped}
+	return {"pool": Array(pool_for(species)), "learned": learned, "equipped": equipped}
 
 static func valid_book(book: Variant) -> bool:
 	if not book is Dictionary or not ExpeditionState.keys_match(book, ["pool", "learned", "equipped"]) or not book.pool is Array or book.pool.is_empty() or book.pool.size() > 32 or not book.learned is Dictionary or book.learned.is_empty() or book.learned.size() > 32 or not book.equipped is Array or book.equipped.is_empty() or book.equipped.size() > 4:

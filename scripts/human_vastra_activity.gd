@@ -46,10 +46,10 @@ static func valid_ledger(data: Variant, tick: int) -> bool:
 		if not effect is Dictionary or not ExpeditionState.keys_match(effect, ["concentration", "overload", "excess"]):
 			return false
 		for field in ["concentration", "overload", "excess"]:
-			if not SolSpeciesDefinition.whole(effect[field], 0, 100):
+			if not SolSpeciesDefinition.whole(effect[field], VastraCombat.MIN_OVERLOAD if field == "overload" else 0, 100):
 				return false
 		var event: Dictionary = receipt.event
-		if effect.excess > event.harvest_amount or effect.overload < event.overload_delta:
+		if effect.excess > event.harvest_amount or effect.overload < VastraCombat.MIN_OVERLOAD + event.overload_delta:
 			return false
 		if event.kind == "disturbance" and effect.excess != 0:
 			return false
@@ -85,7 +85,7 @@ static func prepare(ledger: Dictionary, event: Variant, tick: int, tile: Diction
 			return {}
 	elif command.sequence != 1 or ledger.events.size() >= MAX_PRODUCERS:
 		return {}
-	if not SolSpeciesDefinition.whole(tile.get("concentration"), 0, 100) or not SolSpeciesDefinition.whole(tile.get("overload"), 0, 100):
+	if not SolSpeciesDefinition.whole(tile.get("concentration"), 0, 100) or not VastraCombat.valid_overload(tile.get("overload")):
 		return {}
 	var spent: Dictionary = ledger.spent.duplicate(true) if tick == ledger.tick else {}
 	var excess := 0

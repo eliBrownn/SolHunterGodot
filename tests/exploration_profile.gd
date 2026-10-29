@@ -34,7 +34,7 @@ func metrics(samples: Array[float]) -> Dictionary:
 func observe() -> void:
 	live_chunk_peak = maxi(live_chunk_peak, world.chunks.size())
 	static_memory_peak = maxf(static_memory_peak, Performance.get_monitor(Performance.MEMORY_STATIC))
-	check(world.chunks.size() <= 49, "Live render chunks remain bounded")
+	check(world.chunks.size() <= (scene.stream_capacity() if scene.has_method("stream_capacity") else 49), "Live render chunks remain bounded by the current view")
 
 func settle(frame_count: int) -> Dictionary:
 	var samples: Array[float] = []

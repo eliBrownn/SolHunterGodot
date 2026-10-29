@@ -1,0 +1,10 @@
+[gd_resource type="Resource" script_class="SolVisualSettings" load_steps=2 format=3]
+[ext_resource type="Script" path="res://scripts/sol_visual_settings.gd" id="1"]
+[resource]
+script = ExtResource("1")
+health_bar_seconds = 0.25
+impact_seconds = 0.25
+action_cue_seconds = 0.15
+consequence_seconds = 0.25
+movement_step_seconds = 0.08
+turn_handoff_seconds = 0.15

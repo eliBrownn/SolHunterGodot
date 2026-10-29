@@ -1,6 +1,6 @@
 class_name ProgressionSettings
 extends Resource
-## Source-derived base progression; no IV/EV system or evolution is inferred.
+## Battle-only XP progression. New individual records snapshot these species growth increments.
 ## Cumulative XP threshold is this factor times current level squared.
 @export_range(1, 100) var threshold_factor := 10
 ## Fixed XP added to the defeated opponent's level contribution after participating victory.
@@ -11,7 +11,7 @@ extends Resource
 @export_range(0, 100) var minimum_xp := 5
 ## Maximum future level. Lowering this never downgrades an existing individual.
 @export_range(1, 55) var level_cap := 55
-## Resolved base-stat growth per level; existing genetic modifiers are not invented.
+## Natural species-stat increments per level, before saved IV percentages and training.
 @export_range(0, 10) var hp_growth := 2
 @export_range(0, 10) var stat_growth := 1
 ## Owner-approved provisional milestones for additional prototype species moves.

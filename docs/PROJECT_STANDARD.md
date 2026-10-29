@@ -9,22 +9,96 @@ This is the single source of truth for repository organization, Git practices, a
 
 `docs/reference/SolHunter_Worldbuilding_Bible.md` governs game design. Preserve confirmed, provisional, and deferred distinctions. Repository housekeeping must not revise canon or turn unresolved designs into requirements. Other SolHunter repositories are outside this maintenance scope.
 
+Owner direction, October 28, 2026: maintain the [Sol Bible](reference/sol_bible.md)
+as the species/lineage authoring reference and roster index to populate. It develops
+species details under the worldbuilding Bible's design authority; proposed entries
+and existing prototypes do not become approved final-roster designs by inclusion.
+Keep repository workflow in this standard and runtime content in Godot resources.
+
 Owner direction, October 26, 2026: use [SolHunterSource](https://github.com/eliBrownn/SolHunterSource) to resolve game-mechanics questions outside the world-generation engine. Read its relevant implementation, tests, and decision evidence before proposing replacement rules or escalating an apparent gap. See [mechanics reference](mechanics-reference.md) for verified source locations and reconciliation procedure. This permits read-only reference use; it does not authorize maintenance of that repository or replacement of Godot world generation. Preserve explicit Bible canon and flag unresolved source conflicts rather than silently overriding it with legacy behavior.
+
+## Hierarchical ownership and composition
+
+Owner-approved principle, October 28, 2026: use hierarchy across the game to own
+standards and constrain local variation. Maintain separate domain hierarchies;
+connect independent properties and systems through explicit references rather
+than forcing them into one inheritance tree. Preserve individual affinity as
+independent of species and rendering ownership as independent of ecological state.
+
+Each fact has one authoritative owner. Children inherit relevant constraints and
+may narrow them; siblings share parent space and budgets. Distinguish mandatory
+requirements from preferences. Named authored exceptions may override defaults
+at the owning level, but cannot bypass required access, data integrity or other
+hard invariants. Small detail changes must not reroll unrelated parent layouts.
+Create a hierarchy level only when it owns a useful decision, rule or budget.
+
+Apply this incrementally to changed systems and prove the first scenery slice
+before wider adoption. The [framework plan](development-plan.md#approved-hierarchical-framework--october-28-2026)
+records implementation proposals; [the terrain roadmap](terrain-roadmap.md#required-generation-hierarchy)
+specializes the principle for scenery. This does not authorize a wholesale rewrite
+or establish new mechanics; the Bible and mechanics-reference authorities above
+remain binding.
 
 ## Repository layout
 
-Owner visual direction, October 26, 2026: retain a 3D world with the low,
-axis-aligned camera while preserving the 2D pixel-art look. Favor original
-nearest-filtered terrain/prop textures and upright sprite foliage/characters;
-do not replace the established artwork with a smooth low-poly aesthetic by
-default. See [the visual direction decision](decisions/2026-10-26-pixel-art-3d.md).
+Owner direction, October 27, 2026 supersedes the October 26 sprite presentation:
+use a full 3D player and world
+scenery, with the supplied rogue/animation rigs and Stylized Nature MegaKit.
+Existing terrain textures may remain on real tile geometry. Allow live camera
+orbit/tilt/zoom and reset, camera-relative walking, perspective game view,
+view-dependent terrain streaming and configurable asset/render distances.
+Use the supplied procedural sky resources with a matching horizon.
+Owner direction, October 27, 2026 also adds day/night and basic weather. Derive
+their visual timeline from the saved active exploration clock; expose lighting,
+cycle and clear/cloudy/rain tuning in Godot. This presentation slice does not
+add weather damage, encounter rules or ecological modifiers.
+Preserve generation and gameplay authorities.
+See [the current visual direction](decisions/2026-10-27-full-3d-and-controls.md).
+Owner direction, October 27, 2026: mouse controls world, combat and NPC
+interactions; keyboard controls player movement and personal systems. Escape
+cancels/closes interaction layers and must not directly retreat. Personal menus
+remain clickable. See [UI/UX roadmap](ui-ux-roadmap.md) for the implementation
+sequence and validation status.
+Owner clarification, October 28, 2026: that input split describes desktop play.
+Controller support, including full-game input handling and game UI/UX, is the
+approved fallback priority after active UI work. Preserve desktop controls and
+provide equivalent controller interactions; handheld device acceptance remains
+separate. See the same UI/UX roadmap for scope.
+Owner direction, October 27, 2026: right-click is the primary world interaction
+menu, informed by RuneScape's Choose Option pattern. Offer actions for the pointed
+target, including Engage/Observe on Sols, preserving existing gameplay authority.
+Owner follow-up, October 28, 2026: exploration left-click performs the first
+enabled context action. Context menus use a smaller target-name heading and short
+action labels without repeating that name. Observe shows a simplified appearance
+description; Details retains the expanded readings.
 
-Owner direction, October 27, 2026: Sols use hovering balls with basic colors and
-effects from the individual’s assigned affinity, in exploration and battles.
-Preserve the pixel-art presentation and real 3D placement. The editable palette
-follows the approved Bible color directions; exact RGB values remain editable
-art tuning. Colors never derive from species/class.
-See [affinity orb presentation](affinity-orbs.md).
+
+Owner direction, October 27, 2026: provide a cohesive, movable and adjustable
+in-game menu, using Pokémon's familiar guide/party/bag/trainer/save/options
+organization as a reference. Use original SolHunter styling and retain existing
+gameplay authorities. Menu layout preferences are local presentation settings,
+separate from expedition saves. Owner follow-up: R toggles the live field menu;
+opening it does not pause time or movement. Escape opens a separate true pause
+screen after dismissing higher interaction layers. The menu uses a 0.7 size
+multiplier (30% smaller), while preserving local adjustments. The game window is
+resizable and starts maximized to the available screen, with no fixed physical
+startup-size override. The view expands to the display aspect ratio. Player heading
+changes use smooth shortest-arc visual turning.
+Owner phase-4 direction: use Pokémon as a reference for companion navigation,
+without copying its presentation. Sol menus show the selected Sol's actual model
+fitted inside a dedicated preview window. See [Sol menu](sol-menu.md) and
+[field menu](field-menu.md).
+
+Owner clarification, October 28, 2026: affinity orbs are temporary Sol placeholders.
+Production Sols have species-specific models, behaviors and animations, while
+individual identity and affinity remain independent. Owner follow-up, October 28:
+remove orb bodies from gameplay, including legacy and unknown species. Catalog
+species use authored models; other identities use provisional articulated creature
+bodies. Anatomy must vary and reflect its class. Individual-affinity effects remain
+separate from the body. The editable affinity palette follows the approved Bible
+colors; exact RGB values remain art tuning. Affinity colors never derive from
+species/class. See [affinity orb presentation](affinity-orbs.md) and the
+[opening/companionship decision](decisions/2026-10-28-opening-companionship-and-consequences.md).
 
 Keep the root small: project entry/configuration, README, agent instructions, and repository tooling. Use the following destinations as content arrives; do not create empty scaffolding or relocate existing assets solely for cosmetic consistency.
 
@@ -72,6 +146,34 @@ After merge, branch deletion is a deliberate cleanup action: verify the PR is me
 
 ## Godot and validation
 
+Owner-approved workflow, October 28, 2026: keep the connected expedition loop
+central and assess exploration feel, Sol behavior/companionship, combat and visual
+cohesion together in each slice. AYN Thor is the intended release platform and
+audience; optimization and relevant performance regression checks happen throughout
+development. The above-average development PC is a baseline, not device acceptance.
+See [approved development focus](development-plan.md#approved-focus--october-28-2026)
+for hardware evidence, measurement scope and remaining target-budget decisions.
+The separate daily 06:00 Pacific vision audit presents a status questionnaire,
+processes feedback into proposed decisions, and updates roadmaps only after explicit
+owner approval. Owner direction, October 28: present questions through an
+interactive questionnaire rather than prose-only question lists. The approved
+[creative direction](decisions/2026-10-28-opening-companionship-and-consequences.md)
+records the storm rescue, companionship, production Sol presentation and lasting
+choice consequences; its roadmap changes were explicitly authorized by the owner.
+Owner scheduling update, October 28: the existing vision audit now runs at 06:00
+America/Los_Angeles daily, including weekends, with a creative review, ten primary
+questions in an interactive questionnaire, and a report of other active project
+chats/agents. Repository maintenance retains its separate 07:00 schedule and scope.
+
+Owner direction, October 27, 2026: during the current solo development/testing
+phase, old test saves are disposable. Keep explicit save, world-state and
+generation versions, saved generation settings, current-format validation and
+reliable save/load behavior. Incompatible development saves may be rejected with
+a clear new-expedition message. Do not spend feature work on legacy generators,
+migrations or old-save preservation; obsolete compatibility checks may be replaced
+with current-format and incompatible-version rejection checks in the affected
+feature change. Revisit compatibility before external testing or release.
+
 Owner direction, October 27, 2026: keep implemented gameplay, simulation, and presentation tuning adjustable in Godot. Use typed exported Resource properties under `resources/` or grouped scene-root exports, with Inspector tooltips, meaningful units, valid ranges, and runtime validation. Expose the actually connected setting rather than an unused placeholder. Document whether changes apply immediately, at restart/new expedition, or to loaded saves; persist generation/identity-affecting values before using them. Keep provisional defaults labeled and avoid adding controls for unimplemented mechanics. Schema versions, identity contracts, and corruption/admission safety ceilings remain engineering constraints rather than balance sliders. See [Inspector tuning](inspector-tuning.md) for the current control map. New features should update that map in their implementation PR.
 
 Pin the actual Godot version and any required tooling in README when the runnable project arrives. Track authored scenes, resources, project configuration, import sidecars, and UID sidecars required by that pinned version. Ignore generated `.godot/` caches and builds. Do not blanket-ignore resource metadata or rewrite resource IDs during cleanup.
@@ -87,6 +189,47 @@ The shared local/CI entry point is `tools/validate.ps1`, requiring Godot 4.7.2 s
 The validator also rejects `SCRIPT ERROR:` and `ERROR:` output even when Godot
 returns zero. Expected warning fixtures remain permitted. This closes the
 zero-exit script-error gap observed during October 27 affinity implementation.
+
+### Routine creature integration and proportionate checks
+
+Owner direction, October 28, 2026: learn and reuse the creature-authoring process
+instead of repeating extensive testing for every addition. This is the local
+workflow for ordinary content changes; configured CI checks remain unchanged.
+
+1. Read the selected species sheet and owner decisions. Preserve its class,
+   first-form/size direction, independent individual affinity and approval scope.
+   Reuse already-recorded mechanics evidence when rules are unchanged; consult
+   SolHunterSource again for an actual mechanics change, conflict or unanswered rule.
+2. Reuse the existing species-resource pattern and shared presentation factory.
+   Check/reserve unique species and lineage keys; connect the scene, provisional
+   reference stats, existing moves, ecology and explicit traversal policy. Register
+   the record in the shared catalog and the normal sighting preset. Add an owned
+   idle branch/caption when a signature gesture exists. Keep later forms and final
+   balance open until authored; do not replace unrelated identities or starters.
+3. Validate the changed content through an existing focused catalog or integration
+   smoke test. Prefer one journey covering admission, encounter/capture, party,
+   preview/following and save/load to separate repeated tests of each layer. New
+   anatomy or changed support/animation code warrants its targeted model/movement
+   checks; a routine record, placement or art-tuning edit does not warrant every
+   terrain, weather, combat and world suite. Do not duplicate authored stat/shape
+   values into tests or invent tests for prose.
+4. Import/parse new scripts/resources when needed, then inspect one useful actual
+   game/menu render for visual changes. Reuse the workshop and existing fixtures;
+   do not regenerate a full pose gallery or retest unchanged systems each time.
+5. Update the canonical species sheet/index and connected Inspector map. Review
+   the scoped diff and report the focused result and real limitations. Broaden
+   validation only for shared-system/schema/generation changes, a new failure or
+   unresolved risk relevant to this change. A known unrelated full-suite failure
+   is recorded once, not repeatedly rediscovered on each content edit.
+
+This supersedes blanket per-creature instructions to rerun `tools/validate.ps1`
+locally for every ordinary content addition. Use the full validator when the
+change or integration checkpoint actually calls for broad regression evidence;
+do not claim a focused pass is a full pass or weaken configured CI requirements.
+The existing `tests/sol_species_catalog.gd`, `tests/sol_game_rollout.gd` and
+`tests/sol_anatomy_integration.gd` demonstrate the reusable admission/journey path;
+`tests/sol_anatomy_batch.gd` is for the new body plans, not a mandatory rerun for
+every future creature data edit.
 
 ## Daily maintenance at 7:00 AM Pacific
 

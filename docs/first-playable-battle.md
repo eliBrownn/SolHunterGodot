@@ -1,5 +1,9 @@
 # First playable battle
 
+The later [shared action budget](combat-action-budget.md) replaces automatic
+move-to-enemy handoffs: moves spend AP, Speed supplies free movement, extra travel
+spends AP, and End turn explicitly advances initiative.
+
 The subsequent [affinity/move slice](affinity-moves-imprints.md) adds four equipped
 moves, species learnsets, field effects, permanent tile imprints, and domain 7.
 It supersedes this original slice's neutral-basic and domain-6 limitations.
@@ -20,9 +24,10 @@ same companion chooser before continuing to deployment. The owner-approved
 guarding Seedmote still requires a displayed warning and a later contact step
 for automatic entry. The preview itself does not force a tactical battle.
 
-Click a blue release tile, or move the yellow cursor with arrows/WASD and press
-Enter. After deployment, blue tiles show reachable movement; click one or use
-arrows/WASD to move. Space performs the named basic attack when in range.
+Click a blue release tile. After deployment, click blue tiles to move the Sol.
+WASD remains the exploration movement control. Select a move button (or 1–4,
+or Space for slot 1), then click a highlighted target to use it. Selection only
+arms a move. Right-click Observe preserves pending aim and spends no action.
 Enter ends the turn. Escape or Retreat guarantees withdrawal, including before
 deployment. The sidebar shows both HP totals, movement remaining, attack damage,
 enemy intent, and recent actions. Red marks the opponent and green your Sol.

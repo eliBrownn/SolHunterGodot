@@ -19,7 +19,7 @@ static func valid_schedule(data: Variant, tiles: Dictionary, tick: int) -> bool:
 			return false
 		seen[key] = true
 	for key in data.recovery_ticks:
-		if not tiles.has(key) or tiles[key].get("overload", 0) <= 0 or not SolSpeciesDefinition.whole(data.recovery_ticks[key], 0, tick):
+		if not tiles.has(key) or tiles[key].get("overload", 0) == 0 or not SolSpeciesDefinition.whole(data.recovery_ticks[key], 0, tick):
 			return false
 	return true
 
@@ -58,16 +58,17 @@ static func prepare(tiles: Dictionary, schedule: Dictionary, tick: int, policy: 
 				tile.concentration += amount if difference > 0 else -amount
 				regional_spent[profile.region] = used + amount
 		var since: Variant = schedule.recovery_ticks.get(key)
-		if tile.get("overload", 0) > 0 and policy.points > 0:
+		if tile.get("overload", 0) != 0 and policy.points > 0:
 			if since == null:
 				since = tick # Never grant an invented age to legacy damage.
 			else:
 				@warning_ignore("integer_division")
 				var intervals: int = (tick - int(since)) / int(policy.interval)
 				# Integer arithmetic remains exact even at the JSON clock ceiling.
-				tile.overload = maxi(0, int(tile.overload) - mini(intervals, 100) * int(policy.points))
+				var amount := mini(absi(int(tile.overload)), mini(intervals, 100) * int(policy.points))
+				tile.overload = int(tile.overload) - signi(int(tile.overload)) * amount
 				since = int(since) + intervals * int(policy.interval)
-		stamps[key] = since if tile.get("overload", 0) > 0 else null
+		stamps[key] = since if tile.get("overload", 0) != 0 else null
 		if tile != tiles[key]:
 			changes[key] = tile
 		cursor = (cursor + 1) % schedule.order.size()

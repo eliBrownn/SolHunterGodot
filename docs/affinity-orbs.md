@@ -1,5 +1,13 @@
 # Affinity orb presentation
 
+Superseded presentation, October 28, 2026: the owner has removed orb bodies from
+gameplay. Species now use articulated models, including provisional creature
+fallbacks for legacy/unknown identities. Catalog admission rejects orb-only scenes.
+Individual affinity effects remain independent of species/class. The descriptions
+and validation below record earlier deliveries, not current creature art. See the
+[creature models](sol-creature-models.md), [design handoff](sol-creature-design-handoff.md) and
+[approved creative direction](decisions/2026-10-28-opening-companionship-and-consequences.md).
+
 The later [affinity/move slice](affinity-moves-imprints.md) replaces this original
 provisional palette with the owner's eight-affinity roster and approved legacy
 aliases. The original visual validation below remains historical evidence.

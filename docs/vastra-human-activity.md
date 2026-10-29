@@ -1,5 +1,11 @@
 # Human Vastra activity foundation
 
+October 28 update: [signed Vastra integration](vastra-integration.md) permits Sol
+combat abilities to create overload through the separate battle-result path.
+This human-only command API now accepts signed environmental conditions and
+receipts: disturbance can consume restorative conditions before becoming positive.
+Earlier implementation counts below remain historical evidence.
+
 This initial D2 slice adds an atomic domain API for authored human harvesting
 and disturbance. It does not add a player tool, inventory rewards, production
 regional budgets, replenishment, recovery, storms, or direct extraction from Sols.

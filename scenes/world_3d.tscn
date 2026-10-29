@@ -1,6 +1,12 @@
-[gd_scene load_steps=2 format=3]
+[gd_scene format=3 uid="uid://dngsuemxnygjw"]
 
-[ext_resource type="Script" path="res://scripts/world_solid.gd" id="1"]
+[ext_resource type="Script" uid="uid://knlrfb50ckmr" path="res://scripts/world_solid.gd" id="1"]
+[ext_resource type="Resource" path="res://resources/nature_cohesive_sample.tres" id="2_nature"]
+[ext_resource type="Resource" path="res://resources/sol_world_sightings.tres" id="3_sols"]
+[ext_resource type="Resource" path="res://resources/owned_companion_settings.tres" id="4_companion"]
 
-[node name="SolHunter3D" type="Node3D"]
+[node name="SolHunter3D" type="Node3D" unique_id=323671624]
 script = ExtResource("1")
+nature_settings = ExtResource("2_nature")
+sighting_settings = ExtResource("3_sols")
+companion_settings = ExtResource("4_companion")

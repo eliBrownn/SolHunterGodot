@@ -1,0 +1,37 @@
+[gd_scene load_steps=3 format=3]
+
+[sub_resource type="StandardMaterial3D" id="leaf"]
+albedo_color = Color(0.35, 0.47, 0.10, 1)
+roughness = 1.0
+metallic_specular = 0.0
+
+[sub_resource type="CylinderMesh" id="stem"]
+material = SubResource("leaf")
+top_radius = 0.015
+bottom_radius = 0.035
+height = 1.2
+radial_segments = 6
+rings = 1
+
+[node name="RushClusterPlaceholder" type="Node3D"]
+metadata/placeholder = true
+
+[node name="Part0" type="MeshInstance3D" parent="."]
+position = Vector3(-0.18, 0.6, 0)
+mesh = SubResource("stem")
+
+[node name="Part1" type="MeshInstance3D" parent="."]
+position = Vector3(0.16, 0.48, 0.08)
+scale = Vector3(1, 0.8, 1)
+mesh = SubResource("stem")
+
+[node name="Part2" type="MeshInstance3D" parent="."]
+position = Vector3(0, 0.66, -0.15)
+scale = Vector3(1, 1.1, 1)
+mesh = SubResource("stem")
+
+[node name="Part3" type="MeshInstance3D" parent="."]
+position = Vector3(0.04, 0.54, 0.2)
+scale = Vector3(1, 0.9, 1)
+mesh = SubResource("stem")
+

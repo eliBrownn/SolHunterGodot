@@ -13,10 +13,10 @@ the next battle. Pixel rings and text are original code-native visuals.
 
 ## Targeting and move information
 
-Field targeting now supports arrows/WASD to move the yellow cursor, Enter to
-confirm, or a click on a highlighted tile. Aiming does not move the Sol or spend
-its movement budget. Escape cancels an active aim; Escape outside aiming still
-retreats. The explicit Retreat button always retreats. Hover move buttons for
+Field targeting follows the mouse; click a highlighted tile to confirm. Aiming
+does not move the Sol or spend its movement budget. Escape cancels an active aim;
+otherwise it opens the battle menu. The explicit Retreat button requests mouse
+confirmation bound to the current battle. Keyboard never executes tactical actions. Hover move buttons for
 affinity, effect, range, and power. Quantum selection refreshes legal targets and
 starts at chosen-position mode for each new battle.
 

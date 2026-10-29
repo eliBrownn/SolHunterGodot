@@ -28,11 +28,13 @@ func run() -> void:
 	check(chunk.get_node("ground").multimesh.instance_count == 255, "Land is solid batched geometry")
 	check(chunk.get_node("water").multimesh.instance_count == 1, "Water replaces rather than overlaps its land tile")
 	check(chunk.get_node("trail_3").multimesh.instance_count == 1, "Trail mask preserves the original pixel-art paving")
-	check(chunk.get_node("sprite_tree_lower").multimesh.instance_count == 1 and chunk.get_node("sprite_tree_upper").multimesh.instance_count == 1, "Upright tree retains both authored pixel-art pieces")
-	check(chunk.get_node("sprite_rock").multimesh.instance_count == 1 and chunk.obstacle_count == 2, "Existing obstacles retain their pixel art and placement")
+	var trees := chunk.find_children("nature_tree_*", "MultiMeshInstance3D", false, false)
+	var rocks := chunk.find_children("nature_rock_*", "MultiMeshInstance3D", false, false)
+	check(not trees.is_empty() and trees[0].multimesh.instance_count == 1, "Tree obstacle uses a batched imported 3D mesh")
+	check(not rocks.is_empty() and chunk.obstacle_count == 2, "Imported rocks preserve existing obstacle placement")
 	check(chunk.get_node("grass_3").multimesh.instance_count == 255, "Original grass artwork covers every land tile")
-	var tree_material: StandardMaterial3D = chunk.get_node("sprite_tree_lower").multimesh.mesh.surface_get_material(0)
-	check(tree_material.texture_filter == BaseMaterial3D.TEXTURE_FILTER_NEAREST and tree_material.billboard_mode == BaseMaterial3D.BILLBOARD_FIXED_Y, "Pixel foliage stays crisp and upright in 3D")
+	var tree_material: StandardMaterial3D = trees[0].multimesh.mesh.surface_get_material(0)
+	check(tree_material.billboard_mode == BaseMaterial3D.BILLBOARD_DISABLED and tree_material.albedo_texture != null, "Nature kit uses textured 3D geometry without billboarding")
 	# The headless dummy renderer returns identity instead of retaining GPU instance transforms.
 	if DisplayServer.get_name() != "headless":
 		var land: Transform3D = chunk.get_node("ground").multimesh.get_instance_transform(0)
@@ -53,16 +55,25 @@ func run() -> void:
 	var first_coord: Vector2i = world.chunks.keys()[0]
 	var old_chunk: WeakRef = weakref(scene.solid_chunks[first_coord])
 	world.remove_chunk(first_coord)
-	check(not scene.solid_chunks.has(first_coord) and old_chunk.get_ref() == null, "Eviction frees matching 3D geometry immediately")
+	check(not scene.solid_chunks.has(first_coord) and old_chunk.get_ref() != null and not old_chunk.get_ref().visible, "Eviction removes active geometry and hides the bounded reversal-cache entry")
 	world.cell = Vector2i(-100, -100)
 	world.rebuild_world()
 	scene.sync_ground()
-	check(scene.solid_chunks.size() == world.chunks.size() and scene.solid_chunks.size() <= 49, "Negative-coordinate rebuild retains one bounded render authority")
+	check(scene.solid_chunks.size() == world.chunks.size() and scene.solid_chunks.size() <= scene.stream_capacity(), "Negative-coordinate rebuild retains one bounded frustum-streamed render authority")
 	check(scene.solid_root.position == Vector3(-world.camera.position.x / 32.0, 0, -world.camera.position.y / 32.0), "3D ground and upright actor share the same camera-relative origin")
 	var old_places: WeakRef = weakref(scene.place_root)
 	world.new_expedition(7)
 	check(old_places.get_ref() == null and is_instance_valid(scene.place_root), "New seed replaces decorative props without leaking old places")
 	check(scene.solid_chunks.size() == world.chunks.size(), "New-seed chunk publication stays aligned")
+	if DisplayServer.get_name() != "headless":
+		await process_frame
+		await process_frame
+		await RenderingServer.frame_post_draw
+	scene.environment.sky = null
 	scene.free()
+	if DisplayServer.get_name() != "headless":
+		await process_frame
+		await process_frame
+		await RenderingServer.frame_post_draw
 	print("SOLID GEOMETRY: %d checks, %d failures." % [checks, failures])
 	quit(0 if failures == 0 else 1)

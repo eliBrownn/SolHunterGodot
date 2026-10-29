@@ -1,4 +1,5 @@
 extends SceneTree
+const BattleTest = preload("res://tests/battle_test_support.gd")
 var checks := 0
 var failures := 0
 
@@ -19,7 +20,7 @@ func step(state: ExpeditionState, count: int) -> void:
 func resolve(world: Node2D, member: Dictionary, outcome: String, imprint: Dictionary = {}) -> void:
 	var state: ExpeditionState = world.persistent_state
 	var serial := state.begin_battle(member.id)
-	check(serial > 0 and state.complete_battle(serial, 1 if outcome == "victory" else 44, outcome, 3, imprint), "An authoritative outcome resolves once before recovery runs")
+	check(serial > 0 and state.complete_battle(serial, 1 if outcome == "victory" else int(state.active_sol_view().hp), outcome, 3, imprint), "An authoritative outcome resolves once before recovery runs")
 	world.rebuild_world()
 
 func run() -> void:
@@ -30,6 +31,8 @@ func run() -> void:
 	scene.sighting_settings.movement_enabled = false
 	scene.encounter_settings = EncounterSettings.new()
 	scene.encounter_settings.automatic_contact = false
+	scene.sighting_settings = scene.sighting_settings.duplicate(true)
+	scene.sighting_settings.wilderness_enabled = false
 	root.add_child(scene)
 	var world: Node2D = scene.world
 	world.smoke_mode = false
@@ -108,6 +111,7 @@ func run() -> void:
 	scene.encounters.battle_button.pressed.emit()
 	check(scene.battles.session != null and scene.battles.enemy_id == successor, "A recovered home supports a real new battle using the successor's own movebook")
 	scene.battles.retreat()
+	BattleTest.settle(scene.battles)
 	var born := state.snapshot()
 	world.save_game(path)
 	world.load_game(path)
@@ -177,6 +181,8 @@ func verify_legacy_and_validation(state: ExpeditionState, base: String) -> void:
 	legacy.version = 7
 	legacy.erase("wild_population")
 	legacy.erase("collection")
+	legacy.erase("sol_stats")
+	legacy.erase("retraining_items")
 	if legacy.has("battle"):
 		legacy.battle.erase("captures")
 	var old := ExpeditionState.restore(legacy, 17)

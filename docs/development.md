@@ -1,5 +1,9 @@
 # Exploration foundation — October 26, 2026
 
+Current update, October 27: the default scene now has [natural terrain](natural-terrain.md),
+generation 6 and save format 3. The earlier flat-surface presentation, limits and
+migration behavior below are historical foundation notes, superseded by that update.
+
 The current F5 entry is an experimental [solid 3D view](solid-3d-prototype.md)
 using the same simulation. The earlier sprite-ground presentation remains in
 `scenes/world.tscn` for F6 comparison. The description below documents that shared

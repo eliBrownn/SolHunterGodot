@@ -1,0 +1,12 @@
+[gd_resource type="Resource" script_class="SolEcologyProfile" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/sol_ecology_profile.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+profile_id = "seedmote_default"
+species_id = "seedmote"
+temperament = "avoidant"
+behaviors = PackedStringArray("patrol", "idle", "flee")
+patrol_radius_scale = 0.65
+rest_duration_scale = 1.5

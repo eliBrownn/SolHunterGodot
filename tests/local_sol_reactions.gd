@@ -30,6 +30,11 @@ func tick(world: Node2D) -> void:
 func run() -> void:
 	var scene: Node3D = (load("res://scenes/world_3d.tscn") as PackedScene).instantiate()
 	scene.sighting_settings = SightingSettings.new()
+	scene.sighting_settings = scene.sighting_settings.duplicate(true)
+	scene.sighting_settings.wilderness_enabled = false
+	scene.sighting_settings.species_profiles_enabled = false # Isolate the original global proximity controls.
+	scene.sighting_settings.wander_enabled = false # This suite isolates the legacy proximity responses.
+	scene.sighting_settings.movement_radius = 7 # Keep the original single-local-Sol save fixture.
 	root.add_child(scene)
 	var world: Node2D = scene.world
 	var controller: Node3D = scene.sightings
@@ -58,7 +63,7 @@ func run() -> void:
 		tick(world)
 		var position: Vector2i = controller.current_cell(controller.members[0])
 		check(controller.manhattan(position, member.home) <= 5 and world.terrain.fits(position) and position != world.cell, "Repeated local flight stays within legal home range without occupying the player")
-	put_player(world, member.home + Vector2i(6, 0))
+	put_player(world, member.home + Vector2i(-6, 0)) # Retreat away from the displaced fleeing Sol.
 	for index in range(12):
 		tick(world)
 	check(controller.current_cell(controller.members[0]) == member.home, "Retreating beyond reaction range permits a legal return to home")
@@ -179,6 +184,8 @@ func verify_schema(snapshot: Dictionary, original: String, path: String) -> void
 	old.erase("affinity_tiles")
 	old.erase("wild_population")
 	old.erase("collection")
+	old.erase("sol_stats")
+	old.erase("retraining_items")
 	if old.has("battle"):
 		old.battle.erase("captures")
 	var restored := ExpeditionState.restore(old, seed_value)

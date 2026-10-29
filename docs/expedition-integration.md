@@ -1,8 +1,8 @@
 # Complete expedition integration review
 
 October 28, 2026. Owner: Fine Detail, through the owner-authorized Bible RoadMap
-handoff. Status: read-only audit complete; combined rendered acceptance pending
-the active implementation checkpoint. This is an evidence/checklist map under
+handoff. Status: the five implementation dependencies have delivered; combined
+rendered verification is in progress. This is an evidence/checklist map under
 [PROJECT_STANDARD](PROJECT_STANDARD.md), not a competing roadmap or design source.
 The [development plan](development-plan.md) retains milestone authority and the
 Bible retains design authority. No D0–D5 completion or owner/device acceptance is
@@ -10,7 +10,7 @@ declared here.
 
 ## Initial state and sequencing
 
-The shared checkout is `codex/cohesive-world-sample` at
+The initial read-only audit inspected `codex/cohesive-world-sample` at
 `96f384ffbd12c227b964b5f433a76901e8c3879f`, with substantial tracked and untracked
 implementation work. A commit ID alone does not identify this playable tree.
 Preserve dirty work, the Bible and the current branch. No feature code was changed
@@ -19,37 +19,39 @@ another workstream's measurement. Capture source hashes before and after each
 later combined run; changed gameplay/rendering inputs invalidate a stable-tree
 acceptance claim even if every assertion passes.
 
-| Workstream | Current dependency | Integration handoff gate |
+| Workstream | Delivered checkpoint at resumed review | Integration check |
 | --- | --- | --- |
-| Plan Sol species roster | Crown-Ear flight and Reedback swimming are being connected to navigation, saved movement and animation; dedicated traversal pilot is in progress | Report its actual test/render evidence and intended normal-versus-pilot rollout; do not convert flight/swimming back into ground movement to satisfy an old fixture |
-| Optimize | Another six-path optimization pass is implemented and under verification/measurement | Wait for measurement/validation to finish; retain current caching and resumable chunk publication; verify source hashes afterward |
-| Sol Behavior | Selected owned companion ground-following and personality interactions are starting | Verify selected identity, legal spacing, encounter transitions, culling/rebuild and save/load through its delivered interfaces; do not implement a second follower |
-| Combat | Measured pacing fixtures are being revised for terrain payoff, heal/hit decisions and the major probe | Exercise the revised fixtures and current production playback separately; fixture labels and shorter waits are not owner-approved battle targets |
-| World Generation | Bounded winding-route/pond-diversity slice is starting | Rebuild routes from the delivered generator, verify return and pond access, preserve its generation/version decisions; do not restore old terrain to make travel tests pass |
+| Plan Sol species roster | Wild Crown-Ear flight and Reedback swimming are delivered through saved modes, navigation, animation and the traversal pilot | Keep normal/pilot populations separate; owned air/water following remains unsupported. Grounded battle admission must not be weakened to make an old fixture pass |
+| Optimize | Six hot-path changes and bounded temporary-ground caching are delivered | Retain caching/resumable publication; verify fresh frame/resource evidence without inventing a historical speedup or device budget |
+| Sol Behavior | Selected owned ground presence, following, rest/personality moments and 40 focused checks are delivered | Verify actual selected identity and legal following with normal AI, encounters and save/load; do not create a second follower or claim owned air/water support |
+| Combat | Revised v2 pacing fixtures, terrain interaction policies and an owner session are delivered | Exercise controlled fixtures separately from production battles. Phase 3 feel/duration acceptance remains an owner gate |
+| World Generation | Generation 7 winding routes and varied ponds are normal F5 behavior | Derive travel from current terrain, preserve generation/version policy and inspect actual pond/route transitions |
 
-Use compact thread snapshots to confirm these gates; “active” alone does not say
-which files are stable. The current audit intentionally runs no engine workload.
+Compact thread snapshots and the process inventory confirmed all five owners idle
+before the resumed review. The existing Godot editor remains open; no competing
+game, profile or validator process is allowed by the review runner. The initial
+audit ran no engine workload; the resumed rendered evidence is recorded below.
 
 ## Existing evidence and its limits
 
 | Evidence | Verified initial audit finding | Limit for this review |
 | --- | --- | --- |
-| `artifacts/sol_procedural_ground/validate.log` | Shared Godot 4.7.2 validator ended with the success marker; 53 suite reports total 16,815 assertions, zero failed assertions and zero `ERROR:` / `SCRIPT ERROR:` lines | Newer than the failed optimization snapshots; it precedes current flight/swim, companionship, pacing, terrain and optimization changes. Headless success does not cover GPU-only silhouette assertions |
+| `artifacts/sol_air_water/validate_complete.log` | Latest pre-review Godot 4.7.2 validator ended with the success marker; 57 suite reports total 27,285 assertions, zero failed assertions and zero `ERROR:` / `SCRIPT ERROR:` lines | Supersedes both the 16,815-check procedural-ground baseline and older failed/interrupted optimization/companion reports. Includes geography 8,853 and terrain integration 3,565 checks; headless success still does not cover GPU silhouette assertions |
 | `tools/profile_current_expedition.gd`, `artifacts/optimization/latest-journey/` | Existing runner uses real-time movement actions, normal AI/clock/automatic contact, outbound/return and negative coordinates, pause and full current-format save/new/load comparison | Existing journey explicitly excludes combat acceptance and long-turnover/max-camera workloads; no controller or complete battle/collection journey is proved |
 | `tests/controller_expedition.gd`, `docs/controller-input.md` | Covers actual injected joypad events, native popups, menus, details, remapping, save/load, deployment/actions/Seal/retreat and takeover | The fixture disables wilderness and Sol movement and uses smoke mode outside selected movement/time checks; rendered attempt was interrupted by desktop input. It is not normal live-AI controller acceptance or physical hardware evidence |
 | `tests/sol_species_catalog.gd`, `tests/sol_procedural_ground.gd` | Three catalog species have model/identity/affinity/ownership contracts and procedural ground checks; ground documentation records 222 headless/rendered checks | Catalog journey uses the explicit pilot scene, teleport/setup fixtures, direct result setup and deterministic capture probes. Do not describe these as an unassisted normal expedition |
 | `tests/combat_consequences.gd`, `tests/first_playable_battle.gd`, `tests/ai_seals_progression.gd` | Terminal capture, withdrawal, victory/exhaustion, receipt replay rejection, HP and imprints have targeted coverage | Some outcomes set fixture HP/status/fields or supply an explicit capture roll. Retain those tests, but label them separately from the later normal journey |
-| `tests/presentation.gd`, older optimization rendered reports | Canopy/foreground silhouette checks exist; the older optimization study reproduced two failing GPU assertions even with captured pre-optimization scripts | Latest headless validation cannot settle these pixel checks. Reproduce on current rendering before changing presentation or claiming the old failure remains |
+| `tests/presentation.gd`, older optimization rendered reports | Current reproduction initially reported the same two failures, but actual screenshots contained over 5,000 changed silhouette pixels | The test read logical projection coordinates as physical screenshot pixels. Correcting this conversion preserves all thresholds and makes the current 24 rendered checks pass, including actual foliage and transparent gaps; no visibility shader/game rule was changed |
 | `tests/fog_horizon.gd`, `tests/view_3d.gd` | Current shared run passes 131 fog and 664 view checks, including steady fog and temporary coverage while chunk preparation is incomplete | Repeat rendered camera turns/zoom and inspect boundaries after new terrain/caching work. Earlier 130-check fog evidence predates resumable publication |
 | `tests/ui_playtest_blockers.gd`, inspection/Sol/field-menu suites | Shared baseline reports 59 / 22 / 41 / 30 checks respectively | Need current rendered readability, actual model fitting and input transitions with normal movement and the delivered companion |
 
-The default F5 scene currently uses the bounded nature composition. Its sighting
-resource enables normal species behavior and wilderness, but has no catalog
-placements; authored trail sightings still use Seedmote/Bramblepup. Crown-Ear,
-Reedback and Bellroot are explicitly placed in the species/traversal pilot scenes.
-Their resource availability alone does not put those three models in the normal
-F5 population. Preserve this content distinction until the owning workstream
-reports its rollout; do not silently expand the roster during acceptance.
+The default F5 scene uses the bounded nature composition and now explicitly
+selects the [normal-world species rollout](sol-species-data.md#normal-game-rollout).
+It retains wilderness and existing individuals while adding Crown-Ear, Reedback
+at a legal bank, and Bellroot. This rollout was explicitly requested by the owner.
+The species/traversal pilot scenes remain isolated controlled scenarios. Combined
+acceptance must fingerprint the new default resource and distinguish this larger
+normal population from reports captured before the rollout.
 
 ## Combined rendered checklist
 
@@ -75,7 +77,7 @@ results in separate report sections with the exact scene/settings and method.
 | I12 | Repeat current GPU/picking/layout regressions and run the shared validator after workstreams settle | Current rendered presentation/fog/view/terrain/model/menu/controller evidence, useful screenshots, one fresh shared-validator log and source drift classification. Do not replace failing silhouette/identity checks with weaker assertions |
 | I13 | Review performance separately on the same unchanged workload and settings | Travel/menu/encounter frame p95/p99 and worst frames, memory, startup/rebuild and preparation costs; identify route planning, capture waits and screenshot stalls. No acceptance budget, historical speedup or physical Thor claim without the corresponding evidence |
 
-Final automated evidence can qualify this combined desktop slice. Owner feel,
+Automated evidence can qualify this combined desktop slice. Owner feel,
 onboarding, physical controller, actual export and Thor qualification remain
 separate unchecked gates. The intended Thor configuration and numeric budgets
 are still open; they do not block functional desktop verification.

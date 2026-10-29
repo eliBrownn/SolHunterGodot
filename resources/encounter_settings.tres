@@ -7,6 +7,7 @@ script = ExtResource("1")
 enabled = true
 automatic_contact = true
 warning_distance = 3
+warning_delay_seconds = 0.75
 contact_distance = 1
 interaction_distance = 3
 withdrawal_safe_steps = 3

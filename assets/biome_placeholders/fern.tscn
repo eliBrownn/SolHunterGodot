@@ -1,0 +1,44 @@
+[gd_scene load_steps=3 format=3]
+
+[sub_resource type="StandardMaterial3D" id="leaf"]
+albedo_color = Color(0.35, 0.47, 0.10, 1)
+roughness = 1.0
+metallic_specular = 0.0
+
+[sub_resource type="PrismMesh" id="frond"]
+material = SubResource("leaf")
+size = Vector3(0.22, 0.10, 0.85)
+
+[node name="FernPlaceholder" type="Node3D"]
+metadata/placeholder = true
+
+[node name="Part0" type="MeshInstance3D" parent="."]
+position = Vector3(0.0, 0.13, 0.23)
+rotation = Vector3(0.15, 0.0, 0)
+mesh = SubResource("frond")
+
+[node name="Part1" type="MeshInstance3D" parent="."]
+position = Vector3(0.19918584287042088, 0.13, 0.11500000000000003)
+rotation = Vector3(0.15, 1.0471975511965976, 0)
+mesh = SubResource("frond")
+
+[node name="Part2" type="MeshInstance3D" parent="."]
+position = Vector3(0.1991858428704209, 0.13, -0.11499999999999995)
+rotation = Vector3(0.15, 2.0943951023931953, 0)
+mesh = SubResource("frond")
+
+[node name="Part3" type="MeshInstance3D" parent="."]
+position = Vector3(2.816687638038912e-17, 0.13, -0.23)
+rotation = Vector3(0.15, 3.141592653589793, 0)
+mesh = SubResource("frond")
+
+[node name="Part4" type="MeshInstance3D" parent="."]
+position = Vector3(-0.19918584287042085, 0.13, -0.1150000000000001)
+rotation = Vector3(0.15, 4.1887902047863905, 0)
+mesh = SubResource("frond")
+
+[node name="Part5" type="MeshInstance3D" parent="."]
+position = Vector3(-0.19918584287042088, 0.13, 0.11500000000000003)
+rotation = Vector3(0.15, 5.235987755982989, 0)
+mesh = SubResource("frond")
+

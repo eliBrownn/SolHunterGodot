@@ -1,4 +1,5 @@
 extends SceneTree
+const BattleTest = preload("res://tests/battle_test_support.gd")
 
 var checks := 0
 var failures := 0
@@ -31,7 +32,7 @@ func run() -> void:
 	var before := grove.position.y
 	var ground_before := grove.position.y + grove.shadow.position.y
 	grove.animate(0.2, 1, 0.8)
-	check(not is_equal_approx(before, grove.position.y) and is_equal_approx(ground_before, grove.position.y + grove.shadow.position.y), "Hover moves in real 3D height while the shadow stays on the ground")
+	check(is_equal_approx(before, grove.position.y) and is_equal_approx(ground_before, grove.position.y + grove.shadow.position.y) and grove.mesh == null and not grove.halo.visible, "Creature stays grounded without the former orb hover or halo")
 	check(world.persistent_state.snapshot() == snapshot, "Cosmetic hover and effects do not mutate saved identity or simulation")
 	var custom := SolVisualSettings.new()
 	custom.palette["earth"] = Color.MAGENTA
@@ -54,10 +55,13 @@ func run() -> void:
 	scene.encounters.battle_button.pressed.emit()
 	var battle: Node = scene.battles
 	check(battle.session != null and battle.session.enemy.affinity == "air", "Wild combat profile retains the actual guarding individual's Air affinity")
+	BattleTest.settle(battle)
 	battle.select_cell(battle.session.deployment_tiles()[0])
+	BattleTest.settle(battle)
 	var displayed: Dictionary = {}
 	for child in battle.visuals.get_children():
 		if child is SolOrb:
+			check(child.mesh == null and not child.halo.visible and child.has_method("sync_locomotion"), "Deployed combat Sols use creature bodies without orb fallbacks")
 			displayed[child.affinity] = child.tint
 	check(displayed.get("air") == visuals.color_for("air") and displayed.get("water") == visuals.color_for("water"), "Wild and deployed battle orbs use the same assigned-affinity palette")
 	world.smoke_mode = false
@@ -68,6 +72,7 @@ func run() -> void:
 	if OS.get_cmdline_user_args().has("--capture-orbs") and DisplayServer.get_name() != "headless":
 		await capture("battle")
 	battle.retreat()
+	BattleTest.settle(battle)
 	world.cell = scene.sightings.members[2].home + Vector2i(-2, -1)
 	world.rebuild_world()
 	if OS.get_cmdline_user_args().has("--capture-orbs") and DisplayServer.get_name() != "headless":

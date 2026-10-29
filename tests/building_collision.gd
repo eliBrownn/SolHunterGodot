@@ -80,26 +80,28 @@ func run() -> void:
 	var file := FileAccess.open(path, FileAccess.WRITE)
 	file.store_string(original)
 	file.close()
-	var migrated := ExpeditionSave.read_save(path)
-	check(not migrated.is_empty(), "Version 4 save inside the new building migrates")
-	if not migrated.is_empty():
-		check(migrated.generation_version == 5 and migrated.migrated_from == 4 and migrated.migration_moved, "Migration records the generation change and necessary relocation")
-		check(migrated.climate == climate and migrated.seed == 2601026 and migrated.landmark_visited and not migrated.returned, "Migration preserves climate overrides, seed and journey progress")
-		check(target.fits(Vector2i(migrated.player[0], migrated.player[1])), "Migrated position is outside the cabin and legally traversable")
-		check(ExpeditionSave.read_save(path).player == migrated.player, "Relocation is deterministic")
-		check(FileAccess.get_file_as_string(path) == original, "Loading does not rewrite the original save")
-		world.load_game(path)
-		check(world.terrain.climate == climate and not world.terrain.cabin_footprint.has_point(world.cell), "Live load restores custom climate and a safe position")
-		check(ExpeditionSave.write(migrated, path) == OK and FileAccess.get_file_as_string(path + ".bak") == original, "First post-migration save preserves the original backup")
-	var blocked := ExpeditionSave.snapshot(2601026, target.cabin_footprint.position, false, false, 5, climate)
+	check(ExpeditionSave.read_save(path).is_empty(), "Old building-era saves require a new expedition")
+	var live_terrain: RefCounted = world.terrain
+	world.load_game(path)
+	check(world.terrain == live_terrain and FileAccess.get_file_as_string(path) == original, "Rejected old save leaves world and source bytes intact")
+	var blocked := ExpeditionSave.snapshot(2601026, target.cabin_footprint.position, false, false, WorldTerrain.GENERATION_VERSION, climate)
 	check(not ExpeditionSave.validate(blocked) and ExpeditionSave.write(blocked, path) == ERR_INVALID_DATA, "Current saves cannot persist an occupied building tile")
 	var malformed := legacy.duplicate(true)
 	malformed.climate.dry_threshold = 0.9
 	malformed.climate.wet_threshold = 0.1
-	check(not ExpeditionSave.validate(malformed), "Legacy version 4 retains its climate validation requirement")
+	check(not ExpeditionSave.validate(malformed), "Malformed old data is rejected")
 	for suffix in ["", ".bak", ".tmp"]:
 		if FileAccess.file_exists(path + suffix):
 			DirAccess.remove_absolute(path + suffix)
+	if DisplayServer.get_name() != "headless":
+		await process_frame
+		await process_frame
+		await RenderingServer.frame_post_draw
+	scene.environment.sky = null
 	scene.free()
+	if DisplayServer.get_name() != "headless":
+		await process_frame
+		await process_frame
+		await RenderingServer.frame_post_draw
 	print("BUILDINGS: %d checks, %d failures." % [checks, failures])
 	quit(0 if failures == 0 else 1)

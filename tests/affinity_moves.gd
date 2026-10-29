@@ -1,4 +1,5 @@
 extends SceneTree
+const BattleTest = preload("res://tests/battle_test_support.gd")
 var checks := 0
 var failures := 0
 var library: MoveLibrary = preload("res://resources/move_library.tres")
@@ -32,7 +33,9 @@ func run() -> void:
 	var battle := fixture()
 	check(not battle.activity.size() and battle.imprint().is_empty(), "Deployment and movement do not contribute activity")
 	battle.ally_moves = [library.find("mend")]
-	check(not battle.use_move(0, battle.ally_cell) and battle.activity.is_empty(), "Healing at full health has no intended effect and earns no imprint event")
+	check(battle.use_move(0, battle.ally_cell) and battle.vastra_overloads.get(AffinityImprint.key(battle.ally_cell), 0) < 0, "Healing at full health restores environmental Vastra and earns an imprint event")
+	battle = fixture()
+	battle.ally_moves = [library.find("mend")]
 	battle.ally_hp -= 4
 	check(battle.use_move(0, battle.ally_cell) and battle.activity.get("water") == 1, "Successful healing credits the move's Water affinity, not the Earth Sol")
 	check(battle.affected.has(battle.ally_cell), "Self-healing affects the user's tile explicitly")
@@ -80,6 +83,8 @@ func run() -> void:
 
 func verify_live() -> void:
 	var scene: Node3D = (load("res://scenes/world_3d.tscn") as PackedScene).instantiate()
+	# The synthetic version-6 migration fixture predates catalog traversal rows.
+	scene.sighting_settings = preload("res://resources/sighting_settings.tres").duplicate(true)
 	root.add_child(scene)
 	var world: Node2D = scene.world
 	world.smoke_mode = true
@@ -108,16 +113,21 @@ func verify_live() -> void:
 	scene.encounters.approach_nearest()
 	scene.encounters.battle_button.pressed.emit()
 	check(not state.equip_moves(hero.id, ["strike"]), "Battle locks equipped and learned move mutations")
+	BattleTest.settle(controller)
 	controller.select_cell(controller.session.deployment_tiles()[0])
+	BattleTest.settle(controller)
 	var session: TacticalBattle = controller.session
 	var target := session.ally_cell + Vector2i.DOWN
 	controller.choose_move(1)
+	BattleTest.settle(controller)
 	controller.select_cell(target)
+	BattleTest.settle(controller)
 	check(session.activity.get("fire") == 1 and not session.fields.is_empty(), "Actual battle controls resolve a Fire move and record its own affinity")
 	if OS.get_cmdline_user_args().has("--capture-affinities") and DisplayServer.get_name() != "headless":
 		await capture("battle")
 	var report := session.imprint()
 	controller.retreat()
+	BattleTest.settle(controller)
 	var tiles := state.affinity_tiles()
 	check(not tiles.is_empty() and tiles[report.tiles[0]].affinity == report.winner, "Retreat atomically commits the battle winner onto every affected tile")
 	var before := state.snapshot()
@@ -132,19 +142,9 @@ func verify_live() -> void:
 	world.load_game(path)
 	state = world.persistent_state
 	check(state.snapshot() == before, "Saved learned/equipped moves, imprints and conditions survive an exact reload")
-	var legacy := before.duplicate(true)
-	legacy.version = 6
-	legacy.erase("movebooks")
-	legacy.erase("affinity_tiles")
-	legacy.erase("wild_population")
-	legacy.erase("collection")
-	if legacy.has("battle"):
-		legacy.battle.erase("captures")
-	legacy.individuals[hero.id].affinity = "grove"
-	legacy.battle.profile.affinity = "grove"
-	var upgraded := ExpeditionState.restore(legacy, 17)
-	check(upgraded != null and upgraded.starter_view().profile.affinity == "earth" and upgraded.starter_view().id == hero.id and upgraded.starter_view().hp == before.battle.hp, "Owner-approved Grove migration preserves starter identity and health")
-	for pair in [["ember", "fire"], ["tide", "water"], ["gale", "air"]]:
+	var restored_current := ExpeditionState.restore(before, 17)
+	check(restored_current != null and restored_current.starter_view().profile.affinity == "earth" and restored_current.starter_view().id == hero.id and restored_current.starter_view().hp == before.battle.hp, "Current signed-Vastra saves preserve starter identity, affinity and health")
+	for pair in [["grove", "earth"], ["ember", "fire"], ["tide", "water"], ["gale", "air"]]:
 		check(AffinityImprint.canonical(pair[0]) == pair[1], "Owner-approved legacy affinity alias is explicit")
 	var malformed := before.duplicate(true)
 	malformed.affinity_tiles[report.tiles[0]].conditions = {"wet": {"level": 3, "since": -1, "interval": 8, "direction": [1, 0]}}

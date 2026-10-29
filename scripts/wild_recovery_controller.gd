@@ -4,6 +4,7 @@ var world: Node2D
 var sightings: Node3D
 var settings: WildRecoverySettings
 var state: ExpeditionState
+var library_validation := preload("res://scripts/runtime_validation_cache.gd").new()
 
 func bind(source: Node2D, actors: Node3D, tuning: WildRecoverySettings) -> void:
 	world = source
@@ -32,15 +33,17 @@ func on_tick(_tick: int) -> void:
 		if state.wild_available(member.id):
 			occupied[sightings.current_cell(member)] = true
 	var library: MoveLibrary = world.host.move_library
-	if library == null or not library.valid():
+	if not library_validation.check(library, [preload("res://resources/sol_ecology/behavior_library.tres")]):
 		library = preload("res://resources/move_library.tres")
 	var births := 0
-	for entry in sightings.ENTRIES:
-		var home := Vector2i(entry.x, world.terrain.trail_y(entry.x))
+	for entry in sightings.local_entries():
+		var home: Vector2i = sightings.entry_home(entry)
 		if Vector2(home - world.cell).length() > settings.local_radius:
 			continue
 		var base := SolIdentityContract.make(world.terrain.world_seed, home, entry.species)
 		state.schedule_historical_recovery(base)
+		if not state.home_occupant(base).is_empty():
+			continue # An occupied home cannot activate a successor; avoid constructing its species/book.
 		if occupied.has(home) or not world.terrain.fits(home) or state.environment_view(home, {}).get("conditions", {}).has("barrier"):
 			continue
 		var definition := SolSpeciesDefinition.new()
@@ -52,13 +55,13 @@ func on_tick(_tick: int) -> void:
 			occupied[home] = true
 			births += 1
 	if births > 0:
-		sightings.rebuild()
+		sightings.rebuild(true)
 		world.message("A new wild Sol has settled nearby.")
 
 func describe_home(cell: Vector2i) -> String:
 	var records := state.wild_population_view()
-	for entry in sightings.ENTRIES:
-		var home := Vector2i(entry.x, world.terrain.trail_y(entry.x))
+	for entry in sightings.local_entries():
+		var home: Vector2i = sightings.entry_home(entry)
 		if home != cell:
 			continue
 		var base := SolIdentityContract.make(world.terrain.world_seed, home, entry.species)

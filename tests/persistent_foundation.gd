@@ -164,7 +164,7 @@ func verify_live_persistence() -> void:
 	var path := "user://d1-foundation-%d.json" % Time.get_ticks_usec()
 	world.save_game(path)
 	var encoded := FileAccess.get_file_as_string(path)
-	check(not encoded.is_empty() and ExpeditionSave.read_save(path).save_version == 2, "Live save writes the version-2 persistent envelope")
+	check(not encoded.is_empty() and ExpeditionSave.read_save(path).save_version == ExpeditionSave.FORMAT_VERSION, "Live save writes the current versioned persistent envelope")
 	world.new_expedition(7)
 	check(world.persistent_state.counts().individuals == 0 and world.persistent_state.activity_tick() == 0, "New expedition resets its own state without retaining prior individuals")
 	world.load_game(path)
@@ -203,25 +203,11 @@ func verify_live_persistence() -> void:
 	file = FileAccess.open(path, FileAccess.WRITE)
 	file.store_string(legacy_bytes)
 	file.close()
-	var upgraded := ExpeditionSave.read_save(path)
-	check(upgraded.save_version == 2 and upgraded.migrated_save_version == 1 and upgraded.world_state.individuals.is_empty(), "Old expedition upgrades with an empty foundation, not invented Sols/history")
-	check(upgraded.seed == legacy.seed and upgraded.player == legacy.player and upgraded.climate == legacy.climate and FileAccess.get_file_as_string(path) == legacy_bytes, "Schema upgrade preserves geography/progress and original file bytes")
+	check(ExpeditionSave.read_save(path).is_empty(), "Obsolete save format is rejected during solo development")
 	world.load_game(path)
-	world.save_game(path)
-	check(FileAccess.get_file_as_string(path + ".bak") == legacy_bytes, "First save after schema upgrade backs up the original version-1 file")
-	legacy.generation_version = 4
-	legacy.climate = {"moisture_frequency": 0.025, "dry_threshold": 0.35, "wet_threshold": 0.62}
-	var old_terrain := WorldTerrain.new(int(legacy.seed), legacy.climate)
-	legacy.player = [old_terrain.cabin_footprint.position.x, old_terrain.cabin_footprint.position.y]
-	legacy_bytes = JSON.stringify(legacy)
-	file = FileAccess.open(path, FileAccess.WRITE)
-	file.store_string(legacy_bytes)
-	file.close()
-	upgraded = ExpeditionSave.read_save(path)
-	check(not upgraded.is_empty() and upgraded.save_version == 2 and upgraded.generation_version == 5 and upgraded.migrated_from == 4 and upgraded.migrated_save_version == 1, "Legacy format and terrain upgrades compose in one read")
-	check(upgraded.climate == legacy.climate and FileAccess.get_file_as_string(path) == legacy_bytes, "Combined migration preserves custom climate and original bytes")
-	world.load_game(path)
-	check(world.terrain.fits(world.cell) and not world.terrain.cabin_footprint.has_point(world.cell) and world.persistent_state.counts().individuals == 0, "Combined migration restores a safe player and an empty historical identity foundation")
+	check(world.persistent_state == live_state and world.terrain == live_terrain, "Rejected legacy load preserves the running expedition")
+	check(FileAccess.get_file_as_string(path) == legacy_bytes, "Rejection does not rewrite the old file")
+	world.new_expedition(int(legacy.seed))
 	world.smoke_mode = false
 	world.paused = true
 	var paused: Dictionary = world.persistent_state.snapshot()

@@ -1,0 +1,37 @@
+[gd_resource type="Resource" script_class="SolSpeciesRecord" load_steps=7 format=3]
+
+[ext_resource type="Script" path="res://scripts/sol_species_record.gd" id="1"]
+[ext_resource type="Script" path="res://scripts/sol_ecology_profile.gd" id="2"]
+[ext_resource type="PackedScene" path="res://scenes/sols/ashquill.tscn" id="3"]
+[ext_resource type="Script" path="res://scripts/sol_traversal_profile.gd" id="4"]
+
+[sub_resource type="Resource" id="traversal"]
+script = ExtResource("4")
+kind = "ground"
+radius = 0.7
+height = 0.6
+
+[sub_resource type="Resource" id="ecology"]
+script = ExtResource("2")
+profile_id = "sol_species_0004_default"
+species_id = "sol_species_0004"
+temperament = "avoidant"
+behaviors = PackedStringArray("patrol", "idle", "flee")
+
+[resource]
+script = ExtResource("1")
+traversal = SubResource("traversal")
+species_id = "sol_species_0004"
+lineage_id = "sol_lineage_0004"
+class_id = "cinderkin"
+display_name = "Ashquill"
+max_hp = 40
+attack = 14
+defense = 12
+special_attack = 20
+special_defense = 16
+speed = 22
+learnable_moves = PackedStringArray("strike", "heat", "wind", "ward", "focus", "arc_bolt", "rattle", "ember_dart", "smoulder", "battle_cry")
+starting_moves = PackedStringArray("strike", "heat", "wind", "ward", "ember_dart", "smoulder", "battle_cry")
+ecology = SubResource("ecology")
+presentation_scene = ExtResource("3")

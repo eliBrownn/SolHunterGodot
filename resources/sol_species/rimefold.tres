@@ -1,0 +1,37 @@
+[gd_resource type="Resource" script_class="SolSpeciesRecord" load_steps=7 format=3]
+
+[ext_resource type="Script" path="res://scripts/sol_species_record.gd" id="1"]
+[ext_resource type="Script" path="res://scripts/sol_ecology_profile.gd" id="2"]
+[ext_resource type="PackedScene" path="res://scenes/sols/rimefold.tscn" id="3"]
+[ext_resource type="Script" path="res://scripts/sol_traversal_profile.gd" id="4"]
+
+[sub_resource type="Resource" id="traversal"]
+script = ExtResource("4")
+kind = "ground"
+radius = 0.65
+height = 0.5
+
+[sub_resource type="Resource" id="ecology"]
+script = ExtResource("2")
+profile_id = "sol_species_0006_default"
+species_id = "sol_species_0006"
+temperament = "neutral"
+behaviors = PackedStringArray("patrol", "idle", "approach")
+
+[resource]
+script = ExtResource("1")
+traversal = SubResource("traversal")
+species_id = "sol_species_0006"
+lineage_id = "sol_lineage_0006"
+class_id = "frostbound"
+display_name = "Rimefold"
+max_hp = 48
+attack = 12
+defense = 20
+special_attack = 18
+special_defense = 22
+speed = 10
+learnable_moves = PackedStringArray("strike", "current", "ward", "anchor", "mend", "barrier", "rattle", "cold_snap", "chilling_mist", "grit_guard")
+starting_moves = PackedStringArray("strike", "current", "ward", "anchor", "cold_snap", "chilling_mist", "grit_guard")
+ecology = SubResource("ecology")
+presentation_scene = ExtResource("3")

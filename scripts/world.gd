@@ -12,6 +12,8 @@ signal companion_requested
 signal refuge_recovery_requested
 signal battle_input_requested(event: InputEvent)
 var battle_input_consumed := false
+var interaction_hint: Label
+var hover_cell: Variant = null
 
 const ChunkView = preload("res://scripts/terrain_chunk.gd")
 const Explorer = preload("res://scripts/explorer.gd")
@@ -26,8 +28,10 @@ const VIEW_PROP_MARGIN := 128.0
 var host: Node3D
 var expedition_settings: ExpeditionSettings = EXPEDITION_SETTINGS
 var climate_settings: ClimateSettings = CLIMATE_SETTINGS
+var terrain_settings: TerrainReliefSettings = preload("res://resources/terrain_rolling.tres")
 var vastra_settings: VastraSettings = VASTRA_SETTINGS
 var configuration_warnings: Dictionary = {}
+var movement_library_validation := preload("res://scripts/runtime_validation_cache.gd").new()
 var terrain := WorldTerrain.new()
 var cell := Vector2i.ZERO
 var destination := Vector2i.ZERO
@@ -38,6 +42,11 @@ var returned := false
 var chunks: Dictionary = {}
 var pending: Array[Vector2i] = []
 var last_chunk := Vector2i(999999, 999999)
+var last_stream_key := ""
+var pending_pointer_hint: Variant = null
+var max_process_ms := 0.0
+var max_simulation_ms := 0.0
+var max_movement_ms := 0.0
 var chunk_root := Node2D.new()
 var actors := Node2D.new()
 var explorer := Explorer.new()
@@ -48,17 +57,33 @@ var objective: Label
 var location_label: Label
 var toast: Label
 var inspection: Label
+var inspection_panel: PanelContainer
+var inspection_card: PanelContainer
 var diagnostic: Label
 var pause_panel: PanelContainer
 var journal_panel: PanelContainer
 var journal_notes := RichTextLabel.new()
 var confirmation := ConfirmationDialog.new()
 var history := RichTextLabel.new()
+var menu: Node
+var accessibility: Node
 var examine := false
+var observation_menu := PopupMenu.new()
+var observation_cell: Variant = null
+var inspected_cell: Variant = null
+var observation_subject := ""
+var context_actions: Dictionary = {}
+var context_state: ExpeditionState
+var context_battle: TacticalBattle
+var observation_member_id := ""
+var inspected_subject := ""
+var inspected_appearance := ""
 var paused := false
 var encounter_active := false
 var toast_time := 0.0
 var frame_times: Array[float] = []
+var frame_time_cursor := 0
+var diagnostic_elapsed := 0.25
 var max_publish_ms := 0.0
 var max_generation_ms := 0.0
 var smoke_mode := false
@@ -84,10 +109,10 @@ func _ready() -> void:
 
 func bind_inputs() -> void:
 	var bindings := {"west": [KEY_A, KEY_LEFT], "east": [KEY_D, KEY_RIGHT],
-		"north": [KEY_W, KEY_UP], "south": [KEY_S, KEY_DOWN],
+		"north": [KEY_W, KEY_UP], "south": [KEY_S, KEY_DOWN], "run": [KEY_SHIFT],
 		"save_expedition": [KEY_F5], "load_expedition": [KEY_F9],
 		"examine": [KEY_E], "pause_expedition": [KEY_ESCAPE],
-		"diagnostics": [KEY_F3], "journal": [KEY_J], "observe_sol": [KEY_F], "approach_sol": [KEY_R],
+		"diagnostics": [KEY_F3], "journal": [KEY_J], "field_menu": [KEY_R],
 		"companion": [KEY_C], "refuge_recovery": [KEY_H]}
 	for action: String in bindings:
 		if not InputMap.has_action(action):
@@ -99,6 +124,9 @@ func bind_inputs() -> void:
 				InputMap.action_add_event(action, event)
 
 func key_label(action: String) -> String:
+	if host != null and host.gamepad != null and host.gamepad.active:
+		var menu_hint: String = host.gamepad.button_name("menu")
+		return {"journal": menu_hint + " → Field Guide", "companion": menu_hint + " → Sols", "field_menu": menu_hint, "pause_expedition": host.gamepad.button_name("pause"), "save_expedition": menu_hint + " → Save", "load_expedition": menu_hint + " → Save"}.get(action, menu_hint)
 	var event: InputEventKey = InputMap.action_get_events(action)[0]
 	return OS.get_keycode_string(event.physical_keycode)
 
@@ -112,8 +140,28 @@ func label(value: String, font_size: int = 16, color: Color = Color("dddac6")) -
 
 func panel_at(rect: Rect2) -> PanelContainer:
 	var panel := PanelContainer.new()
+	panel.set_meta("hud_authored_rect", rect)
 	panel.position = rect.position
 	panel.size = rect.size
+	# Keep HUD panels attached to the game viewport as the 3D aspect ratio changes.
+	if rect.position.y >= 700:
+		panel.anchor_right = 1
+		panel.anchor_top = 1
+		panel.anchor_bottom = 1
+		panel.offset_left = rect.position.x
+		panel.offset_right = rect.end.x - 1280
+		panel.offset_top = rect.position.y - 800
+		panel.offset_bottom = rect.end.y - 800
+	elif rect.position.x >= 800:
+		panel.anchor_left = 1
+		panel.anchor_right = 1
+		panel.offset_left = rect.position.x - 1280
+		panel.offset_right = rect.end.x - 1280
+	elif rect.position.x >= 350 and rect.size.x >= 400:
+		panel.anchor_left = 0.5
+		panel.anchor_right = 0.5
+		panel.offset_left = rect.position.x - 640
+		panel.offset_right = rect.end.x - 640
 	var style := StyleBoxFlat.new()
 	style.bg_color = Color("172321ec")
 	style.border_color = Color("657263")
@@ -124,61 +172,81 @@ func panel_at(rect: Rect2) -> PanelContainer:
 	return panel
 
 func build_ui() -> void:
-	var title := panel_at(Rect2(24, 24, 260, 92))
+	hud.add_child(observation_menu)
+	observation_menu.id_pressed.connect(context_action)
+	var context_tuning: MenuSettings = host.menu_settings if host.menu_settings != null and host.menu_settings.valid() else MenuSettings.new()
+	observation_menu.add_theme_font_size_override("font_size", context_tuning.font_size)
+	observation_menu.add_theme_color_override("font_color", context_tuning.text)
+	observation_menu.add_theme_color_override("font_hover_color", context_tuning.accent)
+	observation_menu.add_theme_stylebox_override("panel", preload("res://scripts/menu_theme.gd").box(context_tuning.background, context_tuning.accent, 4))
+	observation_menu.add_theme_stylebox_override("hover", preload("res://scripts/menu_theme.gd").box(context_tuning.surface.lightened(0.15), context_tuning.surface, 2))
+	var title := panel_at(Rect2(24, 24, 160, 44))
+	var location_style := preload("res://scripts/menu_theme.gd").box(Color("182c25"), Color("31453b"), 4)
+	location_style.content_margin_left = 10
+	location_style.content_margin_right = 10
+	location_style.content_margin_top = 5
+	location_style.content_margin_bottom = 5
+	title.add_theme_stylebox_override("panel", location_style)
 	var title_box := VBoxContainer.new()
 	title.add_child(title_box)
-	title_box.add_child(label("S O L H U N T E R", 23, Color("e1c791")))
 	location_label = label("", 14)
 	title_box.add_child(location_label)
-	var mission := panel_at(Rect2(852, 24, 404, 92))
+	var mission := panel_at(Rect2(852, 24, 404, 48))
 	var mission_box := VBoxContainer.new()
 	mission.add_child(mission_box)
-	mission_box.add_child(label("THE FIRST JOURNEY", 12, Color("b6bf9e")))
 	objective = label("", 17)
 	mission_box.add_child(objective)
-	var footer := panel_at(Rect2(24, 726, 1232, 50))
-	footer.add_child(label("WASD Walk  Wheel Zoom  %s Examine  %s Observe  %s Approach  %s Companion  %s Rest  %s Notes  %s Save  %s Load  Esc Pause" % [key_label("examine"), key_label("observe_sol"), key_label("approach_sol"), key_label("companion"), key_label("refuge_recovery"), key_label("journal"), key_label("save_expedition"), key_label("load_expedition")], 14))
+	var footer := panel_at(Rect2(24, 738, 430, 38))
+	interaction_hint = label("Right-click to interact", 16)
+	interaction_hint.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	footer.add_child(interaction_hint)
+	footer.hide()
 	toast = label("", 18, Color("ead6a4"))
 	toast.position = Vector2(42, 675)
 	hud.add_child(toast)
-	inspection = label("", 15)
-	inspection.position = Vector2(42, 540)
-	inspection.add_theme_color_override("font_shadow_color", Color.BLACK)
-	inspection.add_theme_constant_override("shadow_offset_x", 1)
-	inspection.add_theme_constant_override("shadow_offset_y", 1)
-	hud.add_child(inspection)
+	inspection_card = preload("res://scripts/inspection_card.gd").new()
+	hud.add_child(inspection_card)
+	inspection_card.bind(self, host.menu_settings)
+	inspection_panel = inspection_card
+	inspection = inspection_card.details_label
+
 	diagnostic = label("", 14)
 	diagnostic.position = Vector2(26, 130)
 	diagnostic.visible = false
 	hud.add_child(diagnostic)
-	journal_panel = panel_at(Rect2(852, 140, 404, 350))
-	journal_panel.visible = false
-	var journal_box := VBoxContainer.new()
-	journal_panel.add_child(journal_box)
-	journal_box.add_child(label("FIELD NOTES", 18, Color("e1c791")))
-	var tabs := TabContainer.new()
-	tabs.custom_minimum_size = Vector2(360, 275)
-	journal_box.add_child(tabs)
-	journal_notes.name = "Sightings"
-	journal_notes.add_theme_font_size_override("normal_font_size", 16)
-	tabs.add_child(journal_notes)
-	history.name = "Session"
+	# Hidden compatibility handles for existing encounter/chooser callers. FieldMenu
+	# owns the single visible Guide/Journal and pause interface.
+	journal_panel = PanelContainer.new()
+	hud.add_child(journal_panel)
+	journal_panel.hide()
+	pause_panel = PanelContainer.new()
+	pause_panel.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	pause_panel.theme = preload("res://scripts/menu_theme.gd").build(host.menu_settings if host.menu_settings != null and host.menu_settings.valid() else MenuSettings.new())
+	pause_panel.add_theme_stylebox_override("panel", preload("res://scripts/menu_theme.gd").box(Color(0.02, 0.04, 0.03, 0.65), Color.TRANSPARENT))
+	hud.add_child(pause_panel)
+	var pause_center := CenterContainer.new()
+	pause_panel.add_child(pause_center)
+	var pause_card := PanelContainer.new()
+	pause_card.custom_minimum_size = Vector2(340, 180)
+	pause_center.add_child(pause_card)
+	var pause_rows := VBoxContainer.new()
+	pause_rows.add_theme_constant_override("separation", 12)
+	pause_card.add_child(pause_rows)
+	pause_rows.add_child(label("PAUSED", 24, Color("e1c791")))
+	pause_rows.add_child(label("Exploration is paused.", 16))
+	var resume := Button.new()
+	resume.text = "Resume · Esc"
+	resume.custom_minimum_size.y = 42
+	resume.pressed.connect(toggle_pause)
+	pause_rows.add_child(resume)
+	pause_panel.hide()
 	history.scroll_following = true
-	history.add_theme_font_size_override("normal_font_size", 16)
-	tabs.add_child(history)
-	pause_panel = panel_at(Rect2(440, 190, 400, 400))
-	var menu := VBoxContainer.new()
-	menu.add_theme_constant_override("separation", 14)
-	pause_panel.add_child(menu)
-	menu.add_child(label("REST A MOMENT", 24, Color("e1c791")))
-	menu.add_child(label("Your expedition is paused.", 16))
-	for item in [["Continue", toggle_pause], ["Save expedition", save_game], ["Load expedition", load_game], ["New expedition…", ask_new]]:
-		var button := Button.new()
-		button.text = item[0]
-		button.custom_minimum_size.y = 42
-		button.pressed.connect(item[1])
-		menu.add_child(button)
-	pause_panel.visible = false
+	menu = preload("res://scripts/field_menu.gd").new()
+	host.add_child(menu)
+	menu.bind(self, host.menu_settings)
+	state_replaced.connect(func(_state: ExpeditionState) -> void:
+		paused = false
+		pause_panel.hide())
 	confirmation.title = "Start another expedition?"
 	confirmation.dialog_text = "Unsaved travel will be lost. Your saved expedition stays available with F9."
 	confirmation.confirmed.connect(func():
@@ -188,6 +256,9 @@ func build_ui() -> void:
 		paused = false
 		pause_panel.hide())
 	hud.add_child(confirmation)
+	accessibility = preload("res://scripts/hud_accessibility.gd").new()
+	host.add_child(accessibility)
+	accessibility.bind(self)
 
 func ask_new() -> void:
 	if encounter_active:
@@ -197,10 +268,17 @@ func ask_new() -> void:
 
 func toggle_pause() -> void:
 	if encounter_active:
-		withdraw_requested.emit()
 		return
+	if menu.opened:
+		menu.close()
+	observation_menu.hide()
 	paused = not paused
 	pause_panel.visible = paused
+	if paused:
+		explorer.walking = false
+		explorer.running = false
+		host.camera_dragging = false
+		hud.move_child(pause_panel, -1)
 
 func new_expedition(seed_value: int) -> void:
 	if encounter_active:
@@ -210,7 +288,15 @@ func new_expedition(seed_value: int) -> void:
 	if not WorldTerrain.valid_climate(settings):
 		settings = WorldTerrain.default_climate()
 		push_warning("Invalid climate settings; using defaults for this expedition.")
-	terrain = WorldTerrain.new(seed_value, settings)
+	var relief_parameters := terrain_settings.parameters() if terrain_settings != null and terrain_settings.valid() else WorldTerrain.default_relief()
+	var candidate := WorldTerrain.new(seed_value, settings, relief_parameters)
+	if not candidate.essential_route_clear():
+		candidate = WorldTerrain.new(seed_value, settings, WorldTerrain.default_relief())
+		push_warning("Terrain settings blocked the essential route; retrying with default Rolling relief.")
+		if not candidate.essential_route_clear():
+			message("This seed has no safe essential route. Current expedition kept.", false)
+			return
+	terrain = candidate
 	replace_persistent_state(ExpeditionState.new(seed_value, int(expedition_parameters().territory_size)))
 	persistent_state.observe_territory(Vector2i.ZERO)
 	cell = Vector2i.ZERO
@@ -225,6 +311,15 @@ func new_expedition(seed_value: int) -> void:
 	message("Follow the old stone trail east and find the waystone.")
 
 func rebuild_world() -> void:
+	pending_pointer_hint = null
+	if host.has_method("cancel_stream_chunk"):
+		host.cancel_stream_chunk()
+	hover_cell = null
+	if interaction_hint != null:
+		interaction_hint.text = "Right-click to interact"
+	inspected_cell = null
+	observation_cell = null
+	observation_menu.hide()
 	for coord in chunks.keys():
 		remove_chunk(coord)
 	pending.clear()
@@ -236,6 +331,7 @@ func rebuild_world() -> void:
 	explorer.walking = false
 	camera.position = explorer.position
 	last_chunk = Vector2i(999999, 999999)
+	last_stream_key = ""
 	plan_chunks()
 	# Build only what can contribute to the first view. Distant chunks retain the
 	# normal one-per-frame streaming budget instead of blocking load/new seed.
@@ -244,7 +340,7 @@ func rebuild_world() -> void:
 	var chunk_pixels := float(WorldTerrain.CHUNK_SIZE * WorldTerrain.CELL_SIZE)
 	for coord: Vector2i in pending.duplicate():
 		var chunk_bounds := Rect2(Vector2(coord) * chunk_pixels, Vector2.ONE * chunk_pixels)
-		if chunk_bounds.intersects(visible_bounds):
+		if (host.has_method("chunk_visible") and host.chunk_visible(coord)) or (not host.has_method("chunk_visible") and chunk_bounds.intersects(visible_bounds)):
 			publish_chunk(coord)
 			pending.erase(coord)
 	update_hud()
@@ -281,6 +377,13 @@ func replace_persistent_state(state: ExpeditionState) -> void:
 	if persistent_state.discovery_recorded.is_connected(refresh_discoveries):
 		persistent_state.discovery_recorded.disconnect(refresh_discoveries)
 	persistent_state = state
+	# Configure new individual admission before state_replaced listeners register wild Sols.
+	if host != null and host.get("battle_settings") is BattleSettings:
+		var battle_tuning: BattleSettings = host.get("battle_settings")
+		if battle_tuning.valid():
+			persistent_state.configure_sol_stats(battle_tuning.sol_stats, battle_tuning.class_buffs)
+		if host.get("progression_settings") is ProgressionSettings:
+			persistent_state.configure_progression(host.get("progression_settings"))
 	persistent_state.set_population_cache_limit(expedition_parameters().population_cache_territories)
 	persistent_state.activity_advanced.connect(advance_environment)
 	persistent_state.discovery_recorded.connect(refresh_discoveries)
@@ -299,33 +402,71 @@ func expedition_parameters() -> Dictionary:
 func advance_environment(_tick: int) -> void:
 	# No production regional profile is authored yet; baseline recovery needs none.
 	var settings: Dictionary = vastra_settings.parameters() if vastra_settings != null else {}
-	if not VastraNatural.valid_policy(settings):
+	if vastra_settings == null or not vastra_settings.valid():
 		warn_configuration_once("vastra", "Invalid Vastra tuning; using default recovery settings.")
 		settings = VastraSettings.new().parameters()
-	persistent_state.advance_environment(settings)
-	persistent_state.recover_affinity_conditions()
+	var tuning: VastraSettings = vastra_settings if vastra_settings != null and vastra_settings.valid() else VastraSettings.new()
+	persistent_state.advance_environment(settings, Callable(), tuning)
+	persistent_state.recover_affinity_conditions(tuning)
 
 func _process(delta: float) -> void:
+	var process_started := Time.get_ticks_usec()
+	if pending_pointer_hint != null:
+		var pointer: Vector2 = pending_pointer_hint
+		pending_pointer_hint = null
+		if not paused and not encounter_active and not observation_menu.visible and not (menu != null and menu.opened):
+			update_pointer_hint(pointer)
+	host.update_pointer_visual()
+	if paused or encounter_active:
+		explorer.running = false
 	if frame_times.size() >= 3600:
-		frame_times.pop_front()
-	frame_times.append(delta * 1000.0)
+		frame_times[frame_time_cursor] = delta * 1000.0
+		frame_time_cursor = (frame_time_cursor + 1) % 3600
+	else:
+		frame_times.append(delta * 1000.0)
 	if not paused and not smoke_mode:
+		var simulation_started := Time.get_ticks_usec()
 		persistent_state.advance_time(delta)
-		advance_movement(delta, Input.get_vector("west", "east", "north", "south"))
-	if not pending.is_empty():
-		publish_chunk(pending.pop_front())
+		max_simulation_ms = maxf(max_simulation_ms, (Time.get_ticks_usec() - simulation_started) / 1000.0)
+		var movement := Input.get_vector("west", "east", "north", "south")
+		if host.gamepad != null and host.gamepad.active:
+			movement = host.gamepad.movement_vector()
+		var movement_started := Time.get_ticks_usec()
+		advance_movement(delta, host.movement_direction(movement))
+		max_movement_ms = maxf(max_movement_ms, (Time.get_ticks_usec() - movement_started) / 1000.0)
+	var build_budget: int = host.active_view.chunks_per_frame if host.has_method("stream_plan") else 1
+	var deadline := Time.get_ticks_usec() + int(host.active_view.chunk_work_ms * 1000.0) if host.has_method("prepare_stream_chunk") else 0
+	if host.has_method("prepare_stream_ground"):
+		host.prepare_stream_ground(deadline)
+	for index in range(mini(build_budget, pending.size())):
+		if host.has_method("prepare_stream_chunk"):
+			var prepared: Variant = host.prepare_stream_chunk(pending[0], deadline)
+			if prepared == null:
+				break
+			publish_chunk(pending.pop_front(), prepared)
+		else:
+			publish_chunk(pending.pop_front())
 	toast_time -= delta
-	toast.visible = toast_time > 0
+	toast.visible = toast_time > 0 and (host.battles == null or host.battles.session == null)
 	inspect_mouse()
-	if diagnostic.visible:
+	diagnostic_elapsed += maxf(0, delta)
+	if diagnostic.visible and diagnostic_elapsed >= 0.25:
+		diagnostic_elapsed = 0.0
 		var times := frame_times.duplicate()
 		times.sort()
-		diagnostic.text = "Frame ms · p95 %.1f / p99 %.1f / max %.1f\nGeneration max %.2f ms · publication max %.2f ms\n%d / 49 live chunks · %d queued\nSeed %d · generation %d · cell %s" % [times[int((times.size() - 1) * 0.95)], times[int((times.size() - 1) * 0.99)], times.back(), max_generation_ms, max_publish_ms, chunks.size(), pending.size(), terrain.world_seed, terrain.generation_version, cell]
+		var limit: int = host.stream_capacity() if host.has_method("stream_capacity") else 49
+		diagnostic.text = "Frame ms · p95 %.1f / p99 %.1f / max %.1f\nGeneration max %.2f ms · publication max %.2f ms\n%d / %d live chunks · %d queued\nSeed %d · generation %d · cell %s" % [times[int((times.size() - 1) * 0.95)], times[int((times.size() - 1) * 0.99)], times.back(), max_generation_ms, max_publish_ms, chunks.size(), limit, pending.size(), terrain.world_seed, terrain.generation_version, cell]
+		if host.has_method("stream_plan"):
+			diagnostic.text += "\n3D view %.0f° tilt · %.0f° orbit · %.0f cells zoom · %.0f cells far" % [host.view_elevation, host.view_azimuth, host.target_size, host.active_view.render_distance]
+		if host.has_method("prepare_stream_chunk"):
+			diagnostic.text += "\nStream preparation slice max %.2f ms · chunk geometry work max %.2f ms" % [host.max_stream_slice_ms, host.max_stream_geometry_ms]
 		var stored := persistent_state.counts()
 		diagnostic.text += "\nActivity tick %d · %d observed territories · %d recorded Sols" % [persistent_state.activity_tick(), stored.territories, stored.individuals]
+	max_process_ms = maxf(max_process_ms, (Time.get_ticks_usec() - process_started) / 1000.0)
 
 func advance_movement(delta: float, direction: Vector2) -> void:
-	if encounter_active:
+	explorer.running = false
+	if encounter_active or paused:
 		return
 	var remaining := delta
 	for iteration in range(8):
@@ -341,6 +482,8 @@ func advance_movement(delta: float, direction: Vector2) -> void:
 			explorer.facing = Vector2(step)
 		var duration := float(expedition_parameters().move_seconds) * (sqrt(2.0) if destination.x != cell.x and destination.y != cell.y else 1.0)
 		duration *= condition_move_multiplier(cell, destination)
+		if (Input.is_action_pressed("run") or (host.gamepad != null and host.gamepad.sprinting())):
+			duration /= float(expedition_parameters().run_multiplier)
 		var consumed := minf(remaining, (1.0 - progress) * duration)
 		progress += consumed / duration
 		remaining -= consumed
@@ -356,6 +499,7 @@ func advance_movement(delta: float, direction: Vector2) -> void:
 		if remaining <= 0.00001:
 			break
 	explorer.walking = moving
+	explorer.running = moving and (Input.is_action_pressed("run") or (host.gamepad != null and host.gamepad.sprinting()))
 	camera.position = explorer.position.round()
 	plan_chunks()
 
@@ -370,6 +514,25 @@ func arrived() -> void:
 	update_hud()
 
 func plan_chunks() -> void:
+	if host.has_method("stream_plan"):
+		var key: String = host.stream_key()
+		if key == last_stream_key:
+			return
+		last_stream_key = key
+		var desired: Array[Vector2i] = host.stream_plan()
+		var wanted := {}
+		for coord in desired:
+			wanted[coord] = true
+		for coord: Vector2i in chunks.keys():
+			if not wanted.has(coord):
+				remove_chunk(coord)
+		pending.clear()
+		for coord in desired:
+			if not chunks.has(coord):
+				pending.append(coord)
+		if host.has_method("cancel_stream_chunk") and host.stream_job != null and not pending.has(host.stream_job.coord):
+			host.cancel_stream_chunk()
+		return
 	var current := terrain.chunk_of(cell)
 	if current == last_chunk:
 		return
@@ -392,17 +555,21 @@ func remove_chunk(coord: Vector2i) -> void:
 	chunks.erase(coord)
 	chunk_removed.emit(coord)
 
-func publish_chunk(coord: Vector2i) -> void:
+func publish_chunk(coord: Vector2i, prepared: Array[Dictionary] = []) -> void:
 	var start := Time.get_ticks_usec()
-	var data := terrain.extract_chunk(coord)
+	var data := terrain.extract_chunk(coord) if prepared.is_empty() else prepared
 	max_generation_ms = maxf(max_generation_ms, (Time.get_ticks_usec() - start) / 1000.0)
 	start = Time.get_ticks_usec()
 	var view := ChunkView.new()
 	view.cells = data
 	view.position = Vector2(coord * 16 * 32)
 	chunk_root.add_child(view)
+	if host.has_method("stream_plan"):
+		view.hide()
 	var props: Array[Node2D] = []
 	for index in range(data.size()):
+		if host.has_method("stream_plan"):
+			break # Solid view publishes prepared cells directly; no hidden duplicate sprite scenery.
 		var at := coord * 16 + Vector2i(index % 16, floori(float(index) / 16))
 		if data[index].obstacle not in [1, 2]:
 			continue
@@ -426,9 +593,12 @@ func update_hud() -> void:
 	objective.text = "Journey complete · explore freely" if returned else ("Return to the refuge · %d tiles" % distance if visited else "Find the eastern waystone · %d tiles" % distance)
 
 func refresh_discoveries(_identity: String = "") -> void:
+	if menu != null and not menu.guide_context.is_empty():
+		menu.refresh_observed_entry()
+		return
 	var entries := persistent_state.discovery_entries()
 	if entries.is_empty():
-		journal_notes.text = "Approach a Sol and press %s to record a sighting." % key_label("observe_sol")
+		journal_notes.text = "Right-click a Sol and choose Observe to record a sighting."
 		return
 	var rows := PackedStringArray()
 	for entry in entries:
@@ -439,6 +609,8 @@ func refresh_discoveries(_identity: String = "") -> void:
 	journal_notes.text = "\n\n".join(rows)
 
 func message(value: String, session_note: bool = true) -> void:
+	if host != null and host.gamepad != null and host.gamepad.active:
+		value = host.gamepad.input_text(value)
 	toast.text = value
 	toast_time = 7
 	if session_note:
@@ -448,7 +620,7 @@ func save_game(path: String = ExpeditionSave.SAVE_PATH) -> void:
 	if encounter_active:
 		message("Withdraw before saving your expedition.", false)
 		return
-	var error := ExpeditionSave.write(ExpeditionSave.snapshot(terrain.world_seed, cell, visited, returned, terrain.generation_version, terrain.climate, persistent_state.snapshot()), path)
+	var error := ExpeditionSave.write(ExpeditionSave.snapshot(terrain.world_seed, cell, visited, returned, terrain.generation_version, terrain.climate, persistent_state.snapshot(), terrain.relief), path)
 	message("Expedition saved." if error == OK else "Save failed: " + error_string(error))
 
 func load_game(path: String = ExpeditionSave.SAVE_PATH) -> void:
@@ -457,13 +629,13 @@ func load_game(path: String = ExpeditionSave.SAVE_PATH) -> void:
 		return
 	var data := ExpeditionSave.read_save(path)
 	if data.is_empty():
-		message("No valid compatible save found. Current expedition kept.")
+		message("Save unavailable or incompatible. Older development saves require a new expedition. Current expedition kept.")
 		return
 	var candidate_state := ExpeditionState.restore(data.world_state, int(data.seed))
 	if candidate_state == null:
 		message("Invalid persistent state. Current expedition kept.")
 		return
-	var candidate_terrain := WorldTerrain.new(int(data.seed), data.climate)
+	var candidate_terrain := WorldTerrain.new(int(data.seed), data.climate, data.relief)
 	terrain = candidate_terrain
 	replace_persistent_state(candidate_state)
 	cell = Vector2i(int(data.player[0]), int(data.player[1]))
@@ -480,33 +652,284 @@ func load_game(path: String = ExpeditionSave.SAVE_PATH) -> void:
 		message("Expedition restored.")
 
 func inspect_mouse() -> void:
+	if (menu != null and menu.opened) or confirmation.visible or pause_panel.visible:
+		inspection_panel.hide()
+		hover_outline.hide()
+		return
+	# Keep the current target stable while the pointer operates the inspection card.
+	if inspection_panel.visible and inspection_panel.get_global_rect().has_point(hud.get_viewport().get_mouse_position()):
+		describe_cell(inspection_card.target_cell)
+		return
 	inspection.text = ""
+	inspection_panel.hide()
 	hover_outline.hide()
+	if inspected_cell != null:
+		describe_cell(inspected_cell)
+		return
 	if not examine or paused:
 		return
 	var point: Variant = host.pointer_world()
 	if point == null:
 		return
-	var hovered := Vector2i((point / 32.0).floor())
+	describe_cell(Vector2i((point / 32.0).floor()))
+
+func describe_cell(hovered: Vector2i) -> void:
 	var data := persistent_state.environment_view(hovered, terrain.sample(hovered))
 	hover_outline.position = Vector2(hovered) * 32
 	hover_outline.show()
 	var names := ["Meadow", "Woodland", "Heath", "Marsh", "Water", "Shore"]
-	var access := "Building · blocked" if data.obstacle == 3 else ("Passable" if data.walkable else "Blocked")
-	inspection.text = "EXAMINE · %s %s\nWetness %d / 100\nVastra concentration %d / 100\nEcological overload %d / 100\n%s" % [names[data.ground], hovered, roundi(data.wetness * 100), data.concentration, data.overload, access]
-	if data.has("affinity"):
-		inspection.text += "\nAffinity: " + str(data.affinity).capitalize()
-		for kind in data.conditions:
-			inspection.text += "\n%s · recovery stage %d/3" % [str(kind).capitalize(), int(data.conditions[kind].level)]
+	var subject := inspected_subject if inspected_cell == hovered and not inspected_subject.is_empty() else observation_name(hovered)
+	var recovery_text := ""
 	var wildlife: Variant = host.get("wild_recovery") if host != null else null
 	if wildlife != null:
-		var recovery_text: String = wildlife.describe_home(hovered)
-		if not recovery_text.is_empty():
-			inspection.text += "\n" + recovery_text
+		recovery_text = wildlife.describe_home(hovered)
+	inspection_card.update_reading(hovered, subject, names[data.ground], data, recovery_text)
+	inspection_card.show_appearance(inspected_appearance if inspected_cell == hovered else "")
+
+func observation_name(at: Vector2i) -> String:
+	var battle: Variant = host.battles.display_battle() if host.battles != null else null
+	if battle != null:
+		if at == battle.trainer:
+			return "Trainer · Outside command position"
+		if at == battle.enemy_cell:
+			return "%s · %s · HP %d/%d" % [battle.enemy.display_name, str(battle.enemy.affinity).capitalize(), battle.enemy_hp, battle.enemy.max_hp]
+		if battle.phase != "deployment" and at == battle.ally_cell:
+			return "%s · %s · HP %d/%d" % [battle.ally.display_name, str(battle.ally.affinity).capitalize(), battle.ally_hp, battle.ally.max_hp]
+	if host.sightings != null:
+		for member in host.sightings.members:
+			if member.sprite.visible and host.sightings.current_cell(member) == at:
+				return "%s · %s" % [member.entry.name, str(member.sprite.affinity).capitalize()]
+	if at == cell and battle == null:
+		return "Trainer · Exploring the wilderness."
+	var data := terrain.sample(at)
+	if data.obstacle > 0:
+		return ["", "Tree", "Rock", "Refuge cabin"][data.obstacle]
+	if at == terrain.landmark():
+		return "Waystone · A landmark on the old trail."
+	for prop in place_props:
+		if Vector2i((prop.position / 32.0).floor()) == at:
+			return str(prop.get_meta("asset_key", "World object")).get_file().replace("TX ", "").replace("_", " ")
+	return "Old stone trail" if data.trail_visible else ["Meadow", "Woodland", "Heath", "Marsh", "Water", "Shore"][data.ground]
+
+func context_item(text: String, id: int, action: Dictionary, disabled: bool = false, hint: String = "") -> void:
+	observation_menu.add_item(text, id)
+	var index := observation_menu.get_item_index(id)
+	observation_menu.set_item_disabled(index, disabled)
+	observation_menu.set_item_tooltip(index, hint)
+	context_actions[id] = action
+
+func open_observation(pointer: Vector2, target_override: Variant = null, identity: String = "", primary: bool = false) -> void:
+	observation_menu.hide()
+	var at: Variant = target_override if target_override != null else host.pointer_cell(pointer)
+	if at == null:
+		return
+	if not identity.is_empty():
+		var found := false
+		for member in host.sightings.members:
+			if member.id == identity and member.sprite.visible and persistent_state.wild_available(identity):
+				at = host.sightings.current_cell(member)
+				found = true
+				break
+		if not found:
+			message("That Sol is no longer available. Select another target.", false)
+			return
+	observation_cell = at
+	observation_member_id = ""
+	observation_subject = host.pointer_subject if target_override == null and host.has_method("pointer_object_cell") and not host.pointer_subject.is_empty() else observation_name(at)
+	context_state = persistent_state
+	context_battle = host.battles.session if host.battles != null else null
+	context_actions.clear()
+	observation_menu.clear()
+	var targets: Array[Dictionary] = []
+	# All individuals at the selected cell get their own named actions.
+	# A foreground scenery hit retains its own actions rather than selecting through it.
+	if context_battle == null and (target_override != null or not (host.has_method("pointer_object_cell") and not host.pointer_subject.is_empty())):
+		for member in host.sightings.members:
+			if member.sprite.visible and host.sightings.current_cell(member) == at and persistent_state.wild_available(member.id) and (identity.is_empty() or member.id == identity):
+				targets.append(member)
+	if not targets.is_empty():
+		for index in range(targets.size()):
+			var member: Dictionary = targets[index]
+			var target_name := "%s · %s" % [member.entry.name, str(member.sprite.affinity).capitalize()]
+			observation_menu.add_separator(target_name)
+			var base := index * 10
+			var available: bool = not paused and not encounter_active and not moving and host.encounters.settings.valid() and host.encounters.settings.enabled and host.sightings.manhattan(host.sightings.current_cell(member), cell) <= host.encounters.settings.interaction_distance
+			var reason := ""
+			if not available:
+				reason = " (move closer)"
+				if moving:
+					reason = " (stop moving)"
+				elif paused or encounter_active:
+					reason = " (busy)"
+				elif not host.encounters.settings.valid() or not host.encounters.settings.enabled:
+					reason = " (unavailable)"
+			context_item("Engage" + reason, base + 1, {"kind": "engage", "id": member.id}, not available, "Approach this Sol to choose battle, observation or withdrawal.")
+			context_item("Observe", base, {"kind": "observe_sol", "id": member.id})
+			context_item("Details", base + 6, {"kind": "inspect_sol", "id": member.id})
+	else:
+		observation_menu.add_separator(observation_subject.get_slice(" · ", 0))
+		if at == cell and context_battle == null and not encounter_active:
+			context_item("Your Sols", 3, {"kind": "sols"})
+			context_item("Field Guide", 4, {"kind": "guide"})
+			if terrain.is_camp(cell):
+				context_item("Recover party", 5, {"kind": "recover"})
+		context_item("Observe", 0, {"kind": "observe"})
+		context_item("Details", 6, {"kind": "inspect_details"})
+	context_actions[2] = {"kind": "cancel"}
+	observation_menu.add_theme_font_size_override("font_separator_size", maxi(8, roundi(observation_menu.get_theme_font_size("font_size") * 0.8)))
+	if primary:
+		for index in observation_menu.item_count:
+			if not observation_menu.is_item_separator(index) and not observation_menu.is_item_disabled(index):
+				context_action(observation_menu.get_item_id(index))
+				break
+		return
+	observation_menu.reset_size()
+	var bounds := Vector2i(hud.get_viewport().get_visible_rect().size)
+	observation_menu.popup(Rect2i(Vector2i(pointer), Vector2i.ZERO))
+	# PopupMenu computes its content size on popup; clamp only after that calculation.
+	observation_menu.position = Vector2i(pointer).clamp(Vector2i.ZERO, (bounds - observation_menu.size).max(Vector2i.ZERO))
+
+func context_action(id: int) -> void:
+	observation_menu.hide()
+	if not context_actions.has(id):
+		return
+	var action: Dictionary = context_actions[id]
+	# A popup never retains authority across load, rebuild or battle transitions.
+	if action.kind == "cancel":
+		return
+	if observation_cell == null or context_state != persistent_state or confirmation.visible or (menu != null and menu.opened):
+		return
+	var battle: TacticalBattle = host.battles.session if host.battles != null else null
+	if battle != context_battle or (encounter_active and battle == null):
+		return
+	if action.kind in ["engage", "observe_sol", "inspect_sol"]:
+		var selected: Dictionary = {}
+		for member in host.sightings.members:
+			if member.id == action.id and member.sprite.visible and persistent_state.wild_available(member.id):
+				selected = member
+				break
+		if selected.is_empty():
+			message("That Sol is no longer available.", false)
+			return
+		if action.kind == "engage":
+			host.encounters.approach_individual(action.id)
+		else:
+			observation_cell = host.sightings.current_cell(selected)
+			observation_subject = "%s · %s" % [selected.entry.name, str(selected.sprite.affinity).capitalize()]
+			observation_member_id = action.id
+			if action.kind == "observe_sol":
+				observe_cell()
+			else:
+				show_inspection_details()
+	elif action.kind == "observe":
+		observe_cell()
+	elif action.kind == "inspect_details":
+		show_inspection_details()
+	elif not paused and not moving and not encounter_active and observation_cell == cell:
+		if action.kind in ["sols", "guide"]:
+			menu.open(action.kind)
+		elif action.kind == "recover" and terrain.is_camp(cell):
+			refuge_recovery_requested.emit()
+
+func show_inspection_details() -> void:
+	inspected_appearance = ""
+	inspected_cell = observation_cell
+	inspected_subject = observation_subject
+	describe_cell(inspected_cell)
+	inspection_card.more.button_pressed = true
+
+func observe_cell(_id: int = 0) -> void:
+	inspection_card.archive_observation()
+	inspection_card.more.button_pressed = false
+	if observation_cell == null or confirmation.visible:
+		return
+	inspected_cell = observation_cell
+	inspected_subject = observation_subject
+	inspected_appearance = appearance_description(inspected_cell, observation_subject)
+	inspection_card.begin_observation()
+	describe_cell(inspected_cell)
+	if not paused and host.sightings != null:
+		for member in host.sightings.members:
+			if member.sprite.visible and host.sightings.current_cell(member) == inspected_cell and (observation_member_id.is_empty() or member.id == observation_member_id):
+				host.sightings.observe_member(member)
+				break
+
+func appearance_description(at: Vector2i, subject: String) -> String:
+	for member in host.sightings.members:
+		if member.sprite.visible and host.sightings.current_cell(member) == at and (observation_member_id.is_empty() or member.id == observation_member_id):
+			return "%s has a distinct body shape, surrounded by %s energy." % [member.entry.name, str(member.sprite.affinity)]
+	var name := subject.get_slice(" · ", 0)
+	var descriptions := {
+		"Tree": "A tree with a solid trunk and a leafy canopy.",
+		"Rock": "Exposed stone with an uneven surface.",
+		"Refuge cabin": "A small cabin with solid walls and a pitched roof.",
+		"Waystone": "An upright stone marker beside the old trail.",
+		"Trainer": "A traveler wearing wilderness gear.",
+		"Meadow": "Open ground covered in low grass.",
+		"Woodland": "Grassy ground dotted with trees and undergrowth.",
+		"Heath": "Open ground with sparse, low vegetation.",
+		"Marsh": "Damp ground mixed with low vegetation.",
+		"Water": "A stretch of water covering the ground.",
+		"Shore": "A strip of ground at the water's edge.",
+		"Old stone trail": "A worn path paved with uneven stone."
+	}
+	if descriptions.has(name):
+		return descriptions[name]
+	var lower := name.to_lower()
+	if "tree" in lower or "pine" in lower or "oak" in lower:
+		return descriptions.Tree
+	if "rock" in lower or "stone" in lower or "boulder" in lower:
+		return descriptions.Rock
+	if "bush" in lower or "shrub" in lower or "fern" in lower or "grass" in lower:
+		return "A clump of low-growing vegetation."
+	if "flower" in lower:
+		return "Small flowers growing close to the ground."
+	return "You look over the %s." % lower
+
+func update_pointer_hint(pointer: Vector2) -> void:
+	if interaction_hint == null or host == null:
+		return
+	hover_cell = host.pointer_cell(pointer)
+	if hover_cell == null:
+		interaction_hint.text = ""
+		interaction_hint.get_parent().hide()
+		return
+	var subject: String = host.pointer_subject if host.has_method("pointer_object_cell") and not host.pointer_subject.is_empty() else observation_name(hover_cell)
+	interaction_hint.text = subject.get_slice(" · ", 0) + " · Right-click"
+	interaction_hint.get_parent().tooltip_text = subject
+	interaction_hint.get_parent().visible = subject not in ["Meadow", "Woodland", "Heath", "Marsh", "Water", "Shore", "Old stone trail"]
 
 func handle_input(event: InputEvent) -> void:
+	if host != null and host.story != null and host.story.window.visible:
+		return
 	if confirmation.visible or (event is InputEventKey and event.echo):
 		return
+	if menu != null and menu.opened:
+		if event.is_action_pressed("pause_expedition"):
+			toggle_pause()
+		else:
+			menu.handle_input(event)
+		return
+	if observation_menu.visible and event.is_action_pressed("pause_expedition"):
+		observation_menu.hide()
+		return
+	if host.battles != null and host.battles.session != null and host.battles.modal_open():
+		host.battles.handle_input(event)
+		return
+	if observation_menu.visible:
+		return
+	if event is InputEventMouseMotion and not encounter_active and not paused:
+		pending_pointer_hint = event.position # Coalesce high-rate mouse events into one pick per frame.
+	if event is InputEventMouseButton and event.double_click:
+		return
+	if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_RIGHT and (not paused or (host.battles != null and host.battles.session != null)):
+		open_observation(event.position)
+		return
+	if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
+		inspected_cell = null
+		if not encounter_active and not paused:
+			open_observation(event.position, null, "", true)
+			return
 	if encounter_active:
 		battle_input_consumed = false
 		battle_input_requested.emit(event)
@@ -528,18 +951,18 @@ func handle_input(event: InputEvent) -> void:
 	elif event.is_action_pressed("diagnostics"):
 		diagnostic.visible = not diagnostic.visible
 	elif not paused:
+		if event.is_action_pressed("field_menu"):
+			menu.open()
 		if event.is_action_pressed("companion"):
-			companion_requested.emit()
+			menu.open("sols")
 		if event.is_action_pressed("refuge_recovery"):
 			refuge_recovery_requested.emit()
-		if event.is_action_pressed("approach_sol"):
-			encounter_requested.emit()
-		if event.is_action_pressed("observe_sol"):
-			observe_requested.emit()
 		if event.is_action_pressed("examine"):
+			inspected_cell = null
+			inspection_card.more.button_pressed = false
 			examine = not examine
 		if event.is_action_pressed("journal"):
-			journal_panel.visible = not journal_panel.visible
+			menu.open("guide")
 
 
 func can_step(from: Vector2i, to: Vector2i) -> bool:
@@ -555,10 +978,12 @@ func can_step(from: Vector2i, to: Vector2i) -> bool:
 	return true
 
 func condition_move_multiplier(from: Vector2i, to: Vector2i) -> float:
-	var library: MoveLibrary = host.get("move_library") if host != null else null
-	if library == null or not library.valid():
-		library = preload("res://resources/move_library.tres")
 	var conditions: Dictionary = persistent_state.environment_view(to, {}).get("conditions", {})
+	if not conditions.has("rough") and not conditions.has("warp") and not conditions.has("wet") and not conditions.has("wind"):
+		return 1.0
+	var library: MoveLibrary = host.get("move_library") if host != null else null
+	if not movement_library_validation.check(library, [preload("res://resources/sol_ecology/behavior_library.tres")]):
+		library = preload("res://resources/move_library.tres")
 	if conditions.has("rough"):
 		return library.world_rough_multiplier
 	if conditions.has("warp"):

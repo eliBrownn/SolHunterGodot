@@ -36,12 +36,14 @@ Completion recorded: `main` was initialized without force at `ac656ce7eba063a303
 Depends on M1.
 
 - [ ] Confirm branch naming, integration target, merge strategy, and who reviews in the current solo/collaborator setup.
-- [ ] Exercise the PR template with a focused maintenance change and verify its diff contains only intended files.
+- [x] Exercise the PR template with a focused maintenance change and verify its diff contains only intended files.
 - [ ] Inspect GitHub rules and document actual enforcement separately from policy targets.
 - [ ] Have the owner adopt the applicable PR, review, force-push, and deletion protections through an explicit repository-settings change.
 - [ ] Verify the resulting rules and document unavailable capabilities or exceptions.
 
 Completion evidence: a reviewed example PR and a verified protection summary. A written standard alone does not complete this milestone. Required check names are added only after M3 supplies working checks.
+
+Current evidence: [PR #1](https://github.com/eliBrownn/SolHunterGodot/pull/1) contains the focused CI/documentation change. First remote validation succeeded. The ruleset list is empty and an authenticated traditional protection read returned 404 (no protection configured). Owner review, merge, and the explicit protection-settings decision remain pending. The connector itself returned integration-permission 403 for PR creation/protection inspection; configured Git authentication completed those operations without changing settings.
 
 ## M3 — Make validation reproducible
 
@@ -51,14 +53,15 @@ Depends on M1; can proceed alongside M2.
 - [x] Run the documented headless import, smoke, and world-generation checks on a clean checkout; record results and prerequisites.
 - [x] Define one repeatable validation entry point using those existing checks, with meaningful failure exit codes.
 - [x] Add CI using the verified engine version and required asset/import setup; do not expose credentials or upload proprietary source assets as public artifacts.
-- [ ] Verify a passing run and that an actual validation failure blocks the check, then select the working check names for branch rules.
+- [x] Verify a passing remote run and actual failure propagation through the shared validation command; identify the check name for branch rules.
+- [ ] Verify required-check enforcement after the owner adopts branch protection settings.
 - [ ] Keep manual playtesting, presentation acceptance, and target-hardware performance measurements explicit where automation cannot establish them.
 
 Completion evidence: a fresh checkout can reproduce checks and CI reports the same checks accurately.
 
 Preparation evidence: `tools/validate.ps1` verifies Godot 4.7.2 stable, imports the project, and runs both suites. On the current working tree it passed 2,331 smoke checks and 209 generation checks across ten seeds. A missing-engine probe returned exit code 1. These are working-tree results, not clean-checkout or CI evidence; the full milestone remains open.
 
-Clean-checkout evidence: a fresh clone of remote main at `ac656ce` passed the same 2,540 checks and retained a clean Git status. CI now proposes a Windows job using the exact official Godot archive, its release API SHA-256 digest, a pinned checkout action commit, read-only repository permission, and a ten-minute timeout. Remote CI results and required-check enforcement remain separate completion gates.
+Clean-checkout evidence: a fresh clone of remote main at `ac656ce` passed the same 2,540 checks and retained a clean Git status. CI uses the exact official Godot archive, its release API SHA-256 digest, a pinned checkout action commit, read-only repository permission, and a ten-minute timeout. [First remote run](https://github.com/eliBrownn/SolHunterGodot/actions/runs/40435802926) passed at `f5c3f45`. In the disposable clone, an injected smoke assertion produced one failure and validator exit code 1; the original file was restored byte-for-byte and status returned clean. The check name is `Godot 4.7.2 import and tests`. This establishes validation behavior, while merge and required-check enforcement remain pending.
 
 ## M4 — Keep project growth organized
 

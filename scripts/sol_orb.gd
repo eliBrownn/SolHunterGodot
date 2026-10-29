@@ -1,13 +1,15 @@
 class_name SolOrb
-extends Sprite3D
-## Original pixel sphere, ground shadow and bounded affinity motes in real 3D space.
+extends MeshInstance3D
+## Volumetric affinity sphere, ground shadow and bounded decorative motes.
 
 var affinity := ""
 var tint := Color.WHITE
 var tuning: SolVisualSettings
 var phase := 0.0
 var ground_y := 0.08
-var halo: Sprite3D
+var halo: MeshInstance3D
+var orb_material := StandardMaterial3D.new()
+var halo_material := StandardMaterial3D.new()
 var shadow: MeshInstance3D
 var motes: Array[Sprite3D] = []
 
@@ -16,24 +18,35 @@ func configure(assigned_affinity: String, settings: SolVisualSettings, phase_off
 	tuning = settings
 	tint = tuning.color_for(affinity)
 	phase = phase_offset
-	texture = sphere_texture(Color.WHITE if affinity == "quantum" else tint)
-	pixel_size = tuning.diameter / 24.0
-	billboard = BaseMaterial3D.BILLBOARD_ENABLED
-	texture_filter = BaseMaterial3D.TEXTURE_FILTER_NEAREST
-	shaded = false
-	cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
-	halo = make_sprite(disc_texture(Color(tint, tuning.aura_opacity)), tuning.diameter * 1.8 / 24.0)
-	halo.render_priority = -1
+	var sphere := SphereMesh.new()
+	sphere.radius = tuning.diameter * 0.5
+	sphere.height = tuning.diameter
+	sphere.radial_segments = 24
+	sphere.rings = 12
+	mesh = sphere
+	orb_material.albedo_color = tint
+	orb_material.roughness = 0.4
+	orb_material.emission_enabled = true
+	orb_material.emission = tint * 0.15
+	material_override = orb_material
+	halo = MeshInstance3D.new()
+	halo.mesh = sphere
+	halo.scale = Vector3.ONE * 1.3
+	halo.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+	halo_material.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+	halo_material.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+	halo_material.albedo_color = Color(tint, tuning.aura_opacity * 0.4)
+	halo.material_override = halo_material
 	add_child(halo)
 	shadow = MeshInstance3D.new()
-	var mesh := PlaneMesh.new()
-	mesh.size = Vector2(tuning.diameter * 0.9, tuning.diameter * 0.6)
+	var shadow_mesh := PlaneMesh.new()
+	shadow_mesh.size = Vector2(tuning.diameter * 0.9, tuning.diameter * 0.6)
 	var material := StandardMaterial3D.new()
 	material.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
 	material.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
 	material.albedo_texture = disc_texture(Color(0.04, 0.07, 0.09, 0.32))
 	material.texture_filter = BaseMaterial3D.TEXTURE_FILTER_NEAREST
-	shadow.mesh = mesh
+	shadow.mesh = shadow_mesh
 	shadow.material_override = material
 	shadow.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 	add_child(shadow)
@@ -103,12 +116,12 @@ func mote_texture() -> Texture2D:
 
 func animate(seconds: float, bob_pixels: float, bob_cycles: float) -> void:
 	if affinity == "quantum":
-		modulate = tint.lerp(Color("8beae9"), (sin(seconds * TAU * tuning.effect_speed) + 1.0) * 0.5)
+		orb_material.albedo_color = tint.lerp(Color("8beae9"), (sin(seconds * TAU * tuning.effect_speed) + 1.0) * 0.5)
 	var bob := sin(seconds * TAU * bob_cycles + phase) * bob_pixels / 24.0
 	var height := tuning.hover_height + bob
 	position.y = ground_y + height
 	shadow.position.y = -height + 0.015
-	halo.modulate.a = 0.85 + sin(seconds * TAU * tuning.effect_speed + phase) * 0.15
+	halo_material.albedo_color = Color(orb_material.albedo_color, tuning.aura_opacity * 0.4 * (0.85 + sin(seconds * TAU * tuning.effect_speed + phase) * 0.15))
 	for index in range(motes.size()):
 		var fraction := float(index) / motes.size()
 		var cycle := seconds * tuning.effect_speed + fraction + phase / TAU

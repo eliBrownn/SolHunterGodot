@@ -6,7 +6,9 @@ extends Resource
 ## Seed used at startup. The New Seed action still advances deterministically from the current seed.
 @export_range(0, 2147483646) var initial_seed := 2601026
 ## Seconds per cardinal tile; diagonal travel takes sqrt(2) times this duration. Lower is faster.
-@export_range(0.04, 1.0, 0.005) var move_seconds := 0.135
+@export_range(0.04, 1.0, 0.005) var move_seconds := 0.195
+## Hold Shift to multiply exploration speed. Provisional presentation tuning; applies immediately, including loaded saves.
+@export_range(1.0, 3.0, 0.05) var run_multiplier := 1.75
 
 @export_group("Territories")
 ## Home-territory width in cells for NEW expeditions, independent of rendering chunks. Loaded saves retain their size.
@@ -15,8 +17,8 @@ extends Resource
 @export_range(1, 1024) var population_cache_territories := 256
 
 func parameters() -> Dictionary:
-	return {"initial_seed": initial_seed, "move_seconds": move_seconds,
+	return {"initial_seed": initial_seed, "move_seconds": move_seconds, "run_multiplier": run_multiplier,
 		"territory_size": territory_size, "population_cache_territories": population_cache_territories}
 
 func valid() -> bool:
-	return SolSpeciesDefinition.whole(initial_seed, 0, 2147483646) and is_finite(move_seconds) and move_seconds >= 0.04 and move_seconds <= 1.0 and SolSpeciesDefinition.whole(territory_size, 1, 256) and SolSpeciesDefinition.whole(population_cache_territories, 1, 1024)
+	return SolSpeciesDefinition.whole(initial_seed, 0, 2147483646) and is_finite(move_seconds) and move_seconds >= 0.04 and move_seconds <= 1.0 and is_finite(run_multiplier) and run_multiplier >= 1.0 and run_multiplier <= 3.0 and SolSpeciesDefinition.whole(territory_size, 1, 256) and SolSpeciesDefinition.whole(population_cache_territories, 1, 1024)

@@ -1,0 +1,26 @@
+Initial generation prompt (built-in image-generation tool)
+
+Use case: stylized-concept
+Asset type: SolHunter creature anatomy review sheet, one coherent six-panel brainstorming board, not production art.
+Primary request: Create a polished but deliberately simple BLACK SILHOUETTE concept sheet on warm off-white paper. Landscape composition 3 rows x 2 columns, six evenly separated panels. Each panel contains ONE large solid charcoal side/three-quarter silhouette of a small original living creature, plus ONE much smaller gray gesture silhouette of that SAME creature showing its signature behavior. NO color, glowing magic, affinity aura, environmental scenery, weapons, armor or orb bodies. Silhouettes must emphasize anatomical differences with very limited pale cutouts only for eye/essential limb separation. Original approachable creatures with tangible anatomy and a slight mysterious edge; no franchise imitation. Keep all feet/tails in frame. The alternatives are for the SAME life stage, never evolutions. Diagrammatic proportions, not a shared mammal base.
+Exact top title: "SOLHUNTER — ANATOMY REVIEW"
+Exact subtitle: "Proposed alternatives • same stage • not to scale"
+Panel layout and exact labels:
+TOP LEFT "ASHQUILL A · CINDERKIN" / small caption "Low bird • trailing feather tail".
+Small long-tailed bird, TWO clear walking legs, compact oval downy torso leaning forward, distinct tiny beaked head and soft crest. Two folded wings as overlapping ragged charcoal feather layers, long slightly drooping layered tail extending horizontally well behind the body, pale feather-edge gaps for layered readability. Deep low long profile. SMALL gesture: puffed feathers while beak carefully preens one wing. No flame.
+TOP RIGHT "ASHQUILL B · CINDERKIN" / caption "Upright bird • arched feather tail".
+Same concept of small long-tailed charcoal-feathered bird but upright pear-shaped chest, TWO longer bent bird legs, small head and soft swept crest, long layered tail sweeps upward then backward like an arch, not a peacock fan, not a snake. Clearly more vertical than A, still a small early bird. SMALL gesture: lowered into round puffed resting pose with head smoothing breast feathers. No flame.
+MIDDLE LEFT "RATTLEHORN A · STORMFORGED" / caption "Wide stance • low filament mane".
+Compact heavy-chested FOUR-legged sure-footed creature, low barrel body, short robust limbs and wide separated cloven feet, projecting short blunt muzzle, TWO SHORT horns each made of visibly loosely nested irregular keratin rings with tiny gaps, stiff springy filament mane forms broken low ridge over neck and shoulders. Horns are organic, not metal machinery. SMALL gesture: four feet braced apart, mane raised in a tense fan.
+MIDDLE RIGHT "RATTLEHORN B · STORMFORGED" / caption "High chest • narrow sure-footed steps".
+Compact FOUR-legged sure-footed creature with deeper elevated front chest tapering to smaller haunches, longer slim jointed legs and separated cloven feet, short blunt head lifted above shoulders, TWO SHORT loose ring-built horns pointing outward, filament mane as a high swept collar concentrated at nape, NO beard or long ordinary goat horns. Obvious different proportions from A. SMALL gesture: one front foot tests a ledge implied by a short ground line while three feet hold weight.
+BOTTOM LEFT "RIMEFOLD A · FROSTBOUND" / caption "Long body • trailing living folds".
+Low LONG amphibianlike body, distinct broad flat amphibian head, TWO broad forelimbs plus TWO tiny but visible hind support limbs, tapering tail; fleshy side fins run along torso and overlap in soft lengthwise folds like a blanket, central tissue opaque. Smooth soft fin scallops, no dorsal plates, fur, ice armor, shells, horns or external gills. Four actual limbs under the fins; fins are not extra legs. Long horizontal newtlike outline. SMALL gesture: body resting with side fins snugly wrapped around trunk.
+BOTTOM RIGHT "RIMEFOLD B · FROSTBOUND" / caption "Broad forebody • overlapping fin lobes".
+Low elongated amphibianlike creature, broad flat head and massive paddle-like front limbs, small hind pair, short tapering tail, soft fleshy overlapping rounded side fin lobes sweep outward from long trunk then fold underneath like living fabric. Broad front narrowing into long rear, clearly asymmetric front-to-rear proportions, not a turtle. Four supports, side fins distinct from feet. SMALL gesture: one side fin unfolded forward toward a small plain pebble.
+Use tidy readable dark typography, thin rules between panels, restrained labels, ample negative space. All six silhouettes comparable in visual weight without implying exact dimensions. No additional text.
+
+Targeted revision prompt (same built-in tool)
+
+undefined
+

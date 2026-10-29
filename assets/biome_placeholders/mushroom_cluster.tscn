@@ -1,0 +1,60 @@
+[gd_scene load_steps=5 format=3]
+
+[sub_resource type="StandardMaterial3D" id="pale"]
+albedo_color = Color(0.82, 0.83, 0.73, 1)
+roughness = 1.0
+metallic_specular = 0.0
+
+[sub_resource type="StandardMaterial3D" id="bark"]
+albedo_color = Color(0.47, 0.35, 0.25, 1)
+roughness = 1.0
+metallic_specular = 0.0
+
+[sub_resource type="CylinderMesh" id="stem"]
+material = SubResource("pale")
+top_radius = 0.06
+bottom_radius = 0.06
+height = 0.4
+radial_segments = 6
+rings = 1
+
+[sub_resource type="SphereMesh" id="cap"]
+material = SubResource("bark")
+radius = 0.28
+height = 0.17
+radial_segments = 8
+rings = 3
+
+[node name="MushroomClusterPlaceholder" type="Node3D"]
+metadata/placeholder = true
+
+[node name="Part0" type="MeshInstance3D" parent="."]
+position = Vector3(-0.25, 0.2, 0)
+scale = Vector3(1, 1, 1)
+mesh = SubResource("stem")
+
+[node name="Part1" type="MeshInstance3D" parent="."]
+position = Vector3(-0.25, 0.44, 0)
+scale = Vector3(1, 1, 1)
+mesh = SubResource("cap")
+
+[node name="Part2" type="MeshInstance3D" parent="."]
+position = Vector3(0.25, 0.13999999999999999, 0.15)
+scale = Vector3(0.7, 0.7, 0.7)
+mesh = SubResource("stem")
+
+[node name="Part3" type="MeshInstance3D" parent="."]
+position = Vector3(0.25, 0.308, 0.15)
+scale = Vector3(0.7, 0.7, 0.7)
+mesh = SubResource("cap")
+
+[node name="Part4" type="MeshInstance3D" parent="."]
+position = Vector3(0, 0.17, -0.25)
+scale = Vector3(0.85, 0.85, 0.85)
+mesh = SubResource("stem")
+
+[node name="Part5" type="MeshInstance3D" parent="."]
+position = Vector3(0, 0.374, -0.25)
+scale = Vector3(0.85, 0.85, 0.85)
+mesh = SubResource("cap")
+

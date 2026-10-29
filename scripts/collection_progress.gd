@@ -57,6 +57,6 @@ static func grow(row: Dictionary, reward: int, policy: Dictionary) -> Dictionary
 		profile.level += 1
 		profile.max_hp = mini(1000, int(profile.max_hp) + int(policy.hp_growth))
 		result.hp = mini(int(profile.max_hp), int(result.hp) + int(policy.hp_growth))
-		for stat in ["attack", "defense", "speed"]:
+		for stat in ["attack", "defense", "speed", "special_attack", "special_defense"]:
 			profile[stat] = mini(1000, int(profile[stat]) + int(policy.stat_growth))
 	return result

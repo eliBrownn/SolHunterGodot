@@ -1,4 +1,5 @@
 extends Node3D
+const MenuTheme = preload("res://scripts/menu_theme.gd")
 ## Cosmetic events and runtime-only result recap; never owns battle or save state.
 var world: Node2D
 var tuning: SolVisualSettings
@@ -12,6 +13,8 @@ func bind(source: Node2D, settings: SolVisualSettings) -> void:
 	world = source
 	tuning = settings
 	result_panel = world.panel_at(Rect2(24, 145, 360, 430))
+	result_panel.theme = MenuTheme.build(MenuSettings.new())
+	result_panel.add_theme_stylebox_override("panel", MenuTheme.box(Color("182c25"), Color("827651")))
 	var box := VBoxContainer.new()
 	box.add_theme_constant_override("separation", 12)
 	result_panel.add_child(box)
@@ -20,8 +23,10 @@ func bind(source: Node2D, settings: SolVisualSettings) -> void:
 	var scroll := ScrollContainer.new()
 	scroll.custom_minimum_size = Vector2(320, 240)
 	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+	scroll.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	box.add_child(scroll)
 	result_text = world.label("", 15)
+	result_text.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	result_text.custom_minimum_size.x = 310
 	result_text.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	scroll.add_child(result_text)
@@ -79,6 +84,20 @@ func receive(event: Dictionary) -> void:
 	pulse.position.y = tuning.hover_height
 	pulse.modulate = tuning.color_for(event.affinity)
 	anchor.add_child(pulse)
+	if event.kind == "vastra":
+		var current := MeshInstance3D.new()
+		var ribbon := QuadMesh.new()
+		ribbon.size = Vector2(1.25, 0.18)
+		current.mesh = ribbon
+		current.rotation.z = PI / 2.0
+		current.position.y = 0.7
+		var material := ShaderMaterial.new()
+		material.shader = preload("res://shaders/vastra_current.gdshader")
+		material.set_shader_parameter("current_color", tuning.color_for(event.affinity))
+		material.set_shader_parameter("opacity", 0.3)
+		current.material_override = material
+		anchor.add_child(current)
+		anchor.set_meta("vastra_current", current)
 	cues.append({"node": anchor, "label": label, "pulse": pulse, "cell": event.cell, "age": 0.0, "base_y": label.position.y, "kind": event.kind, "amount": event.amount})
 	update_cues(0.0)
 
@@ -89,13 +108,16 @@ func update_cues(delta: float) -> void:
 	for index in range(cues.size() - 1, -1, -1):
 		var cue: Dictionary = cues[index]
 		cue.age += delta
+		if cue.node.has_meta("vastra_current"):
+			var current: MeshInstance3D = cue.node.get_meta("vastra_current")
+			(current.material_override as ShaderMaterial).set_shader_parameter("clock_seconds", float(cue.age) * 2.0)
 		if cue.age >= tuning.feedback_seconds:
 			cue.node.free()
 			cues.remove_at(index)
 			continue
 		var fraction: float = cue.age / tuning.feedback_seconds
 		var relative: Vector2 = world.center(cue.cell) - world.camera.position
-		cue.node.position = Vector3(relative.x / 32.0, 0.15, relative.y / 32.0)
+		cue.node.position = Vector3(relative.x / 32.0, world.host.ground_height(Vector2(cue.cell) + Vector2(0.5, 0.5)) + 0.15, relative.y / 32.0)
 		cue.label.position.y = cue.base_y + fraction * tuning.feedback_rise
 		cue.label.modulate.a = 1.0 - fraction
 		cue.label.outline_modulate.a = 1.0 - fraction
@@ -133,7 +155,7 @@ func show_result(outcome: String, hero: Dictionary, imprint: Dictionary, counts:
 	if outcome == "captured":
 		lines.append("The same individual is now held by a Seal. C opens your companions.")
 	if outcome == "exhaustion":
-		lines.append("\nBack at the refuge. Press H to recover your companion.")
+		lines.append("\nBack at the refuge. Right-click your trainer and choose Recover party.")
 	else:
 		lines.append("\nYour companion's remaining health is retained.")
 	result_help.text = "At refuge: H recovers · F5 saves." if outcome == "exhaustion" else "F5 saves these results."

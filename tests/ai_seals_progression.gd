@@ -1,4 +1,5 @@
 extends SceneTree
+const BattleTest = preload("res://tests/battle_test_support.gd")
 var checks := 0
 var failures := 0
 var library: MoveLibrary = preload("res://resources/move_library.tres")
@@ -40,11 +41,15 @@ func run() -> void:
 	check(plan.slot == 0 and battle.enemy_intent().contains("Heat"), "Field-only enemy previews its actual equipped terrain move")
 	battle.turn = "enemy"
 	battle.queue.assign(["enemy", "ally"])
+	battle.remaining = battle.movement_allowance("enemy")
+	battle.actions_remaining = battle.action_points
 	battle.auto_enemy()
-	check(battle.activity.get("fire") == 1 and not battle.fields.is_empty(), "Enemy executes shared field effects and move affinity bookkeeping")
+	var terrain_uses := battle.log.filter(func(line: String) -> bool: return line.contains("shapes shared terrain")).size()
+	check(terrain_uses > 0 and terrain_uses <= 3 and battle.activity.get("fire") == terrain_uses and not battle.fields.is_empty(), "Enemy records each affordable terrain move exactly once within the shared budget")
 	battle = fixture()
 	battle.enemy_moves = [library.find("mend")]
-	check(battle.plan_enemy().slot == -1, "Full-health healing cannot cause buff camping")
+	var healthy_plan := battle.plan_enemy()
+	check(healthy_plan.slot == -1 or battle.moves_for("enemy")[healthy_plan.slot].effect != "heal", "Full-health healing cannot cause buff camping; a weak fallback remains available")
 	battle.enemy_hp -= 6
 	check(battle.plan_enemy().slot == 0, "Wounded enemy can choose an effective heal")
 	battle = fixture()
@@ -125,10 +130,12 @@ func verify_live() -> void:
 	approach(scene, member)
 	check(controller.session != null, "Real encounter starts for capture")
 	var serial: int = controller.serial
+	BattleTest.settle(controller)
 	controller.select_cell(controller.session.deployment_tiles()[0])
+	BattleTest.settle(controller)
 	controller.session.enemy_hp = 7
 	controller.update_view()
-	check(controller.capture_button.text.contains("unlimited") and not controller.capture_button.disabled, "Live Seal control displays testing supply and available chance")
+	check(controller.capture_button.text.contains("%") and controller.capture_button.tooltip_text.to_lower().contains("unlimited") and not controller.capture_button.disabled, "Seal chance stays visible while testing supply is explained on hover")
 	if screenshots():
 		await capture("seal-preview")
 	var invalid := {"capture": {"profile": {}, "hp": 7, "unlocks": {}}}
@@ -170,6 +177,8 @@ func verify_live() -> void:
 	var legacy := saved.duplicate(true)
 	legacy.version = 8
 	legacy.erase("collection")
+	legacy.erase("sol_stats")
+	legacy.erase("retraining_items")
 	legacy.battle.captures = 0
 	legacy.battle.serial = 0
 	legacy.battle.last_result = {}
@@ -181,6 +190,7 @@ func verify_live() -> void:
 	approach(scene, next)
 	check(controller.session != null and controller.session.ally == owned.profile and controller.session.ally_hp == 7, "Next battle deploys captured stats and health rather than regenerating a starter")
 	controller.retreat()
+	BattleTest.settle(controller)
 	check(state.companion_view(member.id).xp == 0, "Retreat cannot award XP")
 	verify_rewards_and_capacity(state, controller)
 	for suffix in ["", ".bak", ".tmp"]:
@@ -210,7 +220,7 @@ func verify_rewards_and_capacity(state: ExpeditionState, controller: Node) -> vo
 			check(state.complete_battle(serial, hero.hp, "victory", 0, {}, {"participated": index == 7, "enemy_level": 3, "move_definitions": library.definitions()}), "Victory result commits with explicit participation evidence")
 			check(state.active_sol_view().xp == (13 if index == 7 else 0), "Only participating victory grants source four plus three times enemy level XP")
 	check(not state.transfer_companion(state.starter_view().id, "party"), "Party cannot exceed six through storage transfer")
-	check(state.active_sol_view().profile.level == 4 and state.active_sol_view().hp == hero.hp + 6, "Real participating victory advances multiple levels and retains bounded health growth")
+	check(state.active_sol_view().profile.level == 4 and state.active_sol_view().hp == hero.hp + state.active_sol_view().profile.max_hp - hero.profile.max_hp, "Real participating victory advances multiple levels and retains bounded health growth")
 	check(state.movebook(hero.id).learned.has("anchor") and state.movebook(hero.id).equipped == equipped, "Atomic victory learns earned species move while retaining the full equipped four")
 	check(state.companion_view(state.starter_view().id).xp == 0, "Inactive stored starter receives no shared XP")
 	check(ExpeditionState.valid_snapshot(state.snapshot(), 17), "Capture, storage, growth and receipt state remains portable")

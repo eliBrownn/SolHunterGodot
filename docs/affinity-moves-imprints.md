@@ -17,12 +17,14 @@ This is direct prototype learning access, not finalized progression or XP gates.
 The saved individual retains its move definitions, eligibility pool, and loadout.
 Close the panel and press F5 to save these changes to the expedition slot.
 
-In battle, buttons or 1–4 select moves. Damage moves target the opponent; healing
-and footing/phasing target self. Field moves highlight legal target tiles for a
-click, or arrows/WASD and Enter. Escape cancels an active aim; otherwise it
-retreats. Space uses slot one; Enter outside aiming ends the turn. A Quantum move
-offers explicit position, stabilization, or entanglement choices. All actions use
-the existing one-action-per-turn contract; no new unapproved mana economy is added.
+In battle, move buttons select an aimed move; a second target confirmation commits
+it through the existing mouse/controller controls. Damage moves target the
+opponent; healing and footing/phasing target self. Fields highlight legal tiles.
+Escape cancels aiming, then opens the battle menu; retreat requires confirmation.
+The Quantum selector offers position, stabilization or entanglement. Moves use
+the later [shared action budget](combat-action-budget.md): setup initially costs
+2 AP, attacks/healing 4 AP from a 6-AP turn. Moves retain control until explicit
+End turn; Speed grants free movement and extra movement spends shared AP.
 
 ## Connected prototype behaviors
 
@@ -70,7 +72,10 @@ so sparse-state capacity cannot strand a running battle at completion.
 Outside battle, affinity is visible through a local ground tint and E inspection.
 Recoverable barriers block traversal; rough ground, currents, winds and warp zones
 change movement timing. Barriers eventually recover, and no generation defaults
-are rewritten. Heat and charge do not create unnatural Vastra overload.
+are rewritten. Under the [October 28 retcon](decisions/2026-10-28-vastra-combat-and-restoration.md),
+aggressive Vastra-powered heat and charge abilities create overload on affected
+tiles, independently of their lingering terrain conditions. Healing can create
+negative restorative conditions even at full HP.
 
 Outer save format remains 2; domain 7 adds `movebooks` and `affinity_tiles`.
 Domains 1–6 retain their histories. Owner-approved aliases map Grove → Earth,

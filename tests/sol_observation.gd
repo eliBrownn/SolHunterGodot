@@ -32,36 +32,36 @@ func run() -> void:
 	var state: ExpeditionState = world.persistent_state
 	state.discovery_recorded.connect(func(_identity: String) -> void: events += 1)
 	var before := state.snapshot()
-	press(world, KEY_F)
-	check(state.snapshot() == before and world.journal_notes.text.contains("Approach a Sol"), "Out-of-range observation does not invent a journal discovery")
+	world.observe_requested.emit()
+	check(state.snapshot() == before and world.journal_notes.text.contains("Right-click a Sol"), "Out-of-range observation does not invent a journal discovery")
 	world.cell = member.home + Vector2i(-1, 0)
 	world.explorer.position = world.center(world.cell)
 	world.camera.position = world.explorer.position
 	world.paused = true
-	press(world, KEY_F)
+	world.observe_requested.emit()
 	check(state.discovery_entries().is_empty(), "Paused input cannot create an observation")
 	world.paused = false
 	world.moving = true
-	press(world, KEY_F)
+	world.observe_requested.emit()
 	check(state.discovery_entries().is_empty(), "Observation requires a settled player cell")
 	world.moving = false
 	press(world, KEY_F, true)
 	check(state.discovery_entries().is_empty(), "Key auto-repeat does not create a new discovery")
-	press(world, KEY_F)
-	check(state.discovery_entries().size() == 1 and events == 1 and state.has_discovery(member.id), "F routes to one stable-identity journal event")
+	world.observe_requested.emit()
+	check(state.discovery_entries().size() == 1 and events == 1 and state.has_discovery(member.id), "Observation records one stable-identity journal event")
 	var first := state.discovery_entries()[0]
 	check(first.key == member.id and first.title == "Seedmote" and first.first_seen == [member.home.x, member.home.y], "First observation retains the individual's identity and target coordinates")
 	check(state.relationship_view(member.id) == null and state.individual_view(member.id).location == "wild", "Observing grants neither trust nor ownership")
 	check(world.journal_notes.text.contains("Seedmote") and world.journal_notes.text.contains("First seen"), "Successful observation immediately appears in the Sightings tab")
 	before = state.snapshot()
 	world.cell += Vector2i(0, 1)
-	press(world, KEY_F)
+	world.observe_requested.emit()
 	check(state.snapshot() == before and events == 1, "Re-observation preserves the first entry without duplicate history or events")
 	var detached := state.discovery_entries()
 	detached[0].first_seen[0] = 999
 	check(state.discovery_entries()[0].first_seen[0] == member.home.x, "Journal reads cannot mutate saved coordinates")
 	press(world, KEY_J)
-	check(world.journal_panel.visible and state.snapshot() == before, "Opening Field Notes is read-only")
+	check(world.menu.opened and world.menu.selected == "guide" and state.snapshot() == before, "Opening Field Guide is read-only")
 	press(world, KEY_J)
 	var path := "user://sol-observation-%d.json" % Time.get_ticks_usec()
 	world.save_game(path)
@@ -107,6 +107,8 @@ func verify_schema(snapshot: Dictionary, original: String, path: String) -> void
 		legacy.erase("affinity_tiles")
 		legacy.erase("wild_population")
 		legacy.erase("collection")
+		legacy.erase("sol_stats")
+		legacy.erase("retraining_items")
 		if legacy.has("battle"):
 			legacy.battle.erase("captures")
 		if version < 3:

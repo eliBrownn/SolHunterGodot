@@ -3,6 +3,8 @@ extends Node3D
 var world: Node2D
 var palette: SolVisualSettings
 var state: ExpeditionState
+var tiles: Dictionary = {}
+var terrain_source: WorldTerrain
 
 func bind(source: Node2D, colors: SolVisualSettings) -> void:
 	world = source
@@ -23,32 +25,39 @@ func on_tick(_tick: int) -> void:
 
 func _process(_delta: float) -> void:
 	visible = not world.encounter_active
-	for node in get_children():
-		var cell: Vector2i = node.get_meta("cell")
-		var point: Vector2 = Vector2(cell) * 32.0 + Vector2(16, 16) - world.camera.position
-		node.position = Vector3(point.x / 32.0, 0.12, point.y / 32.0)
+	# All overlays share the same camera rebase; their immutable ground heights
+	# need sampling only when their terrain source or membership changes.
+	position = Vector3(-world.camera.position.x / 32.0, 0, -world.camera.position.y / 32.0)
 
 func refresh() -> void:
-	for child in get_children():
-		child.free()
-	var tiles := state.affinity_tiles()
-	for at in tiles:
-		var parts: PackedStringArray = at.split(":")
-		var cell := Vector2i(int(parts[0]), int(parts[1]))
-		if Vector2(cell - world.cell).length() > 14:
+	if terrain_source != world.terrain:
+		for node in tiles.values():
+			node.free()
+		tiles.clear()
+		terrain_source = world.terrain
+	var desired: Dictionary = state.affinity_colors_near(world.cell, 14) if palette.imprint_opacity > 0 else {}
+	for cell: Vector2i in tiles.keys():
+		if not desired.has(cell):
+			tiles[cell].free()
+			tiles.erase(cell)
+	for cell: Vector2i in desired:
+		var color := Color(palette.color_for(desired[cell]), palette.imprint_opacity)
+		if tiles.has(cell):
+			var existing: MeshInstance3D = tiles[cell]
+			if existing.material_override.albedo_color != color:
+				existing.material_override.albedo_color = color
 			continue
-		var row: Dictionary = tiles[at]
 		var node := MeshInstance3D.new()
-		var mesh := PlaneMesh.new()
-		mesh.size = Vector2(0.95, 0.95)
+		var mesh: Mesh = world.host.ground_mesh(cell, 0.95)
 		var material := StandardMaterial3D.new()
 		material.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
 		material.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
-		material.albedo_color = Color(palette.color_for(row.affinity), palette.imprint_opacity)
+		material.albedo_color = color
 		node.mesh = mesh
 		node.material_override = material
 		node.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 		node.set_meta("cell", cell)
-		var point: Vector2 = Vector2(cell) * 32.0 + Vector2(16, 16) - world.camera.position
-		node.position = Vector3(point.x / 32.0, 0.12, point.y / 32.0)
+		node.position = Vector3(cell.x + 0.5, world.host.ground_height(Vector2(cell) + Vector2(0.5, 0.5)) + 0.12, cell.y + 0.5)
 		add_child(node)
+		tiles[cell] = node
+	_process(0)

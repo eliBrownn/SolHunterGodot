@@ -1,0 +1,46 @@
+[gd_scene load_steps=5 format=3]
+
+[sub_resource type="StandardMaterial3D" id="bark"]
+albedo_color = Color(0.47, 0.35, 0.25, 1)
+roughness = 1.0
+metallic_specular = 0.0
+
+[sub_resource type="StandardMaterial3D" id="leaf"]
+albedo_color = Color(0.35, 0.47, 0.10, 1)
+roughness = 1.0
+metallic_specular = 0.0
+
+[sub_resource type="CylinderMesh" id="trunk"]
+material = SubResource("bark")
+top_radius = 0.1
+bottom_radius = 0.21
+height = 2.7
+radial_segments = 6
+rings = 1
+
+[sub_resource type="SphereMesh" id="crown"]
+material = SubResource("leaf")
+radius = 0.8
+height = 2.15
+radial_segments = 8
+rings = 3
+
+[node name="WillowTreePlaceholder" type="Node3D"]
+metadata/placeholder = true
+
+[node name="Part0" type="MeshInstance3D" parent="."]
+position = Vector3(0, 1.35, 0)
+mesh = SubResource("trunk")
+
+[node name="Part1" type="MeshInstance3D" parent="."]
+position = Vector3(-0.55, 2.1, 0)
+mesh = SubResource("crown")
+
+[node name="Part2" type="MeshInstance3D" parent="."]
+position = Vector3(0.55, 2.15, 0.1)
+mesh = SubResource("crown")
+
+[node name="Part3" type="MeshInstance3D" parent="."]
+position = Vector3(0, 2.35, -0.45)
+mesh = SubResource("crown")
+

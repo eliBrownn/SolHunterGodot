@@ -1,0 +1,160 @@
+[gd_resource type="Resource" script_class="ClassBuffSettings" load_steps=22 format=3]
+
+[ext_resource type="Script" path="res://scripts/class_buff_settings.gd" id="1"]
+[ext_resource type="Script" path="res://scripts/class_buff_definition.gd" id="2"]
+
+[sub_resource type="Resource" id="beast"]
+script = ExtResource("2")
+class_id = "beast"
+description = "Damage moves matching the affinity of the occupied tile gain this bonus. Individual affinity is independent."
+display_name = "Terrain Resonance"
+minimum = 5
+maximum = 10
+
+[sub_resource type="Resource" id="cinderkin"]
+script = ExtResource("2")
+class_id = "cinderkin"
+description = "Consecutive attacking turns add this much damage bonus per turn, up to 15%. A turn without attacking resets it."
+display_name = "Kindling"
+minimum = 1
+maximum = 5
+
+[sub_resource type="Resource" id="tideborn"]
+script = ExtResource("2")
+class_id = "tideborn"
+description = "After a damaging hit, that enemy deals this much less direct damage to this Sol through the end of its next turn."
+display_name = "Undertow"
+minimum = 5
+maximum = 10
+
+[sub_resource type="Resource" id="verdant"]
+script = ExtResource("2")
+class_id = "verdant"
+description = "Ending a turn without moving restores this percent of maximum HP, capped at 15% healed per battle."
+display_name = "Rooted Renewal"
+minimum = 1
+maximum = 3
+
+[sub_resource type="Resource" id="stormforged"]
+script = ExtResource("2")
+class_id = "stormforged"
+description = "Moving at least two tiles before attacking increases direct damage this turn."
+display_name = "Momentum"
+minimum = 5
+maximum = 10
+
+[sub_resource type="Resource" id="frostbound"]
+script = ExtResource("2")
+class_id = "frostbound"
+description = "At or below half HP, take this much less direct damage."
+display_name = "Cold Resolve"
+minimum = 5
+maximum = 10
+
+[sub_resource type="Resource" id="warborn"]
+script = ExtResource("2")
+class_id = "warborn"
+description = "Deal this much more direct damage to adjacent enemies."
+display_name = "Challenge"
+minimum = 5
+maximum = 10
+
+[sub_resource type="Resource" id="blightborn"]
+script = ExtResource("2")
+class_id = "blightborn"
+description = "Deal this much more direct damage to enemies with a harmful status or stat reduction."
+display_name = "Exploit Affliction"
+minimum = 5
+maximum = 10
+
+[sub_resource type="Resource" id="earthbound"]
+script = ExtResource("2")
+class_id = "earthbound"
+description = "Difficult ground uses normal movement cost. Impassable tiles remain impassable."
+display_name = "Surefooted"
+minimum = 0
+maximum = 0
+
+[sub_resource type="Resource" id="skyborne"]
+script = ExtResource("2")
+class_id = "skyborne"
+description = "Extra movement tiles on the first turn taken in a battle."
+display_name = "Swift Arrival"
+minimum = 1
+maximum = 2
+
+[sub_resource type="Resource" id="mindweaver"]
+script = ExtResource("2")
+class_id = "mindweaver"
+description = "Reduce damage from the first damaging action that hits this Sol each battle."
+display_name = "Forethought"
+minimum = 10
+maximum = 15
+
+[sub_resource type="Resource" id="swarmkin"]
+script = ExtResource("2")
+class_id = "swarmkin"
+description = "Deal extra direct damage to an enemy adjacent to another active allied Sol. Current single-companion encounters provide no qualifying ally."
+display_name = "Collective Pressure"
+minimum = 5
+maximum = 10
+
+[sub_resource type="Resource" id="stonebound"]
+script = ExtResource("2")
+class_id = "stonebound"
+description = "After ending a turn without moving, take less direct damage until next moving."
+display_name = "Set Like Stone"
+minimum = 5
+maximum = 10
+
+[sub_resource type="Resource" id="wraithborn"]
+script = ExtResource("2")
+class_id = "wraithborn"
+description = "Take less damage from attacks originating at least three tiles away."
+display_name = "Unworldly Form"
+minimum = 5
+maximum = 10
+
+[sub_resource type="Resource" id="wyrmkin"]
+script = ExtResource("2")
+class_id = "wyrmkin"
+description = "Deal more direct damage to enemies currently above 75% HP."
+display_name = "Ancient Might"
+minimum = 5
+maximum = 10
+
+[sub_resource type="Resource" id="umbral"]
+script = ExtResource("2")
+class_id = "umbral"
+description = "Deal more direct damage to an enemy with no active allies of its own within two tiles."
+display_name = "Isolate Prey"
+minimum = 5
+maximum = 10
+
+[sub_resource type="Resource" id="construct"]
+script = ExtResource("2")
+class_id = "construct"
+description = "Incoming combat stat reductions have this much less magnitude."
+display_name = "Stable Frame"
+minimum = 10
+maximum = 20
+
+[sub_resource type="Resource" id="feyborn"]
+script = ExtResource("2")
+class_id = "feyborn"
+description = "Helpful stat buffs applied by this Sol last this many additional recipient turns. Refreshing does not accumulate extra duration."
+display_name = "Otherworldly Grace"
+minimum = 1
+maximum = 2
+
+[sub_resource type="Resource" id="eldritch"]
+script = ExtResource("2")
+class_id = "eldritch"
+description = "Distinct Eldritch identity. No class passive has been authored; zero potency has no battle effect. Not legacy Stonebound."
+display_name = "Passive unassigned"
+minimum = 0
+maximum = 0
+
+[resource]
+script = ExtResource("1")
+definitions = Array[ExtResource("2")]([SubResource("beast"), SubResource("cinderkin"), SubResource("tideborn"), SubResource("verdant"), SubResource("stormforged"), SubResource("frostbound"), SubResource("warborn"), SubResource("blightborn"), SubResource("earthbound"), SubResource("skyborne"), SubResource("mindweaver"), SubResource("swarmkin"), SubResource("stonebound"), SubResource("wraithborn"), SubResource("wyrmkin"), SubResource("umbral"), SubResource("construct"), SubResource("feyborn"), SubResource("eldritch")])

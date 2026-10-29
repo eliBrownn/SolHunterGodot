@@ -1,5 +1,10 @@
 # Natural Vastra replenishment and recovery
 
+October 28 update: [signed Vastra integration](vastra-integration.md) supersedes
+the positive-only recovery description below. Both signs now relax toward zero;
+negative values support bounded terrain-condition and wildlife-home recovery.
+The earlier delivery evidence below is historical, not validation of this update.
+
 The exploration activity clock now services a bounded, persistent queue of explicit
 environment changes. Baseline ecological overload recovers without population
 queries or player action. A separate concentration-balancing API accepts authored
@@ -36,7 +41,7 @@ All prepared changes commit before environment-change observers run.
 
 Each damaged cell retains its last completed recovery interval. Whole elapsed
 intervals are applied arithmetically in constant work while fractional intervals
-survive. Healing never increases overload or changes concentration. Healthy cells
+survive. Relaxation never increases overload magnitude or changes concentration. Neutral cells
 discard their epochs. Unknown legacy/manual damage age starts a full interval on
 first processing, without invented retroactive healing.
 

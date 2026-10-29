@@ -1,0 +1,10 @@
+[gd_resource type="Resource" script_class="CombatPacingFixture" load_steps=2 format=3]
+[ext_resource type="Script" path="res://scripts/combat_pacing_fixture.gd" id="1"]
+[resource]
+script = ExtResource("1")
+fixture_id = "terrain"
+hero_moves = PackedStringArray("strike", "current", "charge", "mend")
+opponent_moves = PackedStringArray("vine_whip", "heat")
+blocked = Array[Vector2i]([Vector2i(0, -1), Vector2i(0, 0), Vector2i(0, 1)])
+wet = Array[Vector2i]([Vector2i(1, 0), Vector2i(2, 0), Vector2i(3, 0)])
+heat = Array[Vector2i]([Vector2i(-1, 1)])

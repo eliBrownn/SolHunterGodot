@@ -1,5 +1,18 @@
 # Local Sol movement and reactions
 
+Update, October 27, 2026: autonomous patrol/rest and bounded cardinal obstacle
+detours now extend this original proximity-only slice. See the
+[behavior roadmap](sol-behavior-roadmap.md) and
+[current Inspector controls](inspector-tuning.md#autonomous-sol-wandering).
+The historical scope, version-5 schema, and tuning defaults below describe the
+earlier delivery. Current AI state uses domain version 14 with patrol/response
+memory; current expedition saves use outer format 3 and generation 6. See the
+roadmap audit and [natural movement pass](sol-natural-movement.md) for queued
+display replay and remaining experience/device acceptance.
+The [activity correction](sol-activity.md) adds finite attention, active nearby
+routines and guard standoff movement; the stationary guard described below is
+historical prototype behavior.
+
 The three authored trail Sols now react through actual local movement:
 the wary Seedmote steps away, Bramblepup approaches to a comfortable distance,
 and the guarding Seedmote holds its ground. Moved Sols can return toward home

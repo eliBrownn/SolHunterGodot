@@ -79,19 +79,24 @@ func run() -> void:
 	root.add_child(scene)
 	scene.world.smoke_mode = true
 	scene.sync_ground()
-	check(scene.visibility_aid.source == scene.player_billboard, "Visibility aid follows the real character rather than a second actor authority")
-	scene.player_billboard.flip_h = true
+	check(scene.visibility_aid.source == scene.player_visual, "Visibility aid follows the real skinned character")
 	scene.visibility_aid.sync_source()
-	check(scene.visibility_aid.indicator_material.get_shader_parameter("flip_h"), "Occluded silhouette preserves directional flipping")
-	scene.player_billboard.flip_h = false
+	check(scene.player_visual.meshes.size() == 8, "Occlusion overlay shares all rogue mesh pieces")
 	check(SolidChunk.meshes.water.material.get_shader_parameter("world_origin") == scene.world.camera.position / 32.0, "Water pattern is rebased to absolute world coordinates")
 	if DisplayServer.get_name() == "headless":
 		print("PRESENTATION: depth-buffer pixel comparisons require a rendered run (5 skipped).")
 	else:
-		await snapshot()
-		var player_center: Vector3 = scene.player_billboard.position + scene.camera.global_basis.y * 0.75
+		scene.world.paused = true
+		scene.environment.sky.sky_material.set_shader_parameter("wind_speed", Vector2.ZERO)
+		var initial_pixels := await snapshot()
+		scene.player_visual.animator.pause()
+		var player_center: Vector3 = scene.player_visual.position + Vector3.UP * 0.8
 		var screen: Vector2 = scene.camera.unproject_position(player_center)
-		var region := Rect2i(Vector2i(screen) - Vector2i(24, 32), Vector2i(48, 64))
+		# Projection is in logical viewport coordinates; readback is in physical
+		# pixels after canvas scaling/maximization. Compare the actual actor region.
+		var pixel_scale: Vector2 = Vector2(initial_pixels.get_size()) / scene.camera.get_viewport().get_visible_rect().size
+		var region := Rect2i(Vector2i((screen - Vector2(24, 32)) * pixel_scale), Vector2i(Vector2(48, 64) * pixel_scale))
+		print("OCCLUSION REGION: logical %s; pixels %s; scale %s; region %s" % [scene.camera.get_viewport().get_visible_rect().size, initial_pixels.get_size(), pixel_scale, region])
 		scene.visibility_aid.hide()
 		var clear_without := await snapshot()
 		scene.visibility_aid.show()
@@ -119,15 +124,16 @@ func run() -> void:
 		hidden_without.save_png("res://artifacts/presentation/occluded-without.png")
 		hidden_with.save_png("res://artifacts/presentation/occluded-with.png")
 		# Exercise the real cutout foliage material, including its transparent gaps.
-		blocker.mesh = SolidChunk.mesh_for("sprite_tree_upper")
+		blocker.mesh = preload("res://scripts/nature_art.gd").parts(scene.active_nature.common_trees[0]).pieces[0].mesh
 		blocker.material_override = null
 		blocker.basis = Basis.IDENTITY
+		blocker.scale = Vector3.ONE * 0.25
 		blocker.position = player_center + scene.camera.position.normalized() * 2.0 - Vector3(0, 0.85, 0)
 		scene.visibility_aid.hide()
 		var foliage_without := await snapshot()
 		scene.visibility_aid.show()
 		var foliage_with := await snapshot()
-		check(changed_pixels(foliage_without, foliage_with, region) > 20, "Actual sprite foliage triggers the player silhouette")
+		check(changed_pixels(foliage_without, foliage_with, region) > 20, "Imported 3D foliage triggers the player silhouette")
 		var gap_changes := 0
 		for y in range(region.position.y, region.end.y):
 			for x in range(region.position.x, region.end.x):

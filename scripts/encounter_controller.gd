@@ -14,6 +14,7 @@ var withdraw_button: Button
 var warning_id := ""
 var warning_presented := false
 var warning_step := -1
+var warning_elapsed := 0.0
 var steps := 0
 var safe_steps := 0
 var active_target: Dictionary = {}
@@ -78,13 +79,15 @@ func reset(_state: ExpeditionState) -> void:
 	world.encounter_active = false
 	battle_running = false
 
-func _process(_delta: float) -> void:
+func _process(delta: float) -> void:
 	if not active_target.is_empty():
 		var record: Dictionary = world.persistent_state.individual_view(active_target.id)
 		if world.persistent_state != encounter_state or not world.persistent_state.wild_available(active_target.id):
 			withdraw()
 		return
 	refresh_warning()
+	if warning_presented and warning_uncovered():
+		warning_elapsed = minf(settings.warning_delay_seconds, warning_elapsed + maxf(0, delta))
 
 func candidates(radius: int, hostile_only: bool = false) -> Array[Dictionary]:
 	var result: Array[Dictionary] = []
@@ -92,6 +95,9 @@ func candidates(radius: int, hostile_only: bool = false) -> Array[Dictionary]:
 		return result
 	for member in sightings.members:
 		if not world.persistent_state.wild_available(member.id) or (hostile_only and not member.entry.get("hostile", false)):
+			continue
+		var travel: Dictionary = world.persistent_state.roaming_view(member.id).get("traversal", {})
+		if hostile_only and not travel.is_empty() and travel.mode != "ground":
 			continue
 		var cell: Vector2i = sightings.current_cell(member)
 		var distance: int = sightings.manhattan(cell, world.cell)
@@ -105,6 +111,7 @@ func clear_warning() -> void:
 	warning_id = ""
 	warning_presented = false
 	warning_step = -1
+	warning_elapsed = 0.0
 	if warning_panel != null:
 		warning_panel.hide()
 
@@ -121,12 +128,16 @@ func refresh_warning() -> void:
 		warning_id = target.id
 		warning_presented = false
 		warning_step = steps
-	warning_label.text = "%s is guarding nearby · %d tiles\nMove away to avoid contact." % [target.name, target.distance]
+		warning_elapsed = 0.0
+	warning_label.text = "%s is defending territory · %d tiles\nMove away to avoid contact." % [target.name, target.distance]
 	warning_panel.show()
+
+func warning_uncovered() -> bool:
+	return not warning_id.is_empty() and warning_panel.is_visible_in_tree() and world.hud.visible and not world.paused and not world.journal_panel.visible and not world.confirmation.visible and (world.menu == null or not world.menu.opened) and not world.observation_menu.visible
 
 func mark_warning_presented() -> void:
 	# Actual post-draw acknowledgement; headless tests explicitly simulate this seam.
-	if not warning_id.is_empty() and warning_panel.is_visible_in_tree() and world.hud.visible and not world.paused and not world.journal_panel.visible and not world.confirmation.visible:
+	if warning_uncovered():
 		warning_presented = true
 
 func on_player_step(_from: Vector2i, _to: Vector2i) -> void:
@@ -145,7 +156,7 @@ func on_player_step(_from: Vector2i, _to: Vector2i) -> void:
 	var targets := candidates(settings.warning_distance, true)
 	if not targets.is_empty():
 		var target := targets[0]
-		if target.id == warning_id and warning_presented and steps > warning_step and target.distance <= settings.contact_distance:
+		if target.id == warning_id and warning_presented and warning_elapsed >= settings.warning_delay_seconds and steps > warning_step and target.distance <= settings.contact_distance:
 			open_encounter(target)
 			return
 	refresh_warning()
@@ -159,9 +170,26 @@ func approach_nearest() -> void:
 		return
 	open_encounter(targets[0])
 
+func approach_individual(identity: String) -> void:
+	# Context menus resolve the clicked identity again at execution, never nearest.
+	if world.paused or world.moving or world.confirmation.visible or world.encounter_active:
+		return
+	for target in candidates(settings.interaction_distance):
+		if target.id == identity:
+			open_encounter(target)
+			return
+	world.message("Move closer and stop to engage this Sol.", false)
+
 func open_encounter(target: Dictionary) -> void:
 	if world.encounter_active or world.moving or not world.persistent_state.wild_available(target.id):
 		return
+	var travel: Dictionary = world.persistent_state.roaming_view(target.id).get("traversal", {})
+	if not travel.is_empty() and travel.mode != "ground":
+		world.persistent_state.request_ground(target.id)
+		world.message("%s is returning toward land. Approach again once it is grounded." % str(target.name), false)
+		return
+	if world.menu != null and world.menu.opened:
+		world.menu.close()
 	active_target = target.duplicate(true)
 	encounter_state = world.persistent_state
 	world.encounter_active = true

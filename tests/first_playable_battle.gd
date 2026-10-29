@@ -1,4 +1,5 @@
 extends SceneTree
+const BattleTest = preload("res://tests/battle_test_support.gd")
 
 var checks := 0
 var failures := 0
@@ -28,13 +29,23 @@ func config() -> BattleSettings:
 		settings.opponents.append(profile.duplicate(true))
 	return settings
 
+func click(world: Node2D, cell: Vector2i) -> void:
+	var event := InputEventMouseButton.new()
+	event.button_index = MOUSE_BUTTON_LEFT
+	event.pressed = true
+	var relative: Vector2 = (world.center(cell) - world.camera.position) / 32.0
+	event.position = world.host.camera.unproject_position(Vector3(relative.x, 0, relative.y))
+	BattleTest.settle(world.host.battles)
+	world.handle_input(event)
+	BattleTest.settle(world.host.battles)
+
 func approach(world: Node2D, scene: Node3D, member_index: int = 0) -> void:
 	var member: Dictionary = scene.sightings.members[member_index]
 	world.cell = member.home + Vector2i.LEFT
 	world.destination = world.cell
 	world.moving = false
 	world.rebuild_world()
-	press(world, KEY_R)
+	scene.encounters.approach_individual(member.id)
 	scene.encounters.battle_button.pressed.emit()
 
 func play_to_victory(controller: Node) -> void:
@@ -47,18 +58,26 @@ func play_to_victory(controller: Node) -> void:
 			for cell in battle.deployment_tiles():
 				if TacticalBattle.distance(cell, battle.enemy_cell) < TacticalBattle.distance(best, battle.enemy_cell):
 					best = cell
+			BattleTest.settle(controller)
 			controller.select_cell(best)
+			BattleTest.settle(controller)
 		elif battle.can_attack():
 			controller.attack()
+			BattleTest.settle(controller)
+			controller.select_cell(battle.enemy_cell)
+			BattleTest.settle(controller)
 		else:
 			var best := battle.ally_cell
 			for cell: Vector2i in battle.reachable():
 				if TacticalBattle.distance(cell, battle.enemy_cell) < TacticalBattle.distance(best, battle.enemy_cell):
 					best = cell
 			if best != battle.ally_cell:
+				BattleTest.settle(controller)
 				controller.select_cell(best)
+				BattleTest.settle(controller)
 			else:
 				controller.wait_turn()
+				BattleTest.settle(controller)
 
 func run() -> void:
 	var tuning := config()
@@ -66,6 +85,9 @@ func run() -> void:
 	verify_domain(tuning)
 	var scene: Node3D = (load("res://scenes/world_3d.tscn") as PackedScene).instantiate()
 	scene.battle_settings = tuning
+	# Keep the fixed-trio lifecycle fixture independent of wilderness population.
+	scene.sighting_settings = preload("res://resources/sighting_settings.tres").duplicate(true)
+	scene.sighting_settings.wilderness_enabled = false
 	root.add_child(scene)
 	var world: Node2D = scene.world
 	var controller: Node = scene.battles
@@ -73,7 +95,7 @@ func run() -> void:
 	world.new_expedition(17)
 	check(world.persistent_state.starter_view().is_empty(), "New expedition does not implicitly grant a starter")
 	press(world, KEY_C)
-	check(controller.choosing and world.paused and world.encounter_active, "C opens an explicit choice modal with world activity guarded")
+	check(world.menu.opened and world.menu.selected == "sols" and not world.paused and not world.encounter_active, "C opens explicit starter choice in the unified Sols menu while world activity continues")
 	press(world, KEY_1)
 	var starter: Dictionary = world.persistent_state.starter_view()
 	check(not controller.choosing and not world.paused and starter.profile.species_id == "bramblepup" and world.persistent_state.individual_view(starter.id).location == "party", "Explicit keyboard choice creates one persistent owned companion")
@@ -88,16 +110,18 @@ func run() -> void:
 	check(controller.session != null and controller.session.phase == "deployment" and scene.encounters.battle_running, "Battle stages an enemy while the chosen ally remains sealed until deployment")
 	var state: ExpeditionState = world.persistent_state
 	var active_snapshot := state.snapshot()
-	var forbidden := ExpeditionSave.snapshot(17, world.cell, false, false, 5, world.terrain.climate, active_snapshot)
+	var forbidden := ExpeditionSave.snapshot(17, world.cell, false, false, WorldTerrain.GENERATION_VERSION, world.terrain.climate, active_snapshot)
 	check(ExpeditionSave.write(forbidden, path) == ERR_INVALID_DATA and FileAccess.get_file_as_string(path) == initial_bytes, "Low-level writer rejects active battle snapshots without touching the previous save")
 	world.save_game(path)
 	world.load_game(path)
 	check(world.persistent_state == state and controller.session != null and FileAccess.get_file_as_string(path) == initial_bytes, "World save/load cannot bypass the active encounter guard")
 	var invalid := Vector2i(9999, 9999)
+	BattleTest.settle(controller)
 	controller.select_cell(invalid)
+	BattleTest.settle(controller)
 	check(controller.session.phase == "deployment", "Invalid release cannot consume deployment or advance turns")
-	press(world, KEY_ENTER)
-	check(controller.session != null and controller.session.phase == "active", "Enter confirms the highlighted release through the actual world input route")
+	click(world, controller.session.deployment_tiles()[0])
+	check(controller.session != null and controller.session.phase == "active", "Mouse confirms release through the actual world input route")
 	play_to_victory(controller)
 	var result := state.battle_progress()
 	check(controller.session == null and result.wins == 1 and result.serial == 1 and result.last_result.outcome == "victory" and not world.encounter_active and not world.paused, "The default Bramblepup completes a real victory and resumes exploration")
@@ -106,7 +130,9 @@ func run() -> void:
 	var before := state.snapshot()
 	controller.attack()
 	controller.wait_turn()
+	BattleTest.settle(controller)
 	controller.retreat()
+	BattleTest.settle(controller)
 	check(state.snapshot() == before and not state.complete_battle(1, 1, "victory", 3), "Repeated terminal commands and receipts cannot award the outcome again")
 	world.save_game(path)
 	var victory_bytes := FileAccess.get_file_as_string(path)
@@ -118,15 +144,22 @@ func run() -> void:
 	state = world.persistent_state
 	approach(world, scene, 0)
 	check(controller.session != null, "The same starter can deploy against another available individual")
-	press(world, KEY_ESCAPE)
+	controller.request_retreat()
+	controller.retreat_dialog.confirmed.emit()
+	BattleTest.settle(controller)
 	check(controller.session == null and state.battle_progress().retreats == 1 and state.battle_progress().wins == 1, "Retreat is available even before deployment and commits once")
 	var enemy_profile: BattleProfile = tuning.opponents[0]
 	var old_attack := enemy_profile.attack
 	enemy_profile.attack = 1000
 	approach(world, scene, 0)
+	check(controller.session.enemy.attack != 1000, "Already admitted wild stats remain stable after resource edits")
+	controller.session.enemy.attack = 1000 # Explicit battle fixture forces an exhaustion outcome.
+	BattleTest.settle(controller)
 	controller.select_cell(controller.session.deployment_tiles()[0])
+	BattleTest.settle(controller)
 	if controller.session != null:
 		controller.wait_turn()
+		BattleTest.settle(controller)
 	check(controller.session == null and state.battle_progress().losses == 1 and state.starter_view().hp == 0 and world.cell == Vector2i.ZERO, "Exhaustion returns to the refuge with the same recoverable companion, not death")
 	check(state.starter_view().id == starter.id and state.counts().individuals == 4, "Defeat preserves the complete collection and starter identity")
 	enemy_profile.attack = old_attack
@@ -140,13 +173,15 @@ func run() -> void:
 	verify_all_starters(tuning)
 	world.new_expedition(17)
 	press(world, KEY_C)
-	press(world, KEY_ESCAPE)
+	press(world, KEY_R)
 	check(world.persistent_state.starter_view().is_empty() and not world.paused and not world.encounter_active, "Cancelling the companion chooser grants nothing and releases the modal")
 	approach(world, scene)
 	check(controller.choosing and world.persistent_state.starter_view().is_empty(), "Battle without a companion opens explicit selection instead of granting a hidden default")
+	check(controller.choice_preview.model != null and controller.choice_preview.viewport.own_world_3d, "Encounter starter chooser also shows a fitted isolated model preview")
 	press(world, KEY_3)
 	check(controller.session != null and controller.session.ally.species_id == "rillfin", "Choosing from the encounter flow continues into deployment with that exact companion")
 	controller.retreat()
+	BattleTest.settle(controller)
 	if OS.get_cmdline_user_args().has("--capture-battle") and DisplayServer.get_name() != "headless":
 		world.new_expedition(17)
 		press(world, KEY_C)
@@ -154,9 +189,12 @@ func run() -> void:
 		press(world, KEY_2)
 		approach(world, scene)
 		await capture("deployment")
+		BattleTest.settle(controller)
 		controller.select_cell(controller.session.deployment_tiles()[0])
+		BattleTest.settle(controller)
 		await capture("battle")
 		controller.retreat()
+		BattleTest.settle(controller)
 	for suffix in ["", ".bak", ".tmp"]:
 		if FileAccess.file_exists(path + suffix):
 			DirAccess.remove_absolute(path + suffix)
@@ -175,18 +213,19 @@ func verify_domain(tuning: BattleSettings) -> void:
 	var battle := TacticalBattle.prepare(WorldTerrain.new(17), Vector2i.ZERO, Vector2i(2, 0), tuning.starters[0].snapshot(), 44, tuning.opponents[1].snapshot(), tuning)
 	check(battle != null and battle.deployment_tiles().size() > 0, "Arena staging finds connected legal release cells without changing terrain")
 	check(not battle.deploy(Vector2i(2, 0)) and not battle.deploy(Vector2i.ZERO), "Deployment refuses occupied enemy and trainer cells")
-	check(battle.deploy(Vector2i(1, 0)) and battle.remaining == 3, "Deployment costs no tactical movement and activates speed-based initiative")
+	check(battle.deploy(Vector2i(1, 0)) and battle.remaining == battle.movement_allowance("ally"), "Deployment grants Speed-derived movement and activates initiative")
 	var hp := battle.enemy_hp
-	check(not battle.move_ally(Vector2i(2, 0)) and battle.remaining == 3 and battle.enemy_hp == hp, "Invalid movement consumes neither budget nor action")
+	check(not battle.move_ally(Vector2i(2, 0)) and battle.remaining == battle.movement_allowance("ally") and battle.actions_remaining == 6 and battle.enemy_hp == hp, "Invalid movement consumes neither budget nor action")
 	check(battle.can_attack() and TacticalBattle.damage(battle.ally, battle.enemy) == 4, "Basic targeting and source physical damage formula share the execution preview")
-	check(battle.attack() and battle.enemy_hp == hp - 4 and battle.turn == "ally", "A basic attack spends the action, activates the enemy, and returns the next ally turn")
+	check(battle.attack() and battle.enemy_hp == hp - 4 and battle.turn == "ally" and battle.actions_remaining == 2, "A basic attack spends four AP and retains the current turn")
 	check(battle.retreat() and not battle.retreat() and not battle.attack(), "Terminal battle domain commands are idempotent")
 	battle = TacticalBattle.prepare(WorldTerrain.new(17), Vector2i.ZERO, Vector2i(2, 0), tuning.starters[0].snapshot(), 44, tuning.opponents[1].snapshot(), tuning)
 	for cell in battle.cells:
 		battle.cells[cell] = true # Controlled arena fixture isolates action-budget legality.
 	battle.deploy(Vector2i(1, 0))
-	check(battle.move_ally(Vector2i(1, -1)) and battle.move_ally(Vector2i(2, -1)) and battle.move_ally(Vector2i(3, -1)) and battle.remaining == 0, "Several accepted movement inputs spend one shared three-cell turn budget")
-	check(not battle.move_ally(Vector2i(3, -2)) and battle.can_attack(), "An exhausted movement budget still permits the one basic action but no extra movement")
+	var free := battle.remaining
+	check(battle.move_ally(Vector2i(1, -1)) and battle.move_ally(Vector2i(2, -1)) and battle.move_ally(Vector2i(3, -1)) and battle.remaining == 0 and battle.actions_remaining == 6 - maxi(0, 3 - free), "Split movement spends free points then shared AP")
+	check(battle.move_ally(Vector2i(3, -2)) and battle.actions_remaining == 6 - maxi(0, 4 - free), "Extra movement remains available through the shared budget")
 	battle.cells[Vector2i(1, 1)] = false
 	check(not battle.in_range(Vector2i(1, 0), Vector2i(1, 2), 2), "Targeting rejects a short attack through blocked terrain")
 	var faster := tuning.opponents[1].snapshot()
@@ -210,6 +249,8 @@ func verify_persistence(snapshot: Dictionary, original: String, path: String) ->
 	legacy.erase("affinity_tiles")
 	legacy.erase("wild_population")
 	legacy.erase("collection")
+	legacy.erase("sol_stats")
+	legacy.erase("retraining_items")
 	if legacy.has("battle"):
 		legacy.battle.erase("captures")
 	var old := ExpeditionState.restore(legacy, 17)

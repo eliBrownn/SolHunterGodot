@@ -1,0 +1,30 @@
+[gd_resource type="Resource" script_class="SightingSettings" load_steps=6 format=3]
+
+[ext_resource type="Script" path="res://scripts/sighting_settings.gd" id="1"]
+[ext_resource type="Script" path="res://scripts/sol_catalog_sighting.gd" id="2"]
+
+[sub_resource type="Resource" id="crown"]
+script = ExtResource("2")
+species_id = "sol_species_0001"
+trail_x = 12
+affinity = "air"
+
+[sub_resource type="Resource" id="reed"]
+script = ExtResource("2")
+species_id = "sol_species_0002"
+trail_x = 18
+affinity = "water"
+placement = "bank"
+
+[sub_resource type="Resource" id="bell"]
+script = ExtResource("2")
+species_id = "sol_species_0003"
+trail_x = 34
+affinity = "fire"
+
+[resource]
+script = ExtResource("1")
+wilderness_enabled = false
+visible_radius = 28
+species_catalog_path = "res://resources/sol_species/catalog.tres"
+catalog_sightings = Array[Resource]([SubResource("crown"), SubResource("reed"), SubResource("bell")])

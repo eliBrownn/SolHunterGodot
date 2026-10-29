@@ -16,22 +16,25 @@ func _initialize() -> void:
 func run() -> void:
 	var scene: Node3D = (load("res://scenes/world_3d.tscn") as PackedScene).instantiate()
 	scene.sighting_settings = SightingSettings.new()
+	scene.sighting_settings = scene.sighting_settings.duplicate(true)
+	scene.sighting_settings.wilderness_enabled = false
 	root.add_child(scene)
 	var world: Node2D = scene.world
 	world.smoke_mode = true
 	var sightings: Node3D = scene.sightings
-	check(sightings.members.size() == 3 and world.persistent_state.counts().individuals == 3, "The main scene contains exactly three authored persistent individuals")
+	check(sightings.members.size() == 3 and world.persistent_state.counts().individuals == 3, "The isolated legacy sighting preset contains exactly three authored persistent individuals")
 	var identities: Array[String] = []
 	for member in sightings.members:
 		identities.append(member.id)
 		check(world.terrain.fits(member.home) and member.home.y == world.terrain.trail_y(member.home.x), "Authored sightings use existing clear dry trail cells without terrain edits")
-		check(member.sprite.billboard == BaseMaterial3D.BILLBOARD_ENABLED and member.sprite.texture_filter == BaseMaterial3D.TEXTURE_FILTER_NEAREST, "Sol placeholders remain upright nearest-filtered pixel sprites")
+		check(member.sprite.mesh == null and not member.sprite.halo.visible and member.sprite.has_method("sync_locomotion"), "Authored Sols use procedural creature bodies without orb fallbacks")
 	var first: Dictionary = sightings.members[0]
 	world.cell = first.home + Vector2i(0, -1)
 	world.explorer.position = world.center(world.cell)
 	world.camera.position = world.explorer.position
 	sightings.sync_views()
-	check(first.sprite.visible and first.label.visible and first.label.text.contains("Wary"), "Approaching a sighting reveals its provisional name and reaction")
+	var caption := SolReactionPolicy.caption(first.entry.reaction, world.persistent_state.roaming_view(first.id))
+	check(first.sprite.visible and first.label.visible and first.label.text.contains(first.entry.name) and first.label.text.contains(caption), "Approaching a sighting reveals its name and current saved reaction caption")
 	var before: Dictionary = world.persistent_state.snapshot()
 	world.rebuild_world()
 	check(world.persistent_state.snapshot() == before and sightings.members.size() == 3, "Render rebuild retains the same individuals rather than generating copies")

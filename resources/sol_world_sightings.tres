@@ -1,0 +1,149 @@
+[gd_resource type="Resource" script_class="SightingSettings" load_steps=21 format=3]
+
+[ext_resource type="Script" path="res://scripts/sighting_settings.gd" id="1"]
+[ext_resource type="Script" path="res://scripts/sol_catalog_sighting.gd" id="2"]
+
+[sub_resource type="Resource" id="crown"]
+script = ExtResource("2")
+species_id = "sol_species_0001"
+trail_x = 12
+affinity = "air"
+
+[sub_resource type="Resource" id="reed"]
+script = ExtResource("2")
+species_id = "sol_species_0002"
+trail_x = 18
+affinity = "water"
+placement = "bank"
+
+[sub_resource type="Resource" id="bell"]
+script = ExtResource("2")
+species_id = "sol_species_0003"
+trail_x = 34
+affinity = "fire"
+
+[sub_resource type="Resource" id="ashquill"]
+script = ExtResource("2")
+species_id = "sol_species_0004"
+trail_x = 22
+affinity = "water"
+
+[sub_resource type="Resource" id="rattlehorn"]
+script = ExtResource("2")
+species_id = "sol_species_0005"
+trail_x = 40
+affinity = "earth"
+
+[sub_resource type="Resource" id="rimefold"]
+script = ExtResource("2")
+species_id = "sol_species_0006"
+trail_x = 56
+affinity = "air"
+
+[sub_resource type="Resource" id="browguard"]
+script = ExtResource("2")
+species_id = "sol_species_0007"
+trail_x = 16
+affinity = "void"
+
+[sub_resource type="Resource" id="bitterfrill"]
+script = ExtResource("2")
+species_id = "sol_species_0008"
+trail_x = 28
+affinity = "earth"
+
+[sub_resource type="Resource" id="knucklemole"]
+script = ExtResource("2")
+species_id = "sol_species_0009"
+trail_x = 30
+affinity = "air"
+
+[sub_resource type="Resource" id="sailcrest"]
+script = ExtResource("2")
+species_id = "sol_species_0010"
+trail_x = 36
+affinity = "water"
+
+[sub_resource type="Resource" id="glass_throat"]
+script = ExtResource("2")
+species_id = "sol_species_0011"
+trail_x = 44
+affinity = "quantum"
+
+[sub_resource type="Resource" id="claspback"]
+script = ExtResource("2")
+species_id = "sol_species_0012"
+trail_x = 50
+affinity = "fire"
+
+[sub_resource type="Resource" id="foldling"]
+script = ExtResource("2")
+species_id = "sol_species_0013"
+trail_x = 60
+affinity = "spectral"
+
+[sub_resource type="Resource" id="mournveil"]
+script = ExtResource("2")
+species_id = "sol_species_0014"
+trail_x = 64
+affinity = "lightning"
+
+[sub_resource type="Resource" id="pebblewyrm"]
+script = ExtResource("2")
+species_id = "sol_species_0015"
+trail_x = 68
+affinity = "void"
+
+[sub_resource type="Resource" id="shadepelt"]
+script = ExtResource("2")
+species_id = "sol_species_0016"
+trail_x = 72
+affinity = "earth"
+
+[sub_resource type="Resource" id="kilnling"]
+script = ExtResource("2")
+species_id = "sol_species_0017"
+trail_x = 76
+affinity = "air"
+
+[sub_resource type="Resource" id="thimblehart"]
+script = ExtResource("2")
+species_id = "sol_species_0018"
+trail_x = 6
+affinity = "water"
+
+[resource]
+script = ExtResource("1")
+species_catalog_path = "res://resources/sol_species/catalog.tres"
+catalog_sightings = Array[Resource]([SubResource("crown"), SubResource("reed"), SubResource("bell"), SubResource("ashquill"), SubResource("rattlehorn"), SubResource("rimefold"), SubResource("browguard"), SubResource("bitterfrill"), SubResource("knucklemole"), SubResource("sailcrest"), SubResource("glass_throat"), SubResource("claspback"), SubResource("foldling"), SubResource("mournveil"), SubResource("pebblewyrm"), SubResource("shadepelt"), SubResource("kilnling"), SubResource("thimblehart")])
+enabled = true
+wilderness_enabled = true
+species_profiles_enabled = true
+visible_radius = 28
+reaction_distance = 3
+observation_distance = 3
+movement_enabled = true
+movement_interval_ticks = 1
+home_radius = 5
+movement_radius = 28
+comfort_distance = 2
+flee_release_distance = 5
+movement_travel_fraction = 1.0
+patrol_goal_min_fraction = 0.5
+reaction_release_distance = 6
+approach_resume_distance = 3
+reposition_cooldown_ticks = 2
+settle_ticks = 3
+attention_ticks = 2
+routine_ticks = 6
+guard_standoff_distance = 2
+wander_enabled = true
+wander_radius = 3
+rest_min_ticks = 1
+rest_max_ticks = 3
+patrol_rest_chance = 0.35
+blocked_goal_retry_ticks = 2
+goal_timeout_ticks = 12
+path_search_cells = 64
+bob_pixels = 1.0
+bob_cycles = 0.8

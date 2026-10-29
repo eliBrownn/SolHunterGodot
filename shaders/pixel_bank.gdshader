@@ -1,5 +1,5 @@
 shader_type spatial;
-render_mode unshaded, cull_disabled;
+render_mode cull_disabled;
 
 uniform vec2 world_origin = vec2(0.0);
 uniform vec4 soil_color : source_color = vec4(0.38, 0.39, 0.27, 1.0);
@@ -20,4 +20,6 @@ void fragment() {
 		base = rim_color.rgb;
 	}
 	ALBEDO = base * (0.90 + grain * 0.12);
+	ROUGHNESS = 1.0;
+	SPECULAR = 0.0;
 }

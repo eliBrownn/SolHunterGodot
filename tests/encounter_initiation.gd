@@ -32,6 +32,7 @@ func walk(world: Node2D, direction: Vector2) -> void:
 func run() -> void:
 	var scene: Node3D = (load("res://scenes/world_3d.tscn") as PackedScene).instantiate()
 	scene.encounter_settings = EncounterSettings.new()
+	scene.encounter_settings.warning_delay_seconds = 0 # This suite isolates warning acknowledgement and later-step ordering.
 	scene.sighting_settings = SightingSettings.new()
 	scene.sighting_settings.movement_enabled = false
 	root.add_child(scene)
@@ -77,7 +78,7 @@ func run() -> void:
 	walk(world, Vector2.LEFT)
 	check(encounters.safe_steps == remaining - 1 and not world.encounter_active, "Only completed exploration steps spend withdrawal protection")
 	position(world, guard.home + Vector2i(-1, 0))
-	press(world, KEY_R)
+	world.encounter_requested.emit()
 	check(world.encounter_active and encounters.active_target.id == guard.id, "Deliberate R approach remains available during automatic-contact protection")
 	encounters.withdraw_button.pressed.emit()
 	encounters.safe_steps = 0
@@ -104,12 +105,12 @@ func run() -> void:
 	position(world, neutral.home + Vector2i.LEFT)
 	encounters.refresh_warning()
 	check(encounters.warning_id.is_empty(), "The neutral authored Sol is not silently made hostile")
-	press(world, KEY_R)
+	world.encounter_requested.emit()
 	check(world.encounter_active and encounters.active_target.id == neutral.id, "Player-initiated approach selects the current nearby neutral identity")
 	encounters.withdraw()
 	state = world.persistent_state
 	state.acquire(neutral.id, "party")
-	press(world, KEY_R)
+	world.encounter_requested.emit()
 	check(not world.encounter_active and state.individual_view(neutral.id).location == "party", "Owned individuals cannot be reselected or rerolled for an encounter")
 	world.new_expedition(17)
 	guard = scene.sightings.members[2]
@@ -124,7 +125,7 @@ func run() -> void:
 	encounters.refresh_warning()
 	check(encounters.warning_id.is_empty(), "Inspector automatic-contact switch disables hostile entry and warnings")
 	scene.encounter_settings.enabled = false
-	press(world, KEY_R)
+	world.encounter_requested.emit()
 	check(not world.encounter_active, "Inspector encounter switch disables deliberate entry")
 	if OS.get_cmdline_user_args().has("--capture-encounter") and DisplayServer.get_name() != "headless":
 		scene.encounter_settings.enabled = true
@@ -139,7 +140,7 @@ func run() -> void:
 		await RenderingServer.frame_post_draw
 		get_root().get_texture().get_image().save_png("res://artifacts/encounter/warning.png")
 		position(world, guard.home + Vector2i.LEFT)
-		press(world, KEY_R)
+		world.encounter_requested.emit()
 		for frame in range(5):
 			await process_frame
 		await RenderingServer.frame_post_draw
