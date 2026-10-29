@@ -91,7 +91,7 @@ func run() -> void:
 	scene.world.destination = entrance
 	scene.world.paused = true
 	scene.world.rebuild_world()
-	var picks: Array = scene.place_root.pick_objects.filter(func(row: Dictionary) -> bool: return row.has("site_id"))
+	var picks: Array = scene.place_root.pick_objects.filter(func(row: Dictionary) -> bool: return row.get("site_id", "") == site.id)
 	check(picks.size() == site.elements.size(), "Live view publishes the site once across chunk boundaries")
 	scene.world.rebuild_world()
 	check(site == scene.world.terrain.scenery_site, "Full visual eviction/rebuild preserves admitted site")

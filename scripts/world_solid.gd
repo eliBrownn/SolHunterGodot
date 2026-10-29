@@ -439,17 +439,7 @@ func build_solid_places() -> void:
 		place_root.free()
 	place_root = SolidChunk.new()
 	solid_root.add_child(place_root)
-	var footprint: Rect2i = world.terrain.cabin_footprint
-	if footprint.has_area():
-		var cabin := Vector2(footprint.position) + Vector2(footprint.size) * 0.5
-		var width := float(footprint.size.x)
-		var depth := float(footprint.size.y)
-		piece("prop", cabin, Vector3(0, 0.12, 0), Vector3(width, 0.24, depth), Color("777d76"))
-		piece("wall", cabin, Vector3(0, 1.04, 0), Vector3(width - 0.2, 1.60, depth - 0.2), Color.WHITE)
-		piece("roof", cabin, Vector3(0, 2.27, 0), Vector3(width + 0.3, 0.86, depth + 0.3), Color("665a4f"))
-		piece("prop", cabin, Vector3(0, 0.86, depth * 0.5 - 0.085), Vector3(0.64, 1.24, 0.05), Color("594431"))
-		for window_x in [-0.94, 0.94]:
-			piece("prop", cabin, Vector3(window_x, 1.13, depth * 0.5 - 0.075), Vector3(0.48, 0.44, 0.06), Color("d1bb81"))
+	place_root.add_site(world.terrain.cabin_layout)
 	place_root.add_site(world.terrain.scenery_site, shelter_roof_trim)
 	# Preserve authored place anchors while giving each prop real volume.
 	for prop: Node2D in world.place_props:

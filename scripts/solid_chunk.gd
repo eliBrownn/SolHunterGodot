@@ -151,7 +151,7 @@ func add_site(site: Dictionary, include_trim: bool = true) -> void:
 			batches[kind] = []
 		batches[kind].append({"transform": element.transform, "color": element.color})
 		var at: Vector3 = element.transform.origin
-		pick_objects.append({"transform": element.transform, "mesh": mesh_for(kind), "bounds": mesh_for(kind).get_aabb(), "cell": Vector2i(Vector2(at.x, at.z).floor()), "category": "structure", "subject": "Woodland shelter", "site_id": site.id, "element_id": element.id})
+		pick_objects.append({"transform": element.transform, "mesh": mesh_for(kind), "bounds": mesh_for(kind).get_aabb(), "cell": Vector2i(Vector2(at.x, at.z).floor()), "category": "structure", "subject": site.get("subject", "Woodland shelter"), "site_id": site.id, "element_id": element.id})
 
 func finish() -> void:
 	while not finish_step():

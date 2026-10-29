@@ -19,6 +19,7 @@ var noise := FastNoiseLite.new()
 var moisture := FastNoiseLite.new()
 var vastra := FastNoiseLite.new()
 var cabin_footprint := Rect2i()
+var cabin_layout: Dictionary = {}
 var scenery_parameters: Dictionary
 var scenery_site: Dictionary = {}
 var relief: Dictionary
@@ -75,6 +76,7 @@ func _init(seed_value: int = 2601026, climate_parameters: Dictionary = {}, relie
 	if cabin_footprint.has_area():
 		var center := Vector2(cabin_footprint.position) + Vector2(cabin_footprint.size) * 0.5
 		_cabin_height = 0.0 if center.length() < 14.0 else heightfield.surface_height(center)
+	cabin_layout = Structures.cabin_layout(self)
 	scenery_parameters = (site_parameters if ScenerySiteTemplate.valid_parameters(site_parameters) else default_scenery()).duplicate(true)
 	var site_template := ScenerySiteTemplate.new()
 	for key in scenery_parameters:
