@@ -29,6 +29,7 @@ var host: Node3D
 var expedition_settings: ExpeditionSettings = EXPEDITION_SETTINGS
 var climate_settings: ClimateSettings = CLIMATE_SETTINGS
 var terrain_settings: TerrainReliefSettings = preload("res://resources/terrain_rolling.tres")
+var scenery_settings: ScenerySiteTemplate = preload("res://resources/scenery/woodland_shelter.tres")
 var vastra_settings: VastraSettings = VASTRA_SETTINGS
 var configuration_warnings: Dictionary = {}
 var movement_library_validation := preload("res://scripts/runtime_validation_cache.gd").new()
@@ -289,9 +290,10 @@ func new_expedition(seed_value: int) -> void:
 		settings = WorldTerrain.default_climate()
 		push_warning("Invalid climate settings; using defaults for this expedition.")
 	var relief_parameters := terrain_settings.parameters() if terrain_settings != null and terrain_settings.valid() else WorldTerrain.default_relief()
-	var candidate := WorldTerrain.new(seed_value, settings, relief_parameters)
+	var site_parameters := scenery_settings.parameters() if scenery_settings != null and scenery_settings.valid() else WorldTerrain.default_scenery()
+	var candidate := WorldTerrain.new(seed_value, settings, relief_parameters, site_parameters)
 	if not candidate.essential_route_clear():
-		candidate = WorldTerrain.new(seed_value, settings, WorldTerrain.default_relief())
+		candidate = WorldTerrain.new(seed_value, settings, WorldTerrain.default_relief(), site_parameters)
 		push_warning("Terrain settings blocked the essential route; retrying with default Rolling relief.")
 		if not candidate.essential_route_clear():
 			message("This seed has no safe essential route. Current expedition kept.", false)
@@ -356,6 +358,13 @@ func add_prop(key: String, at: Vector2i) -> void:
 	place_props.append(sprite)
 
 func build_places() -> void:
+	if terrain.scenery_site.get("admitted", false):
+		for cell_at in terrain.scenery_site.blockers:
+			var support := StructureView.new()
+			support.footprint = Rect2i(cell_at, Vector2i.ONE)
+			support.position = Vector2(cell_at + Vector2i.ONE) * 32.0
+			actors.add_child(support)
+			place_props.append(support)
 	if terrain.cabin_footprint.has_area():
 		var building := StructureView.new()
 		building.footprint = terrain.cabin_footprint
@@ -620,7 +629,7 @@ func save_game(path: String = ExpeditionSave.SAVE_PATH) -> void:
 	if encounter_active:
 		message("Withdraw before saving your expedition.", false)
 		return
-	var error := ExpeditionSave.write(ExpeditionSave.snapshot(terrain.world_seed, cell, visited, returned, terrain.generation_version, terrain.climate, persistent_state.snapshot(), terrain.relief), path)
+	var error := ExpeditionSave.write(ExpeditionSave.snapshot(terrain.world_seed, cell, visited, returned, terrain.generation_version, terrain.climate, persistent_state.snapshot(), terrain.relief, terrain.scenery_parameters), path)
 	message("Expedition saved." if error == OK else "Save failed: " + error_string(error))
 
 func load_game(path: String = ExpeditionSave.SAVE_PATH) -> void:
@@ -635,7 +644,7 @@ func load_game(path: String = ExpeditionSave.SAVE_PATH) -> void:
 	if candidate_state == null:
 		message("Invalid persistent state. Current expedition kept.")
 		return
-	var candidate_terrain := WorldTerrain.new(int(data.seed), data.climate, data.relief)
+	var candidate_terrain := WorldTerrain.new(int(data.seed), data.climate, data.relief, data.scenery)
 	terrain = candidate_terrain
 	replace_persistent_state(candidate_state)
 	cell = Vector2i(int(data.player[0]), int(data.player[1]))

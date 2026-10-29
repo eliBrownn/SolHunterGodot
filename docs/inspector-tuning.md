@@ -1,5 +1,16 @@
 # Adjusting the game in Godot
 
+## Reformat scenery — October 28
+
+The world scene's `scenery_settings` references
+`resources/scenery/woodland_shelter.tres`. Its stable key, absolute preferred X
+cell, bounded candidate count and shared module budget apply to new expeditions
+and are captured in save format 4 / generation 8. Loaded expeditions retain those
+captured layout settings. `shelter_roof_trim` on the solid world scene is cosmetic;
+rebuild/restart applies it to both new and loaded worlds without changing
+reservations or identity. The default site is an open woodland shelter with no
+interaction/reward rules.
+
 ## Early moves, supply and hybrids — October 28
 
 The 50-move library and explicit species kits follow

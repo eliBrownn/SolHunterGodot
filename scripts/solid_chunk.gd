@@ -139,6 +139,20 @@ func add_piece(kind: String, at: Vector3, size: Vector3, color: Color, yaw: floa
 	if kind in ["post", "prop", "wall", "roof"]:
 		pick_objects.append({"transform": Transform3D(basis, at), "mesh": mesh_for(kind), "bounds": mesh_for(kind).get_aabb(), "cell": Vector2i(Vector2(at.x, at.z).floor())})
 
+## Publish one already-admitted site. This consumer never chooses placements.
+func add_site(site: Dictionary, include_trim: bool = true) -> void:
+	if not site.get("admitted", false):
+		return
+	for element in site.elements:
+		if not include_trim and str(element.id).ends_with("/trim"):
+			continue
+		var kind: String = element.kind
+		if not batches.has(kind):
+			batches[kind] = []
+		batches[kind].append({"transform": element.transform, "color": element.color})
+		var at: Vector3 = element.transform.origin
+		pick_objects.append({"transform": element.transform, "mesh": mesh_for(kind), "bounds": mesh_for(kind).get_aabb(), "cell": Vector2i(Vector2(at.x, at.z).floor()), "category": "structure", "subject": "Woodland shelter", "site_id": site.id, "element_id": element.id})
+
 func finish() -> void:
 	while not finish_step():
 		pass
@@ -389,6 +403,8 @@ func build_cells(cells: Array[Dictionary], terrain: WorldTerrain, coord: Vector2
 		elif data.obstacle == 2:
 			add_nature(nature.rocks[int(data.variation) % nature.rocks.size()], at, nature.rock_height * (0.9 + float(data.variation) * 0.04), float(data.variation), "rock")
 			obstacle_count += 1
+		elif terrain != null and terrain.scenery_reserved(absolute):
+			pass # Site access and required spaces own this ground before dressing.
 		elif terrain != null and nature.composition != null and nature.composition.patch_at(terrain, absolute) != null:
 			var patch: NaturePatch = nature.composition.patch_at(terrain, absolute)
 			var record := nature.composition.placement(terrain, absolute, patch)

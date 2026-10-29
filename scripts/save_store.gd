@@ -1,15 +1,16 @@
 class_name ExpeditionSave
 extends RefCounted
 
-const FORMAT_VERSION := 3
+const FORMAT_VERSION := 4 # Captured site definition parameters.
 const SAVE_PATH := "user://expedition.json"
 const MAX_SAVE_BYTES := 16 * 1024 * 1024
 
-static func snapshot(seed_value: int, cell: Vector2i, visited: bool, returned: bool, generation_version: int = WorldTerrain.GENERATION_VERSION, climate_parameters: Dictionary = {}, persistent_state: Dictionary = {}, relief_parameters: Dictionary = {}) -> Dictionary:
+static func snapshot(seed_value: int, cell: Vector2i, visited: bool, returned: bool, generation_version: int = WorldTerrain.GENERATION_VERSION, climate_parameters: Dictionary = {}, persistent_state: Dictionary = {}, relief_parameters: Dictionary = {}, scenery_parameters: Dictionary = {}) -> Dictionary:
 	return {"save_version": FORMAT_VERSION, "generation_version": generation_version,
 		"seed": seed_value, "player": [cell.x, cell.y], "landmark_visited": visited, "returned": returned,
 		"climate": (climate_parameters if not climate_parameters.is_empty() else WorldTerrain.default_climate()).duplicate(true),
 		"relief": (relief_parameters if not relief_parameters.is_empty() else WorldTerrain.default_relief()).duplicate(true),
+		"scenery": (scenery_parameters if not scenery_parameters.is_empty() else WorldTerrain.default_scenery()).duplicate(true),
 		"world_state": (persistent_state if not persistent_state.is_empty() else ExpeditionState.new(seed_value).snapshot()).duplicate(true)}
 
 static func validate(data: Variant) -> bool:
@@ -37,9 +38,9 @@ static func validate(data: Variant) -> bool:
 		return false
 	if data.returned and not data.landmark_visited:
 		return false
-	if not WorldTerrain.valid_climate(data.get("climate")) or not TerrainReliefSettings.valid_parameters(data.get("relief")):
+	if not WorldTerrain.valid_climate(data.get("climate")) or not TerrainReliefSettings.valid_parameters(data.get("relief")) or not ScenerySiteTemplate.valid_parameters(data.get("scenery")):
 		return false
-	var terrain := WorldTerrain.new(int(seed_value), data.climate, data.relief)
+	var terrain := WorldTerrain.new(int(seed_value), data.climate, data.relief, data.scenery)
 	for identity in data.get("world_state", {}).get("roaming", {}):
 		var row: Dictionary = data.world_state.roaming[identity]
 		var individual: Dictionary = data.world_state.individuals[identity]

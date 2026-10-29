@@ -68,7 +68,7 @@ func capture(name: String) -> void:
 		scene.gamepad.preferences_path = output_directory + "/controller.cfg"
 		scene.gamepad.settings = ControllerSettings.new()
 		scene.gamepad.settings.install_actions()
-		record(world.terrain.generation_version == 7 and scene.sightings.settings.species_profiles_enabled and scene.sightings.settings.movement_enabled and scene.sightings.settings.wilderness_enabled, "Generation 7 and normal species profiles, movement and wilderness remain enabled")
+		record(world.terrain.generation_version == WorldTerrain.GENERATION_VERSION and scene.sightings.settings.species_profiles_enabled and scene.sightings.settings.movement_enabled and scene.sightings.settings.wilderness_enabled, "Current generation and normal species profiles, movement and wilderness remain enabled")
 		await personal_controls()
 		await camera_controls()
 		await encounter_cases()

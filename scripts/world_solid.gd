@@ -11,6 +11,8 @@ const TerrainRay = preload("res://scripts/terrain_ray.gd")
 @export var view_settings: View3DSettings = preload("res://resources/view_3d_settings.tres")
 ## Imported biome meshes, visual sizes and nonblocking decoration density. Rebuild/restart to apply; not saved.
 @export var nature_settings: NatureSettings = preload("res://resources/nature_settings.tres")
+## Cosmetic roof trim only. Rebuild/restart applies, including loaded expeditions.
+@export var shelter_roof_trim := true
 ## Saved-clock day/night, deterministic clear/cloudy/rain weather, sun/moon and ambient lighting.
 @export var atmosphere_settings: AtmosphereSettings = preload("res://resources/atmosphere_settings.tres")
 var atmosphere_controller: Node
@@ -448,6 +450,7 @@ func build_solid_places() -> void:
 		piece("prop", cabin, Vector3(0, 0.86, depth * 0.5 - 0.085), Vector3(0.64, 1.24, 0.05), Color("594431"))
 		for window_x in [-0.94, 0.94]:
 			piece("prop", cabin, Vector3(window_x, 1.13, depth * 0.5 - 0.075), Vector3(0.48, 0.44, 0.06), Color("d1bb81"))
+	place_root.add_site(world.terrain.scenery_site, shelter_roof_trim)
 	# Preserve authored place anchors while giving each prop real volume.
 	for prop: Node2D in world.place_props:
 		var key: String = prop.get_meta("asset_key", "")

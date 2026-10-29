@@ -2,7 +2,7 @@ class_name WorldTerrain
 extends RefCounted
 ## Immutable generated defaults. All decisions use seed, version and absolute cells.
 
-const GENERATION_VERSION := 7
+const GENERATION_VERSION := 8 # Admitted woodland site and shared access reservations.
 const Structures = preload("res://scripts/authored_structures.gd")
 const CELL_SIZE := 32
 const CHUNK_SIZE := 16
@@ -19,6 +19,8 @@ var noise := FastNoiseLite.new()
 var moisture := FastNoiseLite.new()
 var vastra := FastNoiseLite.new()
 var cabin_footprint := Rect2i()
+var scenery_parameters: Dictionary
+var scenery_site: Dictionary = {}
 var relief: Dictionary
 var heightfield: TerrainHeightfield
 var _height_cache: Dictionary = {}
@@ -49,7 +51,10 @@ static func valid_climate(value: Variant) -> bool:
 			return false
 	return value.moisture_frequency >= 0.001 and value.moisture_frequency <= 0.1 and value.dry_threshold >= 0.0 and value.wet_threshold <= 1.0 and value.dry_threshold < value.wet_threshold
 
-func _init(seed_value: int = 2601026, climate_parameters: Dictionary = {}, relief_parameters: Dictionary = {}) -> void:
+static func default_scenery() -> Dictionary:
+	return preload("res://resources/scenery/woodland_shelter.tres").parameters()
+
+func _init(seed_value: int = 2601026, climate_parameters: Dictionary = {}, relief_parameters: Dictionary = {}, site_parameters: Dictionary = {}) -> void:
 	world_seed = seed_value
 	generation_version = GENERATION_VERSION
 	climate = climate_parameters.duplicate(true) if valid_climate(climate_parameters) else default_climate()
@@ -70,6 +75,14 @@ func _init(seed_value: int = 2601026, climate_parameters: Dictionary = {}, relie
 	if cabin_footprint.has_area():
 		var center := Vector2(cabin_footprint.position) + Vector2(cabin_footprint.size) * 0.5
 		_cabin_height = 0.0 if center.length() < 14.0 else heightfield.surface_height(center)
+	scenery_parameters = (site_parameters if ScenerySiteTemplate.valid_parameters(site_parameters) else default_scenery()).duplicate(true)
+	var site_template := ScenerySiteTemplate.new()
+	for key in scenery_parameters:
+		site_template.set(key, int(scenery_parameters[key]) if key != "site_key" else scenery_parameters[key])
+	scenery_site = site_template.plan(self)
+
+func scenery_reserved(cell: Vector2i) -> bool:
+	return scenery_site.get("admitted", false) and (scenery_site.reservation.has_point(cell) or scenery_site.approach.has_point(cell))
 
 func pond_at(cell: Vector2i) -> Dictionary:
 	if _pond_cache.has(cell):
@@ -227,6 +240,8 @@ func sample(cell: Vector2i) -> Dictionary:
 		"overload": 0}
 
 func obstacle_at(cell: Vector2i, ground: int, reserved: bool) -> int:
+	if scenery_reserved(cell):
+		return 3 if cell in scenery_site.blockers else 0
 	if cabin_footprint.has_area():
 		if cabin_footprint.has_point(cell):
 			return 3

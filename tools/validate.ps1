@@ -124,6 +124,8 @@ try {
     Invoke-CheckedGodot @('--headless', '--path', $projectRoot, '--script', 'tests/field_menu.gd')
     Write-Host 'Running tests/nature_composition.gd'
     Invoke-CheckedGodot @('--headless', '--path', $projectRoot, '--script', 'tests/nature_composition.gd')
+    Write-Host 'Running tests/scenery_sites.gd'
+    Invoke-CheckedGodot @('--headless', '--path', $projectRoot, '--script', 'tests/scenery_sites.gd')
     Write-Host 'Running tests/terrain_heightfield.gd'
     Invoke-CheckedGodot @('--headless', '--path', $projectRoot, '--script', 'tests/terrain_heightfield.gd')
     Write-Host 'Running tests/terrain_integration.gd'

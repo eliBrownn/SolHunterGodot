@@ -13,6 +13,8 @@ const TEXTURE_SIZE := Vector2i(2048, 1536)
 @export var climate_settings: ClimateSettings = preload("res://resources/climate_settings.tres")
 ## Gentle terrain generation for NEW expeditions. Loads retain their saved parameters.
 @export var terrain_settings: TerrainReliefSettings = preload("res://resources/terrain_rolling.tres")
+## Woodland site layout for NEW expeditions. Loads retain captured layout parameters.
+@export var scenery_settings: ScenerySiteTemplate = preload("res://resources/scenery/woodland_shelter.tres")
 ## Natural recovery timing, strength, and CPU work budget; applies to loaded worlds too.
 @export var vastra_settings: VastraSettings = preload("res://resources/vastra_settings.tres")
 ## Display, observation range, local movement responses, and animation for the provisional trail Sols.
@@ -106,6 +108,7 @@ func _ready() -> void:
 	world.expedition_settings = expedition_settings
 	world.climate_settings = climate_settings
 	world.terrain_settings = terrain_settings
+	world.scenery_settings = scenery_settings
 	world.vastra_settings = vastra_settings
 	viewport.add_child(world)
 	if not has_method("sync_ground"):

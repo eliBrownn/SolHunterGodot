@@ -68,7 +68,7 @@ func placement(terrain: WorldTerrain, cell: Vector2i, patch: NaturePatch) -> Dic
 	for y in range(floori(rect.position.y), ceili(rect.end.y)):
 		for x in range(floori(rect.position.x), ceili(rect.end.x)):
 			var at := Vector2i(x, y)
-			if terrain.route_axes(at, 1) != 0 or terrain.is_camp(at) or terrain.is_landmark(at) or terrain.cabin_footprint.grow(1).has_point(at):
+			if terrain.scenery_reserved(at) or terrain.route_axes(at, 1) != 0 or terrain.is_camp(at) or terrain.is_landmark(at) or terrain.cabin_footprint.grow(1).has_point(at):
 				return {}
 			for clearing in patch.clearings:
 				if maxi(absi(at.x - clearing.x), absi(at.y - clearing.y)) <= 2:
