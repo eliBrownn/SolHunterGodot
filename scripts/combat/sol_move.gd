@@ -95,7 +95,7 @@ static func valid(data: Variant) -> bool:
 		return false
 	if data.get("effect") != "passive" and data.get("passive_kind", "none") != "none":
 		return false
-	return ExpeditionState.keys_match(data, expected) and data.get("category", "physical") in ["physical", "special"] and data.get("stat", "attack") in ["attack", "defense", "special_attack", "special_defense", "speed"] and SolSpeciesDefinition.text(data.id, 80) and SolSpeciesDefinition.text(data.name, 80) and data.affinity in AffinityImprint.IDS and data.effect in ["damage", "heal", "field", "phase", "quantum", "anchor", "buff", "debuff", "poison", "protect", "passive"] and SolSpeciesDefinition.whole(data.power, 0, 100) and SolSpeciesDefinition.whole(data.reach, 1, 6) and SolSpeciesDefinition.whole(data.duration, 1, 1000)
+	return RecordShape.keys_match(data, expected) and data.get("category", "physical") in ["physical", "special"] and data.get("stat", "attack") in ["attack", "defense", "special_attack", "special_defense", "speed"] and SolSpeciesDefinition.text(data.id, 80) and SolSpeciesDefinition.text(data.name, 80) and data.affinity in AffinityImprint.IDS and data.effect in ["damage", "heal", "field", "phase", "quantum", "anchor", "buff", "debuff", "poison", "protect", "passive"] and SolSpeciesDefinition.whole(data.power, 0, 100) and SolSpeciesDefinition.whole(data.reach, 1, 6) and SolSpeciesDefinition.whole(data.duration, 1, 1000)
 
 static func normalized(data: Dictionary) -> Dictionary:
 	var result := data.duplicate(true)

@@ -6,6 +6,8 @@ param(
 )
 $ErrorActionPreference = 'Stop'
 $projectRoot = Split-Path -Parent $PSScriptRoot
+# The complete configured suite exceeds ten minutes on this desktop.
+$timeoutSeconds = if ($Phase -eq 'Validate') { 1800 } else { 600 }
 $git = 'C:/Program Files/Git/cmd/git.exe'
 $engine = (Get-Command $Godot -CommandType Application -ErrorAction Stop).Source
 $version = (& $engine --version | Out-String).Trim()
@@ -48,6 +50,7 @@ if ($Only) { $cases = @($cases | Where-Object { $_.name -eq $Only }); if ($cases
 $manifest = [ordered]@{
     started_utc = (Get-Date).ToUniversalTime().ToString('o')
     phase = $Phase
+    timeout_seconds = $timeoutSeconds
     engine = $version
     branch = (& $git -C $projectRoot branch --show-current | Out-String).Trim()
     base_commit = (& $git -C $projectRoot rev-parse HEAD | Out-String).Trim()
@@ -83,7 +86,7 @@ foreach ($case in $cases) {
     while (-not $process.HasExited) {
         $process.Refresh()
         $peak = [Math]::Max($peak, $process.PeakWorkingSet64)
-        if (((Get-Date) - $started).TotalSeconds -gt 600) { $timedOut = $true; $process.Kill($true); break }
+        if (((Get-Date) - $started).TotalSeconds -gt $timeoutSeconds) { $timedOut = $true; $process.Kill($true); break }
         Start-Sleep -Milliseconds 200
     }
     $process.WaitForExit()

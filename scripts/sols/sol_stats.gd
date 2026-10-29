@@ -63,9 +63,9 @@ static func normalized(row: Dictionary) -> Dictionary:
 	return result
 
 static func valid(row: Variant, individual: Dictionary) -> bool:
-	if not row is Dictionary or not ExpeditionState.keys_match(row, ["version", "ivs", "class_id", "potency", "base", "training", "earned", "forms", "hp_growth", "stat_growth", "policy"]) or not SolSpeciesDefinition.whole(row.version, 1, 1) or row.class_id != individual.class_id or not SolStatSettings.valid_parameters(row.policy):
+	if not row is Dictionary or not RecordShape.keys_match(row, ["version", "ivs", "class_id", "potency", "base", "training", "earned", "forms", "hp_growth", "stat_growth", "policy"]) or not SolSpeciesDefinition.whole(row.version, 1, 1) or row.class_id != individual.class_id or not SolStatSettings.valid_parameters(row.policy):
 		return false
-	if not row.ivs is Dictionary or not ExpeditionState.keys_match(row.ivs, STATS) or not row.training is Dictionary or not ExpeditionState.keys_match(row.training, STATS) or not row.base is Dictionary:
+	if not row.ivs is Dictionary or not RecordShape.keys_match(row.ivs, STATS) or not row.training is Dictionary or not RecordShape.keys_match(row.training, STATS) or not row.base is Dictionary:
 		return false
 	if not SolSpeciesDefinition.whole(row.potency, 0, 100) or not SolSpeciesDefinition.whole(row.forms, int(individual.ordinary_form), 3) or not SolSpeciesDefinition.whole(row.hp_growth, 0, 10) or not SolSpeciesDefinition.whole(row.stat_growth, 0, 10):
 		return false

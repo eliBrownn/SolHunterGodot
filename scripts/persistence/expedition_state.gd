@@ -214,7 +214,7 @@ func complete_battle(serial: int, hp: int, outcome: String, grace_steps: int, im
 				learn_earned_moves(candidate.collection.owned[hero.id], candidate.movebooks.get(hero.id, {}), details.get("move_definitions", {}))
 	if outcome == "captured":
 		var capture: Variant = details.get("capture")
-		if not capture is Dictionary or not keys_match(capture, ["profile", "hp", "unlocks"]) or not capture.unlocks is Dictionary or not BattleProfile.valid_snapshot(capture.profile) or not SolSpeciesDefinition.whole(capture.hp, 1, int(capture.profile.max_hp)) or candidate.collection.owned.has(_battle_enemy) or not candidate.movebooks.has(_battle_enemy):
+		if not capture is Dictionary or not RecordShape.keys_match(capture, ["profile", "hp", "unlocks"]) or not capture.unlocks is Dictionary or not BattleProfile.valid_snapshot(capture.profile) or not SolSpeciesDefinition.whole(capture.hp, 1, int(capture.profile.max_hp)) or candidate.collection.owned.has(_battle_enemy) or not candidate.movebooks.has(_battle_enemy):
 			return false
 		for field in ["species_id", "lineage_id", "class_id", "affinity"]:
 			if capture.profile[field] != candidate.individuals[_battle_enemy][field]:
@@ -735,13 +735,6 @@ static func normalized_relationship(evidence: Dictionary) -> Dictionary:
 		memory.tick = int(memory.tick)
 	return result
 
-static func keys_match(data: Dictionary, expected: Array) -> bool:
-	if data.size() != expected.size():
-		return false
-	for key in expected:
-		if not data.has(key):
-			return false
-	return true
 
 static func valid_delta(data: Variant) -> bool:
 	if not data is Dictionary or data.is_empty() or data.size() > 2:
@@ -752,7 +745,7 @@ static func valid_delta(data: Variant) -> bool:
 	return true
 
 static func valid_relationship(data: Variant, tick: int) -> bool:
-	if not data is Dictionary or not keys_match(data, ["version", "trust", "memories"]) or not SolSpeciesDefinition.whole(data.version, 1, 1):
+	if not data is Dictionary or not RecordShape.keys_match(data, ["version", "trust", "memories"]) or not SolSpeciesDefinition.whole(data.version, 1, 1):
 		return false
 	if data.trust != null and not SolSpeciesDefinition.whole(data.trust, 0, 100):
 		return false
@@ -761,7 +754,7 @@ static func valid_relationship(data: Variant, tick: int) -> bool:
 	var seen: Dictionary = {}
 	var previous := 0
 	for memory in data.memories:
-		if not memory is Dictionary or not keys_match(memory, ["event_id", "kind", "tick", "note"]):
+		if not memory is Dictionary or not RecordShape.keys_match(memory, ["event_id", "kind", "tick", "note"]):
 			return false
 		if not SolSpeciesDefinition.text(memory.event_id, 128) or not SolSpeciesDefinition.text(memory.kind, 64) or not SolSpeciesDefinition.text(memory.note, 256) or not SolSpeciesDefinition.whole(memory.tick, previous, tick) or seen.has(memory.event_id):
 			return false
@@ -785,7 +778,7 @@ static func valid_roaming(row: Variant, individual: Dictionary, tick: int, allow
 		fields.append("patrol")
 		if not valid_patrol(row.patrol, individual, tick, max_patrol_leg, allow_activity):
 			return false
-	if not keys_match(row, fields) or individual.get("location") != "wild":
+	if not RecordShape.keys_match(row, fields) or individual.get("location") != "wild":
 		return false
 	if row.action not in ["idle", "flee", "approach", "guard", "return", "patrol"] or (row.action == "patrol" and (not allow_patrol or not row.has("patrol"))) or not SolSpeciesDefinition.whole(row.tick, 0, tick) or not row.cell is Array or row.cell.size() != 2:
 		return false
@@ -802,7 +795,7 @@ static func valid_response(memory: Variant, tick: int, allow_activity: bool = tr
 			fields.append(field)
 			if not SolSpeciesDefinition.whole(memory[field], 0, mini(tick + 128, MAX_SAFE_INTEGER)):
 				return false
-	if not keys_match(memory, fields) or memory.mode not in ["alert", "settling"]:
+	if not RecordShape.keys_match(memory, fields) or memory.mode not in ["alert", "settling"]:
 		return false
 	for field in ["until", "move_after"]:
 		if not SolSpeciesDefinition.whole(memory[field], 0, mini(tick + 128, MAX_SAFE_INTEGER)):
@@ -817,7 +810,7 @@ static func valid_patrol(memory: Variant, individual: Dictionary, tick: int, max
 		fields.append("blocked_since")
 		if not SolSpeciesDefinition.whole(memory.blocked_since, 0, tick):
 			return false
-	if not keys_match(memory, fields):
+	if not RecordShape.keys_match(memory, fields):
 		return false
 	if not memory.goal is Array or memory.goal.size() != 2 or not SolSpeciesDefinition.whole(memory.leg, 0, max_leg):
 		return false
@@ -830,7 +823,7 @@ static func valid_patrol(memory: Variant, individual: Dictionary, tick: int, max
 	return absi(int(memory.goal[0]) - int(individual.home[0])) + absi(int(memory.goal[1]) - int(individual.home[1])) <= MAX_ROAMING_DISTANCE
 
 static func valid_discovery(entry: Variant, individuals: Dictionary) -> bool:
-	if not entry is Dictionary or not keys_match(entry, ["key", "title", "category", "description", "details", "first_seen"]):
+	if not entry is Dictionary or not RecordShape.keys_match(entry, ["key", "title", "category", "description", "details", "first_seen"]):
 		return false
 	if not entry.key is String or not individuals.has(entry.key) or not SolSpeciesDefinition.text(entry.title, 80) or entry.category != "Wild Sol" or not SolSpeciesDefinition.text(entry.description, 400):
 		return false
@@ -856,7 +849,7 @@ static func valid_snapshot(data: Variant, seed_value: int) -> bool:
 	expected_fields.append("collection")
 	expected_fields.append_array(["sol_stats", "retraining_items"])
 	expected_fields.append("story")
-	if not keys_match(data, expected_fields):
+	if not RecordShape.keys_match(data, expected_fields):
 		return false
 	if not SolSpeciesDefinition.whole(seed_value, 0, 2147483646) or not SolSpeciesDefinition.whole(data.activity_tick, 0, MAX_SAFE_INTEGER) or not SolSpeciesDefinition.whole(data.territory_size, 1, 256):
 		return false
@@ -894,7 +887,7 @@ static func valid_snapshot(data: Variant, seed_value: int) -> bool:
 		if coordinate.x * size > 1000000 or coordinate.y * size > 1000000 or (coordinate.x + 1) * size <= -1000000 or (coordinate.y + 1) * size <= -1000000:
 			return false
 		var record: Variant = data.territories[key]
-		if not record is Dictionary or not keys_match(record, ["observed_tick"]) or not SolSpeciesDefinition.whole(record.observed_tick, 0, int(data.activity_tick)):
+		if not record is Dictionary or not RecordShape.keys_match(record, ["observed_tick"]) or not SolSpeciesDefinition.whole(record.observed_tick, 0, int(data.activity_tick)):
 			return false
 	var lineage_classes: Dictionary = {}
 	var definitions: Dictionary = {}
@@ -909,7 +902,7 @@ static func valid_snapshot(data: Variant, seed_value: int) -> bool:
 			expected.append("sol_relationship")
 		if record.has("birth_species_id"):
 			expected.append("birth_species_id")
-		if not keys_match(record, expected) or record.id != identity or not SolSpeciesDefinition.valid_record(record) or not SolSpeciesDefinition.text(record.affinity) or not record.location in ["wild", "sealed", "party", "storage"]:
+		if not RecordShape.keys_match(record, expected) or record.id != identity or not SolSpeciesDefinition.valid_record(record) or not SolSpeciesDefinition.text(record.affinity) or not record.location in ["wild", "sealed", "party", "storage"]:
 			return false
 		if not record.home is Array or record.home.size() != 2 or not SolSpeciesDefinition.whole(record.home[0], -1000000, 1000000) or not SolSpeciesDefinition.whole(record.home[1], -1000000, 1000000) or not SolSpeciesDefinition.whole(record.generation, 0, 2147483647):
 			return false

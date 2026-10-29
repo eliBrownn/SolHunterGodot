@@ -104,7 +104,7 @@ func book(species: String) -> Dictionary:
 	return {"pool": Array(pool_for(species)), "learned": learned, "equipped": equipped}
 
 static func valid_book(book: Variant) -> bool:
-	if not book is Dictionary or not ExpeditionState.keys_match(book, ["pool", "learned", "equipped"]) or not book.pool is Array or book.pool.is_empty() or book.pool.size() > 32 or not book.learned is Dictionary or book.learned.is_empty() or book.learned.size() > 32 or not book.equipped is Array or book.equipped.is_empty() or book.equipped.size() > 4:
+	if not book is Dictionary or not RecordShape.keys_match(book, ["pool", "learned", "equipped"]) or not book.pool is Array or book.pool.is_empty() or book.pool.size() > 32 or not book.learned is Dictionary or book.learned.is_empty() or book.learned.size() > 32 or not book.equipped is Array or book.equipped.is_empty() or book.equipped.size() > 4:
 		return false
 	var seen := {}
 	for id in book.pool:

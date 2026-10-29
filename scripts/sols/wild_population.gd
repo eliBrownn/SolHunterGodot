@@ -20,7 +20,7 @@ static func valid(records: Variant, seed_value: int, tick: int, individuals: Dic
 	for home in records:
 		var origin := SolIdentityContract.parse(home)
 		var row: Variant = records[home]
-		if origin.is_empty() or origin.seed != seed_value or origin.generation != 0 or not row is Dictionary or not ExpeditionState.keys_match(row, ["generation", "ready_at", "active"]) or not row.active is bool or not SolSpeciesDefinition.whole(row.generation, 1, 2147483647) or not SolSpeciesDefinition.whole(row.ready_at, 0, ExpeditionState.MAX_SAFE_INTEGER):
+		if origin.is_empty() or origin.seed != seed_value or origin.generation != 0 or not row is Dictionary or not RecordShape.keys_match(row, ["generation", "ready_at", "active"]) or not row.active is bool or not SolSpeciesDefinition.whole(row.generation, 1, 2147483647) or not SolSpeciesDefinition.whole(row.ready_at, 0, ExpeditionState.MAX_SAFE_INTEGER):
 			return false
 		var cell := Vector2i(origin.home[0], origin.home[1])
 		var previous := SolIdentityContract.make(seed_value, cell, origin.species_id, int(row.generation) - 1)

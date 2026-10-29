@@ -45,7 +45,7 @@ static func valid_snapshot(data: Variant) -> bool:
 			expected.append(field)
 			if not SolSpeciesDefinition.whole(data[field], 0, 1000):
 				return false
-	if not ExpeditionState.keys_match(data, expected):
+	if not RecordShape.keys_match(data, expected):
 		return false
 	for field in ["species_id", "display_name", "lineage_id", "class_id", "affinity", "move_name"]:
 		if not SolSpeciesDefinition.text(data[field], 80):

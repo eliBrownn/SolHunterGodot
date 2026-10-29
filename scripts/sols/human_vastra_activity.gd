@@ -10,7 +10,7 @@ static func empty_ledger() -> Dictionary:
 	return {"tick": 0, "spent": {}, "events": {}}
 
 static func valid_event(event: Variant) -> bool:
-	if not event is Dictionary or not ExpeditionState.keys_match(event, ["actor_kind", "actor_id", "sequence", "kind", "cell", "harvest_amount", "overload_delta"]):
+	if not event is Dictionary or not RecordShape.keys_match(event, ["actor_kind", "actor_id", "sequence", "kind", "cell", "harvest_amount", "overload_delta"]):
 		return false
 	if event.actor_kind not in ["player", "npc", "infrastructure"] or not SolSpeciesDefinition.text(event.actor_id) or not SolSpeciesDefinition.whole(event.sequence, 1, MAX_COUNTER) or event.kind not in ["harvest", "disturbance"]:
 		return false
@@ -31,7 +31,7 @@ static func producer(event: Dictionary) -> String:
 	return event.actor_kind + ":" + event.actor_id
 
 static func valid_ledger(data: Variant, tick: int) -> bool:
-	if not data is Dictionary or not ExpeditionState.keys_match(data, ["tick", "spent", "events"]) or not SolSpeciesDefinition.whole(data.tick, 0, tick):
+	if not data is Dictionary or not RecordShape.keys_match(data, ["tick", "spent", "events"]) or not SolSpeciesDefinition.whole(data.tick, 0, tick):
 		return false
 	if not data.spent is Dictionary or data.spent.size() > MAX_REGIONS or not data.events is Dictionary or data.events.size() > MAX_PRODUCERS:
 		return false
@@ -40,10 +40,10 @@ static func valid_ledger(data: Variant, tick: int) -> bool:
 			return false
 	for key in data.events:
 		var receipt: Variant = data.events[key]
-		if not receipt is Dictionary or not ExpeditionState.keys_match(receipt, ["event", "effect"]) or not valid_event(receipt.event) or key != producer(receipt.event):
+		if not receipt is Dictionary or not RecordShape.keys_match(receipt, ["event", "effect"]) or not valid_event(receipt.event) or key != producer(receipt.event):
 			return false
 		var effect: Variant = receipt.effect
-		if not effect is Dictionary or not ExpeditionState.keys_match(effect, ["concentration", "overload", "excess"]):
+		if not effect is Dictionary or not RecordShape.keys_match(effect, ["concentration", "overload", "excess"]):
 			return false
 		for field in ["concentration", "overload", "excess"]:
 			if not SolSpeciesDefinition.whole(effect[field], VastraCombat.MIN_OVERLOAD if field == "overload" else 0, 100):

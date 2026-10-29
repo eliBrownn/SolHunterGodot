@@ -9,7 +9,7 @@ static func entry(profile: Dictionary, hp: int) -> Dictionary:
 	return {"profile": BattleProfile.normalized(profile), "hp": hp, "xp": 0, "unlocks": {}}
 
 static func valid(data: Variant, individuals: Dictionary, battle: Dictionary) -> bool:
-	if not data is Dictionary or not ExpeditionState.keys_match(data, ["selected", "owned"]) or not data.selected is String or not data.owned is Dictionary or data.owned.size() > individuals.size():
+	if not data is Dictionary or not RecordShape.keys_match(data, ["selected", "owned"]) or not data.selected is String or not data.owned is Dictionary or data.owned.size() > individuals.size():
 		return false
 	if data.owned.is_empty():
 		return data.selected.is_empty() and battle.starter_id.is_empty()
@@ -22,7 +22,7 @@ static func valid(data: Variant, individuals: Dictionary, battle: Dictionary) ->
 	var party_count := 0
 	for id in data.owned:
 		var row: Variant = data.owned[id]
-		if not id is String or not individuals.has(id) or individuals[id].location not in ExpeditionState.OWNED_LOCATIONS or not row is Dictionary or not ExpeditionState.keys_match(row, ["profile", "hp", "xp", "unlocks"]) or not BattleProfile.valid_snapshot(row.profile) or not SolSpeciesDefinition.whole(row.hp, 0, int(row.profile.max_hp)) or not SolSpeciesDefinition.whole(row.xp, 0, ExpeditionState.MAX_SAFE_INTEGER) or not row.unlocks is Dictionary or row.unlocks.size() > 32:
+		if not id is String or not individuals.has(id) or individuals[id].location not in ExpeditionState.OWNED_LOCATIONS or not row is Dictionary or not RecordShape.keys_match(row, ["profile", "hp", "xp", "unlocks"]) or not BattleProfile.valid_snapshot(row.profile) or not SolSpeciesDefinition.whole(row.hp, 0, int(row.profile.max_hp)) or not SolSpeciesDefinition.whole(row.xp, 0, ExpeditionState.MAX_SAFE_INTEGER) or not row.unlocks is Dictionary or row.unlocks.size() > 32:
 			return false
 		if individuals[id].location == "party":
 			party_count += 1

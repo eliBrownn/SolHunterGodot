@@ -35,7 +35,7 @@ func valid() -> bool:
 	return valid_parameters(parameters()) and retraining_items >= 0 and retraining_items <= 99
 
 static func valid_parameters(p: Variant) -> bool:
-	if not p is Dictionary or not ExpeditionState.keys_match(p, ["iv_min", "iv_max", "iv_samples", "points_per_stat", "trained_stats", "training_percent", "first_form_percent", "second_form_percent", "weak_level_gap", "training_reward"]):
+	if not p is Dictionary or not RecordShape.keys_match(p, ["iv_min", "iv_max", "iv_samples", "points_per_stat", "trained_stats", "training_percent", "first_form_percent", "second_form_percent", "weak_level_gap", "training_reward"]):
 		return false
 	for key in p:
 		if not SolSpeciesDefinition.whole(p[key], 0, 1000):

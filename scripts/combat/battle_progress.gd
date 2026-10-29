@@ -9,7 +9,7 @@ static func valid(data: Variant, individuals: Dictionary) -> bool:
 	var fields := empty().keys()
 	if data is Dictionary and not data.has("captures"):
 		fields.erase("captures")
-	if not data is Dictionary or not ExpeditionState.keys_match(data, fields) or not data.active is bool or data.active:
+	if not data is Dictionary or not RecordShape.keys_match(data, fields) or not data.active is bool or data.active:
 		return false # Active battle snapshots are deliberately not portable saves.
 	if not SolSpeciesDefinition.whole(data.get("captures", 0), 0, ExpeditionState.MAX_SAFE_INTEGER):
 		return false
@@ -32,7 +32,7 @@ static func valid(data: Variant, individuals: Dictionary) -> bool:
 			return false
 	if data.serial == 0:
 		return data.last_result.is_empty()
-	return ExpeditionState.keys_match(data.last_result, ["serial", "enemy_id", "outcome"]) and data.last_result.serial == data.serial and SolSpeciesDefinition.whole(data.last_result.serial, 1, ExpeditionState.MAX_SAFE_INTEGER) and data.last_result.enemy_id is String and individuals.has(data.last_result.enemy_id) and data.last_result.outcome in ["victory", "exhaustion", "retreat", "captured"]
+	return RecordShape.keys_match(data.last_result, ["serial", "enemy_id", "outcome"]) and data.last_result.serial == data.serial and SolSpeciesDefinition.whole(data.last_result.serial, 1, ExpeditionState.MAX_SAFE_INTEGER) and data.last_result.enemy_id is String and individuals.has(data.last_result.enemy_id) and data.last_result.outcome in ["victory", "exhaustion", "retreat", "captured"]
 
 static func normalized(data: Dictionary) -> Dictionary:
 	var copy := data.duplicate(true)

@@ -6,10 +6,10 @@ static func empty_schedule() -> Dictionary:
 	return {"order": [], "cursor": 0, "last_tick": -1, "recovery_ticks": {}}
 
 static func valid_policy(policy: Dictionary) -> bool:
-	return ExpeditionState.keys_match(policy, ["interval", "points", "work_limit"]) and SolSpeciesDefinition.whole(policy.interval, 1, 1000000) and SolSpeciesDefinition.whole(policy.points, 0, 100) and SolSpeciesDefinition.whole(policy.work_limit, 1, 1024)
+	return RecordShape.keys_match(policy, ["interval", "points", "work_limit"]) and SolSpeciesDefinition.whole(policy.interval, 1, 1000000) and SolSpeciesDefinition.whole(policy.points, 0, 100) and SolSpeciesDefinition.whole(policy.work_limit, 1, 1024)
 
 static func valid_schedule(data: Variant, tiles: Dictionary, tick: int) -> bool:
-	if not data is Dictionary or not ExpeditionState.keys_match(data, ["order", "cursor", "last_tick", "recovery_ticks"]):
+	if not data is Dictionary or not RecordShape.keys_match(data, ["order", "cursor", "last_tick", "recovery_ticks"]):
 		return false
 	if not data.order is Array or data.order.size() != tiles.size() or not SolSpeciesDefinition.whole(data.cursor, 0, maxi(0, data.order.size() - 1)) or not SolSpeciesDefinition.whole(data.last_tick, -1, tick) or not data.recovery_ticks is Dictionary or data.recovery_ticks.size() > tiles.size():
 		return false
@@ -42,7 +42,7 @@ static func prepare(tiles: Dictionary, schedule: Dictionary, tick: int, policy: 
 		if not profile is Dictionary:
 			return {}
 		if not profile.is_empty():
-			if not ExpeditionState.keys_match(profile, ["region", "equilibrium", "budget"]) or not SolSpeciesDefinition.text(profile.region) or not SolSpeciesDefinition.whole(profile.equilibrium, 0, 100) or not SolSpeciesDefinition.whole(profile.budget, 0, 100):
+			if not RecordShape.keys_match(profile, ["region", "equilibrium", "budget"]) or not SolSpeciesDefinition.text(profile.region) or not SolSpeciesDefinition.whole(profile.equilibrium, 0, 100) or not SolSpeciesDefinition.whole(profile.budget, 0, 100):
 				return {}
 			if profiles.has(profile.region) and profiles[profile.region] != profile:
 				return {} # One stable region cannot supply contradictory tuning in a tick.
