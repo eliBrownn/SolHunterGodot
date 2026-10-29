@@ -1,5 +1,11 @@
 # Deliberate Sol observation and saved Field Notes
 
+Historical feature-slice record: controls, schema versions and validation below
+refer to its original delivery. Current save admission uses format 4, generation
+8 and world state 17; incompatible development saves require a new expedition.
+See the [reformat evidence](reformat-roadmap.md#execution-and-evidence-index) and
+[current controls/tuning](inspector-tuning.md) for the integrated project.
+
 Approach a trail Sol, finish your movement step, and press **F** to observe it.
 Within the configured Manhattan observation distance, the nearest available
 individual is selected, with stable-ID ordering for ties. Its prompt changes to

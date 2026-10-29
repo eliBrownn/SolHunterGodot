@@ -53,7 +53,6 @@ func open(id: String) -> void:
 	world.encounter_active = true
 	world.paused = true
 	world.pause_panel.hide()
-	world.journal_panel.hide()
 	controller.feedback_view.result_panel.hide()
 	refresh()
 	panel.show()

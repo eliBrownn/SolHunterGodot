@@ -1,5 +1,11 @@
 # Repeatable authored wildlife homes
 
+Historical feature-slice record: controls, schema versions and validation below
+refer to its original delivery. Current save admission uses format 4, generation
+8 and world state 17; incompatible development saves require a new expedition.
+See the [reformat evidence](reformat-roadmap.md#execution-and-evidence-index) and
+[current controls/tuning](inspector-tuning.md) for the integrated project.
+
 Wild victory now leaves a home depleted for a saved active-time delay, after
 which a new individual may settle there. A successor has the same authored
 species/home but a new canonical generation ID. The exhausted original remains

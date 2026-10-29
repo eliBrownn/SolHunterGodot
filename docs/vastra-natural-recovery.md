@@ -1,5 +1,11 @@
 # Natural Vastra replenishment and recovery
 
+Historical feature-slice record: controls, schema versions and validation below
+refer to its original delivery. Current save admission uses format 4, generation
+8 and world state 17; incompatible development saves require a new expedition.
+See the [reformat evidence](reformat-roadmap.md#execution-and-evidence-index) and
+[current controls/tuning](inspector-tuning.md) for the integrated project.
+
 October 28 update: [signed Vastra integration](vastra-integration.md) supersedes
 the positive-only recovery description below. Both signs now relax toward zero;
 negative values support bounded terrain-condition and wildlife-home recovery.

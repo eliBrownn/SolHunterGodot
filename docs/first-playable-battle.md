@@ -1,5 +1,11 @@
 # First playable battle
 
+Historical feature-slice record: controls, schema versions and validation below
+refer to its original delivery. Current save admission uses format 4, generation
+8 and world state 17; incompatible development saves require a new expedition.
+See the [reformat evidence](reformat-roadmap.md#execution-and-evidence-index) and
+[current controls/tuning](inspector-tuning.md) for the integrated project.
+
 The later [shared action budget](combat-action-budget.md) replaces automatic
 move-to-enemy handoffs: moves spend AP, Speed supplies free movement, extra travel
 spends AP, and End turn explicitly advances initiative.

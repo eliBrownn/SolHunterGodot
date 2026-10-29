@@ -133,7 +133,7 @@ func refresh_warning() -> void:
 	warning_panel.show()
 
 func warning_uncovered() -> bool:
-	return not warning_id.is_empty() and warning_panel.is_visible_in_tree() and world.hud.visible and not world.paused and not world.journal_panel.visible and not world.confirmation.visible and (world.menu == null or not world.menu.opened) and not world.observation_menu.visible
+	return not warning_id.is_empty() and warning_panel.is_visible_in_tree() and world.hud.visible and not world.paused and not world.confirmation.visible and (world.menu == null or not world.menu.opened) and not world.observation_menu.visible
 
 func mark_warning_presented() -> void:
 	# Actual post-draw acknowledgement; headless tests explicitly simulate this seam.
@@ -196,7 +196,6 @@ func open_encounter(target: Dictionary) -> void:
 	world.paused = true
 	world.explorer.walking = false
 	world.pause_panel.hide()
-	world.journal_panel.hide()
 	clear_warning()
 	title.text = "FACE TO FACE · " + str(target.name)
 	description.text = "%s watches your approach.\n\nRecord the sighting, deploy your companion, or withdraw." % target.name

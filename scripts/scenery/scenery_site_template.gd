@@ -28,7 +28,7 @@ func plan(terrain: WorldTerrain) -> Dictionary:
 		return {"admitted": false, "reason": "invalid_definition", "attempts": 0}
 	var reasons: Dictionary = {}
 	for index in range(search_candidates):
-		# Stable site-purpose salt; detail never consumes this search sequence.
+		# Bounded authored search; detail never consumes this sequence.
 		var shift := int((index + 1) / 2) * (1 if index % 2 else -1)
 		var x := preferred_x + shift
 		var anchor := Vector2i(x, terrain.trail_y(x) + 10)
@@ -71,7 +71,8 @@ func rejection(terrain: WorldTerrain, footprint: Rect2i, approach: Rect2i) -> St
 
 func assemble(terrain: WorldTerrain, footprint: Rect2i, approach: Rect2i, attempts: int, reasons: Dictionary) -> Dictionary:
 	var id := "%d/site/%s" % [terrain.world_seed, site_key]
-	var parent := "%d/region/%d,%d" % [terrain.world_seed, WorldTerrain.floor_div(footprint.position.x, 128), WorldTerrain.floor_div(footprint.position.y, 128)]
+	var region_size: int = terrain.geography.REGION
+	var parent := "%d/region/%d,%d" % [terrain.world_seed, WorldTerrain.floor_div(footprint.position.x, region_size), WorldTerrain.floor_div(footprint.position.y, region_size)]
 	var posts: Array[Vector2i] = [footprint.position, footprint.position + Vector2i(4, 0), footprint.position + Vector2i(0, 4), footprint.position + Vector2i(4, 4)]
 	var top := -INF
 	for cell in posts:

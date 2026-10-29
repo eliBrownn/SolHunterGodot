@@ -121,6 +121,17 @@ Keep the root small: project entry/configuration, README, agent instructions, an
 
 Use descriptive snake_case names for new game files/folders and follow established class naming in code. Avoid case-only renames on Windows. Keep related resources together and update references through Godot when moving scenes/assets. Validate moved paths and resource identifiers before committing. Do not keep duplicate authoritative documents or daily copies of the same status.
 
+Reformat execution, October 28, 2026: scripts now live under `application`,
+`world`, `scenery`, `persistence`, `sols` (with separate presentation consumers),
+`combat`, `presentation`, `ui`, `story`, `development` and the demonstrated shared
+`core` helpers. The exact ownership/move map and validation evidence live in
+[the reformat roadmap](reformat-roadmap.md#execution-ownership-and-migration-map).
+Keep authored resource groups and third-party asset paths intact. Reference-aware
+script moves preserve `.gd.uid` sidecars, update all consumers together, verify
+reference-only logic equivalence and finish with engine import/entry validation.
+`tools/check_script_ownership.py` checks the map, literal script paths and unique
+UIDs locally; the configured Godot CI entry point remains `tools/validate.ps1`.
+
 ## Branches and synchronization
 
 - `main` is the intended integration branch and must remain usable once the project exists. Confirm the remote default branch before establishing upstreams; do not rename branches speculatively.

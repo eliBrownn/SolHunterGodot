@@ -183,7 +183,6 @@ func open_choice() -> void:
 	world.encounter_active = true
 	world.paused = true
 	world.pause_panel.hide()
-	world.journal_panel.hide()
 	encounters.encounter_panel.hide()
 	selection_panel.show()
 	choice_buttons[0].grab_focus()

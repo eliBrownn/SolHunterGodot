@@ -80,7 +80,7 @@ func run() -> void:
 	verify_retention()
 	if OS.get_cmdline_user_args().has("--capture-journal") and DisplayServer.get_name() != "headless":
 		world.load_game(path)
-		world.journal_panel.show()
+		world.menu.open("guide")
 		world.cell = scene.sightings.members[0].home + Vector2i(-1, 0)
 		world.rebuild_world()
 		DirAccess.make_dir_recursive_absolute("res://artifacts/observation")

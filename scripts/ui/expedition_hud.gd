@@ -86,11 +86,7 @@ static func build(world: Node2D) -> void:
 	world.diagnostic.position = Vector2(26, 130)
 	world.diagnostic.visible = false
 	world.hud.add_child(world.diagnostic)
-	# Hidden compatibility handles for existing encounter/chooser callers. FieldMenu
-	# owns the single visible Guide/Journal and pause interface.
-	world.journal_panel = PanelContainer.new()
-	world.hud.add_child(world.journal_panel)
-	world.journal_panel.hide()
+	# FieldMenu owns the visible Guide/Journal; pause has its own true pause layer.
 	world.pause_panel = PanelContainer.new()
 	world.pause_panel.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	world.pause_panel.theme = preload("res://scripts/ui/menu_theme.gd").build(world.host.menu_settings if world.host.menu_settings != null and world.host.menu_settings.valid() else MenuSettings.new())
@@ -124,4 +120,3 @@ static func build(world: Node2D) -> void:
 	world.accessibility = preload("res://scripts/ui/hud_accessibility.gd").new()
 	world.host.add_child(world.accessibility)
 	world.accessibility.bind(world)
-

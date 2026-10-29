@@ -63,7 +63,6 @@ var inspection_panel: PanelContainer
 var inspection_card: PanelContainer
 var diagnostic: Label
 var pause_panel: PanelContainer
-var journal_panel: PanelContainer
 var journal_notes := RichTextLabel.new()
 var confirmation := ConfirmationDialog.new()
 var history := RichTextLabel.new()

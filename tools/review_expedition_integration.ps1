@@ -1,6 +1,6 @@
 param(
     [string]$Godot = 'godot',
-    [ValidateSet('Rendered', 'Journey', 'Validate')][string]$Phase = 'Rendered',
+    [ValidateSet('Rendered', 'Journey', 'Cost', 'Validate')][string]$Phase = 'Rendered',
     [string]$RunLabel = (Get-Date -Format 'yyyyMMdd-HHmmss'),
     [string]$Only = ''
 )
@@ -42,6 +42,7 @@ $cases = @(
     @{name='pacing'; script='tests/combat_pacing.gd'; flags=@()}
 )
 if ($Phase -eq 'Journey') { $cases = @(@{name='connected'; script='tools/review_connected_expedition.gd'; flags=@("--output=res://artifacts/integration_readiness/$RunLabel/Journey/connected", '--cap=60')}) }
+if ($Phase -eq 'Cost') { $cases = @(@{name='connected_cost'; script='tools/review_reformat_cost.gd'; flags=@("--output=res://artifacts/integration_readiness/$RunLabel/Cost/connected_cost", '--cap=60')}) }
 if ($Phase -eq 'Validate') { $cases = @(@{name='shared_validator'; script='tools/validate.ps1'; flags=@()}) }
 if ($Only) { $cases = @($cases | Where-Object { $_.name -eq $Only }); if ($cases.Count -eq 0) { throw "Unknown case $Only" } }
 $manifest = [ordered]@{

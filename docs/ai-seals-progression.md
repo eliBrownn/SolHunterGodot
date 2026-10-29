@@ -1,5 +1,11 @@
 # Field-aware enemies, testing Seals and progression
 
+Historical feature-slice record: controls, schema versions and validation below
+refer to its original delivery. Current save admission uses format 4, generation
+8 and world state 17; incompatible development saves require a new expedition.
+See the [reformat evidence](reformat-roadmap.md#execution-and-evidence-index) and
+[current controls/tuning](inspector-tuning.md) for the integrated project.
+
 Implemented October 27, 2026 as steps 2–4 after authored wildlife recovery.
 This is a bounded D4/D5 prototype; manual acceptance and production balance remain open.
 
