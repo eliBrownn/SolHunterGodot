@@ -50,10 +50,10 @@ static func build(world: Node2D) -> void:
 	world.observation_menu.add_theme_font_size_override("font_size", context_tuning.font_size)
 	world.observation_menu.add_theme_color_override("font_color", context_tuning.text)
 	world.observation_menu.add_theme_color_override("font_hover_color", context_tuning.accent)
-	world.observation_menu.add_theme_stylebox_override("panel", preload("res://scripts/menu_theme.gd").box(context_tuning.background, context_tuning.accent, 4))
-	world.observation_menu.add_theme_stylebox_override("hover", preload("res://scripts/menu_theme.gd").box(context_tuning.surface.lightened(0.15), context_tuning.surface, 2))
+	world.observation_menu.add_theme_stylebox_override("panel", preload("res://scripts/ui/menu_theme.gd").box(context_tuning.background, context_tuning.accent, 4))
+	world.observation_menu.add_theme_stylebox_override("hover", preload("res://scripts/ui/menu_theme.gd").box(context_tuning.surface.lightened(0.15), context_tuning.surface, 2))
 	var title: PanelContainer = world.panel_at(Rect2(24, 24, 160, 44))
-	var location_style := preload("res://scripts/menu_theme.gd").box(Color("182c25"), Color("31453b"), 4)
+	var location_style := preload("res://scripts/ui/menu_theme.gd").box(Color("182c25"), Color("31453b"), 4)
 	location_style.content_margin_left = 10
 	location_style.content_margin_right = 10
 	location_style.content_margin_top = 5
@@ -76,7 +76,7 @@ static func build(world: Node2D) -> void:
 	world.toast = world.label("", 18, Color("ead6a4"))
 	world.toast.position = Vector2(42, 675)
 	world.hud.add_child(world.toast)
-	world.inspection_card = preload("res://scripts/inspection_card.gd").new()
+	world.inspection_card = preload("res://scripts/ui/inspection_card.gd").new()
 	world.hud.add_child(world.inspection_card)
 	world.inspection_card.bind(world, world.host.menu_settings)
 	world.inspection_panel = world.inspection_card
@@ -93,8 +93,8 @@ static func build(world: Node2D) -> void:
 	world.journal_panel.hide()
 	world.pause_panel = PanelContainer.new()
 	world.pause_panel.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
-	world.pause_panel.theme = preload("res://scripts/menu_theme.gd").build(world.host.menu_settings if world.host.menu_settings != null and world.host.menu_settings.valid() else MenuSettings.new())
-	world.pause_panel.add_theme_stylebox_override("panel", preload("res://scripts/menu_theme.gd").box(Color(0.02, 0.04, 0.03, 0.65), Color.TRANSPARENT))
+	world.pause_panel.theme = preload("res://scripts/ui/menu_theme.gd").build(world.host.menu_settings if world.host.menu_settings != null and world.host.menu_settings.valid() else MenuSettings.new())
+	world.pause_panel.add_theme_stylebox_override("panel", preload("res://scripts/ui/menu_theme.gd").box(Color(0.02, 0.04, 0.03, 0.65), Color.TRANSPARENT))
 	world.hud.add_child(world.pause_panel)
 	var pause_center := CenterContainer.new()
 	world.pause_panel.add_child(pause_center)
@@ -113,7 +113,7 @@ static func build(world: Node2D) -> void:
 	pause_rows.add_child(resume)
 	world.pause_panel.hide()
 	world.history.scroll_following = true
-	world.menu = preload("res://scripts/field_menu.gd").new()
+	world.menu = preload("res://scripts/ui/field_menu.gd").new()
 	world.host.add_child(world.menu)
 	world.menu.bind(world, world.host.menu_settings)
 	world.state_replaced.connect(world.resume_exploration)
@@ -121,7 +121,7 @@ static func build(world: Node2D) -> void:
 	world.confirmation.dialog_text = "Unsaved travel will be lost. Your saved expedition stays available with F9."
 	world.confirmation.confirmed.connect(world.confirm_new_expedition)
 	world.hud.add_child(world.confirmation)
-	world.accessibility = preload("res://scripts/hud_accessibility.gd").new()
+	world.accessibility = preload("res://scripts/ui/hud_accessibility.gd").new()
 	world.host.add_child(world.accessibility)
 	world.accessibility.bind(world)
 

@@ -1,7 +1,7 @@
 [gd_resource type="Resource" script_class="StoryEvent" load_steps=4 format=3]
 
-[ext_resource type="Script" path="res://scripts/story_event.gd" id="1"]
-[ext_resource type="Script" path="res://scripts/story_choice.gd" id="2"]
+[ext_resource type="Script" path="res://scripts/story/story_event.gd" id="1"]
+[ext_resource type="Script" path="res://scripts/story/story_choice.gd" id="2"]
 
 [sub_resource type="Resource" id="Choice"]
 script = ExtResource("2")

@@ -28,7 +28,7 @@ extends Resource
 ## Shared HUD/menu text multiplier; adjusts all screen-space interfaces immediately and is remembered locally.
 @export_range(1.0, 2.0, 0.05) var text_scale := 1.0
 ## Base UI text size relative to authored fonts. 0.715 increases the compact baseline by 10%; restart after editing.
-@export_range(0.5, 1.0, 0.005) var base_text_multiplier := preload("res://scripts/ui_text.gd").DEFAULT_BASE_MULTIPLIER
+@export_range(0.5, 1.0, 0.005) var base_text_multiplier := preload("res://scripts/ui/ui_text.gd").DEFAULT_BASE_MULTIPLIER
 ## Model-preview window height in logical pixels; applies when opening the Sols page.
 @export_range(140, 320, 10) var preview_height := 140
 ## Preview camera span relative to model diameter; larger values leave more margin.

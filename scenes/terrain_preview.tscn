@@ -1,6 +1,6 @@
 [gd_scene load_steps=6 format=3]
 
-[ext_resource type="Script" path="res://scripts/terrain_preview.gd" id="1"]
+[ext_resource type="Script" path="res://scripts/development/terrain_preview.gd" id="1"]
 [ext_resource type="Resource" path="res://resources/terrain_very_gentle.tres" id="2"]
 [ext_resource type="Resource" path="res://resources/terrain_rolling.tres" id="3"]
 [ext_resource type="Resource" path="res://resources/terrain_upper_relief.tres" id="4"]

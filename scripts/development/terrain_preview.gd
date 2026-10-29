@@ -1,7 +1,7 @@
 extends Node3D
 ## T0 review scene: raw landforms, scale references and maps. No game state or saves.
 
-const StudyMesh = preload("res://scripts/terrain_study_mesh.gd")
+const StudyMesh = preload("res://scripts/development/terrain_study_mesh.gd")
 const NatureArt = preload("res://scripts/scenery/nature_art.gd")
 const MODEL = preload("res://assets/characters/rogue/Rogue_Hooded.glb")
 const IDLE_RIG = preload("res://assets/characters/rogue/Rig_Medium_General.glb")

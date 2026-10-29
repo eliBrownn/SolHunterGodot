@@ -1,5 +1,5 @@
 extends Node3D
-const MenuTheme = preload("res://scripts/menu_theme.gd")
+const MenuTheme = preload("res://scripts/ui/menu_theme.gd")
 ## Cosmetic events and runtime-only result recap; never owns battle or save state.
 var world: Node2D
 var tuning: SolVisualSettings

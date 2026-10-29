@@ -1,6 +1,6 @@
 extends PanelContainer
 ## Compact, read-only inspection view. World/ExpeditionState remain the data authorities.
-const MenuTheme = preload("res://scripts/menu_theme.gd")
+const MenuTheme = preload("res://scripts/ui/menu_theme.gd")
 var heading := Label.new()
 var access := Label.new()
 var appearance := Label.new()
@@ -196,7 +196,7 @@ func update_reading(cell: Vector2i, subject: String, terrain_name: String, data:
 	details_label.text = "\n".join(facts)
 	tooltip_text = "Right-click the target and choose Details"
 	if not is_equal_approx(scale, current_scale):
-		preload("res://scripts/ui_text.gd").apply(self, scale, true, world.menu.settings.base_text_multiplier)
+		preload("res://scripts/ui/ui_text.gd").apply(self, scale, true, world.menu.settings.base_text_multiplier)
 		heading.autowrap_mode = TextServer.AUTOWRAP_OFF
 		access.autowrap_mode = TextServer.AUTOWRAP_OFF
 		more.autowrap_mode = TextServer.AUTOWRAP_OFF

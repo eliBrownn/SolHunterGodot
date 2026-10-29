@@ -80,7 +80,7 @@ func refresh() -> void:
 		display_rows.add_child(roster)
 	var companion: Dictionary = controller.source_state.companion_view(identity)
 	if opened:
-		var preview := preload("res://scripts/sol_model_preview.gd").new()
+		var preview := preload("res://scripts/ui/sol_model_preview.gd").new()
 		preview.custom_minimum_size = Vector2(0, 160)
 		display_rows.add_child(preview)
 		preview.show_profile(companion.profile, controller.sightings.visual_settings, world.menu.settings, controller.settings.species_catalog)

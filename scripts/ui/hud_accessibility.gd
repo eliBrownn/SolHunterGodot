@@ -1,6 +1,6 @@
 extends Node
 ## Shared text preference and bounded, scrollable HUD layout. No simulation ownership.
-const Typography = preload("res://scripts/ui_text.gd")
+const Typography = preload("res://scripts/ui/ui_text.gd")
 var world: Node2D
 var text_scale := -1.0
 var pending := false

@@ -1,6 +1,6 @@
 class_name CombatHud
 extends PanelContainer
-const MenuTheme = preload("res://scripts/menu_theme.gd")
+const MenuTheme = preload("res://scripts/ui/menu_theme.gd")
 ## Presentation only: commands and previews always delegate to the existing battle authority.
 var controller: Node
 var top := HBoxContainer.new()

@@ -1,7 +1,7 @@
 extends SceneTree
 
 const BattleTest = preload("res://tests/battle_test_support.gd")
-const Preview = preload("res://scripts/sol_model_preview.gd")
+const Preview = preload("res://scripts/ui/sol_model_preview.gd")
 const Catalog = preload("res://resources/sol_species/catalog.tres")
 const Library = preload("res://resources/move_library.tres")
 var checks := 0
@@ -243,7 +243,7 @@ func verify_journey() -> void:
 		preview.show_profile(owned.profile, scene.sol_visual_settings, world.menu.settings, Catalog)
 		check(preview.model.get_meta("species_id") == entry.species_id and preview.model.affinity == record.affinity and state.snapshot() == before_preview, "Owned menu preview uses the same presentation lookup without state writes")
 		preview.free()
-		var dossier := preload("res://scripts/sol_details.gd").sections(state, identity, controller)
+		var dossier := preload("res://scripts/ui/sol_details.gd").sections(state, identity, controller)
 		check(dossier.Identity.contains(entry.display_name) and dossier.Identity.contains(SolSpeciesCatalog.class_display_name(entry.class_id)), "Dossier displays authored species and approved class names rather than internal IDs")
 	var before_save := state.snapshot()
 	var save_path := "res://artifacts/sol_species_integration/pilot_save.json"

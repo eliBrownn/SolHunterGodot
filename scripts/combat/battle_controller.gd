@@ -37,7 +37,7 @@ var combat_hud: CombatHud
 var hidden_exploration: Array[Control] = []
 var preview_nodes: Array[Node3D] = []
 var impacts: Dictionary = {}
-var retreat_dialog: ConfirmationDialog = preload("res://scripts/mouse_confirmation.gd").new()
+var retreat_dialog: ConfirmationDialog = preload("res://scripts/ui/mouse_confirmation.gd").new()
 var retreat_session: TacticalBattle
 var battle_menu: PanelContainer
 var battle_shield: ColorRect
@@ -110,7 +110,7 @@ func build_ui() -> void:
 	choices.add_child(world.label("CHOOSE YOUR COMPANION", 23, Color("e1c791")))
 	choices.add_child(world.label("Choose a companion for this expedition.", 16))
 	selection_panel.theme = world.menu.frame.theme
-	choice_preview = preload("res://scripts/sol_model_preview.gd").new()
+	choice_preview = preload("res://scripts/ui/sol_model_preview.gd").new()
 	choice_preview.custom_minimum_size = Vector2(0, world.menu.settings.preview_height)
 	choices.add_child(choice_preview)
 	choice_preview.show_profile(settings.starters[0].snapshot(), sightings.visual_settings, world.menu.settings, settings.species_catalog)

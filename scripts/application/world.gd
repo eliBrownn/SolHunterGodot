@@ -15,7 +15,7 @@ var battle_input_consumed := false
 var interaction_hint: Label
 var hover_cell: Variant = null
 
-const Hud = preload("res://scripts/expedition_hud.gd")
+const Hud = preload("res://scripts/ui/expedition_hud.gd")
 const ChunkView = preload("res://scripts/presentation/terrain_chunk.gd")
 const Explorer = preload("res://scripts/world/explorer.gd")
 const StructureView = preload("res://scripts/scenery/structure_view.gd")

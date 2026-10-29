@@ -124,7 +124,7 @@ automatic transition before correcting the logger. Evidence:
 That run measured approach p95/p99 16.689/22.312 ms, return 16.897/20.699 ms,
 and sampled peak process working set 636,010,496 bytes on the Ryzen 7 5800XT /
 RTX 3070 at the profiler's 60-FPS cap. Its source-drift flag is true because a
-concurrent edit changed only `scripts/ui_text.gd`; AI files were unchanged during
+concurrent edit changed only `scripts/ui/ui_text.gd`; AI files were unchanged during
 the run. Treat this as functional evidence and diagnostic timing, not a clean
 performance comparison or device budget. Other rendered project review work was
 also active during this task.

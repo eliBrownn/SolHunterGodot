@@ -1,6 +1,6 @@
 extends VBoxContainer
 ## Read-only inspection is distinct from active-companion and transfer commands.
-const Preview = preload("res://scripts/sol_model_preview.gd")
+const Preview = preload("res://scripts/ui/sol_model_preview.gd")
 var menu: Node
 var controller: Node
 var world: Node2D
@@ -151,7 +151,7 @@ func show_details(profile: Dictionary) -> void:
 	if starter_mode:
 		menu.button("Choose " + str(profile.display_name), menu.choose_starter.bind(menu.sol_starter), detail).tooltip_text = "Choose once for this expedition. Inspecting a starter does not commit the choice."
 		if menu.sol_tab == "details":
-			preload("res://scripts/sol_details.gd").build_starter(self, detail, profile)
+			preload("res://scripts/ui/sol_details.gd").build_starter(self, detail, profile)
 		return
 	var state: ExpeditionState = world.persistent_state
 	var companion := state.companion_view(menu.sol_selection)
@@ -205,7 +205,7 @@ func show_details(profile: Dictionary) -> void:
 			if stat != "max_hp":
 				preview.tooltip_text += "\n%s: %d" % [str(stat).replace("_", " ").capitalize(), int(profile[stat])]
 	elif menu.sol_tab == "details":
-		information = preload("res://scripts/sol_details.gd").build(self, body)
+		information = preload("res://scripts/ui/sol_details.gd").build(self, body)
 	else:
 		controller.loadout.render_into(body, menu.sol_selection, func(text: String) -> void:
 			menu.feedback.text = text, menu.sol_tab)

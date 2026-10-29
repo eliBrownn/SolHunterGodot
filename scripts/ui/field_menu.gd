@@ -1,7 +1,7 @@
 extends Node
 ## One exploration menu; UI preferences are separate from authoritative expedition saves.
 
-const MenuTheme = preload("res://scripts/menu_theme.gd")
+const MenuTheme = preload("res://scripts/ui/menu_theme.gd")
 const SECTIONS := [["guide", "Field Guide", "Recorded sightings"], ["sols", "Sols", "Party, storage & moves"], ["bag", "Bag", "Seals & supplies"], ["trainer", "Trainer", "Your expedition"], ["journal", "Journal", "Journey & session notes"], ["save", "Save", "Keep your progress"], ["options", "Options", "Make yourself comfortable"]]
 var world: Node2D
 var settings: MenuSettings
@@ -387,7 +387,7 @@ func build_sols(rows: VBoxContainer) -> void:
 	rows.add_child(party_summary)
 	party_summary.hide()
 	update_party_summary()
-	sol_screen = preload("res://scripts/sol_menu.gd").new()
+	sol_screen = preload("res://scripts/ui/sol_menu.gd").new()
 	rows.add_child(sol_screen)
 	sol_screen.bind(self)
 
@@ -605,7 +605,7 @@ func apply_text_size() -> void:
 	var tooltip_size := roundi(settings.font_size * settings.text_scale * settings.base_text_multiplier)
 	if frame.theme.get_font_size("font_size", "TooltipLabel") != tooltip_size:
 		frame.theme.set_font_size("font_size", "TooltipLabel", tooltip_size)
-	preload("res://scripts/ui_text.gd").apply(frame, settings.text_scale, true, settings.base_text_multiplier)
+	preload("res://scripts/ui/ui_text.gd").apply(frame, settings.text_scale, true, settings.base_text_multiplier)
 	var nav_list: Control = navigation.sols.get_parent()
 	nav_list.custom_minimum_size.x = 124 * settings.text_scale
 	nav_list.get_parent().custom_minimum_size.x = 124 * settings.text_scale

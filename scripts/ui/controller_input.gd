@@ -1,6 +1,6 @@
 extends Node
 ## Routes one controller through world, UI and native popup layers. Domain commands stay in their owners.
-const Focus = preload("res://scripts/controller_focus.gd")
+const Focus = preload("res://scripts/ui/controller_focus.gd")
 var world: Node2D
 var settings: ControllerSettings
 var preferences_path := "user://controller_preferences.cfg"
@@ -89,7 +89,7 @@ func bridge_window(window: Window) -> void:
 	if is_instance_valid(window) and not window.has_meta("pad_bridge"):
 		window.set_meta("pad_bridge", true)
 		windows.append(weakref(window))
-		var bridge := preload("res://scripts/controller_window_input.gd").new()
+		var bridge := preload("res://scripts/ui/controller_window_input.gd").new()
 		bridge.router = self
 		bridge.surface = window
 		window.add_child(bridge)

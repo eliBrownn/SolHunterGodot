@@ -1,6 +1,6 @@
 [gd_scene load_steps=3 format=3]
 
-[ext_resource type="Script" path="res://scripts/sol_model_workshop.gd" id="1"]
+[ext_resource type="Script" path="res://scripts/development/sol_model_workshop.gd" id="1"]
 [ext_resource type="PackedScene" path="res://scenes/sols/rimefold.tscn" id="2"]
 
 [node name="RimefoldWorkshop" type="Node3D"]
