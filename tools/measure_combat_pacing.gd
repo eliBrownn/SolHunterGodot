@@ -1,7 +1,7 @@
 extends SceneTree
 ## Repeatable scripted baseline, or --play --fixture=ordinary for an isolated manual probe.
-const Fixture = preload("res://scripts/combat_pacing_fixture.gd")
-const Measurement = preload("res://scripts/battle_pacing_measurement.gd")
+const Fixture = preload("res://scripts/combat/combat_pacing_fixture.gd")
+const Measurement = preload("res://scripts/combat/battle_pacing_measurement.gd")
 const Policy = preload("res://tools/combat_pacing_policy.gd")
 var scene: Node3D
 var measured: BattlePacingMeasurement

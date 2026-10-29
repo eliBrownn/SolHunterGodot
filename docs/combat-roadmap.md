@@ -272,10 +272,10 @@ Static inspection of the current working tree found:
 
 | Area | Existing implementation | Gap relevant to this roadmap |
 | --- | --- | --- |
-| Battle rules | `scripts/tactical_battle.gd`: one allied Sol/one opponent, legal deployment and movement, speed initiative, four moves, fields, statuses, capture, terminal outcomes. | `execute_move`, `wait_turn`, deployment, and failed capture can invoke automatic enemy turns synchronously. One command can cross several meaningful boundaries before returning. |
-| Feedback | `scripts/battle_feedback.gd` and `scripts/battle_controller.gd::receive_feedback` immediately display incoming events. | Ordered signal emission does not give the player a readable sequence; multiple cues can start together. Existing events omit a complete action/turn timeline. |
+| Battle rules | `scripts/combat/tactical_battle.gd`: one allied Sol/one opponent, legal deployment and movement, speed initiative, four moves, fields, statuses, capture, terminal outcomes. | `execute_move`, `wait_turn`, deployment, and failed capture can invoke automatic enemy turns synchronously. One command can cross several meaningful boundaries before returning. |
+| Feedback | `scripts/combat/battle_feedback.gd` and `scripts/combat/battle_controller.gd::receive_feedback` immediately display incoming events. | Ordered signal emission does not give the player a readable sequence; multiple cues can start together. Existing events omit a complete action/turn timeline. |
 | HUD | `scripts/combat_hud.gd::refresh` reads live HP, statuses, turn, and intent; HP bars have cosmetic tweens. | After synchronous resolution it reads the resulting state, potentially skipping the intermediate heal, hit, movement, or turn change. |
-| Completion | `scripts/battle_controller.gd::after_command` commits terminal results through `ExpeditionState`, then tears down battle views. | A final hit can lose its battlefield context immediately. Pacing must preserve the one-time completion contract. |
+| Completion | `scripts/combat/battle_controller.gd::after_command` commits terminal results through `ExpeditionState`, then tears down battle views. | A final hit can lose its battlefield context immediately. Pacing must preserve the one-time completion contract. |
 | Tests | `tests/battle_feedback.gd` expects separate heal and damage events even when their net HP change is zero. Existing battle, affinity, class, capture, and UI suites cover many domain contracts. | Event counts and final-state checks do not establish that a player sees those events separately. |
 
 This baseline includes existing uncommitted work on `codex/mouse-first-ui`.

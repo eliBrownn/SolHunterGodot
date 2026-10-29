@@ -1,7 +1,7 @@
 [gd_resource type="Resource" script_class="BattleSettings" load_steps=9 format=3]
 
-[ext_resource type="Script" path="res://scripts/battle_settings.gd" id="1"]
-[ext_resource type="Script" path="res://scripts/battle_profile.gd" id="2"]
+[ext_resource type="Script" path="res://scripts/combat/battle_settings.gd" id="1"]
+[ext_resource type="Script" path="res://scripts/combat/battle_profile.gd" id="2"]
 [ext_resource type="Resource" path="res://resources/starter_bramblepup.tres" id="3"]
 [ext_resource type="Resource" path="res://resources/starter_ashkit.tres" id="4"]
 [ext_resource type="Resource" path="res://resources/starter_rillfin.tres" id="5"]
