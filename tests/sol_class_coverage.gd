@@ -1,6 +1,6 @@
 extends SceneTree
 ## One focused body-plan/registry check and optional single rendered class board.
-var catalog: SolSpeciesCatalog
+const Catalog = preload("res://resources/sol_species/catalog.tres")
 const Supports := {"browguard": 2, "bitterfrill": 4, "knucklemole": 4, "sailcrest": 2, "glass_throat": 3, "claspback": 6,
 	"foldling": 3, "mournveil": 2, "pebblewyrm": 4, "shadepelt": 4, "kilnling": 2, "thimblehart": 4}
 var checks := 0
@@ -13,8 +13,6 @@ func check(value: bool, message: String) -> void:
 		push_error(message)
 
 func _initialize() -> void:
-	# Avoid a catalog/creature script preload cycle during native shutdown.
-	catalog = load("res://resources/sol_species/catalog.tres")
 	create_timer(90).timeout.connect(func() -> void: quit(1))
 	run.call_deferred()
 
@@ -29,9 +27,9 @@ func fits(model: Node3D) -> bool:
 	return true
 
 func run() -> void:
-	check(catalog.valid() and load("res://resources/move_library.tres").valid(), "Expanded content and existing move pools validate")
+	check(Catalog.valid() and preload("res://resources/move_library.tres").valid(), "Expanded content and existing move pools validate")
 	var classes := {}
-	for species in catalog.entries:
+	for species in Catalog.entries:
 		check(not classes.has(species.class_id), "Each playable class has exactly one first-form representative")
 		classes[species.class_id] = species.species_id
 		check(species.ordinary_form == 1, "Class representatives are first forms")
@@ -48,7 +46,7 @@ func run() -> void:
 		invalid.definitions.append(definition.duplicate())
 	invalid.definition("eldritch").maximum = 1
 	check(not invalid.valid(), "Unassigned Eldritch potency cannot become an inert tuning slider")
-	for species in catalog.entries:
+	for species in Catalog.entries:
 		var name_key := species.resource_path.get_file().get_basename()
 		if not Supports.has(name_key):
 			continue
@@ -119,8 +117,8 @@ func board() -> void:
 	title.position = Vector2(32, 16)
 	title.add_theme_font_size_override("font_size", 30)
 	canvas.add_child(title)
-	for index in range(catalog.entries.size()):
-		var species := catalog.entries[index]
+	for index in range(Catalog.entries.size()):
+		var species := Catalog.entries[index]
 		var origin := Vector2(24 + (index % 6) * 337, 75 + (index / 6) * 392)
 		var label := Label.new()
 		label.text = SolSpeciesCatalog.class_display_name(species.class_id) + "\n" + species.display_name
@@ -137,7 +135,7 @@ func board() -> void:
 		viewport.own_world_3d = true
 		viewport.transparent_bg = true
 		container.add_child(viewport)
-		var model: Node3D = SolSpeciesView.create(species.species_id, "earth", SolVisualSettings.new())
+		var model: SolOrb = SolSpeciesView.create(species.species_id, "earth", SolVisualSettings.new())
 		viewport.add_child(model)
 		model.animate(0.0, 0.0, 0.0)
 		for mote in model.motes:

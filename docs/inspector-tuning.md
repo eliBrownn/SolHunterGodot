@@ -6,7 +6,7 @@ The world scene's `scenery_settings` references
 `resources/scenery/woodland_shelter.tres`. Its stable key, absolute preferred X
 cell, bounded candidate count and shared module budget apply to new expeditions
 and are captured in save format 4 / generation 9. Required clearings come from
-the existing bounded nature composition and are captured with their seed and
+`resources/scenery/required_spaces.tres`, shared with nature dressing, and are captured with their seed and
 absolute bounds. Loaded expeditions retain those layout settings, including
 required spaces. `shelter_roof_trim` on the solid world scene is cosmetic;
 rebuild/restart applies it to both new and loaded worlds without changing
@@ -673,7 +673,7 @@ settings and do not alter tactical rules or expedition saves.
 Open `scenes/cohesive_world_sample.tscn` → 3D View → Nature Settings → Composition,
 or `resources/nature_cohesive_sample.tres`. The optional composition selects a
 seed and up to three absolute patch rectangles. Each patch exposes admitted
-existing habitat IDs, density (0–40%), scene entries and fixed review clearings.
+existing habitat IDs, density (0–40%) and scene entries. Shared review clearings live in `resources/scenery/required_spaces.tres`.
 Entries expose Ground/Bank/Water, authored uniform scale, maximum horizontal
 width/height in cells, terrain slope in degrees and static part/surface/triangle
 admission limits. No height normalization is applied to these entries.

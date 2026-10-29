@@ -6,6 +6,8 @@ extends Resource
 ## Existing sign geometry marks the optional pond excursion. Rebuild/restart to apply.
 @export var orientation_marker := Vector2i(28, 16)
 
+const RequiredSpaces = preload("res://resources/scenery/required_spaces.tres")
+
 func valid() -> bool:
 	if world_seed < 0 or world_seed > 2147483646 or patches.is_empty() or patches.size() > 3:
 		return false
@@ -70,8 +72,8 @@ func placement(terrain: WorldTerrain, cell: Vector2i, patch: NaturePatch) -> Dic
 			var at := Vector2i(x, y)
 			if terrain.scenery_reserved(at) or terrain.route_axes(at, 1) != 0 or terrain.is_camp(at) or terrain.is_landmark(at) or terrain.cabin_footprint.grow(1).has_point(at):
 				return {}
-			for clearing in patch.clearings:
-				if maxi(absi(at.x - clearing.x), absi(at.y - clearing.y)) <= NaturePatch.CLEARING_RADIUS:
+			for clearing in RequiredSpaces.anchors_for(patch.patch_id):
+				if maxi(absi(at.x - clearing.x), absi(at.y - clearing.y)) <= SceneryRequiredSpaces.RADIUS:
 					return {}
 			var sample := terrain.sample(at)
 			if sample.obstacle != 0 or (sample.ground == WorldTerrain.Ground.WATER) != water:

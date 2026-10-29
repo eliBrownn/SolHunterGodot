@@ -1,8 +1,6 @@
 class_name NaturePatch
 extends Resource
-const CLEARING_RADIUS := 2 # Required observation space around each authored anchor, in cells.
 ## Bounded visual treatment of existing habitats. No ecological state.
-## Clearings own required space; expeditions capture those layout constraints.
 @export var patch_id := "woodland"
 ## Absolute cell rectangle; never relative to streaming chunks.
 @export var bounds := Rect2i(20, 4, 24, 24)
@@ -11,8 +9,6 @@ const CLEARING_RADIUS := 2 # Required observation space around each authored anc
 @export var entries: Array[NatureAssetEntry] = []
 ## Chance in percent within a stable three-cell cluster; rebuild to apply.
 @export_range(0, 40) var density_percent := 24
-## Fixed cell clearings for observation/encounters. Independent of current actors.
-@export var clearings: Array[Vector2i] = []
 
 func valid() -> bool:
 	if patch_id.is_empty() or bounds.size.x < 4 or bounds.size.y < 4 or bounds.size.x > 64 or bounds.size.y > 64 or habitats.is_empty() or entries.is_empty() or entries.size() > 8 or density_percent < 0 or density_percent > 40:

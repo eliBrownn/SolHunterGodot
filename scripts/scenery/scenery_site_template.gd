@@ -18,18 +18,8 @@ var _captured_spaces: Dictionary = {}
 func parameters() -> Dictionary:
 	var protection := _captured_spaces.duplicate(true)
 	if protection.is_empty():
-		# Existing composition owns these authored spaces. Capture its relevant
-		# inputs for reconstruction; changing cosmetic density never changes them.
-		var nature: Resource = load("res://resources/nature_cohesive_sample.tres")
-		var spaces: Array = []
-		var seed_value := -1
-		if nature != null and nature.composition != null:
-			seed_value = nature.composition.world_seed
-			for patch in nature.composition.patches:
-				for clearing in patch.clearings:
-					var radius := NaturePatch.CLEARING_RADIUS
-					spaces.append([clearing.x - radius, clearing.y - radius, radius * 2 + 1, radius * 2 + 1])
-		protection = {"clearing_seed": seed_value, "clearings": spaces}
+		var spaces: Resource = load("res://resources/scenery/required_spaces.tres")
+		protection = spaces.parameters()
 	return {"site_key": site_key, "preferred_x": preferred_x, "search_candidates": search_candidates, "element_budget": element_budget, "clearing_seed": protection.clearing_seed, "clearings": protection.clearings}
 
 func configure(value: Dictionary) -> bool:
@@ -46,10 +36,10 @@ func configure(value: Dictionary) -> bool:
 	return true
 
 static func valid_parameters(value: Variant) -> bool:
-	if not value is Dictionary or value.size() != 6 or value.get("site_key") != "woodland_shelter" or not SolSpeciesDefinition.whole(value.get("preferred_x"), -1000000, 1000000) or not SolSpeciesDefinition.whole(value.get("search_candidates"), 1, 48) or not SolSpeciesDefinition.whole(value.get("element_budget"), 5, 16) or not SolSpeciesDefinition.whole(value.get("clearing_seed"), -1, 2147483646) or not value.get("clearings") is Array or value.clearings.size() > 32:
+	if not value is Dictionary or value.size() != 6 or value.get("site_key") != "woodland_shelter" or not whole(value.get("preferred_x"), -1000000, 1000000) or not whole(value.get("search_candidates"), 1, 48) or not whole(value.get("element_budget"), 5, 16) or not whole(value.get("clearing_seed"), -1, 2147483646) or not value.get("clearings") is Array or value.clearings.size() > 32:
 		return false
 	for row in value.clearings:
-		if not row is Array or row.size() != 4 or not SolSpeciesDefinition.whole(row[0], -1000000, 1000000) or not SolSpeciesDefinition.whole(row[1], -1000000, 1000000) or not SolSpeciesDefinition.whole(row[2], 1, 128) or not SolSpeciesDefinition.whole(row[3], 1, 128):
+		if not row is Array or row.size() != 4 or not whole(row[0], -1000000, 1000000) or not whole(row[1], -1000000, 1000000) or not whole(row[2], 1, 128) or not whole(row[3], 1, 128):
 			return false
 	return true
 
@@ -91,9 +81,9 @@ func rejection(terrain: RefCounted, footprint: Rect2i, approach: Rect2i, inputs:
 			var at := Vector2i(x, y)
 			if terrain.is_camp(at) or terrain.is_landmark(at) or terrain.route_axes(at, 1) != 0:
 				return "required_access"
-			if terrain.natural_ground(at) == WorldTerrain.Ground.WATER or not terrain.slope_fits(at):
+			if terrain.natural_ground(at) == terrain.Ground.WATER or not terrain.slope_fits(at):
 				return "ground_or_obstacle"
-			woodland = woodland or terrain.natural_ground(at) == WorldTerrain.Ground.FOREST
+			woodland = woodland or terrain.natural_ground(at) == terrain.Ground.FOREST
 			var height: float = terrain.surface_height(Vector2(at) + Vector2(0.5, 0.5))
 			low = minf(low, height)
 			high = maxf(high, height)
@@ -104,14 +94,14 @@ func rejection(terrain: RefCounted, footprint: Rect2i, approach: Rect2i, inputs:
 	for y in range(approach.position.y, approach.end.y):
 		for x in range(approach.position.x, approach.end.x):
 			var at := Vector2i(x, y)
-			if terrain.is_camp(at) or terrain.is_landmark(at) or terrain.cabin_footprint.has_point(at) or terrain.natural_ground(at) == WorldTerrain.Ground.WATER or not terrain.slope_fits(at):
+			if terrain.is_camp(at) or terrain.is_landmark(at) or terrain.cabin_footprint.has_point(at) or terrain.natural_ground(at) == terrain.Ground.WATER or not terrain.slope_fits(at):
 				return "approach_blocked"
 	return ""
 
 func assemble(terrain: RefCounted, footprint: Rect2i, approach: Rect2i, attempts: int, reasons: Dictionary) -> Dictionary:
 	var id := "%d/site/%s" % [terrain.world_seed, site_key]
 	var region_size: int = terrain.geography.REGION
-	var parent := "%d/region/%d,%d" % [terrain.world_seed, WorldTerrain.floor_div(footprint.position.x, region_size), WorldTerrain.floor_div(footprint.position.y, region_size)]
+	var parent := "%d/region/%d,%d" % [terrain.world_seed, terrain.floor_div(footprint.position.x, region_size), terrain.floor_div(footprint.position.y, region_size)]
 	var posts: Array[Vector2i] = [footprint.position, footprint.position + Vector2i(4, 0), footprint.position + Vector2i(0, 4), footprint.position + Vector2i(4, 4)]
 	var top := -INF
 	for cell in posts:
@@ -131,3 +121,7 @@ func assemble(terrain: RefCounted, footprint: Rect2i, approach: Rect2i, attempts
 static func element(id: String, parent: String, kind: String, position: Vector3, size: Vector3, color: Color) -> Dictionary:
 	var transform := Transform3D(Basis.from_scale(size), position)
 	return {"id": id, "parent_id": parent, "kind": kind, "transform": transform, "bounds": transform * AABB(-Vector3.ONE * 0.5, Vector3.ONE), "color": color}
+
+## Admission validation stays independent of species and presentation resources.
+static func whole(value: Variant, minimum: int, maximum: int) -> bool:
+	return (value is int or value is float) and is_finite(float(value)) and float(value) == floor(float(value)) and value >= minimum and value <= maximum
