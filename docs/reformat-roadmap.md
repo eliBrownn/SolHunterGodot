@@ -108,7 +108,7 @@ change. No calendar estimates until the first implementation slice is measured.
 | R5 | Encounter/combat organization | Existing encounter-to-outcome flow preserved with one outcome writer | Implemented and checked; E5 |
 | R6 | UI/input/story organization | Existing controls, previews, pause and authored facts remain coherent | Implemented and checked; E6 |
 | R7 | Dependency and documentation closure | Superseded paths/adapters removed; ownership index matches actual code | Implemented and checked; E7 |
-| R8 | Integrated acceptance | Combined checks and representative desktop/device evidence recorded | Pending |
+| R8 | Integrated acceptance | Combined checks and representative desktop/device evidence recorded | Desktop checks recorded; baseline native crash and owner/device acceptance open |
 
 ### R0 — Establish the baseline once
 
@@ -267,6 +267,7 @@ remain owner work. No third-party source redistribution permission is inferred.
 | Fact / lifetime | Sole writer / owner | Readers and dependency inputs |
 | --- | --- | --- |
 | Terrain, routes, height and site admission / generated | `WorldTerrain`, geography and authored structure/site planners | Streaming, traversal, ecology and picking read the same seed, generation version, climate, relief and captured scenery parameters. A render chunk cannot approve a site. |
+| Required observation spaces / authored and captured | `SceneryRequiredSpaces`, `resources/scenery/required_spaces.tres` | One data-only owner supplies anchors/radius to nature dressing and absolute captured reservations to new site planning. Visual resources and species rules are not planner dependencies. |
 | Woodland site / generated | `ScenerySiteTemplate.plan`, called once during terrain construction | One region owns the absolute location; building plot, approach and clearing reserve space before vegetation. Required supports/roof share the location budget; optional trim yields first. No named exceptions currently apply. Ground, water and essential access are mandatory. |
 | Site publication / derived | `SolidChunk.add_site`, wired by the solid world view | Consumes admitted absolute transforms and stable site/module IDs. Rendering and picking use those exact transforms. Terrain consumes the admitted support cells for collision; the open central space and approach remain traversable. Full rebuild cannot reroll the site. |
 | Persistent individuals, ownership, progression, outcomes and story facts / saved | `ExpeditionState` owner methods | Catalog/ecology/policies supply definitions; views, menus and controllers read copies or request actions. Species, affinity and identity remain independent. No external writes to private individual/battle storage were found. |
@@ -353,3 +354,9 @@ as part of executing this roadmap.
 The configured validator at `artifacts/integration_readiness/reformat-r8-spaces/Validate/manifest.json` exited 1 after class coverage printed 203 checks / zero failures. Its source fingerprint did not change and no script/engine error text was suppressed. This is a failed run, not full acceptance. Windows records native access violation `0xc0000005` at engine offset `0x547f2c`.
 
 Isolation used detached baseline `7d3731a`, the same local assets, the same pinned engine and the original canonical `tests/sol_class_coverage.gd`: four of five baseline processes crashed after assertions; two of five restructured processes crashed with that identical fixture (`artifacts/reformat/baseline-original-*.log`, `current-original-*.log`). The fixture is restored exactly to baseline; speculative lifetime changes are not retained. This establishes an existing baseline blocker, not a native root-cause diagnosis. Do not retry until green, ignore nonzero exits, or upgrade the pinned engine as part of this structural change. R8 remains open until this native failure and owner playable acceptance are resolved. Remaining configured cases and rendered cost evidence are recorded separately below. Thor acceptance is explicitly deferred by the owner.
+
+### Final desktop evidence
+
+After the configured validator stopped at the native class-test failure, all 41 remaining configured commands were executed sequentially with their original arguments: 46,740 assertions, zero assertion failures, zero engine/script error messages and every process exit zero (`artifacts/reformat/final-tail/results.json`). This includes `full_3d`, `view_3d`, scenery/nature, terrain, menus/controllers, combat outcomes and the solid-3D save/load smoke journey. It is diagnostic continuation, not a replacement for the failed configured-validator gate. The unchanged original class fixture was separately checked in the baseline/current matrix above.
+
+The first baseline connected-cost attempt exposed a review-driver AP assumption (`reformat-baseline-cost`): movement and a direct move may leave too few action points for Current or a Seal. The shared review driver now uses the actual End turn button when that budget is exhausted; it does not edit AP, HP, loadouts, terrain or capture rolls. The identical corrected driver is used in baseline/final comparison; the failed first attempt is retained and excluded.
