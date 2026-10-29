@@ -15,6 +15,7 @@ var battle_input_consumed := false
 var interaction_hint: Label
 var hover_cell: Variant = null
 
+const Hud = preload("res://scripts/expedition_hud.gd")
 const ChunkView = preload("res://scripts/presentation/terrain_chunk.gd")
 const Explorer = preload("res://scripts/world/explorer.gd")
 const StructureView = preload("res://scripts/scenery/structure_view.gd")
@@ -132,134 +133,23 @@ func key_label(action: String) -> String:
 	return OS.get_keycode_string(event.physical_keycode)
 
 func label(value: String, font_size: int = 16, color: Color = Color("dddac6")) -> Label:
-	var node := Label.new()
-	node.text = value
-	node.add_theme_font_size_override("font_size", font_size)
-	node.add_theme_color_override("font_color", color)
-	node.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	return node
+	return Hud.label(value, font_size, color)
 
 func panel_at(rect: Rect2) -> PanelContainer:
-	var panel := PanelContainer.new()
-	panel.set_meta("hud_authored_rect", rect)
-	panel.position = rect.position
-	panel.size = rect.size
-	# Keep HUD panels attached to the game viewport as the 3D aspect ratio changes.
-	if rect.position.y >= 700:
-		panel.anchor_right = 1
-		panel.anchor_top = 1
-		panel.anchor_bottom = 1
-		panel.offset_left = rect.position.x
-		panel.offset_right = rect.end.x - 1280
-		panel.offset_top = rect.position.y - 800
-		panel.offset_bottom = rect.end.y - 800
-	elif rect.position.x >= 800:
-		panel.anchor_left = 1
-		panel.anchor_right = 1
-		panel.offset_left = rect.position.x - 1280
-		panel.offset_right = rect.end.x - 1280
-	elif rect.position.x >= 350 and rect.size.x >= 400:
-		panel.anchor_left = 0.5
-		panel.anchor_right = 0.5
-		panel.offset_left = rect.position.x - 640
-		panel.offset_right = rect.end.x - 640
-	var style := StyleBoxFlat.new()
-	style.bg_color = Color("172321ec")
-	style.border_color = Color("657263")
-	style.set_border_width_all(1)
-	style.set_content_margin_all(18)
-	panel.add_theme_stylebox_override("panel", style)
-	hud.add_child(panel)
-	return panel
+	return Hud.panel_at(hud, rect)
 
 func build_ui() -> void:
-	hud.add_child(observation_menu)
-	observation_menu.id_pressed.connect(context_action)
-	var context_tuning: MenuSettings = host.menu_settings if host.menu_settings != null and host.menu_settings.valid() else MenuSettings.new()
-	observation_menu.add_theme_font_size_override("font_size", context_tuning.font_size)
-	observation_menu.add_theme_color_override("font_color", context_tuning.text)
-	observation_menu.add_theme_color_override("font_hover_color", context_tuning.accent)
-	observation_menu.add_theme_stylebox_override("panel", preload("res://scripts/menu_theme.gd").box(context_tuning.background, context_tuning.accent, 4))
-	observation_menu.add_theme_stylebox_override("hover", preload("res://scripts/menu_theme.gd").box(context_tuning.surface.lightened(0.15), context_tuning.surface, 2))
-	var title := panel_at(Rect2(24, 24, 160, 44))
-	var location_style := preload("res://scripts/menu_theme.gd").box(Color("182c25"), Color("31453b"), 4)
-	location_style.content_margin_left = 10
-	location_style.content_margin_right = 10
-	location_style.content_margin_top = 5
-	location_style.content_margin_bottom = 5
-	title.add_theme_stylebox_override("panel", location_style)
-	var title_box := VBoxContainer.new()
-	title.add_child(title_box)
-	location_label = label("", 14)
-	title_box.add_child(location_label)
-	var mission := panel_at(Rect2(852, 24, 404, 48))
-	var mission_box := VBoxContainer.new()
-	mission.add_child(mission_box)
-	objective = label("", 17)
-	mission_box.add_child(objective)
-	var footer := panel_at(Rect2(24, 738, 430, 38))
-	interaction_hint = label("Right-click to interact", 16)
-	interaction_hint.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	footer.add_child(interaction_hint)
-	footer.hide()
-	toast = label("", 18, Color("ead6a4"))
-	toast.position = Vector2(42, 675)
-	hud.add_child(toast)
-	inspection_card = preload("res://scripts/inspection_card.gd").new()
-	hud.add_child(inspection_card)
-	inspection_card.bind(self, host.menu_settings)
-	inspection_panel = inspection_card
-	inspection = inspection_card.details_label
+	Hud.build(self)
 
-	diagnostic = label("", 14)
-	diagnostic.position = Vector2(26, 130)
-	diagnostic.visible = false
-	hud.add_child(diagnostic)
-	# Hidden compatibility handles for existing encounter/chooser callers. FieldMenu
-	# owns the single visible Guide/Journal and pause interface.
-	journal_panel = PanelContainer.new()
-	hud.add_child(journal_panel)
-	journal_panel.hide()
-	pause_panel = PanelContainer.new()
-	pause_panel.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
-	pause_panel.theme = preload("res://scripts/menu_theme.gd").build(host.menu_settings if host.menu_settings != null and host.menu_settings.valid() else MenuSettings.new())
-	pause_panel.add_theme_stylebox_override("panel", preload("res://scripts/menu_theme.gd").box(Color(0.02, 0.04, 0.03, 0.65), Color.TRANSPARENT))
-	hud.add_child(pause_panel)
-	var pause_center := CenterContainer.new()
-	pause_panel.add_child(pause_center)
-	var pause_card := PanelContainer.new()
-	pause_card.custom_minimum_size = Vector2(340, 180)
-	pause_center.add_child(pause_card)
-	var pause_rows := VBoxContainer.new()
-	pause_rows.add_theme_constant_override("separation", 12)
-	pause_card.add_child(pause_rows)
-	pause_rows.add_child(label("PAUSED", 24, Color("e1c791")))
-	pause_rows.add_child(label("Exploration is paused.", 16))
-	var resume := Button.new()
-	resume.text = "Resume · Esc"
-	resume.custom_minimum_size.y = 42
-	resume.pressed.connect(toggle_pause)
-	pause_rows.add_child(resume)
+func resume_exploration(_state: ExpeditionState = null) -> void:
+	paused = false
 	pause_panel.hide()
-	history.scroll_following = true
-	menu = preload("res://scripts/field_menu.gd").new()
-	host.add_child(menu)
-	menu.bind(self, host.menu_settings)
-	state_replaced.connect(func(_state: ExpeditionState) -> void:
-		paused = false
-		pause_panel.hide())
-	confirmation.title = "Start another expedition?"
-	confirmation.dialog_text = "Unsaved travel will be lost. Your saved expedition stays available with F9."
-	confirmation.confirmed.connect(func():
-		if encounter_active:
-			return
-		new_expedition(posmod(terrain.world_seed + 104729, 2147483647))
-		paused = false
-		pause_panel.hide())
-	hud.add_child(confirmation)
-	accessibility = preload("res://scripts/hud_accessibility.gd").new()
-	host.add_child(accessibility)
-	accessibility.bind(self)
+
+func confirm_new_expedition() -> void:
+	if encounter_active:
+		return
+	new_expedition(posmod(terrain.world_seed + 104729, 2147483647))
+	resume_exploration()
 
 func ask_new() -> void:
 	if encounter_active:
