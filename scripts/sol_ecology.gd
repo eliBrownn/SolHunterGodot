@@ -6,7 +6,7 @@ const SAMPLE_NAMESPACE := "sol-ecology-v1" # Identity contract; do not turn into
 
 static func configuration(base: SightingSettings) -> Array:
 	var values: Array = []
-	for field in preload("res://scripts/resource_storage_fields.gd").for_resource(base):
+	for field in preload("res://scripts/core/resource_storage_fields.gd").for_resource(base):
 		if field not in ["ecology_profiles", "behavior_library", "species_catalog", "catalog_sightings"]:
 			values.append(base.get(field))
 	values.append(base.species_catalog.call("ecology_configuration") if base.species_catalog != null else [])
@@ -14,7 +14,7 @@ static func configuration(base: SightingSettings) -> Array:
 	for profile in base.ecology_profiles:
 		var fields: Array = []
 		if profile != null:
-			for field in preload("res://scripts/resource_storage_fields.gd").for_resource(profile):
+			for field in preload("res://scripts/core/resource_storage_fields.gd").for_resource(profile):
 				var value: Variant = profile.get(field)
 				fields.append(value.duplicate() if value is PackedStringArray else value)
 		values.append(fields)

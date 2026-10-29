@@ -24,7 +24,7 @@ func run() -> void:
 	world.new_expedition(17)
 	var currents: Node3D
 	for child in scene.get_children():
-		if child.get_script() == preload("res://scripts/vastra_currents.gd"):
+		if child.get_script() == preload("res://scripts/presentation/vastra_currents.gd"):
 			currents = child
 	if currents == null:
 		push_error("Current renderer not found")

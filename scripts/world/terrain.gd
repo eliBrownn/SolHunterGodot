@@ -3,7 +3,7 @@ extends RefCounted
 ## Immutable generated defaults. All decisions use seed, version and absolute cells.
 
 const GENERATION_VERSION := 8 # Admitted woodland site and shared access reservations.
-const Structures = preload("res://scripts/authored_structures.gd")
+const Structures = preload("res://scripts/scenery/authored_structures.gd")
 const CELL_SIZE := 32
 const CHUNK_SIZE := 16
 const CAMP := Vector2i.ZERO
@@ -28,14 +28,14 @@ var _height_cache: Dictionary = {}
 var _normal_cache: Dictionary = {}
 var _slope_cache: Dictionary = {}
 var _pond_cache: Dictionary = {}
-const CacheWindow = preload("res://scripts/derived_cache_window.gd")
+const CacheWindow = preload("res://scripts/core/derived_cache_window.gd")
 var _height_window := CacheWindow.new(65536)
 var _normal_window := CacheWindow.new(65536)
 var _slope_window := CacheWindow.new(32768)
 var _pond_window := CacheWindow.new(256)
 var _landmark_height := 0.0
 var _cabin_height := 0.0
-var geography := preload("res://scripts/terrain_geography.gd").new()
+var geography := preload("res://scripts/world/terrain_geography.gd").new()
 
 static func default_relief() -> Dictionary:
 	return (preload("res://resources/terrain_rolling.tres") as TerrainReliefSettings).parameters()

@@ -2,7 +2,7 @@ extends SceneTree
 
 var checks := 0
 var failures := 0
-const Chunk = preload("res://scripts/solid_chunk.gd")
+const Chunk = preload("res://scripts/presentation/solid_chunk.gd")
 
 func check(value: bool, message: String) -> void:
 	checks += 1

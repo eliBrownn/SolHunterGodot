@@ -1,8 +1,8 @@
 extends SceneTree
-const Validation = preload("res://scripts/runtime_validation_cache.gd")
-const Ground = preload("res://scripts/streaming_ground.gd")
-const Streaming = preload("res://scripts/view_streaming.gd")
-const Overlay = preload("res://scripts/affinity_ground.gd")
+const Validation = preload("res://scripts/core/runtime_validation_cache.gd")
+const Ground = preload("res://scripts/presentation/streaming_ground.gd")
+const Streaming = preload("res://scripts/presentation/view_streaming.gd")
+const Overlay = preload("res://scripts/presentation/affinity_ground.gd")
 var checks := 0
 var failures := 0
 

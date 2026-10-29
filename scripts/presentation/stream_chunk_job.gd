@@ -18,7 +18,7 @@ func _init(source: WorldTerrain, at: Vector2i, tuning: NatureSettings, view: Nod
 	coord = at
 	# The host admits the palette once; do not walk every asset for each chunk.
 	nature = tuning if tuning != null else preload("res://resources/nature_settings.tres")
-	chunk = view if view != null else load("res://scripts/solid_chunk.gd").new()
+	chunk = view if view != null else load("res://scripts/presentation/solid_chunk.gd").new()
 	chunk.position = Vector3(coord.x * 16, 0, coord.y * 16)
 
 func advance(deadline_usec: int) -> bool:

@@ -1,5 +1,5 @@
 extends SceneTree
-const Currents = preload("res://scripts/vastra_currents.gd")
+const Currents = preload("res://scripts/presentation/vastra_currents.gd")
 var checks := 0
 var failures := 0
 

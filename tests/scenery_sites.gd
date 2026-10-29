@@ -1,6 +1,6 @@
 extends SceneTree
 ## Site admission and independent reconstruction; actual terrain remains authoritative.
-const Template = preload("res://scripts/scenery_site_template.gd")
+const Template = preload("res://scripts/scenery/scenery_site_template.gd")
 var checks := 0
 var failures := 0
 
@@ -61,7 +61,7 @@ func run() -> void:
 		chunks.reverse()
 		for coord in chunks:
 			check(first[coord] == terrain.extract_chunk(coord), "Chunk visitation order does not reapprove or relocate the site")
-		var publisher := preload("res://scripts/solid_chunk.gd").new()
+		var publisher := preload("res://scripts/presentation/solid_chunk.gd").new()
 		publisher.add_site(result)
 		check(publisher.pick_objects.size() == result.elements.size(), "Every admitted module has one pick record")
 		for i in range(result.elements.size()):

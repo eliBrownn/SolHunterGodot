@@ -1,11 +1,11 @@
-extends "res://scripts/world_plane.gd"
+extends "res://scripts/application/world_plane.gd"
 ## Optional solid-3D view over the unchanged generated world and expedition simulation.
 
-const SolidChunk = preload("res://scripts/solid_chunk.gd")
-const PlayerVisibility = preload("res://scripts/player_visibility.gd")
-const ViewStreaming = preload("res://scripts/view_streaming.gd")
-const MeshPicking = preload("res://scripts/mesh_picking.gd")
-const TerrainRay = preload("res://scripts/terrain_ray.gd")
+const SolidChunk = preload("res://scripts/presentation/solid_chunk.gd")
+const PlayerVisibility = preload("res://scripts/presentation/player_visibility.gd")
+const ViewStreaming = preload("res://scripts/presentation/view_streaming.gd")
+const MeshPicking = preload("res://scripts/presentation/mesh_picking.gd")
+const TerrainRay = preload("res://scripts/presentation/terrain_ray.gd")
 @export_group("3D View")
 ## Perspective, dolly range, draw/stream/shadow distances, sky and fog. Restart/reapply to use edits.
 @export var view_settings: View3DSettings = preload("res://resources/view_3d_settings.tres")
@@ -33,7 +33,7 @@ var stream_job: RefCounted
 var max_stream_slice_ms := 0.0
 var max_stream_geometry_ms := 0.0
 var stream_step_peaks := {"geography": 0.0, "generation": 0.0, "cell": 0.0, "upload": 0.0}
-var streaming_ground := preload("res://scripts/streaming_ground.gd").new()
+var streaming_ground := preload("res://scripts/presentation/streaming_ground.gd").new()
 var selection := Node3D.new()
 var player_shadow := MeshInstance3D.new()
 var visibility_aid: Node3D
@@ -53,8 +53,8 @@ func _ready() -> void:
 	# Flatten and prepare shared static mesh/picking data before walking begins.
 	for palette in [active_nature.common_trees, active_nature.hardy_trees, active_nature.rocks, active_nature.undergrowth]:
 		for asset in palette:
-			preload("res://scripts/nature_art.gd").compact_parts(asset)
-			for piece in preload("res://scripts/nature_art.gd").parts(asset).pieces:
+			preload("res://scripts/scenery/nature_art.gd").compact_parts(asset)
+			for piece in preload("res://scripts/scenery/nature_art.gd").parts(asset).pieces:
 				MeshPicking.prepare(piece.mesh)
 	capture_directory = "res://artifacts/solid3d"
 	super._ready()
@@ -85,7 +85,7 @@ func _ready() -> void:
 	var atmosphere := WorldEnvironment.new()
 	atmosphere.environment = environment
 	add_child(atmosphere)
-	atmosphere_controller = preload("res://scripts/atmosphere_controller.gd").new()
+	atmosphere_controller = preload("res://scripts/presentation/atmosphere_controller.gd").new()
 	add_child(atmosphere_controller)
 	atmosphere_controller.bind(self, atmosphere_settings)
 	sync_ground()
@@ -381,7 +381,7 @@ func prepare_stream_chunk(coord: Vector2i, deadline_usec: int) -> Variant:
 	if cached_detail_valid(coord):
 		return retained_solid[coord].get_meta("source_cells")
 	if stream_job == null:
-		stream_job = preload("res://scripts/stream_chunk_job.gd").new(world.terrain, coord, active_nature, SolidChunk.new())
+		stream_job = preload("res://scripts/presentation/stream_chunk_job.gd").new(world.terrain, coord, active_nature, SolidChunk.new())
 	var ready: bool = stream_job.advance(deadline_usec)
 	for stage in stream_step_peaks:
 		stream_step_peaks[stage] = maxf(stream_step_peaks[stage], stream_job.step_peaks[stage])

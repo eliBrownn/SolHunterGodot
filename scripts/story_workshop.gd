@@ -1,4 +1,4 @@
-extends "res://scripts/world_solid.gd"
+extends "res://scripts/application/world_solid.gd"
 ## F6 writing preview over the actual expedition. Saves stay in a separate artifact path.
 @export var preview_events: Array[StoryEvent] = []
 

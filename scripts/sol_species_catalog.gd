@@ -53,7 +53,7 @@ func ecology_configuration() -> Array:
 	for entry in entries:
 		var values: Array = [entry.species_id if entry != null else ""]
 		if entry != null and entry.ecology != null:
-			for field in preload("res://scripts/resource_storage_fields.gd").for_resource(entry.ecology):
+			for field in preload("res://scripts/core/resource_storage_fields.gd").for_resource(entry.ecology):
 				var value: Variant = entry.ecology.get(field)
 				values.append(value.duplicate() if value is PackedStringArray else value)
 		result.append(values)

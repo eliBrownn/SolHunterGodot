@@ -80,7 +80,7 @@ func configuration() -> Array:
 	for definition in definitions:
 		var fields: Array = []
 		if definition != null:
-			for field in preload("res://scripts/resource_storage_fields.gd").for_resource(definition):
+			for field in preload("res://scripts/core/resource_storage_fields.gd").for_resource(definition):
 				var value: Variant = definition.get(field)
 				fields.append(value.duplicate() if value is PackedStringArray else value)
 		result.append(fields)

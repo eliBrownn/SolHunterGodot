@@ -1,6 +1,6 @@
 extends "res://tests/runtime_optimization.gd"
 ## Correctness/lifecycle regressions, without machine-dependent timing assertions.
-const Ground = preload("res://scripts/streaming_ground.gd")
+const Ground = preload("res://scripts/presentation/streaming_ground.gd")
 
 func brute_ray(mesh: Mesh, origin: Vector3, direction: Vector3) -> Variant:
 	var closest: Variant = null
@@ -75,7 +75,7 @@ func run() -> void:
 	check(world.persistent_state.snapshot() == before, "Rendering caches do not change expedition state")
 	ground.free()
 	var settings: OwnedCompanionSettings = scene.companion.settings.duplicate(true)
-	var cache := preload("res://scripts/runtime_validation_cache.gd").new()
+	var cache := preload("res://scripts/core/runtime_validation_cache.gd").new()
 	check(cache.check(settings), "Companion tuning is admitted")
 	cache.check(settings)
 	check(cache.validation_runs == 1, "Unchanged companion tuning skips full revalidation")

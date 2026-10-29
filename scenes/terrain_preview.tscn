@@ -4,7 +4,7 @@
 [ext_resource type="Resource" path="res://resources/terrain_very_gentle.tres" id="2"]
 [ext_resource type="Resource" path="res://resources/terrain_rolling.tres" id="3"]
 [ext_resource type="Resource" path="res://resources/terrain_upper_relief.tres" id="4"]
-[ext_resource type="Script" path="res://scripts/terrain_relief_settings.gd" id="5"]
+[ext_resource type="Script" path="res://scripts/world/terrain_relief_settings.gd" id="5"]
 
 [node name="TerrainStudy" type="Node3D"]
 script = ExtResource("1")

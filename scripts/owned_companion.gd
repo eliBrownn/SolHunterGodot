@@ -37,7 +37,7 @@ var route_radius := 0
 var route_origin := Vector2i.ZERO
 var decision_after := 0.0
 var admission_retry := 0.0
-var tuning_validation := preload("res://scripts/runtime_validation_cache.gd").new()
+var tuning_validation := preload("res://scripts/core/runtime_validation_cache.gd").new()
 var travel := OwnedCompanionTraversal.new()
 
 func bind(source: Node2D, tuning: OwnedCompanionSettings) -> void:

@@ -3,8 +3,8 @@ extends Node3D
 
 static var meshes: Dictionary = {}
 static var surface_uvs: Dictionary = {}
-const NatureArt = preload("res://scripts/nature_art.gd")
-const WaterAppearance = preload("res://scripts/water_appearance_settings.gd")
+const NatureArt = preload("res://scripts/scenery/nature_art.gd")
+const WaterAppearance = preload("res://scripts/presentation/water_appearance_settings.gd")
 var batches: Dictionary = {}
 var terrain_surfaces: Dictionary = {}
 var pick_objects: Array[Dictionary] = []

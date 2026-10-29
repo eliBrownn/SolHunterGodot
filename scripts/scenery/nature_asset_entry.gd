@@ -25,10 +25,10 @@ func valid() -> bool:
 func admitted_model() -> Dictionary:
 	if not valid():
 		return {}
-	var model: Dictionary = preload("res://scripts/nature_art.gd").parts(scene)
+	var model: Dictionary = preload("res://scripts/scenery/nature_art.gd").parts(scene)
 	if not model.supported or model.pieces.is_empty() or model.pieces.size() > maximum_parts or model.triangles > maximum_triangles or model.surfaces > maximum_surfaces:
 		return {}
 	var size: Vector3 = model.bounds.size * uniform_scale
 	if size.y > maximum_height or maxf(size.x, size.z) > maximum_width:
 		return {}
-	return preload("res://scripts/nature_art.gd").compact_parts(scene)
+	return preload("res://scripts/scenery/nature_art.gd").compact_parts(scene)

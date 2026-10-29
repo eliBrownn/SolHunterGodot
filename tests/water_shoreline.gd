@@ -1,6 +1,6 @@
 extends SceneTree
 ## Production shoreline layers, depth attributes and unchanged terrain authority.
-const Chunk = preload("res://scripts/solid_chunk.gd")
+const Chunk = preload("res://scripts/presentation/solid_chunk.gd")
 const Settings = preload("res://resources/water_appearance.tres")
 var checks := 0
 var failures := 0

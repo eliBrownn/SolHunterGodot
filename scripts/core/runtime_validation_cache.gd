@@ -1,7 +1,7 @@
 extends RefCounted
 ## Consumer-owned validation memo. Snapshots retain values/IDs, never Resources.
 ## Direct nested edits, array edits, replacements and repacked scene roots invalidate it.
-const Fields = preload("res://scripts/resource_storage_fields.gd")
+const Fields = preload("res://scripts/core/resource_storage_fields.gd")
 var snapshot: Array = []
 var result := false
 var validation_runs := 0

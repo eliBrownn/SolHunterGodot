@@ -1,7 +1,7 @@
 extends Node3D
 ## Lightweight, read-only ground coverage while budgeted terrain/scenery is queued.
 ## Samples the existing generator; edge skirts cover LOD seams without moving fog.
-const ViewStreaming = preload("res://scripts/view_streaming.gd")
+const ViewStreaming = preload("res://scripts/presentation/view_streaming.gd")
 var chunks: Dictionary = {}
 var retained: Dictionary = {}
 var cache_limit := 64

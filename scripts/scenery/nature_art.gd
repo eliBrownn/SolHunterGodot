@@ -26,7 +26,7 @@ static func compact_parts(scene: PackedScene) -> Dictionary:
 	var pieces: Array[Dictionary] = []
 	for material in groups:
 		var mesh: ArrayMesh = groups[material].commit()
-		preload("res://scripts/mesh_picking.gd").prepare(mesh)
+		preload("res://scripts/presentation/mesh_picking.gd").prepare(mesh)
 		pieces.append({"mesh":mesh,"transform":Transform3D.IDENTITY})
 	var result: Dictionary = source.duplicate()
 	result.pieces = pieces

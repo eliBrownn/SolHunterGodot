@@ -90,7 +90,7 @@ func run() -> void:
 	for slot in range(16):
 		var first: String = controller.weather_at(slot)
 		check(first in ["clear", "cloudy", "rain"] and controller.weather_at(slot) == first, "Automatic weather is stable for a seed/time interval")
-	var material: StandardMaterial3D = preload("res://scripts/solid_chunk.gd").mesh_for("grass_3").surface_get_material(0)
+	var material: StandardMaterial3D = preload("res://scripts/presentation/solid_chunk.gd").mesh_for("grass_3").surface_get_material(0)
 	check(material.shading_mode == BaseMaterial3D.SHADING_MODE_PER_PIXEL, "Retained terrain textures now receive daylight, moonlight and scenery shadows")
 	if OS.get_cmdline_user_args().has("--capture-atmosphere") and DisplayServer.get_name() != "headless":
 		settings.cycle_enabled = false

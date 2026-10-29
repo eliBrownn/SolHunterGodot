@@ -116,7 +116,7 @@ the test fixture; it is not a real-input or owner-playtest acceptance claim.
 The complete validator retry passed the 2,389-check smoke journey, then stopped
 at parsing errors in `tests/world_generation.gd:18,29,30,41-44`
 (`artifacts/owned_companion_validation_retry.log`). A separate existing-suite run
-also reported empty mesh-surface errors in `scripts/solid_chunk.gd:136-137`.
+also reported empty mesh-surface errors in `scripts/presentation/solid_chunk.gd:136-137`.
 No full-project clean pass or device/performance acceptance is claimed. An earlier
 headless run passed assertions then had a process-exit crash; the focused rerun
 and rendered run both exited successfully. Shared world/mesh work was active

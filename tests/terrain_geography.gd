@@ -1,7 +1,7 @@
 extends SceneTree
 ## Geography v7: bounded descriptors, reconstruction and smooth shores.
-const Chunk = preload("res://scripts/solid_chunk.gd")
-const Ray = preload("res://scripts/terrain_ray.gd")
+const Chunk = preload("res://scripts/presentation/solid_chunk.gd")
+const Ray = preload("res://scripts/presentation/terrain_ray.gd")
 var checks := 0
 var failures := 0
 

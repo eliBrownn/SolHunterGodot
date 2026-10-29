@@ -4,7 +4,7 @@ var world: Node2D
 var sightings: Node3D
 var settings: WildRecoverySettings
 var state: ExpeditionState
-var library_validation := preload("res://scripts/runtime_validation_cache.gd").new()
+var library_validation := preload("res://scripts/core/runtime_validation_cache.gd").new()
 
 func bind(source: Node2D, actors: Node3D, tuning: WildRecoverySettings) -> void:
 	world = source

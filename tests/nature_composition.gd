@@ -1,6 +1,6 @@
 extends SceneTree
-const Art = preload("res://scripts/nature_art.gd")
-const Chunk = preload("res://scripts/solid_chunk.gd")
+const Art = preload("res://scripts/scenery/nature_art.gd")
+const Chunk = preload("res://scripts/presentation/solid_chunk.gd")
 const Settings = preload("res://resources/nature_cohesive_sample.tres")
 var failures: Array[String] = []
 var checks := 0

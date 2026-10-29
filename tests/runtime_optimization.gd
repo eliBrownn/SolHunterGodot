@@ -1,9 +1,9 @@
 extends SceneTree
 ## Equivalence and lifecycle checks for disposable caches and reused presentation.
-const Chunk = preload("res://scripts/solid_chunk.gd")
-const Job = preload("res://scripts/stream_chunk_job.gd")
-const CacheWindow = preload("res://scripts/derived_cache_window.gd")
-const Picking = preload("res://scripts/mesh_picking.gd")
+const Chunk = preload("res://scripts/presentation/solid_chunk.gd")
+const Job = preload("res://scripts/presentation/stream_chunk_job.gd")
+const CacheWindow = preload("res://scripts/core/derived_cache_window.gd")
+const Picking = preload("res://scripts/presentation/mesh_picking.gd")
 var checks := 0
 var failures := 0
 

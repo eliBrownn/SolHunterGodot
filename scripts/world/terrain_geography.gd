@@ -2,7 +2,7 @@ extends RefCounted
 ## Versioned absolute geography, independent of render chunks and ecology.
 ## Pond queries visit nine regions, road tiles at most 25; all work is bounded.
 const REGION := 128
-const CacheWindow = preload("res://scripts/derived_cache_window.gd")
+const CacheWindow = preload("res://scripts/core/derived_cache_window.gd")
 var ponds: Dictionary = {}
 var roads: Dictionary = {}
 var tiles: Dictionary = {}

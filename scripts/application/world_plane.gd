@@ -2,8 +2,8 @@ extends Node3D
 ## The existing 2D coordinate system is rendered once onto a real horizontal XZ plane.
 ## HUD is a sibling of the SubViewport and remains in screen space.
 
-const World = preload("res://scripts/world.gd")
-const PlayerModel = preload("res://scripts/player_model.gd")
+const World = preload("res://scripts/application/world.gd")
+const PlayerModel = preload("res://scripts/presentation/player_model.gd")
 const SURFACE_SIZE := Vector2(64, 48)
 const TEXTURE_SIZE := Vector2i(2048, 1536)
 @export_group("Expedition Tuning")
@@ -142,10 +142,10 @@ func _ready() -> void:
 	companion = preload("res://scripts/owned_companion.gd").new()
 	add_child(companion)
 	companion.bind(world, companion_settings)
-	var affinity_ground := preload("res://scripts/affinity_ground.gd").new()
+	var affinity_ground := preload("res://scripts/presentation/affinity_ground.gd").new()
 	add_child(affinity_ground)
 	affinity_ground.bind(world, sightings.visual_settings)
-	var vastra_currents := preload("res://scripts/vastra_currents.gd").new()
+	var vastra_currents := preload("res://scripts/presentation/vastra_currents.gd").new()
 	add_child(vastra_currents)
 	vastra_currents.bind(world)
 	gamepad = preload("res://scripts/controller_input.gd").new()
@@ -174,7 +174,7 @@ func ground_height(at: Vector2) -> float:
 
 func ground_mesh(cell: Vector2i, size: float = 0.93) -> Mesh:
 	if has_method("sync_ground"):
-		return preload("res://scripts/solid_chunk.gd").overlay_mesh(world.terrain, cell, size)
+		return preload("res://scripts/presentation/solid_chunk.gd").overlay_mesh(world.terrain, cell, size)
 	var mesh := PlaneMesh.new()
 	mesh.size = Vector2.ONE * size
 	return mesh

@@ -96,7 +96,7 @@ func run() -> void:
 	BattleTest.settle(controller)
 	check(controller.session == null and feedback.result_panel.visible and not world.paused, "Resolved battle shows a nonmodal summary while exploration resumes")
 	for child in scene.get_children():
-		if child.get_script() == preload("res://scripts/affinity_ground.gd"):
+		if child.get_script() == preload("res://scripts/presentation/affinity_ground.gd"):
 			check(child.tiles.is_empty() and not world.persistent_state.affinity_tiles().is_empty(), "Default exploration hides imprint tiles while preserving committed affinity state")
 	check(feedback.result_text.text.contains(winner.capitalize()) and feedback.result_text.text.contains(str(tiles) + " affected tiles"), "Recap shows the committed affinity and affected tile count")
 	var leaders := activity.values().count(activity[winner])

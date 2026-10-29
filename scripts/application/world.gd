@@ -15,9 +15,9 @@ var battle_input_consumed := false
 var interaction_hint: Label
 var hover_cell: Variant = null
 
-const ChunkView = preload("res://scripts/terrain_chunk.gd")
-const Explorer = preload("res://scripts/explorer.gd")
-const StructureView = preload("res://scripts/structure_view.gd")
+const ChunkView = preload("res://scripts/presentation/terrain_chunk.gd")
+const Explorer = preload("res://scripts/world/explorer.gd")
+const StructureView = preload("res://scripts/scenery/structure_view.gd")
 const CLIMATE_SETTINGS = preload("res://resources/climate_settings.tres")
 const VASTRA_SETTINGS = preload("res://resources/vastra_settings.tres")
 const EXPEDITION_SETTINGS = preload("res://resources/expedition_settings.tres")
@@ -32,7 +32,7 @@ var terrain_settings: TerrainReliefSettings = preload("res://resources/terrain_r
 var scenery_settings: ScenerySiteTemplate = preload("res://resources/scenery/woodland_shelter.tres")
 var vastra_settings: VastraSettings = VASTRA_SETTINGS
 var configuration_warnings: Dictionary = {}
-var movement_library_validation := preload("res://scripts/runtime_validation_cache.gd").new()
+var movement_library_validation := preload("res://scripts/core/runtime_validation_cache.gd").new()
 var terrain := WorldTerrain.new()
 var cell := Vector2i.ZERO
 var destination := Vector2i.ZERO

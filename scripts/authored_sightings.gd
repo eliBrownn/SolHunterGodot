@@ -14,7 +14,7 @@ var visual_settings: SolVisualSettings
 var roaming_state: ExpeditionState
 var battle_hidden_ids: Dictionary = {}
 var ecology_cache: Dictionary = {}
-var tuning_validation := preload("res://scripts/runtime_validation_cache.gd").new()
+var tuning_validation := preload("res://scripts/core/runtime_validation_cache.gd").new()
 var ecology_configuration: Array = []
 var ecology_validation_revision := -1
 var members_by_id: Dictionary = {}

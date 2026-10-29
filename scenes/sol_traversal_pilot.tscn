@@ -3,7 +3,7 @@
 [ext_resource type="PackedScene" path="res://scenes/sol_species_pilot.tscn" id="1"]
 [ext_resource type="Resource" path="res://resources/sol_traversal_sightings.tres" id="2"]
 [ext_resource type="Script" path="res://scripts/sol_traversal_review.gd" id="3"]
-[ext_resource type="Script" path="res://scripts/expedition_settings.gd" id="4"]
+[ext_resource type="Script" path="res://scripts/world/expedition_settings.gd" id="4"]
 
 [sub_resource type="Resource" id="expedition"]
 script = ExtResource("4")
