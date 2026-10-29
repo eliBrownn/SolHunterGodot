@@ -108,7 +108,7 @@ change. No calendar estimates until the first implementation slice is measured.
 | R5 | Encounter/combat organization | Existing encounter-to-outcome flow preserved with one outcome writer | Implemented and checked; E5 |
 | R6 | UI/input/story organization | Existing controls, previews, pause and authored facts remain coherent | Implemented and checked; E6 |
 | R7 | Dependency and documentation closure | Superseded paths/adapters removed; ownership index matches actual code | Implemented and checked; E7 |
-| R8 | Integrated acceptance | Combined checks and representative desktop/device evidence recorded | Desktop checks recorded; baseline native crash and owner/device acceptance open |
+| R8 | Integrated acceptance | Combined checks and representative desktop/device evidence recorded | Desktop implementation and automation complete; owner/Thor acceptance open |
 
 ### R0 — Establish the baseline once
 
@@ -349,11 +349,11 @@ regresses its boundary, fix it or revert that focused change through normal Git
 history while preserving other work. Do not merge, force-push or delete branches
 as part of executing this roadmap.
 
-### R8 native shutdown blocker
+### R8 shutdown investigation: historical failures
 
 The configured validator at `artifacts/integration_readiness/reformat-r8-spaces/Validate/manifest.json` exited 1 after class coverage printed 203 checks / zero failures. Its source fingerprint did not change and no script/engine error text was suppressed. This is a failed run, not full acceptance. Windows records native access violation `0xc0000005` at engine offset `0x547f2c`.
 
-Isolation used detached baseline `7d3731a`, the same local assets, the same pinned engine and the original canonical `tests/sol_class_coverage.gd`: four of five baseline processes crashed after assertions; two of five restructured processes crashed with that identical fixture (`artifacts/reformat/baseline-original-*.log`, `current-original-*.log`). The fixture is restored exactly to baseline; speculative lifetime changes are not retained. This establishes an existing baseline blocker, not a native root-cause diagnosis. Do not retry until green, ignore nonzero exits, or upgrade the pinned engine as part of this structural change. R8 remains open until this native failure and owner playable acceptance are resolved. Remaining configured cases and rendered cost evidence are recorded separately below. Thor acceptance is explicitly deferred by the owner.
+Isolation used detached baseline `7d3731a`, the same local assets, the same pinned engine and the original canonical `tests/sol_class_coverage.gd`: four of five baseline processes crashed after assertions; two of five restructured processes crashed with that identical fixture (`artifacts/reformat/baseline-original-*.log`, `current-original-*.log`). The fixture is restored exactly to baseline; speculative lifetime changes are not retained. This establishes an existing baseline blocker, not a native root-cause diagnosis. Do not retry until green, ignore nonzero exits, or upgrade the pinned engine as part of this structural change. At this stage R8 remained open for the native failure and owner playable acceptance; the final configured result below supersedes the native blocker. Remaining configured cases and rendered cost evidence are recorded separately below. Thor acceptance is explicitly deferred by the owner.
 
 ### Final desktop evidence
 
@@ -390,3 +390,27 @@ The post-RecordShape configured run (`reformat-r8-record-owner/Validate`) stoppe
 The lexical script-reference audit identified four remaining strongly connected groups (persistence 6 scripts, story 3, structures/terrain 2, battle/passives 2). Six shared bounds/clock constants now have one pure `ExpeditionContract` owner; existing consumers refer to those unchanged values directly. Story ledger admission consumes a Resource event interface; battle passives preserve their WeakRef and consume the battle interface; cabin admission reads the supplied terrain enum. These break the back-references without duplicating mutable state or changing gameplay/schema values. `script-dependency-cycles.json` and `closed-script-dependency-cycles.json` record the groups before/after; the latter reports none across 142 scripts. This is a lexical audit, not a claim to resolve every dynamic resource dependency.
 
 The first cycle-closure diagnostic matrix completed five class runs, then exceeded its per-process limit on the first wild case and aborted; it is not a successful result. Original line endings were restored during that diagnostic attempt. Subsequent checks use frozen source and record every exit, timeout and error (`frozen-cycle-results.json`). A final configured gate and refreshed rendered cost sample are still required.
+
+### R8 final configured result
+
+Runtime revision `2f13c5a394214e77c7c8b0244115e2f21672037f` passed the unchanged configured `tools/validate.ps1` through `tools/review_expedition_integration.ps1 -Phase Validate -RunLabel reformat-r8-cycle-closure`. The manifest records 72 suite summaries / 52,274 checks, zero failures, zero engine/script errors, process exit 0, no timeout and unchanged source (`artifacts/integration_readiness/reformat-r8-cycle-closure/Validate/manifest.json`). Both world journeys completed. Duration was 600.395 seconds; the evidence wrapper permits 1,800 seconds for this full phase rather than imposing the shorter rendered-case limit. CI commands/assertions and the pinned engine are unchanged. Native shutdown failures are not accepted or suppressed; the completed gate exited cleanly after the project dependency corrections.
+
+The frozen post-closure diagnostic matrix also passed all ten unchanged wild-recovery runs plus story, scenery and combat consumer suites, with no errors/timeouts (`frozen-cycle-results.json`). The original class fixture passed five post-closure runs and the final configured run. `artifacts/reformat/final-migration-audit.json` accounts for 142 scripts: 137 original UID sidecars preserved byte-for-byte, 105 original scripts unchanged beyond path references, 32 intentional ownership/implementation edits and five new scripts. The Bible and untracked story hashes match the initial owner files. The final matched rendered result is recorded below. Owner playable review, remote asset availability and actual Thor/export acceptance remain separate.
+
+### R8 final rendered result and remaining acceptance
+
+The final frozen runtime (`2f13c5a`) also passed the identical rendered connected-cost driver: all 34 connected checks, inherited travel/pause/save/load checks, no engine/script errors, exit 0 and unchanged source. Evidence: `artifacts/integration_readiness/reformat-final-closed-cost/Cost/manifest.json` and `connected_cost/profile.json`. The baseline is the same successful `reformat-baseline-cost-ap` run above. This final sample supersedes the intermediate timing table. Hardware, viewport (2560 x 1369), D3D12 Forward+, VSync, 60 FPS cap, seed/settings and local assets match.
+
+| Final single desktop sample | Baseline | Restructured |
+| --- | ---: | ---: |
+| Initial scene build (ms) | 3071.041 | 3140.227 |
+| New expedition (ms) | 1381.806 | 1406.846 |
+| Load (ms) | 1499.946 | 1558.924 |
+| Outbound frame p95 (ms) | 19.351 | 19.282 |
+| Sol menu open CPU (ms) | 12.285 | 11.654 |
+| Live menu frame p95 (ms) | 16.764 | 16.721 |
+| Peak draw calls | 2537 | 2505 |
+| Engine static memory peak (MiB) | 316.993 | 317.414 |
+| Sampled process working-set peak (MiB) | 1019.918 | 1029.879 |
+
+Final active-battle p95 windows: 16.701, 16.696, 16.747 ms (baseline 16.725, 16.692, 16.803 ms). Both outbound routes were 78 steps. One sample cannot establish statistical regression bounds or target-device performance; no numeric budget is invented. All required desktop implementation and automated evidence are complete. The owner requested no further test runs after this completed result. Owner playable review and the actual AYN Thor export/usability/performance gate remain open; no merge, export or device acceptance is claimed. Supplied source assets remain withheld pending redistribution rights, so a clean remote clone is not yet self-contained.
