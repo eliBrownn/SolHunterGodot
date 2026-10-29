@@ -249,7 +249,7 @@ func queue_committed_motion(identity: String, owner: ExpeditionState) -> void:
 		motion.reset(cell)
 		return
 	# Every committed cell is observed here, including both ticks of a frame-stall batch.
-	var duration := ExpeditionState.ACTIVITY_INTERVAL * settings.movement_interval_ticks * settings.movement_travel_fraction
+	var duration := ExpeditionContract.ACTIVITY_INTERVAL * settings.movement_interval_ticks * settings.movement_travel_fraction
 	motion.append(cell, duration)
 
 func _process(delta: float) -> void:
@@ -310,7 +310,7 @@ func advance_roaming(tick: int) -> void:
 		if not traversal.is_empty():
 			if not world.host.has_method("sol_clearance_bounds"):
 				continue
-			var prepared: Dictionary = world.host.sol_clearance_bounds(member.home, ExpeditionState.MAX_ROAMING_DISTANCE + 2)
+			var prepared: Dictionary = world.host.sol_clearance_bounds(member.home, ExpeditionContract.MAX_ROAMING_DISTANCE + 2)
 			if not prepared.ready:
 				continue # Unpublished scenery is unknown clearance, never an empty corridor.
 			geometry = prepared.bounds

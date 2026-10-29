@@ -21,7 +21,7 @@ static func next_step(position: Vector2i, home: Vector2i, action: String, goal: 
 		for direction in DIRECTIONS:
 			var candidate: Vector2i = current + direction
 			var radius := SolRoamingPolicy.distance(candidate, home)
-			if first.has(candidate) or occupied.has(candidate) or radius > ExpeditionState.MAX_ROAMING_DISTANCE:
+			if first.has(candidate) or occupied.has(candidate) or radius > ExpeditionContract.MAX_ROAMING_DISTANCE:
 				continue
 			var player_distance := SolRoamingPolicy.distance(candidate, player)
 			if minimum_player_distance > 0 and player_distance < minimum_player_distance and player_distance <= SolRoamingPolicy.distance(current, player):

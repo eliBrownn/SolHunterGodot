@@ -67,7 +67,7 @@ func describe_home(cell: Vector2i) -> String:
 		var base := SolIdentityContract.make(world.terrain.world_seed, home, entry.species)
 		if not records.has(base) or records[base].active:
 			return ""
-		var seconds := ceili(maxi(0, int(records[base].ready_at) - state.activity_tick()) * ExpeditionState.ACTIVITY_INTERVAL)
+		var seconds := ceili(maxi(0, int(records[base].ready_at) - state.activity_tick()) * ExpeditionContract.ACTIVITY_INTERVAL)
 		if seconds == 0:
 			return "Wildlife return awaits clear ground."
 		return "Wildlife recovering · %d:%02d of exploration time" % [int(seconds / 60), seconds % 60]

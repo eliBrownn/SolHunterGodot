@@ -31,7 +31,7 @@ static func apply(candidate: Dictionary, changes: Variant, tick: int) -> bool:
 		if not valid_key(key) or not valid_overload(changes[key]):
 			return false
 		if not candidate.tile_deltas.has(key):
-			if candidate.tile_deltas.size() >= ExpeditionState.MAX_TILE_DELTAS:
+			if candidate.tile_deltas.size() >= ExpeditionContract.MAX_TILE_DELTAS:
 				return false
 			candidate.tile_deltas[key] = {}
 			candidate.natural.order.append(key)

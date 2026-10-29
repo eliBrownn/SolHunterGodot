@@ -2,13 +2,13 @@ class_name BattleClassPassives
 extends RefCounted
 ## Battle-local counters. Individual rolls are supplied by ExpeditionState, never generated here.
 var _battle: WeakRef
-var battle: TacticalBattle:
+var battle: RefCounted:
 	get:
-		return _battle.get_ref() as TacticalBattle
+		return _battle.get_ref() as RefCounted
 var settings: ClassBuffSettings
 var units: Dictionary = {}
 
-func _init(owner_battle: TacticalBattle, tuning: ClassBuffSettings) -> void:
+func _init(owner_battle: RefCounted, tuning: ClassBuffSettings) -> void:
 	_battle = weakref(owner_battle)
 	settings = tuning
 
@@ -99,7 +99,7 @@ func end_turn(side: String) -> void:
 func damage_factor(side: String, move: Dictionary, origin: Vector2i, moved_tiles: int = -1, reasons: Variant = null) -> float:
 	var other := "enemy" if side == "ally" else "ally"
 	var target: Dictionary = battle.enemy if side == "ally" else battle.ally
-	var range_to_target := TacticalBattle.distance(origin, battle.unit_cell(other))
+	var range_to_target: int = battle.distance(origin, battle.unit_cell(other))
 	var factor := 1.0
 	var rate := float(potency(side)) / 100.0
 	var walked := int(units.get(side, {}).get("moved", 0)) if moved_tiles < 0 else moved_tiles

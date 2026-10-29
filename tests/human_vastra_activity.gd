@@ -106,7 +106,7 @@ func verify_limits() -> void:
 	state.advance_time(0.75)
 	check(not state.apply_human_activity(command(), ambient(), "new", 3).is_empty(), "Fresh activity window frees old regional usage capacity")
 	baseline = ExpeditionState.new(17).snapshot()
-	for index in range(ExpeditionState.MAX_TILE_DELTAS):
+	for index in range(ExpeditionContract.MAX_TILE_DELTAS):
 		baseline.tile_deltas["%d:0" % index] = {"overload": 0}
 	baseline.natural.order = baseline.tile_deltas.keys()
 	state = ExpeditionState.restore(baseline, 17)

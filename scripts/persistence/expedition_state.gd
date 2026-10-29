@@ -13,15 +13,9 @@ signal story_changed(event_id: String, choice_id: String)
 
 const VERSION := 17 # Authored event decisions and explicit story facts.
 const MAX_DISCOVERIES := 120 # Source journal retention: oldest discovery rows retire, not individuals.
-const MAX_ROAMING_DISTANCE := 5 # Saved movement schema bound; tuning may choose a smaller home range.
 const TERRITORY_SIZE := 16 # Source development setting; independent of render chunk size.
-const ACTIVITY_INTERVAL := 0.75
 const MAX_CATCH_UP := 2
-const MAX_SAFE_INTEGER := 9007199254740991 # Exact JSON integer range.
 const MAX_TERRITORIES := 4096
-const MAX_INDIVIDUALS := 2048
-const MAX_TILE_DELTAS := 8192
-const OWNED_LOCATIONS := ["sealed", "party", "storage"]
 
 var _seed: int
 var _territory_size: int
@@ -75,7 +69,7 @@ func record_story_choice(event: StoryEvent, choice_id: String) -> bool:
 	return true
 
 func activity_seconds() -> float:
-	return float(_tick) * ACTIVITY_INTERVAL + _remainder
+	return float(_tick) * ExpeditionContract.ACTIVITY_INTERVAL + _remainder
 
 func counts() -> Dictionary:
 	return {"territories": _territories.size(), "individuals": _individuals.size(), "tile_deltas": _tile_deltas.size()}
@@ -84,10 +78,10 @@ func advance_time(delta: float) -> int:
 	if not is_finite(delta) or delta < 0 or not is_finite(_remainder + delta):
 		return 0
 	var total := _remainder + delta
-	var steps := int(minf(floor(total / ACTIVITY_INTERVAL), MAX_CATCH_UP))
-	if _tick > MAX_SAFE_INTEGER - steps:
+	var steps := int(minf(floor(total / ExpeditionContract.ACTIVITY_INTERVAL), MAX_CATCH_UP))
+	if _tick > ExpeditionContract.MAX_SAFE_INTEGER - steps:
 		return 0
-	_remainder = fmod(total, ACTIVITY_INTERVAL)
+	_remainder = fmod(total, ExpeditionContract.ACTIVITY_INTERVAL)
 	for step in range(steps):
 		_tick += 1
 		activity_advanced.emit(_tick)
@@ -139,10 +133,10 @@ func choose_starter(profile: Dictionary, index: int, forms: int = 3) -> bool:
 	if _battle.active or not _stat_settings.valid() or not _buff_settings.valid() or not _battle.starter_id.is_empty() or index < 0 or index > 2 or not BattleProfile.valid_snapshot(profile):
 		return false
 	for record in _individuals.values():
-		if record.location in OWNED_LOCATIONS:
+		if record.location in ExpeditionContract.OWNED_LOCATIONS:
 			return false # Do not infer/rewrite a legacy owned collection as a new starter.
 	var identity := SolIdentityContract.make(_seed, Vector2i(index, 0), profile.species_id)
-	if _individuals.has(identity) or _individuals.size() >= MAX_INDIVIDUALS:
+	if _individuals.has(identity) or _individuals.size() >= ExpeditionContract.MAX_INDIVIDUALS:
 		return false
 	var record := {"id": identity, "home": [index, 0], "generation": 0, "species_id": profile.species_id,
 		"lineage_id": profile.lineage_id, "class_id": profile.class_id, "ordinary_form": 1,
@@ -172,7 +166,7 @@ func choose_starter(profile: Dictionary, index: int, forms: int = 3) -> bool:
 
 func begin_battle(enemy_id: String) -> int:
 	var hero := active_sol_view()
-	if _affinity_tiles.size() > MAX_TILE_DELTAS - 169 or _tile_deltas.size() > MAX_TILE_DELTAS - VastraCombat.MAX_BATTLE_CELLS or _battle.active or hero.is_empty() or hero.hp <= 0 or not wild_available(enemy_id) or _battle.serial >= MAX_SAFE_INTEGER:
+	if _affinity_tiles.size() > ExpeditionContract.MAX_TILE_DELTAS - 169 or _tile_deltas.size() > ExpeditionContract.MAX_TILE_DELTAS - VastraCombat.MAX_BATTLE_CELLS or _battle.active or hero.is_empty() or hero.hp <= 0 or not wild_available(enemy_id) or _battle.serial >= ExpeditionContract.MAX_SAFE_INTEGER:
 		return 0
 	if _individuals[hero.id].location != "party":
 		return 0
@@ -234,7 +228,7 @@ func complete_battle(serial: int, hp: int, outcome: String, grace_steps: int, im
 	if hero.id == candidate.battle.starter_id:
 		candidate.battle.profile = candidate.collection.owned[hero.id].profile.duplicate(true)
 		candidate.battle.hp = candidate.collection.owned[hero.id].hp
-	var tiles: Variant = AffinityImprint.apply(_affinity_tiles, imprint, _tick, MAX_TILE_DELTAS)
+	var tiles: Variant = AffinityImprint.apply(_affinity_tiles, imprint, _tick, ExpeditionContract.MAX_TILE_DELTAS)
 	if tiles == null:
 		return false
 	candidate.affinity_tiles = tiles
@@ -447,7 +441,7 @@ func population_summary(cell: Vector2i, carrying_capacities: Dictionary = {}, re
 		"effective_population": mini(available, int(capacity)) if capacity != null else null}
 
 func register_individual(species: SolSpeciesDefinition, home: Vector2i, affinity: String, generation: int = 0) -> String:
-	if _battle.active or species == null or not species.valid() or not SolSpeciesDefinition.text(affinity) or _individuals.size() >= MAX_INDIVIDUALS or not _stat_settings.valid() or not _buff_settings.valid():
+	if _battle.active or species == null or not species.valid() or not SolSpeciesDefinition.text(affinity) or _individuals.size() >= ExpeditionContract.MAX_INDIVIDUALS or not _stat_settings.valid() or not _buff_settings.valid():
 		return ""
 	var identity := SolIdentityContract.make(_seed, home, species.species_id, generation)
 	var base := SolIdentityContract.make(_seed, home, species.species_id)
@@ -476,7 +470,7 @@ func register_individual(species: SolSpeciesDefinition, home: Vector2i, affinity
 	return identity
 
 func acquire(identity: String, location: String = "sealed") -> bool:
-	if _battle.active or not OWNED_LOCATIONS.has(location) or not wild_available(identity):
+	if _battle.active or not ExpeditionContract.OWNED_LOCATIONS.has(location) or not wild_available(identity):
 		return false
 	_individuals[identity].location = location
 	var population := WildPopulation.deplete(_wild_population, identity, _tick, _wild_recovery_delay)
@@ -490,7 +484,7 @@ func acquire(identity: String, location: String = "sealed") -> bool:
 func relocate_owned(identity: String, location: String) -> bool:
 	if _collection.owned.has(identity):
 		return transfer_companion(identity, location)
-	if _battle.active or not OWNED_LOCATIONS.has(location) or not _individuals.has(identity) or not OWNED_LOCATIONS.has(_individuals[identity].location) or _individuals[identity].location == location:
+	if _battle.active or not ExpeditionContract.OWNED_LOCATIONS.has(location) or not _individuals.has(identity) or not ExpeditionContract.OWNED_LOCATIONS.has(_individuals[identity].location) or _individuals[identity].location == location:
 		return false
 	_individuals[identity].location = location
 	individual_changed.emit(identity)
@@ -502,7 +496,7 @@ func relationship_view(identity: String) -> Variant:
 	return _individuals[identity].sol_relationship.duplicate(true)
 
 func record_relationship(identity: String, evidence: Dictionary) -> bool:
-	if not _individuals.has(identity) or not OWNED_LOCATIONS.has(_individuals[identity].location) or not valid_relationship(evidence, _tick):
+	if not _individuals.has(identity) or not ExpeditionContract.OWNED_LOCATIONS.has(_individuals[identity].location) or not valid_relationship(evidence, _tick):
 		return false
 	evidence = normalized_relationship(evidence)
 	if _individuals[identity].get("sol_relationship") == evidence:
@@ -521,7 +515,7 @@ func set_environment(cell: Vector2i, changes: Dictionary) -> bool:
 	if absi(cell.x) > 1000000 or absi(cell.y) > 1000000 or not valid_delta(changes):
 		return false
 	var key := "%d:%d" % [cell.x, cell.y]
-	if not _tile_deltas.has(key) and _tile_deltas.size() >= MAX_TILE_DELTAS:
+	if not _tile_deltas.has(key) and _tile_deltas.size() >= ExpeditionContract.MAX_TILE_DELTAS:
 		return false
 	var combined: Dictionary = _tile_deltas.get(key, {}).duplicate(true)
 	var previous_overload := int(combined.get("overload", 0))
@@ -784,7 +778,7 @@ static func valid_roaming(row: Variant, individual: Dictionary, tick: int, allow
 		return false
 	if not SolSpeciesDefinition.whole(row.cell[0], -1000000, 1000000) or not SolSpeciesDefinition.whole(row.cell[1], -1000000, 1000000):
 		return false
-	return absi(int(row.cell[0]) - int(individual.home[0])) + absi(int(row.cell[1]) - int(individual.home[1])) <= MAX_ROAMING_DISTANCE
+	return absi(int(row.cell[0]) - int(individual.home[0])) + absi(int(row.cell[1]) - int(individual.home[1])) <= ExpeditionContract.MAX_ROAMING_DISTANCE
 
 static func valid_response(memory: Variant, tick: int, allow_activity: bool = true) -> bool:
 	if not memory is Dictionary:
@@ -793,12 +787,12 @@ static func valid_response(memory: Variant, tick: int, allow_activity: bool = tr
 	for field in ["attention_until", "routine_until"]:
 		if allow_activity and memory.has(field):
 			fields.append(field)
-			if not SolSpeciesDefinition.whole(memory[field], 0, mini(tick + 128, MAX_SAFE_INTEGER)):
+			if not SolSpeciesDefinition.whole(memory[field], 0, mini(tick + 128, ExpeditionContract.MAX_SAFE_INTEGER)):
 				return false
 	if not RecordShape.keys_match(memory, fields) or memory.mode not in ["alert", "settling"]:
 		return false
 	for field in ["until", "move_after"]:
-		if not SolSpeciesDefinition.whole(memory[field], 0, mini(tick + 128, MAX_SAFE_INTEGER)):
+		if not SolSpeciesDefinition.whole(memory[field], 0, mini(tick + 128, ExpeditionContract.MAX_SAFE_INTEGER)):
 			return false
 	return (memory.mode == "alert" and int(memory.until) == 0) or (memory.mode == "settling" and int(memory.move_after) == 0)
 
@@ -818,9 +812,9 @@ static func valid_patrol(memory: Variant, individual: Dictionary, tick: int, max
 		if not SolSpeciesDefinition.whole(coordinate, -1000000, 1000000):
 			return false
 	# Safety envelope exceeds every authored deadline without becoming a balance slider.
-	if not SolSpeciesDefinition.whole(memory.expires, 0, mini(tick + 128, MAX_SAFE_INTEGER)) or not SolSpeciesDefinition.whole(memory.rest_until, 0, mini(tick + 128, MAX_SAFE_INTEGER)):
+	if not SolSpeciesDefinition.whole(memory.expires, 0, mini(tick + 128, ExpeditionContract.MAX_SAFE_INTEGER)) or not SolSpeciesDefinition.whole(memory.rest_until, 0, mini(tick + 128, ExpeditionContract.MAX_SAFE_INTEGER)):
 		return false
-	return absi(int(memory.goal[0]) - int(individual.home[0])) + absi(int(memory.goal[1]) - int(individual.home[1])) <= MAX_ROAMING_DISTANCE
+	return absi(int(memory.goal[0]) - int(individual.home[0])) + absi(int(memory.goal[1]) - int(individual.home[1])) <= ExpeditionContract.MAX_ROAMING_DISTANCE
 
 static func valid_discovery(entry: Variant, individuals: Dictionary) -> bool:
 	if not entry is Dictionary or not RecordShape.keys_match(entry, ["key", "title", "category", "description", "details", "first_seen"]):
@@ -851,15 +845,15 @@ static func valid_snapshot(data: Variant, seed_value: int) -> bool:
 	expected_fields.append("story")
 	if not RecordShape.keys_match(data, expected_fields):
 		return false
-	if not SolSpeciesDefinition.whole(seed_value, 0, 2147483646) or not SolSpeciesDefinition.whole(data.activity_tick, 0, MAX_SAFE_INTEGER) or not SolSpeciesDefinition.whole(data.territory_size, 1, 256):
+	if not SolSpeciesDefinition.whole(seed_value, 0, 2147483646) or not SolSpeciesDefinition.whole(data.activity_tick, 0, ExpeditionContract.MAX_SAFE_INTEGER) or not SolSpeciesDefinition.whole(data.territory_size, 1, 256):
 		return false
 	if not StoryLedger.valid(data.story, int(data.activity_tick)):
 		return false
 	if not HumanVastraActivity.valid_ledger(data.human_activity, int(data.activity_tick)):
 		return false
-	if not (data.remainder_seconds is float or data.remainder_seconds is int) or not is_finite(float(data.remainder_seconds)) or data.remainder_seconds < 0 or data.remainder_seconds >= ACTIVITY_INTERVAL:
+	if not (data.remainder_seconds is float or data.remainder_seconds is int) or not is_finite(float(data.remainder_seconds)) or data.remainder_seconds < 0 or data.remainder_seconds >= ExpeditionContract.ACTIVITY_INTERVAL:
 		return false
-	if not data.territories is Dictionary or data.territories.size() > MAX_TERRITORIES or not data.individuals is Dictionary or data.individuals.size() > MAX_INDIVIDUALS or not data.tile_deltas is Dictionary or data.tile_deltas.size() > MAX_TILE_DELTAS:
+	if not data.territories is Dictionary or data.territories.size() > MAX_TERRITORIES or not data.individuals is Dictionary or data.individuals.size() > ExpeditionContract.MAX_INDIVIDUALS or not data.tile_deltas is Dictionary or data.tile_deltas.size() > ExpeditionContract.MAX_TILE_DELTAS:
 		return false
 	if not data.discoveries is Array or data.discoveries.size() > MAX_DISCOVERIES:
 		return false
@@ -936,7 +930,7 @@ static func valid_snapshot(data: Variant, seed_value: int) -> bool:
 			var owned_row: Variant = data.collection.owned[id]
 			if not data.sol_stats.has(id) or not owned_row is Dictionary or not owned_row.get("profile") is Dictionary or not BattleProfile.valid_snapshot(owned_row.profile) or SolStats.resolve(data.sol_stats[id], int(owned_row.profile.level)) != BattleProfile.normalized(owned_row.profile):
 				return false
-	if not data.movebooks is Dictionary or data.movebooks.size() > data.individuals.size() or not AffinityImprint.valid_tiles(data.affinity_tiles, int(data.activity_tick), MAX_TILE_DELTAS):
+	if not data.movebooks is Dictionary or data.movebooks.size() > data.individuals.size() or not AffinityImprint.valid_tiles(data.affinity_tiles, int(data.activity_tick), ExpeditionContract.MAX_TILE_DELTAS):
 		return false
 	for identity in data.movebooks:
 		if not identity is String or not data.individuals.has(identity) or not MoveLibrary.valid_book(data.movebooks[identity]):
@@ -975,7 +969,7 @@ func admit_movebook(identity: String, book: Dictionary) -> bool:
 	return true
 
 func learn_move(identity: String, move: Dictionary) -> bool:
-	if _battle.active or not _movebooks.has(identity) or _individuals[identity].location not in OWNED_LOCATIONS or not SolMove.valid(move):
+	if _battle.active or not _movebooks.has(identity) or _individuals[identity].location not in ExpeditionContract.OWNED_LOCATIONS or not SolMove.valid(move):
 		return false
 	var book: Dictionary = _movebooks[identity]
 	if not book.pool.has(move.id) or book.learned.has(move.id) or (_collection.owned.has(identity) and int(_collection.owned[identity].unlocks.get(move.id, 55)) > int(_collection.owned[identity].profile.level)):
@@ -984,7 +978,7 @@ func learn_move(identity: String, move: Dictionary) -> bool:
 	return true
 
 func equip_moves(identity: String, ids: Array) -> bool:
-	if _battle.active or not _movebooks.has(identity) or _individuals[identity].location not in OWNED_LOCATIONS:
+	if _battle.active or not _movebooks.has(identity) or _individuals[identity].location not in ExpeditionContract.OWNED_LOCATIONS:
 		return false
 	var book := movebook(identity)
 	book.equipped = ids.duplicate()
@@ -1072,7 +1066,7 @@ func schedule_historical_recovery(home: String) -> bool:
 	return true
 
 func activate_wild_home(home: String, species: SolSpeciesDefinition, affinity: String, book: Dictionary, vacant: bool) -> String:
-	if _battle.active or not vacant or _wild_homes.has(home) or not _wild_population.has(home) or _individuals.size() >= MAX_INDIVIDUALS or species == null or not species.valid() or not MoveLibrary.valid_book(book):
+	if _battle.active or not vacant or _wild_homes.has(home) or not _wild_population.has(home) or _individuals.size() >= ExpeditionContract.MAX_INDIVIDUALS or species == null or not species.valid() or not MoveLibrary.valid_book(book):
 		return ""
 	var row: Dictionary = _wild_population[home]
 	var origin := SolIdentityContract.parse(home)

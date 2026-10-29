@@ -158,7 +158,7 @@ func verify_live() -> void:
 		check(serial > 0 and copy.complete_battle(serial, 0 if outcome == "exhaustion" else 1, outcome, 3, report) and copy.affinity_tiles() == tiles, "Every terminal outcome uses the same atomic imprint commit")
 	var bad_report := report.duplicate(true)
 	bad_report.fields[report.tiles[0]] = {"kind": "heat", "direction": true}
-	check(AffinityImprint.apply(tiles, bad_report, state.activity_tick(), ExpeditionState.MAX_TILE_DELTAS) == null, "Malformed field reports fail validation without partial writes")
+	check(AffinityImprint.apply(tiles, bad_report, state.activity_tick(), ExpeditionContract.MAX_TILE_DELTAS) == null, "Malformed field reports fail validation without partial writes")
 	for tick in range(8):
 		state.advance_time(0.75)
 	var staged := false

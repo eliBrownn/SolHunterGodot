@@ -40,7 +40,7 @@ func run() -> void:
 		state = at_tick(state, 30)
 		state.advance_environment(POLICY)
 		check(values(state).overload == 77, "A retained fraction completes at the next interval boundary")
-		state = at_tick(state, ExpeditionState.MAX_SAFE_INTEGER)
+		state = at_tick(state, ExpeditionContract.MAX_SAFE_INTEGER)
 		state.advance_environment(POLICY)
 		check(values(state).overload == 0 and state.natural_view().recovery_ticks.is_empty(), "Huge elapsed debt heals in constant work without integer overflow")
 	var state := ExpeditionState.new(17)

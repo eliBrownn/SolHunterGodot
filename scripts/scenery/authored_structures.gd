@@ -47,6 +47,6 @@ static func site_is_clear(terrain: RefCounted, footprint: Rect2i) -> bool:
 			var cell := Vector2i(x, y)
 			if cell == Vector2i.ZERO or terrain.route_axes(cell, 2) != 0:
 				return false
-			if terrain.natural_ground(cell) == WorldTerrain.Ground.WATER:
+			if terrain.natural_ground(cell) == terrain.Ground.WATER:
 				return false
 	return true

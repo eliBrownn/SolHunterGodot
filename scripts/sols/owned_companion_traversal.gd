@@ -71,7 +71,7 @@ func visual(terrain: WorldTerrain, cell: Vector2i, at: Vector2, seconds: float) 
 	if state.is_empty():
 		return {}
 	# Shared presentation uses active-tick units; owned display steps use seconds.
-	var phase_seconds := (seconds - started) * ExpeditionState.ACTIVITY_INTERVAL / maxf(0.001, duration)
+	var phase_seconds := (seconds - started) * ExpeditionContract.ACTIVITY_INTERVAL / maxf(0.001, duration)
 	var result := SolTraversalPolicy.presentation(terrain, {"cell": [cell.x, cell.y], "traversal": state}, at, phase_seconds)
 	result.clock = seconds
 	return result

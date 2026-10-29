@@ -93,7 +93,7 @@ static func presentation(terrain: WorldTerrain, row: Dictionary, at: Vector2, se
 	if not row.has("traversal"):
 		return {}
 	var state: Dictionary = row.traversal
-	var progress := clampf((seconds - int(state.mode_tick) * ExpeditionState.ACTIVITY_INTERVAL) / ExpeditionState.ACTIVITY_INTERVAL, 0.0, 1.0)
+	var progress := clampf((seconds - int(state.mode_tick) * ExpeditionContract.ACTIVITY_INTERVAL) / ExpeditionContract.ACTIVITY_INTERVAL, 0.0, 1.0)
 	var amount := 0.0
 	if state.mode in ["air", "swim"]:
 		amount = 1.0
@@ -122,7 +122,7 @@ static func landing_goal(world: Node2D, position: Vector2i, home: Vector2i, stat
 		for y in range(-distance, distance + 1):
 			for x in range(-distance, distance + 1):
 				var candidate := position + Vector2i(x, y)
-				if absi(x) + absi(y) != distance or SolRoamingPolicy.distance(candidate, home) > ExpeditionState.MAX_ROAMING_DISTANCE:
+				if absi(x) + absi(y) != distance or SolRoamingPolicy.distance(candidate, home) > ExpeditionContract.MAX_ROAMING_DISTANCE:
 					continue
 				if can_land(world, candidate, state, occupied, geometry):
 					return candidate

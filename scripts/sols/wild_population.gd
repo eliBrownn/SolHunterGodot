@@ -5,7 +5,7 @@ extends RefCounted
 static func deplete(records: Dictionary, identity: String, tick: int, delay: int) -> Dictionary:
 	var result := records.duplicate(true)
 	var origin := SolIdentityContract.parse(identity)
-	if delay <= 0 or origin.is_empty() or origin.generation >= 2147483647 or tick > ExpeditionState.MAX_SAFE_INTEGER - delay:
+	if delay <= 0 or origin.is_empty() or origin.generation >= 2147483647 or tick > ExpeditionContract.MAX_SAFE_INTEGER - delay:
 		return result
 	var home := SolIdentityContract.make(origin.seed, Vector2i(origin.home[0], origin.home[1]), origin.species_id)
 	var previous: Dictionary = records.get(home, {})
@@ -15,12 +15,12 @@ static func deplete(records: Dictionary, identity: String, tick: int, delay: int
 	return result
 
 static func valid(records: Variant, seed_value: int, tick: int, individuals: Dictionary, defeated: Dictionary) -> bool:
-	if not records is Dictionary or records.size() > ExpeditionState.MAX_INDIVIDUALS:
+	if not records is Dictionary or records.size() > ExpeditionContract.MAX_INDIVIDUALS:
 		return false
 	for home in records:
 		var origin := SolIdentityContract.parse(home)
 		var row: Variant = records[home]
-		if origin.is_empty() or origin.seed != seed_value or origin.generation != 0 or not row is Dictionary or not RecordShape.keys_match(row, ["generation", "ready_at", "active"]) or not row.active is bool or not SolSpeciesDefinition.whole(row.generation, 1, 2147483647) or not SolSpeciesDefinition.whole(row.ready_at, 0, ExpeditionState.MAX_SAFE_INTEGER):
+		if origin.is_empty() or origin.seed != seed_value or origin.generation != 0 or not row is Dictionary or not RecordShape.keys_match(row, ["generation", "ready_at", "active"]) or not row.active is bool or not SolSpeciesDefinition.whole(row.generation, 1, 2147483647) or not SolSpeciesDefinition.whole(row.ready_at, 0, ExpeditionContract.MAX_SAFE_INTEGER):
 			return false
 		var cell := Vector2i(origin.home[0], origin.home[1])
 		var previous := SolIdentityContract.make(seed_value, cell, origin.species_id, int(row.generation) - 1)

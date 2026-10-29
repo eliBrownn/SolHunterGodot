@@ -38,8 +38,8 @@ static func matches(facts: Dictionary, required: Dictionary) -> bool:
 			return false
 	return true
 
-static func select(data: Dictionary, event: StoryEvent, choice_id: String, tick: int) -> Dictionary:
-	if event == null or not valid(data, tick):
+static func select(data: Dictionary, event: Resource, choice_id: String, tick: int) -> Dictionary:
+	if event == null or not event.has_method("available_choices") or not valid(data, tick):
 		return {}
 	for choice in event.available_choices(data):
 		if choice.id == choice_id:
