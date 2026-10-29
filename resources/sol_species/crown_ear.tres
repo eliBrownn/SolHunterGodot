@@ -1,0 +1,35 @@
+[gd_resource type="Resource" script_class="SolSpeciesRecord" load_steps=7 format=3]
+
+[ext_resource type="Script" path="res://scripts/sol_species_record.gd" id="1"]
+[ext_resource type="Script" path="res://scripts/sol_ecology_profile.gd" id="2"]
+[ext_resource type="PackedScene" path="res://scenes/sols/crown_ear.tscn" id="3"]
+[ext_resource type="Script" path="res://scripts/sol_traversal_profile.gd" id="4"]
+
+[sub_resource type="Resource" id="traversal"]
+script = ExtResource("4")
+kind = "flight"
+
+[sub_resource type="Resource" id="ecology"]
+script = ExtResource("2")
+profile_id = "sol_species_0001_default"
+species_id = "sol_species_0001"
+temperament = "avoidant"
+behaviors = PackedStringArray("patrol", "idle", "flee")
+
+[resource]
+script = ExtResource("1")
+traversal = SubResource("traversal")
+species_id = "sol_species_0001"
+lineage_id = "sol_lineage_0001"
+class_id = "beast"
+display_name = "Crown-Ear"
+max_hp = 42
+attack = 18
+defense = 14
+special_attack = 16
+special_defense = 14
+speed = 24
+learnable_moves = PackedStringArray("strike", "wind", "rattle", "ward", "arc_bolt", "focus", "anchor", "quick_fang", "battle_cry", "grit_guard")
+starting_moves = PackedStringArray("strike", "wind", "rattle", "ward", "quick_fang", "battle_cry", "grit_guard")
+ecology = SubResource("ecology")
+presentation_scene = ExtResource("3")

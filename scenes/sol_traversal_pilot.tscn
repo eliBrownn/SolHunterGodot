@@ -1,0 +1,17 @@
+[gd_scene load_steps=6 format=3]
+
+[ext_resource type="PackedScene" path="res://scenes/sol_species_pilot.tscn" id="1"]
+[ext_resource type="Resource" path="res://resources/sol_traversal_sightings.tres" id="2"]
+[ext_resource type="Script" path="res://scripts/sol_traversal_review.gd" id="3"]
+[ext_resource type="Script" path="res://scripts/expedition_settings.gd" id="4"]
+
+[sub_resource type="Resource" id="expedition"]
+script = ExtResource("4")
+initial_seed = 17
+
+[node name="SolTraversalPilot" instance=ExtResource("1")]
+sighting_settings = ExtResource("2")
+expedition_settings = SubResource("expedition")
+
+[node name="TraversalReview" type="Node" parent="."]
+script = ExtResource("3")

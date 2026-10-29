@@ -1,0 +1,21 @@
+[gd_resource type="Resource" script_class="BattleSettings" load_steps=9 format=3]
+
+[ext_resource type="Script" path="res://scripts/battle_settings.gd" id="1"]
+[ext_resource type="Script" path="res://scripts/battle_profile.gd" id="2"]
+[ext_resource type="Resource" path="res://resources/starter_bramblepup.tres" id="3"]
+[ext_resource type="Resource" path="res://resources/starter_ashkit.tres" id="4"]
+[ext_resource type="Resource" path="res://resources/starter_rillfin.tres" id="5"]
+[ext_resource type="Resource" path="res://resources/wild_bramblepup.tres" id="6"]
+[ext_resource type="Resource" path="res://resources/wild_seedmote.tres" id="7"]
+
+[ext_resource type="Resource" path="res://resources/sol_species/catalog.tres" id="8"]
+
+[resource]
+script = ExtResource("1")
+species_catalog = ExtResource("8")
+enabled = true
+starters = Array[ExtResource("2")]([ExtResource("3"), ExtResource("4"), ExtResource("5")])
+opponents = Array[ExtResource("2")]([ExtResource("6"), ExtResource("7")])
+arena_radius = 4
+movement_points = 3
+release_range = 3

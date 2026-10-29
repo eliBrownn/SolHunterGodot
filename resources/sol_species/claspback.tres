@@ -1,0 +1,37 @@
+[gd_resource type="Resource" script_class="SolSpeciesRecord" load_steps=7 format=3]
+
+[ext_resource type="Script" path="res://scripts/sol_species_record.gd" id="1"]
+[ext_resource type="Script" path="res://scripts/sol_ecology_profile.gd" id="2"]
+[ext_resource type="PackedScene" path="res://scenes/sols/claspback.tscn" id="3"]
+[ext_resource type="Script" path="res://scripts/sol_traversal_profile.gd" id="4"]
+
+[sub_resource type="Resource" id="traversal"]
+script = ExtResource("4")
+kind = "ground"
+radius = 0.65
+height = 0.8
+
+[sub_resource type="Resource" id="ecology"]
+script = ExtResource("2")
+profile_id = "sol_species_0012_default"
+species_id = "sol_species_0012"
+temperament = "neutral"
+behaviors = PackedStringArray("patrol", "idle", "guard")
+
+[resource]
+script = ExtResource("1")
+traversal = SubResource("traversal")
+species_id = "sol_species_0012"
+lineage_id = "sol_lineage_0012"
+class_id = "swarmkin"
+display_name = "Claspback"
+max_hp = 44
+attack = 20
+defense = 22
+special_attack = 12
+special_defense = 14
+speed = 14
+learnable_moves = PackedStringArray("strike", "anchor", "ward", "rattle", "spores", "barrier", "charge", "pinprick", "quick_fang", "brace")
+starting_moves = PackedStringArray("strike", "anchor", "ward", "rattle", "pinprick", "quick_fang", "brace")
+ecology = SubResource("ecology")
+presentation_scene = ExtResource("3")

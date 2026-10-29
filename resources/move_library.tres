@@ -1,0 +1,668 @@
+[gd_resource type="Resource" script_class="MoveLibrary" format=3 uid="uid://cuj7el16vc5wt"]
+
+[ext_resource type="Script" uid="uid://csqi2ob8pn3de" path="res://scripts/move_library.gd" id="1"]
+[ext_resource type="Script" uid="uid://bqt7banw44xbp" path="res://scripts/sol_move.gd" id="2"]
+
+[ext_resource type="Resource" path="res://resources/sol_species/catalog.tres" id="3"]
+
+[sub_resource type="Resource" id="strike"]
+script = ExtResource("2")
+move_id = "strike"
+display_name = "Strike"
+max_uses = 16
+
+[sub_resource type="Resource" id="cinder_claw"]
+script = ExtResource("2")
+move_id = "cinder_claw"
+display_name = "Cinder Claw"
+affinity = "fire"
+max_uses = 14
+
+[sub_resource type="Resource" id="fin_strike"]
+script = ExtResource("2")
+move_id = "fin_strike"
+display_name = "Fin Strike"
+affinity = "water"
+max_uses = 16
+
+[sub_resource type="Resource" id="vine_whip"]
+script = ExtResource("2")
+move_id = "vine_whip"
+display_name = "Vine Whip"
+max_uses = 16
+
+[sub_resource type="Resource" id="mend"]
+script = ExtResource("2")
+move_id = "mend"
+display_name = "Renewing Current"
+affinity = "water"
+effect = "heal"
+max_uses = 3
+
+[sub_resource type="Resource" id="heat"]
+script = ExtResource("2")
+move_id = "heat"
+display_name = "Heat & Smoke"
+affinity = "fire"
+effect = "field"
+action_points = 2
+power = 0
+reach = 3
+aggressive = true
+max_uses = 4
+
+[sub_resource type="Resource" id="current"]
+script = ExtResource("2")
+move_id = "current"
+display_name = "Current"
+affinity = "water"
+effect = "field"
+action_points = 2
+power = 0
+reach = 3
+max_uses = 6
+
+[sub_resource type="Resource" id="barrier"]
+script = ExtResource("2")
+move_id = "barrier"
+display_name = "Raised Ground"
+effect = "field"
+action_points = 2
+power = 0
+reach = 3
+aggressive = true
+max_uses = 4
+
+[sub_resource type="Resource" id="wind"]
+script = ExtResource("2")
+move_id = "wind"
+display_name = "Crosswind"
+affinity = "air"
+effect = "field"
+action_points = 2
+power = 0
+reach = 3
+aggressive = true
+max_uses = 4
+
+[sub_resource type="Resource" id="charge"]
+script = ExtResource("2")
+move_id = "charge"
+display_name = "Charged Path"
+affinity = "lightning"
+effect = "field"
+action_points = 2
+power = 0
+reach = 3
+aggressive = true
+max_uses = 4
+
+[sub_resource type="Resource" id="warp"]
+script = ExtResource("2")
+move_id = "warp"
+display_name = "Warp Zone"
+affinity = "void"
+effect = "field"
+action_points = 2
+power = 0
+reach = 3
+aggressive = true
+max_uses = 4
+
+[sub_resource type="Resource" id="phase"]
+script = ExtResource("2")
+move_id = "phase"
+display_name = "Thin Passage"
+affinity = "spectral"
+effect = "phase"
+action_points = 2
+power = 0
+reach = 3
+max_uses = 5
+
+[sub_resource type="Resource" id="superpose"]
+script = ExtResource("2")
+move_id = "superpose"
+display_name = "Superposition"
+affinity = "quantum"
+effect = "quantum"
+action_points = 2
+power = 0
+reach = 3
+max_uses = 4
+
+[sub_resource type="Resource" id="entangle"]
+script = ExtResource("2")
+move_id = "entangle"
+display_name = "Entangled Ground"
+affinity = "quantum"
+effect = "field"
+action_points = 2
+power = 0
+reach = 3
+aggressive = true
+max_uses = 3
+
+[sub_resource type="Resource" id="anchor"]
+script = ExtResource("2")
+move_id = "anchor"
+display_name = "Stable Footing"
+effect = "anchor"
+action_points = 2
+power = 0
+reach = 1
+duration = 3
+max_uses = 5
+
+[sub_resource type="Resource" id="arc_bolt"]
+script = ExtResource("2")
+move_id = "arc_bolt"
+display_name = "Arc Bolt"
+affinity = "lightning"
+effect = "damage"
+power = 6
+category = "special"
+stat = "attack"
+reach = 3
+duration = 3
+max_uses = 10
+
+[sub_resource type="Resource" id="focus"]
+script = ExtResource("2")
+move_id = "focus"
+display_name = "Focus"
+affinity = "quantum"
+effect = "buff"
+action_points = 2
+power = 10
+category = "physical"
+stat = "special_attack"
+reach = 3
+duration = 3
+max_uses = 4
+
+[sub_resource type="Resource" id="rattle"]
+script = ExtResource("2")
+move_id = "rattle"
+display_name = "Rattle"
+affinity = "spectral"
+effect = "debuff"
+action_points = 2
+power = 10
+category = "physical"
+stat = "defense"
+reach = 3
+duration = 3
+max_uses = 4
+
+[sub_resource type="Resource" id="spores"]
+script = ExtResource("2")
+move_id = "spores"
+display_name = "Spore Sting"
+affinity = "earth"
+effect = "poison"
+action_points = 2
+power = 2
+category = "physical"
+stat = "attack"
+reach = 3
+duration = 3
+max_uses = 3
+
+[sub_resource type="Resource" id="ward"]
+script = ExtResource("2")
+move_id = "ward"
+display_name = "Ward"
+affinity = "spectral"
+effect = "protect"
+action_points = 2
+power = 10
+category = "physical"
+stat = "defense"
+reach = 3
+duration = 3
+max_uses = 4
+
+[sub_resource type="Resource" id="quick_fang"]
+script = ExtResource("2")
+move_id = "quick_fang"
+display_name = "Quick Fang"
+affinity = "earth"
+effect = "damage"
+power = 3
+reach = 1
+action_points = 3
+max_uses = 18
+damage_percent = 70
+vastra_powered = false
+description = "Light close bite. Two uses fit a turn, with reduced damage scaling."
+
+[sub_resource type="Resource" id="battle_cry"]
+script = ExtResource("2")
+move_id = "battle_cry"
+display_name = "Battle Cry"
+affinity = "earth"
+effect = "buff"
+power = 10
+stat = "attack"
+duration = 2
+reach = 1
+action_points = 2
+max_uses = 4
+description = "Prepare physical offense for a short exchange."
+
+[sub_resource type="Resource" id="ember_dart"]
+script = ExtResource("2")
+move_id = "ember_dart"
+display_name = "Ember Dart"
+affinity = "fire"
+effect = "damage"
+power = 4
+category = "special"
+reach = 3
+action_points = 4
+max_uses = 10
+description = "Modest ranged pressure; trade raw power for reach."
+
+[sub_resource type="Resource" id="smoulder"]
+script = ExtResource("2")
+move_id = "smoulder"
+display_name = "Smoulder"
+affinity = "fire"
+effect = "damage"
+power = 3
+category = "special"
+reach = 2
+duration = 2
+action_points = 4
+max_uses = 5
+secondary_effect = "field"
+description = "A small hit leaves one shared heated tile. Both sides risk its later heat."
+
+[sub_resource type="Resource" id="splash_jet"]
+script = ExtResource("2")
+move_id = "splash_jet"
+display_name = "Splash Jet"
+affinity = "water"
+effect = "damage"
+power = 4
+category = "special"
+reach = 3
+action_points = 4
+max_uses = 10
+description = "A low-pressure ranged water strike."
+
+[sub_resource type="Resource" id="soothing_guard"]
+script = ExtResource("2")
+move_id = "soothing_guard"
+display_name = "Soothing Guard"
+affinity = "water"
+effect = "heal"
+power = 4
+reach = 1
+duration = 2
+action_points = 5
+max_uses = 3
+secondary_effect = "protect"
+secondary_power = 8
+description = "Modest healing with brief direct-hit protection. Its higher cost leaves less room for setup."
+
+[sub_resource type="Resource" id="seed_dart"]
+script = ExtResource("2")
+move_id = "seed_dart"
+display_name = "Seed Dart"
+affinity = "earth"
+effect = "damage"
+power = 3
+category = "special"
+reach = 3
+action_points = 3
+max_uses = 14
+damage_percent = 70
+description = "Light ranged chip damage with reduced scaling."
+
+[sub_resource type="Resource" id="sprout_mend"]
+script = ExtResource("2")
+move_id = "sprout_mend"
+display_name = "Sprout Mend"
+affinity = "earth"
+effect = "heal"
+power = 4
+reach = 1
+action_points = 4
+max_uses = 3
+description = "Small self-heal and local Vastra restoration; limited to three uses."
+
+[sub_resource type="Resource" id="static_tap"]
+script = ExtResource("2")
+move_id = "static_tap"
+display_name = "Static Tap"
+affinity = "lightning"
+effect = "damage"
+power = 3
+category = "special"
+reach = 2
+duration = 2
+action_points = 4
+max_uses = 6
+stat = "speed"
+secondary_effect = "debuff"
+secondary_power = 5
+description = "A light shock briefly reduces the opponent Speed. Movement already granted is retained."
+
+[sub_resource type="Resource" id="spark_jab"]
+script = ExtResource("2")
+move_id = "spark_jab"
+display_name = "Spark Jab"
+affinity = "lightning"
+effect = "damage"
+power = 5
+reach = 1
+action_points = 3
+max_uses = 12
+damage_percent = 70
+description = "A close, light strike for a mobile fighter; reduced damage scaling."
+
+[sub_resource type="Resource" id="chilling_mist"]
+script = ExtResource("2")
+move_id = "chilling_mist"
+display_name = "Chilling Mist"
+affinity = "water"
+effect = "debuff"
+power = 10
+stat = "speed"
+reach = 2
+duration = 2
+action_points = 2
+max_uses = 4
+description = "Reduce Speed for future initiative and movement allowances. Does not reclaim movement already granted."
+
+[sub_resource type="Resource" id="cold_snap"]
+script = ExtResource("2")
+move_id = "cold_snap"
+display_name = "Cold Snap"
+affinity = "water"
+effect = "damage"
+power = 4
+reach = 1
+duration = 2
+action_points = 4
+max_uses = 6
+stat = "attack"
+secondary_effect = "debuff"
+secondary_power = 5
+description = "A short-range hit with a small temporary physical-offense penalty."
+
+[sub_resource type="Resource" id="heavy_swing"]
+script = ExtResource("2")
+move_id = "heavy_swing"
+display_name = "Heavy Swing"
+affinity = "earth"
+effect = "damage"
+power = 9
+reach = 1
+action_points = 5
+max_uses = 6
+vastra_powered = false
+description = "A stronger early physical blow. Short reach, higher cost and few uses keep it deliberate."
+
+[sub_resource type="Resource" id="brace"]
+script = ExtResource("2")
+move_id = "brace"
+display_name = "Brace"
+affinity = "earth"
+effect = "protect"
+power = 15
+reach = 1
+duration = 1
+action_points = 1
+max_uses = 3
+vastra_powered = false
+description = "A brief guard that fits beside a heavy action. Three uses, no stacking."
+
+[sub_resource type="Resource" id="withering_touch"]
+script = ExtResource("2")
+move_id = "withering_touch"
+display_name = "Withering Touch"
+affinity = "void"
+effect = "damage"
+power = 3
+reach = 1
+duration = 2
+action_points = 4
+max_uses = 6
+stat = "attack"
+secondary_effect = "debuff"
+secondary_power = 8
+description = "Close hybrid pressure: a small hit and modest offense reduction."
+
+[sub_resource type="Resource" id="pebble_shot"]
+script = ExtResource("2")
+move_id = "pebble_shot"
+display_name = "Pebble Shot"
+affinity = "earth"
+effect = "damage"
+power = 4
+reach = 3
+action_points = 4
+max_uses = 12
+vastra_powered = false
+description = "Reliable physical ranged chip damage."
+
+[sub_resource type="Resource" id="air_dart"]
+script = ExtResource("2")
+move_id = "air_dart"
+display_name = "Air Dart"
+affinity = "air"
+effect = "damage"
+power = 3
+category = "special"
+reach = 3
+action_points = 3
+max_uses = 14
+damage_percent = 70
+description = "Light ranged pressure with reduced scaling; leaves room for another light action."
+
+[sub_resource type="Resource" id="tailwind_step"]
+script = ExtResource("2")
+move_id = "tailwind_step"
+display_name = "Tailwind Step"
+affinity = "air"
+effect = "buff"
+power = 15
+stat = "speed"
+reach = 1
+duration = 2
+action_points = 2
+max_uses = 4
+description = "Prepare next-turn mobility and initiative. Does not refill current movement or AP."
+
+[sub_resource type="Resource" id="thought_pin"]
+script = ExtResource("2")
+move_id = "thought_pin"
+display_name = "Thought Pin"
+affinity = "quantum"
+effect = "damage"
+power = 4
+category = "special"
+reach = 3
+duration = 2
+action_points = 4
+max_uses = 6
+stat = "special_attack"
+secondary_effect = "debuff"
+secondary_power = 5
+description = "Small ranged damage with a short special-offense penalty. No random outcome."
+
+[sub_resource type="Resource" id="pinprick"]
+script = ExtResource("2")
+move_id = "pinprick"
+display_name = "Pinprick"
+affinity = "earth"
+effect = "damage"
+power = 2
+reach = 1
+action_points = 2
+max_uses = 18
+damage_percent = 40
+vastra_powered = false
+description = "Very light close damage. Low scaling prevents three cheap hits from inheriting full offensive strength."
+
+[sub_resource type="Resource" id="crag_chip"]
+script = ExtResource("2")
+move_id = "crag_chip"
+display_name = "Crag Chip"
+affinity = "earth"
+effect = "damage"
+power = 5
+category = "special"
+reach = 2
+action_points = 4
+max_uses = 10
+description = "A modest special strike for a defensive physical body."
+
+[sub_resource type="Resource" id="ghost_touch"]
+script = ExtResource("2")
+move_id = "ghost_touch"
+display_name = "Ghost Touch"
+affinity = "spectral"
+effect = "damage"
+power = 4
+category = "special"
+reach = 2
+action_points = 4
+max_uses = 10
+description = "Modest spectral damage; ordinary terrain and clear-range rules still apply."
+
+[sub_resource type="Resource" id="drake_spark"]
+script = ExtResource("2")
+move_id = "drake_spark"
+display_name = "Drake Spark"
+affinity = "fire"
+effect = "damage"
+power = 5
+category = "special"
+reach = 2
+duration = 2
+action_points = 5
+max_uses = 4
+secondary_effect = "field"
+description = "A stronger early spark leaves one shared heated tile. Few uses and a five-point cost."
+
+[sub_resource type="Resource" id="shade_nip"]
+script = ExtResource("2")
+move_id = "shade_nip"
+display_name = "Shade Nip"
+affinity = "void"
+effect = "damage"
+power = 3
+reach = 1
+duration = 1
+action_points = 3
+max_uses = 8
+damage_percent = 70
+stat = "defense"
+secondary_effect = "debuff"
+secondary_power = 5
+description = "Light close damage that briefly softens physical defense."
+
+[sub_resource type="Resource" id="gentle_mend"]
+script = ExtResource("2")
+move_id = "gentle_mend"
+display_name = "Gentle Mend"
+affinity = "water"
+effect = "heal"
+power = 3
+reach = 1
+action_points = 3
+max_uses = 4
+description = "Smaller healing for a lower point cost. Four uses per encounter."
+
+[sub_resource type="Resource" id="odd_angle"]
+script = ExtResource("2")
+move_id = "odd_angle"
+display_name = "Odd Angle"
+affinity = "quantum"
+effect = "damage"
+power = 3
+category = "special"
+reach = 2
+duration = 2
+action_points = 4
+max_uses = 6
+stat = "defense"
+secondary_effect = "debuff"
+secondary_power = 5
+description = "A deterministic small special hit that opens a brief physical follow-up opportunity."
+
+[sub_resource type="Resource" id="calibrate"]
+script = ExtResource("2")
+move_id = "calibrate"
+display_name = "Calibrate"
+affinity = "quantum"
+effect = "buff"
+power = 10
+stat = "defense"
+reach = 1
+duration = 3
+action_points = 2
+max_uses = 4
+description = "A deliberate, modest defensive adjustment; refreshes rather than stacks."
+
+[sub_resource type="Resource" id="repair_patch"]
+script = ExtResource("2")
+move_id = "repair_patch"
+display_name = "Repair Patch"
+affinity = "earth"
+effect = "heal"
+power = 5
+reach = 1
+action_points = 4
+max_uses = 2
+vastra_powered = false
+description = "Physical self-repair. Two uses; does not alter environmental Vastra."
+
+[sub_resource type="Resource" id="grit_guard"]
+script = ExtResource("2")
+move_id = "grit_guard"
+display_name = "Grit Guard"
+affinity = "earth"
+effect = "passive"
+passive_kind = "guard"
+power = 2
+reach = 1
+action_points = 0
+max_uses = 3
+vastra_powered = false
+description = "End a turn without moving to prepare a guard. The next direct hit loses up to 2 HP damage, minimum 1. Movement breaks readiness; three successful reactions."
+
+[sub_resource type="Resource" id="stillwater"]
+script = ExtResource("2")
+move_id = "stillwater"
+display_name = "Stillwater"
+affinity = "water"
+effect = "passive"
+passive_kind = "renewal"
+power = 2
+reach = 1
+action_points = 0
+max_uses = 3
+vastra_powered = false
+description = "Ending a turn without moving restores up to 2 missing HP automatically. Three successful heals; no charge at full health. No Vastra restoration or imprint."
+
+[resource]
+script = ExtResource("1")
+species_catalog = ExtResource("3")
+moves = Array[ExtResource("2")]([SubResource("strike"), SubResource("cinder_claw"), SubResource("fin_strike"), SubResource("vine_whip"), SubResource("mend"), SubResource("heat"), SubResource("current"), SubResource("barrier"), SubResource("wind"), SubResource("charge"), SubResource("warp"), SubResource("phase"), SubResource("superpose"), SubResource("entangle"), SubResource("anchor"), SubResource("arc_bolt"), SubResource("focus"), SubResource("rattle"), SubResource("spores"), SubResource("ward"), SubResource("quick_fang"), SubResource("battle_cry"), SubResource("ember_dart"), SubResource("smoulder"), SubResource("splash_jet"), SubResource("soothing_guard"), SubResource("seed_dart"), SubResource("sprout_mend"), SubResource("static_tap"), SubResource("spark_jab"), SubResource("chilling_mist"), SubResource("cold_snap"), SubResource("heavy_swing"), SubResource("brace"), SubResource("withering_touch"), SubResource("pebble_shot"), SubResource("air_dart"), SubResource("tailwind_step"), SubResource("thought_pin"), SubResource("pinprick"), SubResource("crag_chip"), SubResource("ghost_touch"), SubResource("drake_spark"), SubResource("shade_nip"), SubResource("gentle_mend"), SubResource("odd_angle"), SubResource("calibrate"), SubResource("repair_patch"), SubResource("grit_guard"), SubResource("stillwater")])
+species_pools = Dictionary[String, PackedStringArray]({
+"ashkit": PackedStringArray("cinder_claw", "heat", "wind", "charge", "current", "warp", "superpose", "entangle", "phase", "arc_bolt", "focus", "ember_dart", "smoulder", "battle_cry"),
+"bramblepup": PackedStringArray("strike", "heat", "current", "barrier", "anchor", "wind", "charge", "phase", "warp", "superpose", "entangle", "mend", "rattle", "ward", "quick_fang", "battle_cry", "grit_guard"),
+"rillfin": PackedStringArray("fin_strike", "current", "mend", "wind", "charge", "barrier", "warp", "phase", "superpose", "entangle", "arc_bolt", "ward", "splash_jet", "soothing_guard", "stillwater"),
+"seedmote": PackedStringArray("vine_whip", "barrier", "wind", "mend", "anchor", "current", "heat", "phase", "warp", "superpose", "entangle", "spores", "focus", "seed_dart", "sprout_mend", "stillwater")
+})
+starting_moves = Dictionary[String, PackedStringArray]({
+"ashkit": PackedStringArray("cinder_claw", "heat", "wind", "charge", "ember_dart", "smoulder", "battle_cry"),
+"bramblepup": PackedStringArray("strike", "heat", "current", "barrier", "quick_fang", "battle_cry", "grit_guard"),
+"rillfin": PackedStringArray("fin_strike", "current", "mend", "wind", "splash_jet", "soothing_guard", "stillwater"),
+"seedmote": PackedStringArray("vine_whip", "barrier", "wind", "mend", "seed_dart", "sprout_mend", "stillwater")
+})

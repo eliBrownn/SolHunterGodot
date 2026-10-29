@@ -1,0 +1,51 @@
+[gd_resource type="Resource" script_class="SolBehaviorLibrary" load_steps=11 format=3]
+
+[ext_resource type="Script" path="res://scripts/sol_behavior_library.gd" id="1"]
+[ext_resource type="Script" path="res://scripts/sol_behavior_definition.gd" id="2"]
+
+[sub_resource type="Resource" id="idle"]
+script = ExtResource("2")
+behavior_id = "idle"
+action = "idle"
+
+[sub_resource type="Resource" id="patrol"]
+script = ExtResource("2")
+behavior_id = "patrol"
+action = "patrol"
+
+[sub_resource type="Resource" id="flee"]
+script = ExtResource("2")
+behavior_id = "flee"
+action = "flee"
+
+[sub_resource type="Resource" id="approach"]
+script = ExtResource("2")
+behavior_id = "approach"
+action = "approach"
+
+[sub_resource type="Resource" id="guard"]
+script = ExtResource("2")
+behavior_id = "guard"
+action = "guard"
+
+[sub_resource type="Resource" id="seedmote_flee"]
+script = ExtResource("2")
+behavior_id = "seedmote_flee"
+parent_id = "flee"
+species_ids = PackedStringArray("seedmote")
+
+[sub_resource type="Resource" id="bramblepup_curiosity"]
+script = ExtResource("2")
+behavior_id = "bramblepup_curiosity"
+parent_id = "approach"
+species_ids = PackedStringArray("bramblepup")
+
+[sub_resource type="Resource" id="seedmote_territorial"]
+script = ExtResource("2")
+behavior_id = "seedmote_territorial"
+parent_id = "guard"
+species_ids = PackedStringArray("seedmote")
+
+[resource]
+script = ExtResource("1")
+definitions = Array[ExtResource("2")]([SubResource("idle"), SubResource("patrol"), SubResource("flee"), SubResource("approach"), SubResource("guard"), SubResource("seedmote_flee"), SubResource("bramblepup_curiosity"), SubResource("seedmote_territorial")])

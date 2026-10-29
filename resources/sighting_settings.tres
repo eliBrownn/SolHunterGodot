@@ -1,0 +1,37 @@
+[gd_resource type="Resource" script_class="SightingSettings" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/sighting_settings.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+species_catalog_path = "res://resources/sol_species/catalog.tres"
+enabled = true
+species_profiles_enabled = true
+visible_radius = 28
+reaction_distance = 3
+observation_distance = 3
+movement_enabled = true
+movement_interval_ticks = 1
+home_radius = 5
+movement_radius = 28
+comfort_distance = 2
+flee_release_distance = 5
+movement_travel_fraction = 1.0
+patrol_goal_min_fraction = 0.5
+reaction_release_distance = 6
+approach_resume_distance = 3
+reposition_cooldown_ticks = 2
+settle_ticks = 3
+attention_ticks = 2
+routine_ticks = 6
+guard_standoff_distance = 2
+wander_enabled = true
+wander_radius = 3
+rest_min_ticks = 1
+rest_max_ticks = 3
+patrol_rest_chance = 0.35
+blocked_goal_retry_ticks = 2
+goal_timeout_ticks = 12
+path_search_cells = 64
+bob_pixels = 1.0
+bob_cycles = 0.8

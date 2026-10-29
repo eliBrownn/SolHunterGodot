@@ -1,0 +1,62 @@
+[gd_scene load_steps=5 format=3]
+
+[sub_resource type="StandardMaterial3D" id="leaf"]
+albedo_color = Color(0.35, 0.47, 0.10, 1)
+roughness = 1.0
+metallic_specular = 0.0
+
+[sub_resource type="StandardMaterial3D" id="flower"]
+albedo_color = Color(0.88, 0.8, 0.48, 1)
+roughness = 1.0
+metallic_specular = 0.0
+
+[sub_resource type="CylinderMesh" id="stem"]
+material = SubResource("leaf")
+top_radius = 0.025
+bottom_radius = 0.025
+height = 0.4
+radial_segments = 6
+rings = 1
+
+[sub_resource type="SphereMesh" id="petals"]
+material = SubResource("flower")
+radius = 0.13
+height = 0.09
+radial_segments = 8
+rings = 3
+
+[node name="FlowerPatchPlaceholder" type="Node3D"]
+metadata/placeholder = true
+
+[node name="Part0" type="MeshInstance3D" parent="."]
+position = Vector3(-0.35, 0.2, 0)
+mesh = SubResource("stem")
+
+[node name="Part1" type="MeshInstance3D" parent="."]
+position = Vector3(-0.35, 0.42, 0)
+mesh = SubResource("petals")
+
+[node name="Part2" type="MeshInstance3D" parent="."]
+position = Vector3(0, 0.2, 0.2)
+mesh = SubResource("stem")
+
+[node name="Part3" type="MeshInstance3D" parent="."]
+position = Vector3(0, 0.42, 0.2)
+mesh = SubResource("petals")
+
+[node name="Part4" type="MeshInstance3D" parent="."]
+position = Vector3(0.3, 0.2, 0)
+mesh = SubResource("stem")
+
+[node name="Part5" type="MeshInstance3D" parent="."]
+position = Vector3(0.3, 0.42, 0)
+mesh = SubResource("petals")
+
+[node name="Part6" type="MeshInstance3D" parent="."]
+position = Vector3(0.05, 0.2, -0.25)
+mesh = SubResource("stem")
+
+[node name="Part7" type="MeshInstance3D" parent="."]
+position = Vector3(0.05, 0.42, -0.25)
+mesh = SubResource("petals")
+

@@ -1,0 +1,115 @@
+[gd_resource type="Resource" script_class="SolBehaviorLibrary" load_steps=21 format=3]
+
+[ext_resource type="Script" path="res://scripts/sol_behavior_library.gd" id="1"]
+[ext_resource type="Script" path="res://scripts/sol_behavior_definition.gd" id="2"]
+
+[sub_resource type="Resource" id="idle"]
+script = ExtResource("2")
+behavior_id = "idle"
+action = "idle"
+
+[sub_resource type="Resource" id="crown"]
+script = ExtResource("2")
+behavior_id = "crown_ear_listen"
+parent_id = "idle"
+species_ids = PackedStringArray("sol_species_0001")
+
+[sub_resource type="Resource" id="bellroot"]
+script = ExtResource("2")
+behavior_id = "bellroot_tend"
+parent_id = "idle"
+species_ids = PackedStringArray("sol_species_0003")
+
+[sub_resource type="Resource" id="ashquill"]
+script = ExtResource("2")
+behavior_id = "ashquill_preens"
+parent_id = "idle"
+species_ids = PackedStringArray("sol_species_0004")
+
+[sub_resource type="Resource" id="rattlehorn"]
+script = ExtResource("2")
+behavior_id = "rattlehorn_footing"
+parent_id = "idle"
+species_ids = PackedStringArray("sol_species_0005")
+
+[sub_resource type="Resource" id="rimefold"]
+script = ExtResource("2")
+behavior_id = "rimefold_investigate"
+parent_id = "idle"
+species_ids = PackedStringArray("sol_species_0006")
+
+[sub_resource type="Resource" id="browguard"]
+script = ExtResource("2")
+behavior_id = "browguard_moment"
+parent_id = "idle"
+species_ids = PackedStringArray("sol_species_0007")
+
+[sub_resource type="Resource" id="bitterfrill"]
+script = ExtResource("2")
+behavior_id = "bitterfrill_moment"
+parent_id = "idle"
+species_ids = PackedStringArray("sol_species_0008")
+
+[sub_resource type="Resource" id="knucklemole"]
+script = ExtResource("2")
+behavior_id = "knucklemole_moment"
+parent_id = "idle"
+species_ids = PackedStringArray("sol_species_0009")
+
+[sub_resource type="Resource" id="sailcrest"]
+script = ExtResource("2")
+behavior_id = "sailcrest_moment"
+parent_id = "idle"
+species_ids = PackedStringArray("sol_species_0010")
+
+[sub_resource type="Resource" id="glass_throat"]
+script = ExtResource("2")
+behavior_id = "glass_throat_moment"
+parent_id = "idle"
+species_ids = PackedStringArray("sol_species_0011")
+
+[sub_resource type="Resource" id="claspback"]
+script = ExtResource("2")
+behavior_id = "claspback_moment"
+parent_id = "idle"
+species_ids = PackedStringArray("sol_species_0012")
+
+[sub_resource type="Resource" id="foldling"]
+script = ExtResource("2")
+behavior_id = "foldling_moment"
+parent_id = "idle"
+species_ids = PackedStringArray("sol_species_0013")
+
+[sub_resource type="Resource" id="mournveil"]
+script = ExtResource("2")
+behavior_id = "mournveil_moment"
+parent_id = "idle"
+species_ids = PackedStringArray("sol_species_0014")
+
+[sub_resource type="Resource" id="pebblewyrm"]
+script = ExtResource("2")
+behavior_id = "pebblewyrm_moment"
+parent_id = "idle"
+species_ids = PackedStringArray("sol_species_0015")
+
+[sub_resource type="Resource" id="shadepelt"]
+script = ExtResource("2")
+behavior_id = "shadepelt_moment"
+parent_id = "idle"
+species_ids = PackedStringArray("sol_species_0016")
+
+[sub_resource type="Resource" id="kilnling"]
+script = ExtResource("2")
+behavior_id = "kilnling_moment"
+parent_id = "idle"
+species_ids = PackedStringArray("sol_species_0017")
+
+[sub_resource type="Resource" id="thimblehart"]
+script = ExtResource("2")
+behavior_id = "thimblehart_moment"
+parent_id = "idle"
+species_ids = PackedStringArray("sol_species_0018")
+
+[resource]
+script = ExtResource("1")
+definitions = Array[ExtResource("2")]([SubResource("idle"), SubResource("crown"), SubResource("bellroot"), SubResource("ashquill"), SubResource("rattlehorn"), SubResource("rimefold"), SubResource("browguard"), SubResource("bitterfrill"), SubResource("knucklemole"), SubResource("sailcrest"), SubResource("glass_throat"), SubResource("claspback"), SubResource("foldling"), SubResource("mournveil"), SubResource("pebblewyrm"), SubResource("shadepelt"), SubResource("kilnling"), SubResource("thimblehart")])

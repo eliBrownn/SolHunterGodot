@@ -1,0 +1,19 @@
+[gd_resource type="Resource" script_class="BattleProfile" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/battle_profile.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+species_id = "seedmote"
+display_name = "Seedmote"
+lineage_id = "family_010"
+class_id = "verdant"
+affinity = "earth"
+level = 1
+max_hp = 36
+attack = 17
+defense = 21
+speed = 14
+move_name = "Vine Whip"
+move_power = 6
+move_range = 2

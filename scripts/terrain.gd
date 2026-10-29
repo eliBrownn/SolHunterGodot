@@ -2,11 +2,10 @@ class_name WorldTerrain
 extends RefCounted
 ## Immutable generated defaults. All decisions use seed, version and absolute cells.
 
-const GENERATION_VERSION := 4
+const GENERATION_VERSION := 7
+const Structures = preload("res://scripts/authored_structures.gd")
 const CELL_SIZE := 32
 const CHUNK_SIZE := 16
-const ROUTE_SPACING := 96
-const ROUTE_HALF_WIDTH := 3
 const CAMP := Vector2i.ZERO
 const LANDMARK_X := 78
 enum Ground { MEADOW, FOREST, HEATH, MARSH, WATER, SAND }
@@ -19,6 +18,24 @@ var climate: Dictionary
 var noise := FastNoiseLite.new()
 var moisture := FastNoiseLite.new()
 var vastra := FastNoiseLite.new()
+var cabin_footprint := Rect2i()
+var relief: Dictionary
+var heightfield: TerrainHeightfield
+var _height_cache: Dictionary = {}
+var _normal_cache: Dictionary = {}
+var _slope_cache: Dictionary = {}
+var _pond_cache: Dictionary = {}
+const CacheWindow = preload("res://scripts/derived_cache_window.gd")
+var _height_window := CacheWindow.new(65536)
+var _normal_window := CacheWindow.new(65536)
+var _slope_window := CacheWindow.new(32768)
+var _pond_window := CacheWindow.new(256)
+var _landmark_height := 0.0
+var _cabin_height := 0.0
+var geography := preload("res://scripts/terrain_geography.gd").new()
+
+static func default_relief() -> Dictionary:
+	return (preload("res://resources/terrain_rolling.tres") as TerrainReliefSettings).parameters()
 
 static func default_climate() -> Dictionary:
 	return {"moisture_frequency": 0.012, "dry_threshold": 0.42, "wet_threshold": 0.58}
@@ -32,7 +49,7 @@ static func valid_climate(value: Variant) -> bool:
 			return false
 	return value.moisture_frequency >= 0.001 and value.moisture_frequency <= 0.1 and value.dry_threshold >= 0.0 and value.wet_threshold <= 1.0 and value.dry_threshold < value.wet_threshold
 
-func _init(seed_value: int = 2601026, climate_parameters: Dictionary = {}) -> void:
+func _init(seed_value: int = 2601026, climate_parameters: Dictionary = {}, relief_parameters: Dictionary = {}) -> void:
 	world_seed = seed_value
 	generation_version = GENERATION_VERSION
 	climate = climate_parameters.duplicate(true) if valid_climate(climate_parameters) else default_climate()
@@ -43,6 +60,100 @@ func _init(seed_value: int = 2601026, climate_parameters: Dictionary = {}) -> vo
 	moisture.frequency = climate.moisture_frequency
 	vastra.seed = seed_value ^ 0x7315
 	vastra.frequency = 0.022
+	relief = relief_parameters.duplicate(true) if TerrainReliefSettings.valid_parameters(relief_parameters) else default_relief()
+	var tuning := TerrainReliefSettings.new()
+	for key in relief:
+		tuning.set(key, relief[key])
+	heightfield = TerrainHeightfield.new(seed_value, tuning)
+	cabin_footprint = Structures.cabin_site(self)
+	_landmark_height = heightfield.surface_height(Vector2(landmark()) + Vector2(0.5, 0.5))
+	if cabin_footprint.has_area():
+		var center := Vector2(cabin_footprint.position) + Vector2(cabin_footprint.size) * 0.5
+		_cabin_height = 0.0 if center.length() < 14.0 else heightfield.surface_height(center)
+
+func pond_at(cell: Vector2i) -> Dictionary:
+	if _pond_cache.has(cell):
+		return _pond_cache[cell]
+	var result: Dictionary = geography.cell_basin(self, cell).descriptor
+	if result.is_empty():
+		result = {"level": 0.0}
+	_pond_window.store(_pond_cache, cell, result)
+	return result
+
+func vertex_height(cell: Vector2i) -> float:
+	if _height_cache.has(cell):
+		return _height_cache[cell]
+	var point := Vector2(cell)
+	var height := heightfield.vertex_height(cell)
+	var raw_height := height
+	var basin: Dictionary = geography.basin(self, point)
+	var lake: float = basin.distance
+	if lake < 4.0:
+		var level: float = basin.descriptor.level
+		# Continuous bed and rising bank; the rendered horizontal plane intersects
+		# these exact triangles instead of following square cell edges.
+		var bank := level + (sqrt(maxf(lake, 0.0)) - 1.0) * 3.0
+		var bed := maxf(level - 0.65, bank)
+		height = lerpf(bed, maxf(height, level + 0.65), smoothstep(1.5, 4.0, lake))
+	# Keep the required dry approach on its gentle raw grade. Pond candidates
+	# already reserve its water-free envelope; blend only the outer bank here.
+	var approach_distance := absf(point.y - trail_y(cell.x))
+	height = lerpf(raw_height, height, smoothstep(4.0, 9.0, approach_distance))
+	# Place descriptors are selected from flat habitat data before height queries.
+	height = lerpf(0.0, height, smoothstep(5.0, 14.0, point.length()))
+	height = lerpf(_landmark_height, height, smoothstep(5.0, 14.0, point.distance_to(Vector2(landmark()) + Vector2(0.5, 0.5))))
+	if cabin_footprint.has_area():
+		var box := Rect2(Vector2(cabin_footprint.position), Vector2(cabin_footprint.size))
+		var center := box.get_center()
+		var delta := (point - center).abs() - box.size * 0.5
+		var outside := Vector2(maxf(0, delta.x), maxf(0, delta.y)).length()
+		height = lerpf(_cabin_height, height, smoothstep(1.0, 9.0, outside))
+	# Retire one old derived entry instead of discarding the entire working set.
+	_height_window.store(_height_cache, cell, height)
+	return height
+
+func corners(cell: Vector2i) -> Vector4:
+	return Vector4(vertex_height(cell), vertex_height(cell + Vector2i.RIGHT), vertex_height(cell + Vector2i.ONE), vertex_height(cell + Vector2i.DOWN))
+
+func surface_height(point: Vector2) -> float:
+	var cell := Vector2i(floori(point.x), floori(point.y))
+	return TerrainHeightfield.interpolate(corners(cell), point - Vector2(cell))
+
+func surface_normal(point: Vector2) -> Vector3:
+	var cell := Vector2i(floori(point.x), floori(point.y))
+	var offset := point - Vector2(cell)
+	var h := corners(cell)
+	var gradient := Vector2(h.y - h.x, h.z - h.y) if offset.y <= offset.x else Vector2(h.z - h.w, h.w - h.x)
+	return Vector3(-gradient.x, 1, -gradient.y).normalized()
+
+func vertex_normal(cell: Vector2i) -> Vector3:
+	if _normal_cache.has(cell):
+		return _normal_cache[cell]
+	var normal := Vector3((vertex_height(cell + Vector2i.LEFT) - vertex_height(cell + Vector2i.RIGHT)) * 0.5, 1, (vertex_height(cell + Vector2i.UP) - vertex_height(cell + Vector2i.DOWN)) * 0.5).normalized()
+	_normal_window.store(_normal_cache, cell, normal)
+	return normal
+
+func slope_fits(cell: Vector2i) -> bool:
+	if _slope_cache.has(cell):
+		return _slope_cache[cell]
+	var h := corners(cell)
+	var limit := tan(deg_to_rad(float(relief.walkable_slope_degrees)))
+	var valid := Vector2(h.y - h.x, h.z - h.y).length() <= limit and Vector2(h.z - h.w, h.w - h.x).length() <= limit
+	_slope_window.store(_slope_cache, cell, valid)
+	return valid
+
+func display_height(point: Vector2) -> float:
+	var cell := Vector2i(floori(point.x), floori(point.y))
+	return maxf(float(pond_at(cell).level), surface_height(point)) if lake_distance(cell) < 1.8 else surface_height(point)
+
+func essential_route_clear() -> bool:
+	var previous := Vector2i(0, trail_y(0) - 1)
+	for x in range(LANDMARK_X + 1):
+		var cell := Vector2i(x, trail_y(x) - 1)
+		if not fits(cell, 3) or (x > 0 and not can_step(previous, cell, 3)):
+			return false
+		previous = cell
+	return true
 
 func roll(cell: Vector2i, salt: int) -> int:
 	# Keep intermediate integers in a bounded range, including at negative coordinates.
@@ -51,7 +162,11 @@ func roll(cell: Vector2i, salt: int) -> int:
 	return value
 
 func trail_y(x: int) -> int:
-	return roundi(sin(float(x) * 0.071) * 5.0 + sin(float(x) * 0.19) * 2.0)
+	var old_anchors := sin(float(x) * 0.071) * 5.0 + sin(float(x) * 0.19) * 2.0
+	# Combined derivative < 0.99 cell/cell, for every seeded phase; integer
+	# centers therefore never jump two rows between essential route steps.
+	var bend := sin(float(x) * PI / LANDMARK_X) * sin(float(x) * 0.035 + float(roll(Vector2i.ZERO, 720) % 100) / 100) * 3.3
+	return roundi(old_anchors + bend)
 
 func landmark() -> Vector2i:
 	return Vector2i(LANDMARK_X, trail_y(LANDMARK_X))
@@ -68,50 +183,14 @@ func is_camp(cell: Vector2i) -> bool:
 func is_landmark(cell: Vector2i) -> bool:
 	return Vector2(cell - landmark()).length() <= 4.0
 
-func network_offset(index: int, horizontal: bool) -> int:
-	var key := Vector2i(index, 0) if horizontal else Vector2i(0, index)
-	return roll(key, 11 if horizontal else 12) % 17 - 8
-
-func network_center(index: int, along: int, horizontal: bool) -> int:
-	# Each route is a function of absolute coordinates, never of chunk order.
-	# Its bounded, slowly varying deviation keeps neighboring cells connected.
-	var phase := float(roll(Vector2i(index, 0), 21 if horizontal else 22) % 6283) / 1000.0
-	return index * ROUTE_SPACING + network_offset(index, horizontal) + roundi(sin(float(along) * 0.015 + phase) * 3.0)
-
-func nearest_route_index(value: int) -> int:
-	return floor_div(value + ROUTE_SPACING / 2, ROUTE_SPACING)
-
 func route_axes(cell: Vector2i, margin: int = 0) -> int:
-	# Bit 1: an east-west route, bit 2: a north-south route.
-	var result := 1 if absi(cell.y - trail_y(cell.x)) <= 2 + margin else 0
-	var row := nearest_route_index(cell.y)
-	var column := nearest_route_index(cell.x)
-	# The central east-west route already serves row zero.
-	var maximum_offset := ROUTE_HALF_WIDTH + margin + 11
-	if row != 0 and absi(cell.y - row * ROUTE_SPACING) <= maximum_offset and absi(cell.y - network_center(row, cell.x, true)) <= ROUTE_HALF_WIDTH + margin:
-		result |= 1
-	if absi(cell.x - column * ROUTE_SPACING) <= maximum_offset and absi(cell.x - network_center(column, cell.y, false)) <= ROUTE_HALF_WIDTH + margin:
-		result |= 2
-	return result
+	return geography.axes(self, cell, margin)
 
 func is_trail(cell: Vector2i) -> bool:
 	return route_axes(cell) != 0
 
 func lake_distance(cell: Vector2i) -> float:
-	# Seeded, bounded basins occupy area interiors; routes follow dry margins.
-	# Water is independent of route selection and chunk generation order.
-	var area := Vector2i(floor_div(cell.x, ROUTE_SPACING), floor_div(cell.y, ROUTE_SPACING))
-	if roll(area, 31) % 5 == 0:
-		return INF
-	var center := area * ROUTE_SPACING + Vector2i(42 + roll(area, 32) % 13, 42 + roll(area, 33) % 13)
-	var delta := cell - center
-	var radius_x := 11 + roll(area, 34) % 8
-	var radius_y := 10 + roll(area, 35) % 8
-	if absi(delta.x) > radius_x + 3 or absi(delta.y) > radius_y + 3:
-		return INF
-	var dx := float(delta.x) / radius_x
-	var dy := float(delta.y) / radius_y
-	return dx * dx + dy * dy + noise.get_noise_2d(cell.x * 3.0, cell.y * 3.0) * 0.12
+	return float(geography.cell_basin(self, cell).distance)
 
 func natural_ground(cell: Vector2i) -> int:
 	var lake := lake_distance(cell)
@@ -140,7 +219,7 @@ func sample(cell: Vector2i) -> Dictionary:
 	var visible_trail := absi(cell.y - trail_y(cell.x)) <= 1 or route_axes(cell, -2) != 0
 	return {"ground": ground, "trail": route != 0, "trail_visible": visible_trail,
 		"route_axes": route,
-		"obstacle": obstacle, "walkable": ground != Ground.WATER and obstacle == 0,
+		"obstacle": obstacle, "walkable": ground != Ground.WATER and obstacle == 0 and slope_fits(cell),
 		"tint": habitat_tint(cell),
 		"variation": roll(cell, 3) % 7,
 		"wetness": wetness_at(cell),
@@ -148,6 +227,11 @@ func sample(cell: Vector2i) -> Dictionary:
 		"overload": 0}
 
 func obstacle_at(cell: Vector2i, ground: int, reserved: bool) -> int:
+	if cabin_footprint.has_area():
+		if cabin_footprint.has_point(cell):
+			return 3
+		if cabin_footprint.grow(1).has_point(cell):
+			return 0
 	if reserved or ground == Ground.WATER:
 		return 0
 	var chance := roll(cell, 2) % 100
@@ -163,7 +247,7 @@ func is_walkable(cell: Vector2i) -> bool:
 	var ground := natural_ground(cell)
 	var place := is_camp(cell) or is_landmark(cell)
 	var route := is_trail(cell)
-	return ground != Ground.WATER and obstacle_at(cell, ground, place or route) == 0
+	return ground != Ground.WATER and obstacle_at(cell, ground, place or route) == 0 and slope_fits(cell)
 
 func habitat_tint(cell: Vector2i) -> Color:
 	var wet := wetness_at(cell)

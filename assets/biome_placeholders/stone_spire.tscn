@@ -1,0 +1,27 @@
+[gd_scene load_steps=3 format=3]
+
+[sub_resource type="StandardMaterial3D" id="stone"]
+albedo_color = Color(0.38, 0.42, 0.43, 1)
+roughness = 1.0
+metallic_specular = 0.0
+
+[sub_resource type="CylinderMesh" id="spire"]
+material = SubResource("stone")
+top_radius = 0.08
+bottom_radius = 0.55
+height = 2.5
+radial_segments = 6
+rings = 1
+
+[node name="StoneSpirePlaceholder" type="Node3D"]
+metadata/placeholder = true
+
+[node name="Part0" type="MeshInstance3D" parent="."]
+position = Vector3(0, 1.25, 0)
+mesh = SubResource("spire")
+
+[node name="Part1" type="MeshInstance3D" parent="."]
+position = Vector3(0.6, 0.625, 0.15)
+scale = Vector3(0.6, 0.5, 0.6)
+mesh = SubResource("spire")
+

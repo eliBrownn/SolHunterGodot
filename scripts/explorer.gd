@@ -1,6 +1,7 @@
 extends Node2D
 
 var walking := false
+var running := false
 var facing := Vector2.DOWN
 var elapsed := 0.0
 var body: Sprite2D

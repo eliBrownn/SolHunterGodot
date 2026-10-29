@@ -1,0 +1,8 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://scripts/cohesive_world_sample.gd" id="1"]
+[ext_resource type="Resource" path="res://resources/nature_cohesive_sample.tres" id="2"]
+
+[node name="CohesiveWorldSample" type="Node3D"]
+script = ExtResource("1")
+nature_settings = ExtResource("2")

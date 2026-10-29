@@ -1,5 +1,5 @@
 extends SceneTree
-## Stress dry routes, water, chunk borders, and save migration.
+## Stress dry routes, water, chunk borders, and incompatible-save rejection.
 var failures := 0
 var checks := 0
 
@@ -12,56 +12,16 @@ func check(value: bool, description: String) -> void:
 func _initialize() -> void:
 	run.call_deferred()
 
-func check_segment(terrain: WorldTerrain, index: int, horizontal: bool) -> bool:
-	var previous := Vector2i.ZERO
-	for along in range(-180, 181):
-		var across := terrain.network_center(index, along, horizontal)
-		# Top-left coordinate of a 3x3 footprint centered on the route.
-		var cell := Vector2i(along, across - 1) if horizontal else Vector2i(across - 1, along)
-		if not terrain.fits(cell, 3):
-			return false
-		if along > -180 and not terrain.can_step(previous, cell, 3):
-			return false
-		previous = cell
-	return true
-
-func check_junction(terrain: WorldTerrain, row: int, column: int) -> bool:
-	var x := terrain.network_center(column, row * 96, false)
-	var y := terrain.network_center(row, x, true) if row != 0 else terrain.trail_y(x)
-	x = terrain.network_center(column, y, false)
-	y = terrain.network_center(row, x, true) if row != 0 else terrain.trail_y(x)
-	var grid := AStarGrid2D.new()
-	grid.region = Rect2i(x - 12, y - 12, 25, 25)
-	grid.diagonal_mode = AStarGrid2D.DIAGONAL_MODE_ONLY_IF_NO_OBSTACLES
-	grid.update()
-	for cy in range(y - 12, y + 13):
-		for cx in range(x - 12, x + 13):
-			var point := Vector2i(cx, cy)
-			grid.set_point_solid(point, not terrain.fits(point, 3))
-	var west_x := x - 10
-	var east_x := x + 9
-	var north_y := y - 10
-	var south_y := y + 9
-	var west := Vector2i(west_x, (terrain.network_center(row, west_x, true) if row != 0 else terrain.trail_y(west_x)) - 1)
-	var east := Vector2i(east_x, (terrain.network_center(row, east_x, true) if row != 0 else terrain.trail_y(east_x)) - 1)
-	var north := Vector2i(terrain.network_center(column, north_y, false) - 1, north_y)
-	var south := Vector2i(terrain.network_center(column, south_y, false) - 1, south_y)
-	for target in [east, north, south]:
-		if grid.get_id_path(west, target).is_empty():
-			return false
-	return true
-
 func run() -> void:
-	var seeds := [0, 1, 2, 17, 71, 2601026, 88881, 999999, 123456789, 2147483646]
+	var seeds := [0, 1, 2, 17, 19, 71, 2601026, 88881, 999999, 123456789, 2147483646]
 	var found_water := false
 	for seed_value in seeds:
 		var terrain := WorldTerrain.new(seed_value)
-		for index in [-2, -1, 1, 2]:
-			check(check_segment(terrain, index, true), "Horizontal route, seed %d row %d, 3x3 footprint" % [seed_value, index])
-		for index in [-2, -1, 0, 1, 2]:
-			check(check_segment(terrain, index, false), "Vertical route, seed %d column %d, 3x3 footprint" % [seed_value, index])
-		for crossing in [Vector2i(-1, -1), Vector2i(0, 0), Vector2i(1, 1)]:
-			check(check_junction(terrain, crossing.y, crossing.x), "Network junction, seed %d at %s" % [seed_value, crossing])
+		check(terrain.essential_route_clear(), "Essential refuge-to-waystone route supports 3x3 traversal, seed %d" % seed_value)
+		var graph: Array = terrain.geography.paths(terrain, Vector2i.ZERO)
+		check(not graph.is_empty(), "Starting district has dry winding approaches, seed %d" % seed_value)
+		var other := WorldTerrain.new(seed_value)
+		check(graph == other.geography.paths(other, Vector2i.ZERO), "Road descriptors reproduce independently")
 		for chunk in [Vector2i(-7, -7), Vector2i(-1, -1), Vector2i.ZERO, Vector2i(2, 6)]:
 			var data := terrain.extract_chunk(chunk)
 			var second := WorldTerrain.new(seed_value)
@@ -107,39 +67,17 @@ func run() -> void:
 	var same_climate := WorldTerrain.new(42, dry_settings)
 	check(dry_world.extract_chunk(Vector2i(-2, 2)) == same_climate.extract_chunk(Vector2i(-2, 2)), "Seed and climate reproduce chunk defaults")
 	var path := "user://generation-compatibility-test.json"
-	for old_version in [1, 2, 3]:
+	for old_version in [1, 2, 3, 4, 5, 6]:
 		var old_save := ExpeditionSave.snapshot(1, Vector2i.ZERO, true, true, old_version)
 		var old_json := JSON.stringify(old_save)
 		var file := FileAccess.open(path, FileAccess.WRITE)
 		file.store_string(old_json)
 		file.close()
-		var restored := ExpeditionSave.read_save(path)
-		check(restored.get("generation_version") == WorldTerrain.GENERATION_VERSION and restored.get("migrated_from") == old_version, "Older save migrates to current generation")
-		check(restored.get("seed") == 1 and restored.get("returned") and restored.get("player") == [0, 0], "Migration preserves seed, progress and safe position")
-		check(FileAccess.get_file_as_string(path) == old_json, "Migration leaves original file untouched until save")
-	# An old position submerged by the new geography relocates to dry ground.
-	var water_cell := Vector2i.ZERO
-	var migration_terrain := WorldTerrain.new(1)
-	for y in range(-96, 192):
-		for x in range(-96, 192):
-			if migration_terrain.natural_ground(Vector2i(x, y)) == WorldTerrain.Ground.WATER:
-				water_cell = Vector2i(x, y)
-				break
-		if water_cell != Vector2i.ZERO:
-			break
-	check(water_cell != Vector2i.ZERO, "Find water to exercise relocation")
-	var moved_save := ExpeditionSave.snapshot(1, water_cell, true, false, 2)
-	var file := FileAccess.open(path, FileAccess.WRITE)
-	file.store_string(JSON.stringify(moved_save))
-	file.close()
-	var moved := ExpeditionSave.read_save(path)
-	check(not moved.is_empty() and moved.migration_moved and moved.landmark_visited, "Blocked legacy position is relocated and progress preserved")
-	if not moved.is_empty():
-		check(migration_terrain.fits(Vector2i(int(moved.player[0]), int(moved.player[1]))), "Migrated position is passable")
-		check(ExpeditionSave.read_save(path).player == moved.player, "Migration relocation is deterministic")
-		var original_json := FileAccess.get_file_as_string(path)
-		check(ExpeditionSave.write(moved, path) == OK, "Write migrated save")
-		check(FileAccess.get_file_as_string(path + ".bak") == original_json, "Saving migration backs up original save")
+		check(ExpeditionSave.read_save(path).is_empty(), "Obsolete development generation is rejected")
+		check(FileAccess.get_file_as_string(path) == old_json, "Rejected old saves are not rewritten")
+	var current := ExpeditionSave.snapshot(1, Vector2i.ZERO, true, true)
+	check(ExpeditionSave.write(current, path) == OK, "Current development save writes")
+	check(ExpeditionSave.read_save(path).relief == WorldTerrain.default_relief(), "Current save reconstructs its relief contract")
 	if FileAccess.file_exists(path):
 		DirAccess.remove_absolute(path)
 	if FileAccess.file_exists(path + ".bak"):

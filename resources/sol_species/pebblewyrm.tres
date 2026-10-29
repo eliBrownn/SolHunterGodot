@@ -1,0 +1,37 @@
+[gd_resource type="Resource" script_class="SolSpeciesRecord" load_steps=7 format=3]
+
+[ext_resource type="Script" path="res://scripts/sol_species_record.gd" id="1"]
+[ext_resource type="Script" path="res://scripts/sol_ecology_profile.gd" id="2"]
+[ext_resource type="PackedScene" path="res://scenes/sols/pebblewyrm.tscn" id="3"]
+[ext_resource type="Script" path="res://scripts/sol_traversal_profile.gd" id="4"]
+
+[sub_resource type="Resource" id="traversal"]
+script = ExtResource("4")
+kind = "ground"
+radius = 0.65
+height = 0.8
+
+[sub_resource type="Resource" id="ecology"]
+script = ExtResource("2")
+profile_id = "sol_species_0015_default"
+species_id = "sol_species_0015"
+temperament = "neutral"
+behaviors = PackedStringArray("patrol", "idle", "guard")
+
+[resource]
+script = ExtResource("1")
+traversal = SubResource("traversal")
+species_id = "sol_species_0015"
+lineage_id = "sol_lineage_0015"
+class_id = "wyrmkin"
+display_name = "Pebblewyrm"
+max_hp = 46
+attack = 22
+defense = 20
+special_attack = 14
+special_defense = 18
+speed = 12
+learnable_moves = PackedStringArray("strike", "charge", "ward", "anchor", "heat", "rattle", "barrier", "drake_spark", "heavy_swing", "brace")
+starting_moves = PackedStringArray("strike", "charge", "ward", "anchor", "drake_spark", "heavy_swing", "brace")
+ecology = SubResource("ecology")
+presentation_scene = ExtResource("3")

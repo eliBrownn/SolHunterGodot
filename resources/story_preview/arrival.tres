@@ -1,0 +1,18 @@
+[gd_resource type="Resource" script_class="StoryEvent" load_steps=4 format=3]
+
+[ext_resource type="Script" path="res://scripts/story_event.gd" id="1"]
+[ext_resource type="Script" path="res://scripts/story_choice.gd" id="2"]
+
+[sub_resource type="Resource" id="Choice"]
+script = ExtResource("2")
+id = "acknowledge"
+label = "Acknowledge this preview"
+sets = Dictionary[String, String]({"preview.read": "yes"})
+
+[resource]
+script = ExtResource("1")
+id = "preview.arrival"
+title = "Dialogue preview"
+speaker = "Development fixture"
+text = "This is a writing preview, separate from the campaign. Leaving records no decision. Choosing the acknowledgment enables the follow-up preview. Save and load through the field menu to check continuity."
+choices = Array[ExtResource("2")]([SubResource("Choice")])
