@@ -53,7 +53,7 @@ retain their CC0, MIT or CC BY notices alongside the copied subset.
 ## Focused evidence
 
 Godot 4.7.2 Direct3D 12 `--script tests/plant_vastra.gd -- --capture-trajectories`
-passed **337 checks** through the actual 3D expedition. This reuses the existing
+passed **338 checks** through the actual 3D expedition. This reuses the existing
 plant charge/transfer/arrival journey and adds GPU identity, pool reuse, frozen
 active-time, read-only ledger, zero visibility and legacy-comparison checks.
 The real packet capture under `artifacts/plant-vastra/packet-in-transit.png` was
@@ -61,3 +61,9 @@ inspected. This is focused evidence, not a full-suite or device-performance pass
 The initial editor import reported a local safe-save directory warning; the final
 rendered journey reported no script, shader or engine errors. Configured CI remains
 unchanged and will run on push.
+
+A repeat of that focused rendered journey with the optional FBX and its import
+sidecar removed passed all 338 checks, including the public capsule fallback.
+An additional fully extracted archive check was stopped when the machine ran
+out of free disk space; its partial copy/archive were removed. No unrelated files
+were deleted. This repeat is not a fresh-cache/full-suite acceptance claim.

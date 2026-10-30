@@ -257,6 +257,8 @@ func presentation_journey() -> void:
 	var scene: Node3D = load("res://scenes/world_3d.tscn").instantiate()
 	root.add_child(scene)
 	var world: Node2D = scene.world
+	if not FileAccess.file_exists("res://assets/characters/basic_man/basic_man.fbx"):
+		check(scene.player_visual.skeleton==null,"Source checkout uses the original capsule fallback without unpublished character art")
 	world.smoke_mode = true
 	world.new_expedition(17)
 	scene.process_mode = Node.PROCESS_MODE_DISABLED
