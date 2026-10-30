@@ -57,8 +57,9 @@ func run() -> void:
 			continue
 		var builder_name := species.resource_path.get_file().get_basename()
 		var expected_moment: String = MOMENTS[IDS.find(species_id)] if species_id in IDS else builder_name + "_moment"
-		var found: Array = scene.sightings.members.filter(func(member: Dictionary) -> bool: return member.entry.species == species.species_id)
-		check(found.size() == 1, species.display_name + " is admitted once in the actual F5 main scene")
+		# Habitat residents may share this species; this fixture exercises its explicit showcase home.
+		var found: Array = scene.sightings.members.filter(func(member: Dictionary) -> bool: return member.entry.species == species.species_id and not member.entry.get("habitat_spawn", false))
+		check(found.size() == 1, species.display_name + " has exactly one explicit showcase individual in the actual F5 main scene")
 		if found.size() != 1:
 			continue
 		var member: Dictionary = found[0]
@@ -139,13 +140,19 @@ func run() -> void:
 	var restored: Dictionary = world.persistent_state.snapshot()
 	var preserved := true
 	for group in snapshot:
-		if group in ["individuals", "movebooks", "sol_stats"]:
+		if group in ["individuals", "movebooks", "sol_stats", "roaming"]:
 			# Loading at a visited distant sector admits the current local wildlife window.
 			# Every already-saved identity and trait must still be exactly preserved.
 			for identity in snapshot[group]:
 				preserved = preserved and restored[group].get(identity) == snapshot[group][identity]
 		else:
 			preserved = preserved and restored.get(group) == snapshot[group]
+	for identity in restored.roaming:
+		if not snapshot.roaming.has(identity):
+			check(not snapshot.individuals.has(identity) and restored.individuals.has(identity), "Additional traversal records belong only to newly admitted nearby residents")
+	if not preserved:
+		FileAccess.open("res://artifacts/sol_anatomy_integration/before.json", FileAccess.WRITE).store_string(JSON.stringify(snapshot))
+		FileAccess.open("res://artifacts/sol_anatomy_integration/after.json", FileAccess.WRITE).store_string(JSON.stringify(restored))
 	check(preserved, "Real save/new/load preserves all saved data while allowing normal nearby-wildlife admission")
 	for identity in captured:
 		check(world.persistent_state.individual_view(identity) == captured[identity], "Saved ownership and first-stage identity survive load")

@@ -14,43 +14,62 @@ static func snapshot(seed_value: int, cell: Vector2i, visited: bool, returned: b
 		"world_state": (persistent_state if not persistent_state.is_empty() else ExpeditionState.new(seed_value).snapshot()).duplicate(true)}
 
 static func validate(data: Variant) -> bool:
+	return not _prepare(data,false).is_empty()
+
+## Validate once and retain the exact state/terrain admitted by those checks.
+## This result is local to a load; no reusable trust flag or cross-load cache.
+static func prepare(data: Variant) -> Dictionary:
+	return _prepare(data,true)
+
+static func _prepare(data: Variant, restore_state: bool) -> Dictionary:
 	if not data is Dictionary:
-		return false
+		return {}
 	if not whole_number(data.get("save_version")) or int(data.save_version) != FORMAT_VERSION or not whole_number(data.get("generation_version")):
-		return false
+		return {}
 	if int(data.generation_version) != WorldTerrain.GENERATION_VERSION:
-		return false
+		return {}
 	var seed_value: Variant = data.get("seed")
 	if not whole_number(seed_value) or seed_value < 0 or seed_value > 2147483646:
-		return false
+		return {}
 	if int(data.save_version) == FORMAT_VERSION:
-		if not ExpeditionState.valid_snapshot(data.get("world_state"), int(seed_value)):
-			return false
+		if not data.get("world_state") is Dictionary:
+			return {}
 	elif data.has("world_state"):
-		return false
+		return {}
 	var cell: Variant = data.get("player")
 	if not cell is Array or cell.size() != 2:
-		return false
+		return {}
 	for value in cell:
 		if not whole_number(value) or absf(value) > 1000000:
-			return false
+			return {}
 	if not data.get("landmark_visited") is bool or not data.get("returned") is bool:
-		return false
+		return {}
 	if data.returned and not data.landmark_visited:
-		return false
+		return {}
 	if not WorldTerrain.valid_climate(data.get("climate")) or not TerrainReliefSettings.valid_parameters(data.get("relief")) or not ScenerySiteTemplate.valid_parameters(data.get("scenery")):
-		return false
+		return {}
+	var state: ExpeditionState
+	if restore_state:
+		state = ExpeditionState.restore(data.world_state, int(seed_value))
+		if state == null: return {}
+	elif not ExpeditionState.valid_snapshot(data.world_state,int(seed_value)):
+		return {}
 	var terrain := WorldTerrain.new(int(seed_value), data.climate, data.relief, data.scenery)
+	terrain.flora_specialist_percent=int(data.world_state.get("flora_specialist_percent",FloraTraits.LEGACY_SPECIALIST_PERCENT))
+	for row: Dictionary in data.world_state.flora.nodes.values():
+		var at := Vector2i(int(row.cell[0]), int(row.cell[1]))
+		if terrain.flora_kind(at, terrain.sample(at)) != row.kind: return {}
 	for identity in data.get("world_state", {}).get("roaming", {}):
 		var row: Dictionary = data.world_state.roaming[identity]
 		var individual: Dictionary = data.world_state.individuals[identity]
 		var roaming_cell := Vector2i(int(row.cell[0]), int(row.cell[1]))
 		if row.has("traversal"):
 			if int(individual.footprint) != 1 or not SolTraversalPolicy.cell_valid(terrain, roaming_cell, row.traversal):
-				return false
+				return {}
 		elif not terrain.fits(roaming_cell, int(individual.footprint)):
-			return false
-	return terrain.fits(Vector2i(int(cell[0]), int(cell[1])))
+			return {}
+	if not terrain.fits(Vector2i(int(cell[0]), int(cell[1]))): return {}
+	return {"data": data, "state": state, "terrain": terrain}
 
 static func whole_number(value: Variant) -> bool:
 	return (value is int or value is float) and is_finite(float(value)) and float(value) == floor(float(value))
@@ -78,6 +97,10 @@ static func write(data: Dictionary, path: String = SAVE_PATH) -> Error:
 	return DirAccess.rename_absolute(path + ".tmp", path)
 
 static func read_save(path: String = SAVE_PATH) -> Dictionary:
+	var candidate := read_candidate(path)
+	return candidate.data if not candidate.is_empty() else {}
+
+static func read_candidate(path: String = SAVE_PATH) -> Dictionary:
 	if not FileAccess.file_exists(path):
 		return {}
 	var input := FileAccess.open(path, FileAccess.READ)
@@ -92,6 +115,4 @@ static func read_save(path: String = SAVE_PATH) -> Dictionary:
 	if parser.parse(encoded) != OK:
 		return {}
 	var data: Variant = parser.data
-	if not validate(data):
-		return {}
-	return data.duplicate(true)
+	return prepare(data)

@@ -3,6 +3,9 @@ extends Resource
 ## Static cosmetic asset admission. Units are world cells; rebuild to apply.
 enum Surface { GROUND, BANK, WATER }
 @export var scene: PackedScene
+## Living vegetation must link to a canonical flora cell. False for rocks, logs and dead wood.
+## Rebuild applies; this flag never writes reserve/energy state.
+@export var living := true
 ## Ground/bank uses the final terrain; floating water uses the pond's level.
 @export_enum("Ground", "Bank", "Water") var surface: int = Surface.GROUND
 ## Authored UNIFORM scale; never normalize by height (flat pads/logs remain bounded).

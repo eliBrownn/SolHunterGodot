@@ -10,9 +10,17 @@ static func prepare(mesh: Mesh) -> void:
 	var key := mesh.get_instance_id()
 	if not surfaces.has(key):
 		var rows: Array[Dictionary] = []
+		var prepared_bins: Array = mesh.get_meta("picking_bins_v1", [])
 		for index in range(mesh.get_surface_count()):
 			var arrays := mesh.surface_get_arrays(index)
 			var row := {"vertices": arrays[Mesh.ARRAY_VERTEX], "indices": arrays[Mesh.ARRAY_INDEX], "uv": arrays[Mesh.ARRAY_TEX_UV], "material": mesh.surface_get_material(index)}
+			# Immutable baked palette meshes carry the same exact triangle bins.
+			# Keep source arrays/materials on this mesh; only the derived index is baked.
+			if prepared_bins.size() == mesh.get_surface_count():
+				row.bins = prepared_bins[index]
+				prepare_image(row.material)
+				rows.append(row)
+				continue
 			var vertices: PackedVector3Array = row.vertices
 			var indices: PackedInt32Array = row.indices if row.indices != null else PackedInt32Array()
 			var bounds := mesh.get_aabb()
@@ -56,7 +64,13 @@ static func ray(mesh: Mesh, origin: Vector3, direction: Vector3) -> Variant:
 	for row in surfaces[key]:
 		var vertices: PackedVector3Array = row.vertices
 		for bin in row.bins:
-			if bin.bounds.intersects_ray(origin, direction) == null:
+			var bounds: AABB = bin.bounds
+			var entry: Variant = bounds.intersects_ray(origin, direction)
+			if entry == null:
+				continue
+			# A farther bin cannot improve the nearest opaque hit. Rays starting
+			# inside a bin must still test it: its returned boundary may be an exit.
+			if not bounds.grow(0.00001).has_point(origin) and origin.distance_squared_to(entry) > distance:
 				continue
 			var triangles: PackedInt32Array = bin.triangles
 			for index in range(0, triangles.size(), 3):

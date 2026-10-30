@@ -1,5 +1,71 @@
 # Natural terrain roadmap
 
+## Connected water and mountain ranges — October 30, 2026
+
+Owner selected connected streams/ponds and added mountain ranges, with live grass
+40% shorter and 15% narrower. Generation 13 implements optional pond-fed level
+channels ending in satellite pools, plus cross-district mountain ridges. Downhill
+rivers, watershed networks, waterfalls and bridges remain open. See
+[live terrain](natural-terrain.md#connected-water-and-mountain-ranges--october-30-2026).
+
+Owner approved applying the layout-first principle after reviewing
+[WorldGen, section 3](https://arxiv.org/html/2511.16825v1#S3): establish the coarse
+layout and traversable space before detailed scene generation. Our adaptation
+keeps Godot authoritative: terrain/water footprints precede route/site admission;
+scenery consumes the admitted layout. This approves the planning principle, not
+the paper's diffusion/image-to-3D pipeline or a replacement navigation authority.
+
+## Pond boundary and streaming correction — October 30, 2026
+
+Generation 12 corrects an artificial cliff at the outer pond-bank influence
+boundary: the raised bank now converges to surrounding raw relief before the
+cutoff. Current-format generation-11 development saves are rejected through
+the existing version guard; start a new expedition to review the corrected land.
+Detailed chunks now advance before temporary coverage, with work reserved for
+coverage only when it has visible gaps. Shared material sampling uses bounded
+reuse. This fixes existing generation/presentation defects; it does not implement
+connected rivers, dedicated road grading or aquatic replacement artwork.
+See [natural terrain](natural-terrain.md) and
+[runtime optimization](runtime-optimization.md) for controls and evidence.
+
+Focused generation-12 checks passed: geography 8,754 (including the reported
+bank-cutoff regression), terrain integration/save-load 3,945, shoreline 22,605,
+materials 4,811 and loading 64. The fixed-angle Direct3D 12 capture was inspected;
+all 68 initial detail chunks reached publication. Logs and images are under
+`artifacts/terrain_audit/`. Integration/loading/render exit warnings for two
+Canvas RIDs and ObjectDB instances remain. The broader generation suite also
+passed 145 checks across 11 seeds. Editor scanning/class registration completed,
+but its safe-save reported an error; no clean import, full-validator or
+owner-play-acceptance claim is made.
+
+## Geographic material integration — October 29, 2026
+
+Owner-selected ambientCG material library is connected to full terrain and distant
+coverage through a shared compact, mipmapped 13-layer color array. Geographic-scale
+variation uses absolute coordinates and expedition seed; existing biome/trail
+samples own soil weights, with neighboring tiles sharing vertex weights. World
+normals blend rock onto slopes; triplanar projection avoids cliff stretching.
+Enabled terrain paths blend into the surface instead of using square paving
+overlays. Generation, geometry, movement admission and vegetation registration are
+unchanged. [Inspector controls](inspector-tuning.md#geographic-terrain-materials--october-29-2026)
+own the tuning map; original textures and licenses remain beside the source assets.
+
+Validation: `tests/terrain_materials.gd` passed 2,403 checks covering common-vertex
+weights, near/far correspondence, unchanged generation and invalid tuning;
+`tests/water_shoreline.gd` passed 22,605 checks with 94 partial shore cells;
+graphics-enabled `tests/view_3d.gd -- --capture-view` passed 1,435 checks. Rendered
+wide/horizon evidence is in `artifacts/view3d/`; the wide image was inspected for
+continuous paths and surface mapping. Final art approval and target-device
+performance remain open. The view test reports existing Canvas/ObjectDB exit leak
+warnings. Repository ownership audit remains blocked by five pre-existing unmapped
+scripts (grave knight, Vastra filament/particle helpers and meadow appearance);
+this material integration adds no script under `scripts/`.
+
+## Generated plants and Vastra ownership — October 29, 2026
+
+Every generated living plant must have canonical cell membership before publication. WorldTerrain/FloraCatalog own geography and definitions; the expedition owns saved energy. All four terrestrial biomes and the fixed authored pond's actual living water/bank placements are covered; bare water/sand is not blanket vegetation. New generation content must preserve access, deterministic reconstruction and the shared flora identity.
+See the [authoritative registration contract](vastra-integration.md#generated-vegetation-registration-and-system-hierarchy) for owners, limits and checks.
+
 Prepared October 27, 2026. Status: Rolling integrated into the default 3D game
 after the owner's instruction to continue. See [implementation evidence](natural-terrain.md).
 Owner playtesting and target-device acceptance remain open.
@@ -14,6 +80,19 @@ records six fresh rendered journeys with normal AI, a focused guard encounter,
 current save/load checks, performance measurements and validation blockers.
 Concurrent source changes limit matched-run comparisons; this does not close
 owner acceptance, performance budgets or the broader T5 workload.
+
+## Current priority — October 29, 2026
+
+The owner prioritizes world generation, worldbuilding and exploration that are
+fun without an authored campaign. Generated quests and local interactions remain
+in scope. Campaign delivery and AYN Thor performance/device acceptance are
+deferred; the development PC is the immediate playtest baseline. This supersedes
+the immediate device-measurement priority in the earlier focus below. Preserve
+existing generation authorities, essential access, story canon and gameplay.
+See [the current development focus](development-plan.md#current-focus--october-29-2026)
+and [world/exploration roadmap](world-exploration-roadmap.md) for delivery order
+and review criteria. The existing hierarchy and bounded sample
+are foundations to develop, not proof of broadly varied or enjoyable wilderness.
 
 ## Intended result
 
@@ -681,3 +760,46 @@ authoritative. Its review/cost evidence and unresolved visibility/validation gat
 are tracked there. Owner instruction to apply the changes, October 28, promotes
 these three bounded treatments and the pond cue into normal F5 play. Other areas
 and seeds retain existing dressing; worldwide palette expansion remains gated.
+
+October 29 owner follow-up: advance geographic diversity through hierarchical
+landforms and water-flow context, and require paths to stay on player-scalable
+terrain. The [phase 2 slice](biome-encounters-geography.md) adds district landforms,
+noise-family comparison, catchment-informed pond candidates and final-terrain
+route admission. [Research report 02](research/noise-landforms-water.md) separates
+that implemented local analysis from connected streams and cross-district outlets
+still to be built. Prior deferral language does not supersede this new priority.
+
+## Generated tile affinities — October 29, 2026
+
+Owner-authorized generation 11 assigns every tile one canonical affinity.
+`WorldTerrain.affinity_at` combines a seeded geographic district preference,
+smooth local affinity fields and ground/moisture preferences. All eight affinities
+remain possible; water favors Water, woodland/meadow favors Earth, dry terrain
+favors Fire, open heath/sand favors Air and marsh moisture favors Lightning.
+These weights are initial generation tuning, not new combat or Bible rules.
+Assignment uses absolute cells and an independent noise seed; it does not reroll
+terrain, paths, species, individual affinities or Vastra concentration.
+
+`sample` exposes the default. `ExpeditionState.environment_view` overlays lasting
+battle imprints; defaults are reconstructed rather than saved per tile. Combat
+entry, tile Details and Vastra current colors consume the resolved affinity. Tile inspection has a
+visible affinity line; simplified Sol appearance observations keep it hidden.
+The sparse ground overlay continues to mark battle imprints. Generation 11 uses
+the existing development-save version rejection policy.
+
+Coverage: `tests/world_generation.gd` checks reconstruction, all affinities,
+seed variation, patch continuity and persisted override precedence;
+`tests/affinity_moves.gd` checks live battle inheritance and imprint overrides;
+`tests/vastra_currents.gd` checks natural and imprinted optical colors.
+
+Validation: Godot 4.7.2 import passed. Focused headless suites passed:
+world generation (143 checks across 11 seeds), affinity moves/live battle and visible tile affinity (106),
+Vastra currents (105), Vastra integration (38), persistent foundation (76),
+world interactions (32) and Sol observation (38).
+The current fixture also passed 105 checks with the Direct3D 12 renderer.
+Logs: `artifacts/affinity-generation-*.log`. Full CI suite was not rerun locally.
+
+A cold scene-entry render also verified the visible tile-affinity label;
+`artifacts/generated-affinity-details.png` captures it. That entry check exposed
+and fixed an inferred camera-origin type in Vastra presentation that depended on
+script load order. Final import and scoped whitespace/ownership checks passed.

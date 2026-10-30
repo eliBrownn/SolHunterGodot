@@ -18,6 +18,11 @@ adds nearby depth-tested streaks and earlier horizon fog; particles do not cast
 shadows or alter world state. The top-center display shows current time and
 weather, including an arrow while transitioning between weather states.
 
+Temporary in-game lighting controls sit below that readout: **Show night** /
+**Show day** previews midnight/noon immediately, and **Resume cycle** restores
+the clock-derived lighting. The preview lasts for the current game session;
+it does not modify the saved clock, weather schedule or monitor settings.
+
 Select the world root's **3D View → Atmosphere Settings**, or open
 `resources/atmosphere_settings.tres`. Save edits and restart, or call
 `apply_atmosphere_settings()` on the running root. Disable Cycle Enabled and
@@ -36,10 +41,11 @@ blend. These are editable presentation defaults, not finalized world canon.
 
 The input clock is `activity_tick × 0.75 + remainder_seconds`, both already
 saved. No new save fields, migrations, wall-clock catch-up or independent clock
-authority are added. Pause and battles freeze the timeline with exploration;
+authority are added. The explicit pause screen freezes the timeline. Following
+the October 29 owner direction, battles keep the shared world clock running;
 reload reconstructs the same phase and weather transition without rerolling.
 Particle positions are cosmetic and are recreated rather than serialized.
-Rain animation freezes in the pause menu and may continue during combat.
+Rain animation freezes in the pause menu and continues during combat.
 
 Changing cycle length, phase offset, weather weights or intervals deliberately
 recalculates appearance from existing saved time. It does not rewrite saves.

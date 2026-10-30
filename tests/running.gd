@@ -30,7 +30,7 @@ func run() -> void:
 	check(is_equal_approx(world.progress, 0.75) and not world.explorer.running, "Releasing Shift restores walking during the current step")
 	world.new_expedition(17)
 	Input.action_press("run")
-	world.advance_movement(duration * sqrt(2.0) * 0.5 / multiplier, Vector2.ONE.normalized())
+	world.advance_movement(duration * 0.5 / multiplier, Vector2.ONE.normalized())
 	check(is_equal_approx(world.progress, 0.5), "Running preserves diagonal distance normalization")
 	world.paused = true
 	var before: Vector2 = world.explorer.position

@@ -75,6 +75,7 @@ func run() -> void:
 				break
 		check(finished and job.chunk.get_parent() == null, "Preparation completes without publishing partial nodes")
 		var cells := terrain.extract_chunk(coord)
+		check(job.chunk.cell_setup_count==1,"Sliced chunks prepare shared materials and biome patches once")
 		check(job.cells == cells, "Sliced generation exactly matches synchronous cells, including negative coordinates")
 		var direct := Chunk.new()
 		direct.build(cells, terrain, coord, nature)

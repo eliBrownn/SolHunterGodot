@@ -9,7 +9,8 @@ static func create(species_id: String, assigned_affinity: String, tuning: SolVis
 	if entry != null:
 		if not entry.presentation_valid():
 			return null
-		view = entry.presentation_scene.instantiate() as SolOrb
+		var presentation := preload("res://scripts/sols/presentation/sol_design_library.gd").presentation(species_id, entry.presentation_scene)
+		view = presentation.instantiate() as SolOrb
 	else:
 		# Preserve legacy/unknown identity while replacing the old sphere fallback.
 		view = load("res://scripts/sols/presentation/sol_prototype_creature.gd").new()

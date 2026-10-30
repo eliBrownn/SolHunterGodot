@@ -1,5 +1,10 @@
 # SolHunter Godot development plan
 
+## Vegetation hierarchy acceptance — October 29, 2026
+
+Generated plants must enter the canonical Vastra hierarchy as a connected feature requirement. This applies to new biome content and asset replacements as well as existing grass, trees and water/bank plants. Validate geographic membership, saved-ledger admission and visual endpoint links together; registration underpins circulation, paid repair and vegetation/Vessel ecology.
+See the [authoritative registration contract](vastra-integration.md#generated-vegetation-registration-and-system-hierarchy) for owners, limits and checks.
+
 Prepared October 26, 2026. Status: proposed implementation sequence, not approval of unresolved designs.
 
 ## Sources, authority, and scope
@@ -13,6 +18,89 @@ Owner clarification: use [SolHunterSource](https://github.com/eliBrownn/SolHunte
 This plan targets the existing Godot 4.7.2 project and preserves applicable mechanics through Godot resources, scenes, signals, and testable domain systems. SolHunterSource is an active mechanics reference for this migration even though its Python/Pygame runtime is not the Godot architecture. Keep the current Godot world-generation engine; assess old-save compatibility separately.
 
 All milestone ordering, slice sizes, module boundaries, and acceptance procedures below are engineering proposals. Confirmed canon remains binding; provisional quantities and formulas remain tunable proposals. Calendar estimates should follow a completed vertical slice and measured delivery effort.
+
+## Current focus — October 29, 2026
+
+Owner-authorized conceptual follow-up: develop meadow and woodland as healthy,
+active environments through nature, sound, dynamic weather and Vastra before
+people or human interference. **Vessels** is the placeholder name for small
+Vastra-born non-Sol wildlife that can cue local conditions. Develop landmarks as
+stable terrain/lore identities hosting changing activity; specific sanctuary,
+passage and den events remain proposals. The
+[Bible update](reference/SolHunter_Worldbuilding_Bible.md#owner-approved-living-environments-vessels-and-landmarks--october-29-2026)
+owns approved direction, the [concept report](living-world-concept-report.md)
+retains ideas/open questions, and the world roadmap below owns the proposed order.
+The current session remains conceptual while the owner is away; owner play review
+and runtime implementation are future gates, not today's completion claims.
+
+Owner clarification after the vision review: today's focus is Vastra, world
+generation and biome-specific systems, making roads and wilderness feel alive
+even without nearby Sols. Landmark placement is on hold. Prioritize environmental
+activity and geographic character before optional leads; see the
+[living-environment focus](world-exploration-roadmap.md#owner-focus-living-environments--october-29-2026)
+for the proposed connected review slice. This is delivery direction, not evidence
+that new environmental systems are implemented or accepted.
+
+Owner-approved weather direction: extend the existing saved-clock weather into a
+shared system with coordinated cloud cover, precipitation and wind; geography
+modifies local exposure and presentation consumes the conditions. Day/night stays
+alongside it. The [weather and wind roadmap](weather-roadmap.md) owns the planned
+foundation, foliage, atmosphere/audio, exposure and connected-review phases.
+Gameplay and ecological weather effects require separate mechanics specifications.
+
+Owner follow-up: develop Vastra visually first and build its technical/code
+approach around the approved look. The complete
+[Vastra visual direction](reference/SolHunter_Worldbuilding_Bible.md#owner-approved-vastra-visual-direction--october-29-2026)
+records the subtle quantum web, proximity-based visibility, day/night treatment,
+layered movement and exploration clues. Establish the appearance through rendered
+review before expanding supporting systems; this records direction and does not
+claim a completed renderer or discovery integration.
+The [Vastra visual roadmap](vastra-visual-roadmap.md) owns its implementation
+sequence, beginning with connected world-anchored geometry.
+
+Owner follow-up approved the basic Vastra appearance and defined actual circulation:
+plants refill from ambient Vastra, emit at 100 toward a nearby tree without need
+bias, and trees relay energy onward. The owner clarified natural balance and repair,
+not plant XP levels. The first saved reserve/packet/repair implementation preserves
+the approved look; its provisional policy and acceptance live in
+[Vastra integration](vastra-integration.md#plant-energy-circulation-and-natural-repair--october-29-2026).
+
+Owner direction: put story on the back burner and prioritize worldbuilding,
+world generation and exploration. The world should be fun without an authored
+campaign first. Generated quests and local interactions are part of this work,
+with persistent facts that can later connect to story. Early play can remain
+loose and player-directed, with a First Age feeling; permanent historical canon
+for early saves has not been decided. Full campaign delivery is deferred.
+AYN Thor performance, optimization, export and device acceptance are also on the
+far back burner. The device remains the intended eventual platform; immediate
+work is judged on the development PC. These priorities supersede the earlier
+requirement to advance story and target-device optimization alongside each slice.
+Preserve approved story canon and existing connected gameplay.
+
+The [world/exploration roadmap](world-exploration-roadmap.md) now owns the forward
+cross-feature sequence, beginning with the
+[Cobblemon research report](research/cobblemon-world-exploration.md). Its phases
+cover traversal, geography, generated places, inhabitants, generated interactions
+and early-play review. Feature roadmaps retain detailed requirements and evidence.
+
+Proposed next delivery order: assess the current world at walking height; improve
+terrain and habitat composition, readable landmarks and route choices; develop
+varied procedural scenery and secondary places under the existing hierarchy;
+then review whether exploration itself sustains curiosity across multiple seeds.
+Use the existing refuge and wilderness as the playable starting point. Evaluate
+movement/camera comfort, distinct places, inviting detours, useful sightlines,
+reliable access and return navigation. Let existing Sol behavior and encounters
+contribute to the world without requiring campaign progression. This sequence is
+an engineering recommendation, not approval of new mechanics or new canon.
+
+Use focused generation, traversal, persistence and rendered checks appropriate
+to actual changes. Address desktop performance problems when they impair play;
+do not make a separate Thor optimization program the current gate. The completed
+reformat evidence remains valid for its recorded inputs; this priority update
+does not call for rerunning unchanged systems or close remaining acceptance gates.
+
+The October 28 focus and opening sequence below retain their historical and
+creative context; their delivery timing is subordinate to this current focus.
 
 ## Approved focus — October 28, 2026
 

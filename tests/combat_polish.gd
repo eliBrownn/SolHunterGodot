@@ -132,6 +132,10 @@ func run() -> void:
 	await process_frame
 	await process_frame
 	controller.choose_move(0)
+	# The healing-card fixture changed this tile's overload after the first preview.
+	# Compare execution with the preview for the current authoritative field state.
+	predicted = mini(battle.enemy_hp, battle.damage_for("ally", battle.ally_moves[0], battle.ally_cell))
+	check(hud.target_label.text.contains("%d damage" % predicted), "Final aimed preview reflects the current field state")
 	if capture_enabled():
 		await capture("targeting")
 	var actual_damage: Array[int] = []

@@ -4,6 +4,10 @@ extends Resource
 
 ## Human-readable comparison name, shown in the preview and capture report.
 @export var title := "Rolling"
+## Elevation noise family. Moisture keeps its independent Perlin field.
+@export_enum("Smooth simplex:1", "Perlin:3") var elevation_noise := 1
+## Local uphill catchment/depression influence on pond candidate selection. Not a river simulation.
+@export_range(0.0, 1.0, 0.05) var drainage_influence := 0.0
 ## Broad noise sampling scale in world cells. Rebuild the preview to apply.
 @export_range(64.0, 256.0, 1.0) var broad_scale := 144.0
 ## Broad landform amplitude in world cells; this is not measured peak-to-trough relief.
@@ -16,6 +20,9 @@ extends Resource
 @export_range(0.0, 0.15, 0.01) var micro_amplitude := 0.06
 ## Maximum broad-channel domain displacement in cells. Zero disables domain warp.
 @export_range(0.0, 16.0, 0.5) var warp_amplitude := 8.0
+## Seeded ridge/pass, basin, plateau and terrace strength. Zero preserves noise-only relief.
+## New expeditions capture this value; loaded geography never takes current authoring defaults.
+@export_range(0.0, 2.0, 0.1) var landform_strength := 0.0
 ## Maximum slope of either ground triangle for a walkable cell, in degrees.
 @export_range(15.0, 35.0, 1.0) var walkable_slope_degrees := 25.0
 ## Lateral bend multiplier for new expedition district approaches (not the safe anchors).
@@ -24,22 +31,34 @@ extends Resource
 @export_range(0.6, 1.2, 0.1) var pond_scale := 1.0
 ## Maximum candidate ponds per 128-cell geographic region; conflicts can omit them.
 @export_range(1, 3, 1) var pond_candidates := 3
+## Maximum pond-fed level channel extension in cells. Zero disables; new expeditions only.
+@export_range(0.0, 40.0, 1.0) var stream_length := 0.0
+## Channel half-width in cells, before its softened bank. Saved with generation settings.
+@export_range(1.0, 3.0, 0.1) var stream_width := 1.5
+## Additional mountain ridge height in cells. Zero disables; saved for each expedition.
+@export_range(0.0, 24.0, 0.5) var mountain_height := 0.0
+## Mountain range parent spacing in cells. Ridges may span parent boundaries.
+@export_range(256.0, 768.0, 16.0) var mountain_spacing := 384.0
 
 func parameters() -> Dictionary:
-	return {"broad_scale": broad_scale, "broad_amplitude": broad_amplitude,
+	return {"elevation_noise": float(elevation_noise), "drainage_influence": drainage_influence, "broad_scale": broad_scale, "broad_amplitude": broad_amplitude,
 		"detail_scale": detail_scale, "detail_amplitude": detail_amplitude,
-		"micro_amplitude": micro_amplitude, "warp_amplitude": warp_amplitude,
+		"micro_amplitude": micro_amplitude, "warp_amplitude": warp_amplitude, "landform_strength": landform_strength,
 		"walkable_slope_degrees": walkable_slope_degrees,
-		"route_bend": route_bend, "pond_scale": pond_scale, "pond_candidates": float(pond_candidates)}
+		"route_bend": route_bend, "pond_scale": pond_scale, "pond_candidates": float(pond_candidates),
+		"stream_length": stream_length, "stream_width": stream_width,
+		"mountain_height": mountain_height, "mountain_spacing": mountain_spacing}
 
 static func valid_parameters(value: Variant) -> bool:
 	if not value is Dictionary:
 		return false
-	var limits := {"broad_scale": [64.0, 256.0], "broad_amplitude": [0.0, 8.0],
+	var limits := {"elevation_noise": [1, 3], "drainage_influence": [0.0, 1.0], "broad_scale": [64.0, 256.0], "broad_amplitude": [0.0, 8.0],
 		"detail_scale": [16.0, 96.0], "detail_amplitude": [0.0, 2.0],
-		"micro_amplitude": [0.0, 0.15], "warp_amplitude": [0.0, 16.0],
+		"micro_amplitude": [0.0, 0.15], "warp_amplitude": [0.0, 16.0], "landform_strength": [0.0, 2.0],
 		"walkable_slope_degrees": [15.0, 35.0], "route_bend": [0.5, 1.5],
-		"pond_scale": [0.6, 1.2], "pond_candidates": [1, 3]}
+		"pond_scale": [0.6, 1.2], "pond_candidates": [1, 3],
+		"stream_length": [0.0, 40.0], "stream_width": [1.0, 3.0],
+		"mountain_height": [0.0, 24.0], "mountain_spacing": [256.0, 768.0]}
 	if value.size() != limits.size():
 		return false
 	for key in limits:
@@ -48,7 +67,7 @@ static func valid_parameters(value: Variant) -> bool:
 			return false
 		if number < limits[key][0] or number > limits[key][1]:
 			return false
-	return float(value.pond_candidates) == floor(float(value.pond_candidates))
+	return float(value.elevation_noise) == floor(float(value.elevation_noise)) and int(value.elevation_noise) in [1, 3] and float(value.pond_candidates) == floor(float(value.pond_candidates))
 
 func valid() -> bool:
 	return not title.strip_edges().is_empty() and valid_parameters(parameters())

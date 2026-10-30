@@ -52,7 +52,10 @@ func configure(assigned_affinity: String, settings: SolVisualSettings, phase_off
 	add_child(shadow)
 	var effect_texture := mote_texture()
 	for index in range(tuning.effect_count):
-		var mote := make_sprite(effect_texture, tuning.diameter / 32.0)
+		# Preserve the original five-pixel footprint across different source resolutions.
+		var mote := make_sprite(effect_texture, tuning.diameter / 32.0 * 5.0 / effect_texture.get_width())
+		if tuning.effect_texture != null:
+			mote.modulate = tint.lerp(Color.WHITE, 0.35)
 		add_child(mote)
 		motes.append(mote)
 	animate(0.0, 1.0, 0.8)
@@ -98,6 +101,8 @@ static func disc_texture(color: Color) -> Texture2D:
 	return ImageTexture.create_from_image(image)
 
 func mote_texture() -> Texture2D:
+	if tuning.effect_texture != null:
+		return tuning.effect_texture
 	var patterns := {
 		"fire": ["..x..", "..xx.", ".xxx.", ".xxx.", "..x.."],
 		"water": ["..x..", "..x..", ".xxx.", ".xxx.", "..x.."],

@@ -2,6 +2,15 @@
 
 SolHunter species, lineages, and roster authoring reference.
 
+Confirmed owner canon, October 30, 2026: Sols have parameterized wispy particle
+**visual cores**, using the existing particle approach. The owner's “head” meant
+this visual core, which need not be the anatomical head. Core placement and body
+anatomy are separate: a Sol can retain a physical head and place its core on or
+around another part of its body. Preserve species-specific anatomy and independent
+individual affinity. This corrects the earlier particle-head interpretation; it
+does not establish new biological or gameplay rules. See the Worldbuilding Bible's
+October 30 visual-core canon.
+
 October 28 combat follow-up: species sheets now record additional low-tier move
 alternatives under the owner's expanded combat direction. The connected
 [early move library and design principles](../early-combat-moves.md) distinguish

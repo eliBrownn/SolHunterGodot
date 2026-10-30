@@ -1,0 +1,78 @@
+[gd_resource type="Resource" script_class="AuthoredPlantDefinition" format=3]
+
+[ext_resource type="PackedScene" path="res://resources/plants/new_plant_311335385/v_1793353850_623_607408713/plant.tscn" id="1_mgwf8"]
+[ext_resource type="Script" path="res://scripts/scenery/plant_definition.gd" id="2_tq0mt"]
+
+[resource]
+script = ExtResource("2_tq0mt")
+plant_id = "new_plant_311335385"
+display_name = "New plant"
+scene = ExtResource("1_mgwf8")
+circulation_role = "receiver"
+specialist_class = "warden"
+enabled_in_world = true
+world_height = 1.4074868
+world_width = 1.2794969
+recipe = {
+"anatomy_labels": true,
+"anatomy_thickness": 1.2,
+"branch_count": 6,
+"branch_irregularity": 0.6332997,
+"branch_rise": -0.12480633,
+"branch_twist": -0.32289582,
+"branching_depth": 2,
+"branching_reduction": 0.62,
+"branching_spread": 0.75,
+"color_diversity": 1.0,
+"cutaway": false,
+"droop": 0.6871426,
+"foliage_density": 0.98299265,
+"foliage_fullness": 1.0,
+"frond_pairs": 9,
+"generation_seed": 246,
+"height_diversity": 1.6724252,
+"height_ratio": 1.5773922,
+"hue_shift": -117.250854,
+"keep_biome": true,
+"keep_role": true,
+"leaf_architecture": 3,
+"leaf_asymmetry": 0.8261019,
+"leaf_curl": 0.9938567,
+"leaf_lobes": 1,
+"leaf_size": 0.8082305,
+"leaf_width": 1.100676,
+"lobe_depth": 0.37999317,
+"node_bulk": 1.3787179,
+"node_count": 4,
+"node_elongation": 1.4746602,
+"node_ridges": 0,
+"node_spacing": 1.4726529,
+"organ_height": 0.6286271,
+"organic_softness": 0.7289252,
+"plant_size": 1.0,
+"port_radius": 0.878619,
+"preview_world_size": true,
+"radial_symmetry": 0.57643986,
+"randomization_strength": 1.0,
+"receiver_class": 1,
+"root_reach": 1.0267482,
+"selected_biome": 1,
+"selected_role": 4,
+"show_labels": true,
+"silhouette_view": false,
+"spread_ratio": 0.7243405,
+"stem_thickness": 0.6566928,
+"storage_size": 1.1145742,
+"thorn_length": 1.5361629,
+"tip_taper": 0.67375106,
+"wind_strength": 0.15,
+"world_frequency": 12,
+"world_height": 1.4074868,
+"world_width": 1.2794969
+}
+organ_anchors = {
+"crown": Vector3(0.45070624, 1.1825426, 0.1),
+"ground": Vector3(0, 0.025, 0),
+"receive": Vector3(0.05231896, 0.45720226, 0),
+"release": Vector3(0.33119005, 0.24283922, 0)
+}

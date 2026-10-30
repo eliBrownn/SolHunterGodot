@@ -21,21 +21,22 @@ func inspect_chunk(t: WorldTerrain, coord: Vector2i) -> void:
 	var cells := t.extract_chunk(coord)
 	var chunk := Chunk.new()
 	chunk.build_cells(cells, t, coord, preload("res://resources/nature_settings.tres"), 0, 256)
-	var grass: Dictionary = {}
+	var ground: Dictionary = {}
 	for kind: String in chunk.terrain_surfaces:
-		if not kind.begins_with("grass_"):
+		if kind != "ground":
 			continue
 		var arrays: Array = chunk.terrain_surfaces[kind]
 		for first in range(0, arrays[Mesh.ARRAY_VERTEX].size(), 4):
 			var vertex: Vector3 = arrays[Mesh.ARRAY_VERTEX][first]
 			var local := Vector2i(roundi(vertex.x), roundi(vertex.z))
-			grass[local] = true
+			ground[local] = true
 			for index in range(first, first + 4):
 				var at: Vector3 = arrays[Mesh.ARRAY_VERTEX][index]
 				var shore: Vector2 = arrays[Mesh.ARRAY_TEX_UV2][index]
-				if shore.y > 0.5:
+				# Low bit remains the bank flag; the next bit marks unscalable ground.
+				if fmod(shore.y, 2.0) > 0.5:
 					check(absf(shore.x - float(t.pond_at(coord * 16 + local).level)) < 0.000001, "Float32 bank attributes retain the real pond level within one micrometre")
-					check(absf(at.y - t.vertex_height(coord * 16 + Vector2i(roundi(at.x), roundi(at.z))) - 0.002) < 0.00001, "Bank layer follows final shared terrain rather than a separate mask")
+					check(absf(at.y - t.vertex_height(coord * 16 + Vector2i(roundi(at.x), roundi(at.z)))) < 0.00001, "Bank material uses the exact shared terrain skin rather than a lifted mask")
 	for index in range(256):
 		if cells[index].ground != WorldTerrain.Ground.WATER:
 			continue
@@ -44,7 +45,7 @@ func inspect_chunk(t: WorldTerrain, coord: Vector2i) -> void:
 		var h := t.corners(cell)
 		if maxf(maxf(h.x, h.y), maxf(h.z, h.w)) >= float(t.pond_at(cell).level):
 			partial_cells += 1
-			check(grass.has(local), "Partly wet cells retain the shared bank layer: no bare sand triangles")
+			check(ground.has(local), "Partly wet cells retain the shared bank material: no bare sand triangles")
 	if chunk.terrain_surfaces.has("water"):
 		var water: Array = chunk.terrain_surfaces.water
 		for index in range(0, water[Mesh.ARRAY_INDEX].size(), 3):
@@ -84,5 +85,16 @@ func run() -> void:
 		for offset in [Vector2i.ZERO, Vector2i.LEFT, Vector2i.UP, -Vector2i.ONE, Vector2i.RIGHT, Vector2i.DOWN]:
 			inspect_chunk(t, center + offset)
 	check(partial_cells > 20 and shoreline_vertices > 40, "Fixtures cover real partial shores across positive and negative chunks")
+	var exploration: TerrainReliefSettings = load("res://resources/terrain_exploration.tres")
+	var connected := WorldTerrain.new(2601026, {}, exploration.parameters())
+	var channels := 0
+	for pond: Dictionary in connected.geography.basins(connected, Vector2i(-1, -1)):
+		if not pond.has("channel"): continue
+		channels += 1
+		var midpoint: Vector2 = pond.channel[1]
+		var coord := connected.chunk_of(Vector2i(midpoint.floor()))
+		inspect_chunk(connected, coord)
+		inspect_chunk(connected, coord + Vector2i.RIGHT)
+	check(channels > 0, "Production clipping and depth checks include a connected channel across chunks")
 	print("WATER SHORELINE: %d checks, %d failures; %d partial cells." % [checks, failures, partial_cells])
 	quit(0 if failures == 0 else 1)

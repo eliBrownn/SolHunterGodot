@@ -1,0 +1,92 @@
+[
+  {
+    "path": "assets/audio/kenney_interface/open_001.wav",
+    "sha256": "c69aab75d09d98363934c68cda0e9d050973eb5c3ab9987ce8fd5d336a8f7fbd",
+    "url": "https://raw.githubusercontent.com/Calinou/kenney-interface-sounds/4596a49eaf5a533948d49a47467f606bcdea70ff/addons/kenney_interface_sounds/open_001.wav"
+  },
+  {
+    "path": "assets/audio/kenney_interface/close_001.wav",
+    "sha256": "423ae3dd2981045649bed82653e43f9770c2baad6da7582d004f9161ef9b0439",
+    "url": "https://raw.githubusercontent.com/Calinou/kenney-interface-sounds/4596a49eaf5a533948d49a47467f606bcdea70ff/addons/kenney_interface_sounds/close_001.wav"
+  },
+  {
+    "path": "assets/audio/kenney_interface/confirmation_001.wav",
+    "sha256": "f9d0ef5a5c740c2ac250ac3876db9e4340669044a5bf78ae09192918db3e2ebc",
+    "url": "https://raw.githubusercontent.com/Calinou/kenney-interface-sounds/4596a49eaf5a533948d49a47467f606bcdea70ff/addons/kenney_interface_sounds/confirmation_001.wav"
+  },
+  {
+    "path": "assets/audio/kenney_interface/glass_001.wav",
+    "sha256": "39182b395a30b34e18cbcf842922552b23da5b010a52b7777557e02a405f083e",
+    "url": "https://raw.githubusercontent.com/Calinou/kenney-interface-sounds/4596a49eaf5a533948d49a47467f606bcdea70ff/addons/kenney_interface_sounds/glass_001.wav"
+  },
+  {
+    "path": "assets/audio/kenney_interface/LICENSE.txt",
+    "sha256": "f7966c773bbed0eca6a9c75081c44a178b38eae112724dbb5fdfbd4192d118a9",
+    "url": "https://raw.githubusercontent.com/Calinou/kenney-interface-sounds/4596a49eaf5a533948d49a47467f606bcdea70ff/addons/kenney_interface_sounds/LICENSE.txt"
+  },
+  {
+    "path": "assets/effects/kenney_particles/light_01.png",
+    "sha256": "e15db5a8ccea012f4df82689f1a829bdaac04fd8a3066a723f157e0b01ffbf0a",
+    "url": "https://raw.githubusercontent.com/Calinou/kenney-particle-pack/ab7086639ee73be31abd87feb21bf1402d4e8144/addons/kenney_particle_pack/light_01.png"
+  },
+  {
+    "path": "assets/effects/kenney_particles/spark_01.png",
+    "sha256": "ca5e7eac772d5af176f0d45be34f416908859bf28697c31f3ec7f34609919f53",
+    "url": "https://raw.githubusercontent.com/Calinou/kenney-particle-pack/ab7086639ee73be31abd87feb21bf1402d4e8144/addons/kenney_particle_pack/spark_01.png"
+  },
+  {
+    "path": "assets/effects/kenney_particles/smoke_01.png",
+    "sha256": "89df665bb2e9a021edad2a9077d2651c44e6c6cd28f3fd38f800c41a5febd2a2",
+    "url": "https://raw.githubusercontent.com/Calinou/kenney-particle-pack/ab7086639ee73be31abd87feb21bf1402d4e8144/addons/kenney_particle_pack/smoke_01.png"
+  },
+  {
+    "path": "assets/effects/kenney_particles/magic_01.png",
+    "sha256": "4530b084d541351c779aac12877e831a398f7e4575126fa2a26c5eb2c47ca37b",
+    "url": "https://raw.githubusercontent.com/Calinou/kenney-particle-pack/ab7086639ee73be31abd87feb21bf1402d4e8144/addons/kenney_particle_pack/magic_01.png"
+  },
+  {
+    "path": "assets/effects/kenney_particles/LICENSE.txt",
+    "sha256": "7edd59126c258e602e69905a0517cf51bedea489b1a69eb06a77edee1769e81e",
+    "url": "https://raw.githubusercontent.com/Calinou/kenney-particle-pack/ab7086639ee73be31abd87feb21bf1402d4e8144/addons/kenney_particle_pack/LICENSE.txt"
+  },
+  {
+    "path": "assets/audio/ambient_sounds/wind.ogg",
+    "sha256": "debd59186e58b751eba29de80e1368c3234526f1efc89a91b40ce469cffb1479",
+    "url": "https://raw.githubusercontent.com/Muges/ambientsounds/7ef9aefeeed93c37bca3cdb246a982dd1afce2f0/wind.ogg"
+  },
+  {
+    "path": "assets/audio/ambient_sounds/fireplace.ogg",
+    "sha256": "d4a66a650c48ae83f60a8608c2fd4a58f99841e0b254c84f66c850fddbff6d40",
+    "url": "https://raw.githubusercontent.com/Muges/ambientsounds/7ef9aefeeed93c37bca3cdb246a982dd1afce2f0/fireplace.ogg"
+  },
+  {
+    "path": "assets/audio/ambient_sounds/forest-rain.ogg",
+    "sha256": "c2a6cb3cdd6b538664d3820ad88336459fe46da29e900944854a9ea48364819b",
+    "url": "https://raw.githubusercontent.com/Muges/ambientsounds/7ef9aefeeed93c37bca3cdb246a982dd1afce2f0/forest-rain.ogg"
+  },
+  {
+    "path": "assets/audio/ambient_sounds/readme.md",
+    "sha256": "1dffe4220101d001aa6ae613cd5237e91bbd596fef782d90a2ade65209ac1314",
+    "url": "https://raw.githubusercontent.com/Muges/ambientsounds/7ef9aefeeed93c37bca3cdb246a982dd1afce2f0/readme.md"
+  },
+  {
+    "path": "assets/audio/kenney_rpg/footstep00.ogg",
+    "sha256": "6fe61ef1fc3bcf0e253bf2eb64759db6cb69e2fe452f4d88cc597ecf78a3d601",
+    "url": "https://kenney.nl/assets/rpg-audio"
+  },
+  {
+    "path": "assets/audio/kenney_rpg/chop.ogg",
+    "sha256": "d00c2b3c9fff07e376145c8c8c45c90e5084ec192f6ce0387db233f7b86f1486",
+    "url": "https://kenney.nl/assets/rpg-audio"
+  },
+  {
+    "path": "assets/audio/kenney_rpg/cloth1.ogg",
+    "sha256": "ddb93a3671233f95da0e0b10367f082f7eb42fa6caaddcf776410aa8833c747d",
+    "url": "https://kenney.nl/assets/rpg-audio"
+  },
+  {
+    "path": "assets/audio/kenney_rpg/License.txt",
+    "sha256": "5735dfd72cb64cbbceda4ebc00c380c41ca680edb82ff153aa7c9ab97614c539",
+    "url": "https://kenney.nl/assets/rpg-audio"
+  }
+]

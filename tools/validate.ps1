@@ -32,8 +32,22 @@ try {
     Invoke-CheckedGodot @('--headless', '--path', $projectRoot, '--script', 'tests/combat_action_budget.gd')
     Write-Host 'Running tests/early_combat_moves.gd'
     Invoke-CheckedGodot @('--headless', '--path', $projectRoot, '--script', 'tests/early_combat_moves.gd')
+    Write-Host 'Running tests/audio_framework.gd'
+    Invoke-CheckedGodot @('--headless', '--path', $projectRoot, '--script', 'tests/audio_framework.gd')
+    Write-Host 'Running tests/plant_species.gd'
+    Invoke-CheckedGodot @('--headless', '--path', $projectRoot, '--script', 'tests/plant_species.gd')
+    Write-Host 'Running tests/flora_rarity.gd'
+    Invoke-CheckedGodot @('--headless', '--path', $projectRoot, '--script', 'tests/flora_rarity.gd')
+    Write-Host 'Running tests/plant_community.gd'
+    Invoke-CheckedGodot @('--headless', '--path', $projectRoot, '--script', 'tests/plant_community.gd')
+    Write-Host 'Running tests/plant_internal_spacing.gd'
+    Invoke-CheckedGodot @('--headless', '--path', $projectRoot, '--script', 'tests/plant_internal_spacing.gd')
+    Write-Host 'Running tests/foliage_rollout.gd'
+    Invoke-CheckedGodot @('--headless', '--path', $projectRoot, '--script', 'tests/foliage_rollout.gd')
+    Write-Host 'Running tests/foliage_geography.gd'
+    Invoke-CheckedGodot @('--headless', '--path', $projectRoot, '--script', 'tests/foliage_geography.gd')
 
-    foreach ($suite in @('tests/smoke.gd', 'tests/world_generation.gd', 'tests/solid_geometry.gd', 'tests/building_collision.gd', 'tests/presentation.gd', 'tests/persistent_foundation.gd', 'tests/human_vastra_activity.gd', 'tests/vastra_natural.gd', 'tests/vastra_integration.gd', 'tests/vastra_currents.gd', 'tests/population_summary.gd', 'tests/inspector_tuning.gd', 'tests/authored_sightings.gd', 'tests/sol_observation.gd', 'tests/local_sol_reactions.gd', 'tests/encounter_initiation.gd', 'tests/first_playable_battle.gd', 'tests/sol_orbs.gd', 'tests/affinity_moves.gd', 'tests/battle_feedback.gd', 'tests/wild_population_recovery.gd')) {
+    foreach ($suite in @('tests/smoke.gd', 'tests/world_generation.gd', 'tests/solid_geometry.gd', 'tests/building_collision.gd', 'tests/presentation.gd', 'tests/persistent_foundation.gd', 'tests/human_vastra_activity.gd', 'tests/vastra_natural.gd', 'tests/plant_vastra.gd', 'tests/vessel_ecology.gd', 'tests/vastra_integration.gd', 'tests/vastra_currents.gd', 'tests/vastra_mist_flow.gd', 'tests/population_summary.gd', 'tests/inspector_tuning.gd', 'tests/authored_sightings.gd', 'tests/sol_observation.gd', 'tests/local_sol_reactions.gd', 'tests/encounter_initiation.gd', 'tests/first_playable_battle.gd', 'tests/combat_world_continuity.gd', 'tests/sol_orbs.gd', 'tests/affinity_moves.gd', 'tests/battle_feedback.gd', 'tests/wild_population_recovery.gd')) {
         Write-Host "Running $suite"
         Invoke-CheckedGodot @('--headless', '--path', $projectRoot, '--script', $suite)
         if ($LASTEXITCODE -ne 0) { throw "Validation failed: $suite" }
@@ -100,18 +114,26 @@ try {
     Invoke-CheckedGodot @('--headless', '--path', $projectRoot, '--script', 'tests/mouse_controls.gd')
     Write-Host 'Running tests/running.gd'
     Invoke-CheckedGodot @('--headless', '--path', $projectRoot, '--script', 'tests/running.gd')
+    Write-Host 'Running tests/player_traversal.gd'
+    Invoke-CheckedGodot @('--headless', '--path', $projectRoot, '--script', 'tests/player_traversal.gd')
     Write-Host 'Running tests/full_3d.gd'
     Invoke-CheckedGodot @('--headless', '--path', $projectRoot, '--script', 'tests/full_3d.gd')
     Write-Host 'Running tests/wilderness_presentation.gd'
     Invoke-CheckedGodot @('--headless', '--path', $projectRoot, '--script', 'tests/wilderness_presentation.gd')
     Write-Host 'Running tests/view_3d.gd'
     Invoke-CheckedGodot @('--headless', '--path', $projectRoot, '--script', 'tests/view_3d.gd')
+    Write-Host 'Running tests/loading_regressions.gd'
+    Invoke-CheckedGodot @('--headless', '--path', $projectRoot, '--script', 'tests/loading_regressions.gd')
+    Write-Host 'Running tests/bottleneck_regressions.gd'
+    Invoke-CheckedGodot @('--headless', '--path', $projectRoot, '--script', 'tests/bottleneck_regressions.gd')
     Write-Host 'Running tests/runtime_optimization.gd'
     Invoke-CheckedGodot @('--headless', '--path', $projectRoot, '--script', 'tests/runtime_optimization.gd')
     Write-Host 'Running tests/runtime_hot_paths.gd'
     Invoke-CheckedGodot @('--headless', '--path', $projectRoot, '--script', 'tests/runtime_hot_paths.gd')
     Write-Host 'Running tests/stutter_regressions.gd'
     Invoke-CheckedGodot @('--headless', '--path', $projectRoot, '--script', 'tests/stutter_regressions.gd')
+    Write-Host 'Running tests/world_optimization.gd'
+    Invoke-CheckedGodot @('--headless', '--path', $projectRoot, '--script', 'tests/world_optimization.gd')
     Write-Host 'Running tests/fog_horizon.gd'
     Invoke-CheckedGodot @('--headless', '--path', $projectRoot, '--script', 'tests/fog_horizon.gd')
     Write-Host 'Running tests/atmosphere.gd'

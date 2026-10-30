@@ -1,5 +1,16 @@
 # SolHunter
 
+**Development lab:** press **F8** (or its lower-right button) to toggle from the
+game to the standalone lab world and back. Your expedition is held in memory
+while you test; lab settings and notes remain between visits. See the
+[workstation guide](docs/development-workstation.md).
+
+Generated living plants must participate in the Vastra hierarchy through their
+canonical geographic cells. This links vegetation to circulation, repair and
+vegetation/Vessel ecology while keeping graphical clumps separate from saved
+reserves. See the [vegetation registration contract](docs/vastra-integration.md#generated-vegetation-registration-and-system-hierarchy)
+for system owners and plant-content acceptance.
+
 A fresh Godot exploration foundation. The design authority is the
 [worldbuilding bible](docs/reference/SolHunter_Worldbuilding_Bible.md), which keeps
 confirmed canon, provisional design, and unresolved questions distinct.
@@ -14,6 +25,11 @@ To make another model, follow [the model-authoring guide](docs/creating-sol-mode
 and open `scenes/sol_model_workshop.tscn` with F6 for independent movement review.
 The [flight/swimming pilot](docs/sol-flight-and-swimming.md) adds live wild
 traversal; `scenes/sol_traversal_pilot.tscn` starts beside the generated pond bank.
+
+Current development follows the [world and exploration roadmap](docs/world-exploration-roadmap.md):
+world generation, self-directed discovery and generated local interactions first;
+authored campaign delivery and AYN Thor optimization are deferred. Its first
+[research report studies Cobblemon](docs/research/cobblemon-world-exploration.md).
 
 Repository organization and Git workflow follow [the project standard](docs/PROJECT_STANDARD.md).
 The [project reformat roadmap](docs/reformat-roadmap.md) sequences the approved
@@ -79,6 +95,12 @@ not alter that saved world's generation. The Examine view shows local wetness.
 Moisture influences habitat and ground tint; water basins and Vastra use separate
 generation inputs.
 
+Plant Vastra now has its own saved reserve: plants refill from the local ambient
+field, send a packet at 100 to a nearby tree without favoring need, and trees relay
+energy onward. Reserves can pay for local ecological repair. The existing visual
+strands display actual finite transfers. See [Vastra integration](docs/vastra-integration.md#plant-energy-circulation-and-natural-repair--october-29-2026)
+for provisional tuning and development-save compatibility.
+
 ## Individual stats and class buffs
 
 Combat now uses dedicated health cards and an action tray, exact damage/path/area
@@ -128,7 +150,7 @@ metadata is retained in `assets/basic-pack/metadata`. The pack's Unity code and
 project settings are not used. See [asset provenance](assets/basic-pack/PROVENANCE.md).
 
 The player uses the supplied [rogue and animation rigs](assets/characters/rogue/PROVENANCE.md).
-The [Quaternius nature subset](assets/nature/PROVENANCE.md) supplies 14 imported
+The [Quaternius nature subset](assets/nature/PROVENANCE.md) supplies 28 imported
 models and textures for biome scenery. Edit `resources/nature_settings.tres` for
 visual palettes, sizes and decoration density. See the [current visual decision](docs/decisions/2026-10-27-full-3d-and-controls.md).
 The [supplied cloud presets](assets/sky/PROVENANCE.md) feed a daylight/night sky

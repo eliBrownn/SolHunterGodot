@@ -459,6 +459,23 @@ func slider(rows: VBoxContainer, text: String, minimum: float, maximum: float, s
 	return control
 
 func build_options(rows: VBoxContainer) -> void:
+	if world.host.has_method("apply_view_settings"):
+		rows.add_child(caption("Pixel effect · testing", 16))
+		var pixels := OptionButton.new()
+		pixels.name = "PixelEffect"
+		for text in ["Off", "Very light · 1.25x", "Light · 1.5x", "Medium · 1.75x", "Strong · 2x", "Deep · 3x"]:
+			pixels.add_item(text)
+		pixels.select(world.host.active_view.pixel_effect_level)
+		pixels.item_selected.connect(func(index: int) -> void:
+			world.host.view_settings = world.host.active_view.duplicate(false)
+			world.host.view_settings.pixel_effect_level = index
+			world.host.apply_view_settings())
+		rows.add_child(pixels)
+	if world.host.audio != null:
+		rows.add_child(caption("Audio", 20, settings.accent))
+		for category: String in world.host.audio.volumes:
+			slider(rows, category + " volume", 0, 100, 1, world.host.audio.volumes[category], func(value: float) -> void:
+				world.host.audio.set_volume(category, value), "%")
 	rows.add_child(caption("Interface", 20, settings.accent))
 	text_slider = slider(rows, "Text size", 100, 200, 5, settings.text_scale * 100, func(value: float) -> void:
 		settings.text_scale = value / 100.0
@@ -480,6 +497,7 @@ func build_options(rows: VBoxContainer) -> void:
 	button("Reset camera", world.host.reset_camera, rows)
 	if world.host.has_method("apply_view_settings"):
 		rows.add_child(caption("Graphics · current session", 20, settings.accent))
+
 		slider(rows, "Field of view", 35, 75, 1, world.host.active_view.field_of_view, func(value: float) -> void:
 			world.host.view_settings = world.host.active_view.duplicate(false)
 			world.host.view_settings.field_of_view = value

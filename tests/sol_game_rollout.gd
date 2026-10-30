@@ -30,8 +30,8 @@ func run() -> void:
 		var state: ExpeditionState = world.persistent_state
 		var identities := {}
 		for species in catalog.entries:
-			var found: Array = sightings.members.filter(func(member: Dictionary) -> bool: return member.entry.species == species.species_id)
-			check(found.size() == 1, "Each delivered species is admitted once in normal exploration")
+			var found: Array = sightings.members.filter(func(member: Dictionary) -> bool: return member.entry.species == species.species_id and not member.entry.get("habitat_spawn", false))
+			check(found.size() == 1, "Each delivered species has exactly one explicit showcase home alongside habitat residents")
 			if found.size() != 1:
 				continue
 			var member: Dictionary = found[0]

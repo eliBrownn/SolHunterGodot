@@ -167,13 +167,18 @@ func walk_to(world: Node2D, next: Vector2i) -> void:
 	var change := next - from
 	var seconds: float = float(world.expedition_parameters().move_seconds) * (sqrt(2.0) if change.x != 0 and change.y != 0 else 1.0)
 	world.advance_movement(seconds, Vector2(change).normalized())
+	world.advance_movement(0.0, Vector2.ZERO)
 	check(world.cell == next and not world.moving, "Actual movement reaches settled destination")
 
 func check_visible_chunks(world: Node2D) -> void:
 	if world.host.has_method("stream_plan"):
+		var streaming = preload("res://scripts/presentation/view_streaming.gd")
+		var origin: Vector2 = world.camera.position/32.0
+		var height: float = world.host.height_bound()
+		var planes: Array[Plane] = world.host.camera.get_frustum()
 		for coord in world.host.stream_plan():
-			if world.host.chunk_visible(coord):
-				check(world.chunks.has(coord), "Visible perspective frustum is covered immediately after rebuild")
+			if streaming.visible_with_planes(planes,Vector2(coord*16)-origin,height,0.0,-height):
+				check(world.chunks.has(coord) or world.host.streaming_ground.chunks.has(coord), "Visible perspective ground is covered immediately after rebuild")
 		return
 	# Include the largest current tree canopy, whose anchor can be offscreen.
 	var half_view: Vector2 = world.get_viewport_rect().size * 0.5 + Vector2(40, 120)

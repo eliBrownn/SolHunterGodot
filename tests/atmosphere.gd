@@ -20,8 +20,21 @@ func run() -> void:
 	world.smoke_mode = true
 	world.new_expedition(17)
 	var controller: Node = scene.atmosphere_controller
+	var preview_snapshot: Dictionary = world.persistent_state.snapshot()
+	controller.preview_phase = 0.5
+	controller.update()
+	controller.day_night_toggle.pressed.emit()
+	check(is_zero_approx(controller.phase) and controller.moon.light_energy > 0, "HUD toggle previews night")
+	controller.day_night_toggle.pressed.emit()
+	check(is_equal_approx(controller.phase, 0.5) and scene.sun.light_energy > 0, "HUD toggle previews day")
+	controller.resume_cycle.pressed.emit()
+	check(controller.preview_phase < 0 and not controller.resume_cycle.visible, "Resume returns to the saved-clock cycle")
+	check(world.persistent_state.snapshot() == preview_snapshot, "Day/night previews never alter expedition time or saves")
 	var settings: AtmosphereSettings = scene.atmosphere_settings.duplicate(false)
 	scene.atmosphere_settings = settings
+	check(settings.mood_enabled and is_equal_approx(settings.mood_strength, 0.65 * 1.10), "Main game enables the approved pre-test mood strength")
+	check(scene.environment.tonemap_mode == Environment.TONE_MAPPER_FILMIC and scene.environment.ambient_light_source == Environment.AMBIENT_SOURCE_SKY, "Main game uses painterly highlights and sky ambient")
+	settings.mood_enabled = false
 	settings.cycle_enabled = false
 	settings.weather = "clear"
 	settings.starting_phase = 0.5
@@ -30,6 +43,19 @@ func run() -> void:
 	check(is_equal_approx(scene.environment.ambient_light_energy, settings.day_ambient), "Day ambient tuning is connected to the actual environment")
 	var shader: ShaderMaterial = scene.environment.sky.sky_material
 	check(shader.get_shader_parameter("sun_direction").is_equal_approx(scene.sun.global_basis.z), "Visible sun matches the light casting world shadows")
+	var clear_fog: float = scene.environment.fog_depth_begin
+	check(clear_fog > scene.environment.fog_depth_end * 0.9, "Clear day leaves the view fog-free until the distant horizon")
+	var original_mood: Resource = settings.lighting_mood
+	settings.mood_enabled = true
+	settings.lighting_mood = load("res://resources/moods/mysterious.tres")
+	scene.apply_atmosphere_settings()
+	check(scene.environment.fog_depth_begin < clear_fog, "Mysterious mood brings fog closer on the same clear day")
+	settings.mood_strength = 0.0
+	scene.apply_atmosphere_settings()
+	check(is_equal_approx(scene.environment.fog_depth_begin, clear_fog), "Zero mood strength restores clear visibility")
+	settings.mood_enabled = false
+	settings.lighting_mood = original_mood
+	settings.mood_strength = 0.715
 	var day_ambient: float = scene.environment.ambient_light_energy
 	settings.starting_phase = 0
 	scene.apply_atmosphere_settings()
@@ -39,13 +65,22 @@ func run() -> void:
 	settings.starting_phase = 0.25
 	scene.apply_atmosphere_settings()
 	check(scene.environment.fog_light_color.r > scene.environment.fog_light_color.b, "Sunrise introduces a warm horizon")
+	settings.filmic_tonemapping = false
+	settings.sky_ambient_enabled = false
+	scene.apply_atmosphere_settings()
+	check(scene.environment.tonemap_mode == Environment.TONE_MAPPER_LINEAR and scene.environment.ambient_light_source == Environment.AMBIENT_SOURCE_COLOR, "Inspector toggles restore linear and color-only lighting")
+	settings.filmic_tonemapping = true
+	settings.sky_ambient_enabled = true
 	settings.starting_phase = 0.5
 	settings.weather = "cloudy"
 	scene.apply_atmosphere_settings()
+	var cloudy_fog: float = scene.environment.fog_depth_begin
+	check(cloudy_fog < clear_fog, "Cloud cover brings fog closer than clear weather")
 	var cloudy_energy: float = scene.sun.light_energy
 	check(cloudy_energy < settings.sun_energy and not controller.rain.visible, "Cloudy weather softens sunlight without emitting rain")
 	settings.weather = "rain"
 	scene.apply_atmosphere_settings()
+	check(scene.environment.fog_depth_begin < cloudy_fog, "Rain brings fog closer than cloud cover")
 	check(controller.rain_strength == 1 and controller.rain.visible and controller.rain.emitting, "Rain connects sky coverage, wet-weather lighting and visible particles")
 	check(scene.sun.light_energy < cloudy_energy and controller.rain.amount == settings.rain_particles, "Rain reduces direct sun and uses the bounded Inspector particle budget")
 	settings.rain_particles = 0
@@ -96,6 +131,7 @@ func run() -> void:
 		lit = material.shader != null and material.shader.get_mode() == Shader.MODE_SPATIAL and not material.shader.code.contains("unshaded")
 	check(lit, "Retained terrain uses a lit material, including the shoreline shader")
 	if OS.get_cmdline_user_args().has("--capture-atmosphere") and DisplayServer.get_name() != "headless":
+		settings.mood_enabled = true
 		settings.cycle_enabled = false
 		settings.rain_particles = 500
 		var day_ground := 0.0

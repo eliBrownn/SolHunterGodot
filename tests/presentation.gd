@@ -124,7 +124,7 @@ func run() -> void:
 		hidden_without.save_png("res://artifacts/presentation/occluded-without.png")
 		hidden_with.save_png("res://artifacts/presentation/occluded-with.png")
 		# Exercise the real cutout foliage material, including its transparent gaps.
-		blocker.mesh = preload("res://scripts/scenery/nature_art.gd").parts(scene.active_nature.common_trees[0]).pieces[0].mesh
+		blocker.mesh = preload("res://scripts/scenery/nature_art.gd").parts(scene.active_nature.undergrowth[0]).pieces[0].mesh
 		blocker.material_override = null
 		blocker.basis = Basis.IDENTITY
 		blocker.scale = Vector3.ONE * 0.25

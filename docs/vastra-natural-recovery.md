@@ -1,5 +1,10 @@
 # Natural Vastra replenishment and recovery
 
+## Vegetation hierarchy requirement — October 29, 2026
+
+Every generated living plant must be registered through its canonical geographic cell for plant-funded repair and circulation. The flora ledger remains separate from ambient concentration and signed ecological overload. Registration does not create energy or replace the independent baseline recovery rules below.
+See the [current registration contract](vastra-integration.md#generated-vegetation-registration-and-system-hierarchy) for owners, admission and acceptance.
+
 Historical feature-slice record: controls, schema versions and validation below
 refer to its original delivery. Current save admission uses format 4, generation
 9 and world state 17; incompatible development saves require a new expedition.

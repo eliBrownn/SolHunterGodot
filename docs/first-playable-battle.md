@@ -1,5 +1,61 @@
 # First playable battle
 
+## Continuing world during combat — October 29, 2026
+
+Owner direction: combat must not stop the surrounding world. Beginning tactical
+combat now clears the encounter preview's global pause while retaining
+`encounter_active` for input and save/load/new-expedition guards. The world owner
+advances its one existing active clock; there is no separate combat world clock.
+Day/night, weather, natural Vastra repair, plant circulation and unrelated local
+wildlife continue during command selection and battle overlays. Tactical turns
+still advance through commands. Encounter preview, starter/loadout modals and the
+explicit exploration pause screen retain their existing pause behavior.
+
+The persistent owner prevents the active wild opponent from ordinary roaming.
+Other local individuals continue saved decisions and visual interpolation within
+the existing distance/work bounds. Current/displayed combatant cells and the
+trainer route are reserved from ordinary wildlife movement and successor admission.
+Unrelated depleted homes can recover when their existing deadlines and clearance
+conditions are satisfied. Birth validation uses the last completed battle receipt
+as a validation-only projection; it does not change the active battle or permit
+in-progress saves. Completion uses the current live snapshot, retaining background
+changes and merging the battle's net overload contribution with concurrent repair.
+No save format, balance numbers, extra encounter triggers or world generator changed.
+
+Read-only source reconciliation used the local SolHunterSource
+`development/world-redesign-0.2` ref at
+`d6f0902d77ed46a2f7d251c354792a4cc9210bc4`. Inspected
+`src/core/game.py` (`_exploration_controls_enabled`, `_advance_world_activity`,
+`_advance_day_cycle` and the main-loop callers), `src/systems/ai/world_activity.py`,
+`tests/test_idle_world_activity.py` and
+`docs/coordination/warning-movement-continuity.md`. The source already separates
+bounded activity and tile reservations from successful player steps, but deliberately
+stops wildlife during combat; day/night admits combat. The new explicit owner
+direction supersedes that combat-wide activity stop. Warning acknowledgement,
+later-step contact, movement lock and aftermath protection remain intact. The ref
+is local checkout context; source working-tree cleanliness was not verified and
+no source-repository file was changed.
+
+`tests/combat_world_continuity.gd` exercises actual battle entry/exit, continuing
+world time/atmosphere/repair, bystander movement/interpolation, unrelated successor
+birth, opponent reservation, unchanged tactical turns, blocked exploration input,
+safe battle completion and a real pause. `-- --capture-world` writes disposable
+start/advanced rendered views to `artifacts/combat-world/`. The new test is included
+in the shared validator. The continuity journey passed 23 checks headlessly and
+with Direct3D 12; rendered stderr was empty. The start/advanced battle view was
+inspected. Logs are `artifacts/combat-world-tests.log` and
+`artifacts/combat-world-render{,-errors}.log`.
+
+Focused regressions passed: persistent foundation (76 checks), first playable
+battle (60), wild recovery (54), local Sol reactions (51) and Vastra integration
+(38). Godot 4.7.2 import/parse completed with empty stderr using the existing
+isolated portable engine; script/UID ownership passed for 156 scripts. Relevant
+diffs were reviewed and scoped whitespace checks passed, with existing unrelated
+whitespace in the sightings files left intact. The full validator and device
+acceptance are not claimed; no user changes were staged or committed.
+
+## Historical prototype
+
 Historical feature-slice record: controls, schema versions and validation below
 refer to its original delivery. Current save admission uses format 4, generation
 9 and world state 17; incompatible development saves require a new expedition.

@@ -13,24 +13,25 @@ static func visible_with_planes(planes: Array[Plane], relative: Vector2, height:
 			return false
 	return true
 
-static func plan(camera: Camera3D, origin: Vector2, player: Vector2i, settings: View3DSettings, height: float, minimum_height: float = 0.0) -> Array[Vector2i]:
+static func plan(camera: Camera3D, origin: Vector2, player: Vector2i, settings: View3DSettings, height: float, minimum_height: float = 0.0, asset_margin: float = 0.0) -> Array[Vector2i]:
 	var planes := camera.get_frustum()
 	var desired: Dictionary = {}
 	var local := Vector2i(WorldTerrain.floor_div(player.x, 16), WorldTerrain.floor_div(player.y, 16))
 	# Keep near terrain and the tactical arena resident, even behind the camera.
-	for y in range(-1, 2):
-		for x in range(-1, 2):
+	for y in range(-2, 3):
+		for x in range(-2, 3):
 			desired[local + Vector2i(x, y)] = true
 	var camera_ground := origin + Vector2(camera.position.x, camera.position.z)
 	var middle := Vector2i(floori(camera_ground.x / 16), floori(camera_ground.y / 16))
 	for y in range(-1, 2):
 		for x in range(-1, 2):
 			desired[middle + Vector2i(x, y)] = true
-	var radius := ceili((settings.render_distance + settings.stream_margin) / 16.0) + 1
+	var margin:=maxf(settings.stream_margin,asset_margin)
+	var radius := ceili((settings.render_distance + margin) / 16.0) + 1
 	for y in range(-radius, radius + 1):
 		for x in range(-radius, radius + 1):
 			var coord := middle + Vector2i(x, y)
-			if visible_with_planes(planes, Vector2(coord * 16) - origin, height, settings.stream_margin, minimum_height):
+			if visible_with_planes(planes, Vector2(coord * 16) - origin, height, margin, minimum_height):
 				desired[coord] = true
 	var result: Array[Vector2i] = []
 	result.assign(desired.keys())

@@ -32,6 +32,44 @@ at the owning level, but cannot bypass required access, data integrity or other
 hard invariants. Small detail changes must not reroll unrelated parent layouts.
 Create a hierarchy level only when it owns a useful decision, rule or budget.
 
+Owner direction, October 29, 2026: world variation should use geographic parents,
+local landforms, water-flow context and biome/grove variation. Render chunks do
+not own geographic layout. Paths must remain on terrain the player can scale;
+local scenery preferences cannot override that access constraint. See the
+[biome/geography slice](biome-encounters-geography.md) for implementation evidence.
+
+Owner requirement, October 29, 2026: every generated living plant must be
+registered in the Vastra hierarchy through its canonical geographic cell.
+Generation owns membership; geographic regions catalogue definitions;
+ExpeditionState owns saved reserves and transactions; scenery/particles reference
+those owners. This includes all biome vegetation and the existing authored pond's
+living water/bank plants. Registration is required infrastructure for circulation,
+repair and vegetation/Vessel ecology. Visual clumps cannot multiply reserves, and
+camera/asset names cannot determine membership. Keep new vegetation and relevant
+system/hierarchy documentation aligned with the authoritative
+[vegetation registration contract](vastra-integration.md#generated-vegetation-registration-and-system-hierarchy).
+
+Owner direction, October 29, 2026: audio follows that hierarchy. The root game
+mix owns routing and the shared voice budget; category mixes own volume and
+inherited zoom behavior; individual cues own assigned streams and local playback
+within those constraints. Attach the spatial listener to the camera. Wide zoom
+emphasizes atmosphere, close zoom emphasizes footsteps and foliage detail,
+with a smooth adjustable blend. Audio consumes existing gameplay and weather
+owners and does not create mechanics. Owner follow-up, October 29, 2026: add
+licensed audio assets to the existing sound system and apply the approved Kenney
+particle artwork. Preserve source/license records; choose conservative cue trims
+and retain empty slots where suitable content has not been selected.
+Implementation controls are indexed in [Inspector tuning](inspector-tuning.md).
+
+Owner direction, October 29, 2026: wind belongs inside a shared weather system.
+Weather owns coordinated cloud cover, precipitation, wind and transitions; a wind
+component owns airflow/gusts, geography modifies local exposure, and presentation
+consumes those conditions. Day/night remains alongside weather. Extend the existing
+saved-clock weather foundation; first deliver environmental presentation, with
+gameplay/ecological effects requiring separate mechanics reconciliation. The
+[weather roadmap](weather-roadmap.md) owns the detailed delivery and acceptance
+plan; the world/exploration roadmap retains cross-feature sequencing.
+
 Owner follow-up, October 28: reformat the existing project around this principle
 through the [project reformat roadmap](reformat-roadmap.md). Prove the first
 scenery slice, then migrate the remaining domains in bounded, reviewable changes.
@@ -48,11 +86,18 @@ integration checks at shared-contract changes and final integration as warranted
 and keep configured CI checks unchanged. See the roadmap's
 [validation reuse rules](reformat-roadmap.md#validation-and-evidence-reuse).
 
+Owner direction, October 29, 2026: use supplied material maps whenever available,
+including terrain normal maps; do not synthesize relief from color textures when
+the asset provides authored surface data.
+
 ## Repository layout
 
 Owner direction, October 27, 2026 supersedes the October 26 sprite presentation:
 use a full 3D player and world
 scenery, with the supplied rogue/animation rigs and Stylized Nature MegaKit.
+Owner follow-up, October 29, 2026: replace the default player with the supplied
+female undead grave knight. Preserve player controls and height; retain the
+optional mannequin traversal fixture. Asset attribution lives beside the model.
 Existing terrain textures may remain on real tile geometry. Allow live camera
 orbit/tilt/zoom and reset, camera-relative walking, perspective game view,
 view-dependent terrain streaming and configurable asset/render distances.
@@ -63,6 +108,18 @@ cycle and clear/cloudy/rain tuning in Godot. This presentation slice does not
 add weather damage, encounter rules or ecological modifiers.
 Preserve generation and gameplay authorities.
 See [the current visual direction](decisions/2026-10-27-full-3d-and-controls.md).
+Owner direction, October 29, 2026: develop a stylized, painterly fantasy look
+with authored nature assets, procedural placement/variation, soft colored shadows
+and restrained magical accents. Establish foliage wind/backlighting and lighting
+in a standalone forest study before broad rollout. The study is an art fixture;
+Godot world generation remains authoritative. See [forest style](forest-style.md).
+Owner approval, October 29, 2026: apply the reviewed nature samples and expansive
+stylized grass to the main game, with a live Options pixel adjustor for testing.
+The owner's later October 29 direction removes pixelation from the default view.
+Keep UI/picking at native coordinates and proprietary grass
+source local-only; use the original grass fallback when it is absent. See
+[reviewed world visuals](reviewed-world-visuals.md) for the implementation contract.
+
 Owner direction, October 27, 2026: mouse controls world, combat and NPC
 interactions; keyboard controls player movement and personal systems. Escape
 cancels/closes interaction layers and must not directly retreat. Personal menus
@@ -83,7 +140,7 @@ description; Details retains the expanded readings.
 
 
 Owner direction, October 27, 2026: provide a cohesive, movable and adjustable
-in-game menu, using Pokémon's familiar guide/party/bag/trainer/save/options
+in-game menu, using PokÃƒÂ©mon's familiar guide/party/bag/trainer/save/options
 organization as a reference. Use original SolHunter styling and retain existing
 gameplay authorities. Menu layout preferences are local presentation settings,
 separate from expedition saves. Owner follow-up: R toggles the live field menu;
@@ -93,7 +150,7 @@ multiplier (30% smaller), while preserving local adjustments. The game window is
 resizable and starts maximized to the available screen, with no fixed physical
 startup-size override. The view expands to the display aspect ratio. Player heading
 changes use smooth shortest-arc visual turning.
-Owner phase-4 direction: use Pokémon as a reference for companion navigation,
+Owner phase-4 direction: use PokÃƒÂ©mon as a reference for companion navigation,
 without copying its presentation. Sol menus show the selected Sol's actual model
 fitted inside a dedicated preview window. See [Sol menu](sol-menu.md) and
 [field menu](field-menu.md).
@@ -117,7 +174,7 @@ Keep the root small: project entry/configuration, README, agent instructions, an
 | `ROADMAP.md` | Repository management milestones and completion evidence |
 | `scenes/` | Reusable and game-specific scenes |
 | `scripts/` | Game code, grouped by feature |
-| `shaders/` | Godot shader resources for the pixel-art 3D presentation |
+| `shaders/` | Godot shaders for 3D materials, atmosphere and visibility |
 | `assets/` | Runtime art, audio, fonts, and source asset metadata |
 | `resources/` | Authored Godot resources and game data |
 | `addons/` | Deliberately adopted editor/runtime plugins with licenses |
@@ -165,6 +222,35 @@ The desired remote rules are: require PRs, block force pushes and default-branch
 After merge, branch deletion is a deliberate cleanup action: verify the PR is merged, no unique commits or active work remain, and the owner authorizes deletion. Age alone never justifies deletion. Recover mistakes with revert commits rather than rewriting shared history. Tag approved releases with version and validation evidence; do not retag published releases.
 
 ## Godot and validation
+
+Owner direction, October 29, 2026: tactical combat must not pause the surrounding
+game world. Keep the shared active clock, atmosphere, Vastra and unrelated local
+wildlife/recovery running while combat owns player input and its participants.
+Retain explicit pause-screen behavior and existing encounter-preview/persistence
+guards. The current implementation and source reconciliation are recorded in
+[battle world continuity](first-playable-battle.md#continuing-world-during-combat--october-29-2026).
+
+Owner focus clarification, October 29, 2026: prioritize Vastra, world generation
+and biome-specific environmental activity so roads and wilderness feel alive
+without relying on nearby Sols. Hold landmark placement and advance this work
+before optional leads. The [world/exploration roadmap](world-exploration-roadmap.md#owner-focus-living-environments--october-29-2026)
+owns the proposed connected slice; existing feature and mechanics authorities
+remain in force. This direction does not establish new ecological rules.
+
+Owner priority update, October 29, 2026: prioritize world generation, worldbuilding
+and exploration that are enjoyable without an authored campaign. Generated quests
+and local interactions are in scope, with saved outcomes that can support later
+story connections. Early play should have a First Age feeling; this does not
+automatically make early saves canon. Defer campaign implementation, including
+the opening, and place AYN Thor optimization, export and device
+acceptance on the far back burner. Thor remains the intended release platform;
+it is not the current development gate. This supersedes earlier immediate
+story-delivery and target-device optimization priorities below. Preserve existing
+story canon, gameplay and validation requirements. The current delivery focus is
+recorded in [the development plan](development-plan.md#current-focus--october-29-2026);
+the [world/exploration roadmap](world-exploration-roadmap.md) owns the forward
+cross-feature delivery sequence. Feature roadmaps retain detailed acceptance
+and evidence; the reformat roadmap retains the completed migration evidence.
 
 Owner-approved workflow, October 28, 2026: keep the connected expedition loop
 central and assess exploration feel, Sol behavior/companionship, combat and visual
@@ -266,3 +352,75 @@ Routine maintenance never includes destructive cleanup, forced updates, automati
 ## Policy changes
 
 Update this document in the same change as an adopted layout/workflow change. Distinguish policy from observed enforcement, and remove superseded guidance rather than appending contradictory exceptions. Record substantial governance decisions under `docs/decisions/`; keep this file the operative standard.
+
+Owner direction, October 29, 2026: consolidate labs and previews through
+`scenes/development_workstation.tscn` as the shared visual/debug review surface.
+Reuse fixture scenes; isolate their 3D world, block expedition save/load when
+hosted, and pair screenshots with notes and measurements. The main game entry
+remains separate. Owner follow-up, October 29, 2026: temporarily allow F8 or the
+Development lab button to toggle to that standalone lab as a separate world.
+Keep the expedition in memory, suspended and restored on return; retain lab
+controls/notes between visits and the hosted-fixture save/load guard. This does
+not adopt experimental lab mechanics or visuals into normal play. See
+`docs/development-workstation.md` for usage and limits.
+
+Owner direction, October 30, 2026: every new development lab must provide usable
+sliders and/or knobs for numeric tuning, with visible values and useful ranges.
+Use switches for booleans and selectors for discrete presets. Do not rely on
+Inspector-only controls or typed numeric fields as the primary review interface.
+The shared workstation supplies sliders for ranged scalar exports; expensive
+fixture rebuilds apply on release, so dragging remains usable.
+
+Owner approval and rollout, October 30, 2026: use the reviewed procedural
+single-blade grass in normal gameplay across meadow, woodland, heath and marsh.
+Retire the earlier grass clumps from live rendering. This supersedes the former
+licensed-grass/original-clump rendering fallback; source assets remain local with
+provenance intact. Keep registered cell reserves, functional specialist bodies,
+weather ownership and terrain/access admission authoritative. The lab and live
+world share the blade mesh builder; lab-seeded energy and authored test receivers
+never enter the expedition. See the current rollout in `docs/reviewed-world-visuals.md`.
+
+Owner follow-up, October 30, 2026: plants may share tiles with grass. Preserve the
+canonical cell reserve and the functional plant's recipient anchor when adding
+ground cover. All terrain tiles should blend by default, including biome,
+soil/grass, trail and shore transitions. Trails need a visible surface texture
+and a softened grass verge while retaining mandatory walking clearance. Use the
+supplied matching surface maps and keep terrain/canonical flora admission intact.
+
+Owner direction, October 30, 2026: develop the Sol Creator in its own standalone
+Sol Lab (`scenes/sol_lab.tscn`), rather than inside the shared Development Lab.
+This is an explicit exception to the shared-lab consolidation above. Prioritize
+usable in-game authoring controls and saved appearance drafts as the foundation
+for species/individual design and procedural variation. Keep draft appearance
+experiments separate from approved species and expedition saves. The existing
+Development Lab and main game retain their entry points. See [Sol Lab](sol-lab.md)
+for current capabilities, limits and the delivery sequence.
+
+Owner follow-up, October 30, 2026: launch Sol Lab from normal gameplay beside
+the Development Lab control. The shared world-switch owner provides F9/Sol Lab
+and return controls, suspends/restores the same expedition, and retains the Sol
+workspace between visits. F8 and F9 can switch between the separate labs without
+allowing either to advance the expedition. Standalone F6 use remains supported.
+
+Owner follow-ups, October 30, 2026: complete the Sol Lab authoring workflow and
+provide at least three editable body-shape starting points per current class
+(54 across 18 classes). These are anatomy studies, not roster admission. Sol
+visual cores are confirmed canon as parameterized wispy particle balls, using the
+existing particle approach. Owner clarification: “head” meant visual core, which
+need not be an anatomical head. Keep core placement separate from optional head
+anatomy in the lab, catalog creatures and legacy/fallback bodies. Preserve distinct
+species bodies, individual affinity independence and existing mechanics. The
+Worldbuilding Bible and Sol Bible record the clarified canon.
+
+Owner direction, October 30, 2026: extend the approved plant maker variety into
+live plant presentation. Shared procedural builders live under `scripts/scenery/`;
+plant labs consume them. Canonical biome/role/class slots select a bounded seeded
+palette for trees and specialist plants, with enabled authored library designs
+preferred. Preserve the reviewed procedural grass, geography/access admission,
+canonical reserves and saved ecological rules. Underwater generation remains deferred.
+
+Owner follow-up, October 30, 2026: retire all old plant bodies from live expedition
+rendering, including legacy tree/specialist fallbacks and pond/biome vegetation.
+Use the plant library/shared procedural palette and reviewed blade grass only.
+Rejected placement stays empty; preserve canonical membership and reserves.
+Aquatic replacement remains deferred. Keep source/provenance assets on disk.

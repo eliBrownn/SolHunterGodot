@@ -1,5 +1,6 @@
 extends Node3D
 const MenuTheme = preload("res://scripts/ui/menu_theme.gd")
+const IMPACT_SCENE := "res://assets/local/vefects/Vefects/Distortion VFX/VFX/Particles/VFX_Distortion_Flat_01.tscn"
 ## Cosmetic events and runtime-only result recap; never owns battle or save state.
 var world: Node2D
 var tuning: SolVisualSettings
@@ -84,6 +85,18 @@ func receive(event: Dictionary) -> void:
 	pulse.position.y = tuning.hover_height
 	pulse.modulate = tuning.color_for(event.affinity)
 	anchor.add_child(pulse)
+	if event.kind == "damage" and int(event.amount) > 0 and tuning.impact_distortion_enabled and ResourceLoader.exists(IMPACT_SCENE):
+		var impact: Node3D = load(IMPACT_SCENE).instantiate()
+		impact.position.y = tuning.hover_height
+		# Keep world-space vendor particles attached to the rebased combat anchor.
+		for child in impact.get_children():
+			if child is GPUParticles3D:
+				child.local_coords = true
+				child.process_material = child.process_material.duplicate()
+				child.process_material.set_shader_parameter("world_space", false)
+				child.process_material.set_shader_parameter("start_size_x", Vector4(0, 1.25, 0, 0))
+				child.process_material.set_shader_parameter("start_size_y", Vector4(0, 1.25, 0, 0))
+		anchor.add_child(impact)
 	if event.kind == "vastra":
 		var current := MeshInstance3D.new()
 		var ribbon := QuadMesh.new()

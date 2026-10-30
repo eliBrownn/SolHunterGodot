@@ -1,5 +1,10 @@
 # Cohesive world sample
 
+## Vegetation hierarchy requirement — October 29, 2026
+
+The bounded study is connected to the required Vastra hierarchy when used in normal play: every generated living plant, including its pond lilies and bank plants, references a canonical flora cell. Explicit nonliving entries exclude rocks, fallen logs and dead wood. The fixed pond placement definition supplies camera-independent membership; graphic clumps share one saved reserve.
+See the [current registration contract](vastra-integration.md#generated-vegetation-registration-and-system-hierarchy) for owners, admission and acceptance.
+
 October 28, 2026. Bounded T4a composition study under the
 [terrain roadmap](terrain-roadmap.md), originally measured on generation 6.
 The owner authorized applying the bounded composition to normal play on October
@@ -15,6 +20,12 @@ generation-7 seed-2601026 saves use the current geography. The subsequent
 [route/pond pass](route-pond-diversity.md) requires a new expedition and rejects
 generation-6 development saves. Original counts/costs below are historical
 generation-6 evidence; they do not certify the changed geography.
+
+October 29 follow-up: normal F5 now uses [generated biome scenery](biome-scenery.md)
+across seeds. These bounded treatments remain local overrides through the shared
+`resources/scenery/bounded_composition.tres`; the separate sample scene retains
+its original study settings. Earlier statements about unchanged dressing outside
+the sample describe the October 28 baseline.
 
 ## Connected places
 

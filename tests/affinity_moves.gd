@@ -93,6 +93,12 @@ func verify_live() -> void:
 	controller.open_choice()
 	controller.choose(0)
 	var state: ExpeditionState = world.persistent_state
+	world.observation_cell = world.cell + Vector2i.LEFT
+	world.observation_subject = "Terrain"
+	world.show_inspection_details()
+	var natural_affinity: String = world.terrain.sample(world.observation_cell).affinity
+	check(world.inspection_card.tile_affinity.visible and world.inspection_card.tile_affinity.text == "Tile affinity: " + natural_affinity.capitalize(), "Tile Details visibly reports generated affinity")
+	world.inspection_card.dismiss()
 	var hero := state.starter_view()
 	var book := state.movebook(hero.id)
 	check(book.equipped.size() == 4 and state.individual_view(hero.id).affinity == "earth", "New expeditions have canonical affinity and four saved moves")
@@ -117,6 +123,10 @@ func verify_live() -> void:
 	controller.select_cell(controller.session.deployment_tiles()[0])
 	BattleTest.settle(controller)
 	var session: TacticalBattle = controller.session
+	var inherited := true
+	for at: Vector2i in session.cells:
+		inherited = inherited and session.tile_affinities.get(at, "") == world.terrain.sample(at).affinity
+	check(inherited and state.affinity_tiles().is_empty(), "Fresh live battle inherits generated affinity on every arena tile")
 	var target := session.ally_cell + Vector2i.DOWN
 	controller.choose_move(1)
 	BattleTest.settle(controller)
@@ -130,6 +140,10 @@ func verify_live() -> void:
 	BattleTest.settle(controller)
 	var tiles := state.affinity_tiles()
 	check(not tiles.is_empty() and tiles[report.tiles[0]].affinity == report.winner, "Retreat atomically commits the battle winner onto every affected tile")
+	for at in tiles:
+		var parts: PackedStringArray = at.split(":")
+		var cell := Vector2i(int(parts[0]), int(parts[1]))
+		check(state.environment_view(cell, world.terrain.sample(cell)).affinity == report.winner, "Battle winner overrides the natural affinity")
 	var before := state.snapshot()
 	var detached := state.environment_view(Vector2i(int(report.tiles[0].split(":")[0]), int(report.tiles[0].split(":")[1])), {})
 	detached.conditions.clear()

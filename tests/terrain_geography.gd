@@ -50,6 +50,13 @@ func production_border(t: WorldTerrain, pond: Dictionary) -> void:
 		check(closest < 0.00001, "Clipped water seam agrees within 0.00001 world cells")
 
 func run() -> void:
+	var exploration: TerrainReliefSettings = load("res://resources/terrain_exploration.tres")
+	var edge_world := WorldTerrain.new(2601026, {}, exploration.parameters())
+	var inside := Vector2i(-24, -32)
+	var outside := inside + Vector2i.DOWN
+	check(edge_world.lake_distance(inside) < 4.0 and edge_world.lake_distance(outside) >= 4.0, "Regression fixture crosses the pond shaping cutoff")
+	check(absf(edge_world.vertex_height(inside) - edge_world.heightfield.vertex_height(inside)) < 0.05, "Outer pond bank converges to surrounding raw relief")
+	check(absf(edge_world.vertex_height(inside) - edge_world.vertex_height(outside)) < 0.25, "Pond influence cutoff does not create an artificial cliff")
 	var start := Time.get_ticks_msec()
 	for seed_value in [0, 17, 19, 2601026, 2147483646]:
 		var t := WorldTerrain.new(seed_value)

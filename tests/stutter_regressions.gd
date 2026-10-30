@@ -83,6 +83,12 @@ func run() -> void:
 	check(not cache.check(settings) and cache.validation_runs == 2, "Invalid nested behavior edits invalidate companion admission")
 	scene.active_view = scene.active_view.duplicate()
 	scene.active_view.stream_detail_cache_chunks = 1
+	# Initial load now admits one detail chunk; let normal streaming supply
+	# the second chunk needed to exercise capacity eviction.
+	for frame in range(1200):
+		if world.chunks.size()>=2: break
+		await process_frame
+	check(world.chunks.size()>=2,"Budgeted initial streaming publishes more detail")
 	var coordinates: Array = world.chunks.keys()
 	world.remove_chunk(coordinates[0])
 	world.remove_chunk(coordinates[1])

@@ -38,6 +38,12 @@ var body_materials: Array[StandardMaterial3D] = []
 var stance := "rest"
 var action := ""
 var action_started := 0.0
+var wisp_head: Node3D
+var visual_core: Node3D
+## Appearance tuning only. Placement is independent of anatomical head joints.
+@export var visual_core_tuning: Dictionary = {}
+## Legacy tuning entry retained for previously authored scenes.
+@export var head_wisp_tuning: Dictionary = {}
 
 func set_stance(value: String) -> void:
 	stance = value if value in ["rest", "alert"] else "rest"
@@ -62,10 +68,38 @@ func configure(assigned_affinity: String, settings: SolVisualSettings, phase_off
 	rig.scale = Vector3.ONE * model_scale
 	body = joint(rig, "Body", Vector3.ZERO)
 	build_model()
+	if not uses_custom_visual_core(): install_visual_core()
 	for key in joints:
 		rest_rotations[key] = joints[key].rotation
 		rest_transforms[key] = joints[key].transform
 	animate(0.0, 0.0, 0.0)
+
+func uses_custom_visual_core() -> bool:
+	return false
+
+func install_visual_core() -> void:
+	var envelope := AABB()
+	var found := false
+	for node in body.find_children("*", "MeshInstance3D", true, false):
+		var bounds: AABB = SolGroundMotion.relative_transform(node, body) * node.get_aabb()
+		envelope = envelope.merge(bounds) if found else bounds
+		found = true
+	var tuning := visual_core_tuning if not visual_core_tuning.is_empty() else head_wisp_tuning
+	var diameter := clampf(float(tuning.get("core_size", maxf(envelope.size.y, envelope.size.z) * 0.25)), 0.08, 1.2)
+	visual_core = preload("res://scripts/sols/presentation/sol_visual_core.gd").new()
+	visual_core.name = "VisualCore"
+	visual_core.configure(diameter, tuning)
+	var anchor: Node3D = body
+	var offset := envelope.get_center() + Vector3(0, 0, envelope.size.z * 0.4)
+	match str(tuning.get("core_anchor", "chest")):
+		"head": anchor = head if head != null else body; offset = Vector3.ZERO
+		"back": offset = envelope.get_center() + Vector3(0, envelope.size.y * 0.4, -envelope.size.z * 0.2)
+		"root": offset = Vector3(0, diameter * 0.55, 0)
+		"tail": anchor = joints.get("Tail", body); offset = Vector3.ZERO
+		"free": anchor = rig; offset = Vector3.ZERO
+	visual_core.position = offset + Vector3(float(tuning.get("core_offset_x", 0)), float(tuning.get("core_offset_y", 0)), float(tuning.get("core_offset_z", 0)))
+	anchor.add_child(visual_core)
+	wisp_head = visual_core # Compatibility alias; this is not an anatomical head.
 
 ## Override this and animate_features/preview_bounds for a new species body.
 func build_model() -> void:
@@ -277,6 +311,7 @@ func build_bellroot() -> void:
 func animate(seconds: float, bob_pixels: float, bob_cycles: float) -> void:
 	# Existing callers own elapsed time (pause and hidden-view policies stay intact).
 	super.animate(seconds, bob_pixels, bob_cycles)
+	if visual_core != null: visual_core.set_visual_time(seconds)
 	position.y = ground_y
 	shadow.position.y = 0.015
 	if rig == null:

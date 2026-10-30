@@ -13,6 +13,7 @@ func _initialize() -> void:
 	run.call_deferred()
 
 func run() -> void:
+	verify_affinities()
 	var seeds := [0, 1, 2, 17, 19, 71, 2601026, 88881, 999999, 123456789, 2147483646]
 	var found_water := false
 	for seed_value in seeds:
@@ -84,3 +85,38 @@ func run() -> void:
 		DirAccess.remove_absolute(path + ".bak")
 	print("GENERATION: %d checks, %d failures across %d seeds." % [checks, failures, seeds.size()])
 	quit(0 if failures == 0 else 1)
+
+func verify_affinities() -> void:
+	var terrain := WorldTerrain.new(17)
+	var other := WorldTerrain.new(17)
+	var changed_seed := WorldTerrain.new(71)
+	var seen := {}
+	var repeatable := true
+	var seed_changes := 0
+	var matching_neighbors := 0
+	var total := 0
+	for y in range(-256, 257, 16):
+		for x in range(-256, 257, 16):
+			var cell := Vector2i(x, y)
+			var id := terrain.affinity_at(cell)
+			seen[id] = true
+			repeatable = repeatable and id == other.affinity_at(cell)
+			seed_changes += int(id != changed_seed.affinity_at(cell))
+			matching_neighbors += int(id == terrain.affinity_at(cell + Vector2i.RIGHT))
+			total += 1
+	check(repeatable, "Affinities reconstruct independently at positive/negative coordinates and district boundaries")
+	check(seen.size() == AffinityImprint.IDS.size() and seen.keys().all(func(id: String) -> bool: return id in AffinityImprint.IDS), "Generated geography admits every canonical affinity")
+	check(seed_changes > total / 2, "World seed changes affinity geography")
+	check(matching_neighbors > total * 0.8, "Adjacent tiles form coherent affinity patches")
+	var cell := Vector2i(-16, 16)
+	var generated := terrain.sample(cell)
+	check(generated.affinity == terrain.affinity_at(cell), "Tile samples expose the generated affinity")
+	var state := ExpeditionState.new(17)
+	check(state.environment_view(cell, generated).affinity == generated.affinity and state.affinity_tiles().is_empty(), "Unmodified tiles use generated affinity without filling the save with defaults")
+	var data := state.snapshot()
+	var replacement := "water" if generated.affinity != "water" else "fire"
+	data.affinity_tiles[AffinityImprint.key(cell)] = {"affinity": replacement, "conditions": {}}
+	var restored := ExpeditionState.restore(JSON.parse_string(JSON.stringify(data)), 17)
+	check(restored != null and restored.environment_view(cell, generated).affinity == replacement, "Saved imprints override regenerated affinity after JSON reload")
+	restored.recover_affinity_conditions()
+	check(restored.environment_view(cell, generated).affinity == replacement and terrain.sample(cell) == generated, "Recovery preserves the override and immutable generation")

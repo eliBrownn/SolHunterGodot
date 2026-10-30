@@ -129,8 +129,11 @@ func verify_live_world() -> void:
 	check(model.ground_motion.speed > 0 and track.position != Vector2(member.home), "Actual replay movement drives the creature gait")
 	world.encounter_active = true
 	var encounter_pose := pose(model)
+	var encounter_position := track.position
 	scene.sightings.sync_views(0.2)
-	check(pose(model) == encounter_pose, "Encounter entry freezes locomotion presentation")
+	# No participants are registered in this fixture. Existing combat continuity
+	# keeps unrelated wildlife moving; only true pause freezes its route and gait.
+	check(pose(model) != encounter_pose and track.position != encounter_position, "Encounter entry preserves unrelated wildlife locomotion")
 	world.encounter_active = false
 	check(world.persistent_state.snapshot() == before, "Procedural presentation never writes persistent state or chooses a route")
 	world.cell = member.home + Vector2i(100, 0)

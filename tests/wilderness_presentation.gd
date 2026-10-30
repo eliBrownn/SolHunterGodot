@@ -53,7 +53,8 @@ func run() -> void:
 		scene.configure_asset_distances(chunk)
 		for mesh in chunk.get_children():
 			if mesh.name.begins_with("nature_detail_"):
-				check(mesh.visibility_range_end == 24, "Foliage honors its shorter configured distance")
+				var expected := minf(scene.active_view.grass_distance,scene.active_view.render_distance) if mesh.name.begins_with("nature_detail_meadow") else 24.0
+				check(mesh.visibility_range_end == expected, "Small plants and grass honor their independent configured distances")
 	world.new_expedition(17)
 	var settings: BattleSettings = scene.battle_settings
 	var hero := settings.starters[0].snapshot()

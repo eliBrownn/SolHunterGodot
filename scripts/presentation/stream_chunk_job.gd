@@ -7,6 +7,9 @@ var cells: Array[Dictionary] = []
 var chunk: Node3D
 var generated := 0
 var geography_prepared := 0
+var geography_low := Vector2i.ZERO
+var geography_width := 5
+var geography_count := 25
 var built := 0
 var generation_ms := 0.0
 var geometry_ms := 0.0
@@ -16,6 +19,13 @@ var step_peaks := {"geography": 0.0, "generation": 0.0, "cell": 0.0, "upload": 0
 func _init(source: WorldTerrain, at: Vector2i, tuning: NatureSettings, view: Node3D = null) -> void:
 	terrain = source
 	coord = at
+	# Dressing checks the entire plant footprint, including neighboring chunks.
+	# Warm those road dependencies too, so a boundary decoration cannot trigger
+	# an unbudgeted regional search inside a single cell build.
+	geography_low = terrain.geography.region(Vector2(coord * 16 - Vector2i(2, 2))) - Vector2i(2, 2)
+	var high: Vector2i = terrain.geography.region(Vector2(coord * 16 + Vector2i(17, 17))) + Vector2i(2, 2)
+	geography_width = high.x - geography_low.x + 1
+	geography_count = geography_width * (high.y - geography_low.y + 1)
 	# The host admits the palette once; do not walk every asset for each chunk.
 	nature = tuning if tuning != null else preload("res://resources/nature_settings.tres")
 	chunk = view if view != null else load("res://scripts/presentation/solid_chunk.gd").new()
@@ -26,14 +36,13 @@ func advance(deadline_usec: int) -> bool:
 	var ready := false
 	while Time.get_ticks_usec() < deadline_usec:
 		var step_start := Time.get_ticks_usec()
-		var stage := "geography" if geography_prepared < 25 else "generation" if generated < 256 else "cell" if built < 256 else "upload"
-		if geography_prepared < 25:
-			# A cold first cell otherwise compiles 25 road regions atomically.
-			# Warm exactly that same deterministic dependency set, one region at
-			# a time, so the deadline can be checked between regional searches.
-			var area: Vector2i = terrain.geography.region(Vector2(coord * 16) + Vector2(8, 8))
-			terrain.geography.paths(terrain, area + Vector2i(geography_prepared % 5 - 2, geography_prepared / 5 - 2))
-			geography_prepared += 1
+		var stage := "geography" if geography_prepared < geography_count else "generation" if generated < 256 else "cell" if built < 256 else "upload"
+		if geography_prepared < geography_count:
+			# Warm the complete road dependency set, yielding between candidate
+			# searches and route segments so cold districts respect the deadline.
+			var area := geography_low + Vector2i(geography_prepared % geography_width, geography_prepared / geography_width)
+			if terrain.geography.prepare_paths(terrain, area):
+				geography_prepared += 1
 			generation_ms += (Time.get_ticks_usec() - step_start) / 1000.0
 		elif generated < 256:
 			cells.append(terrain.sample(coord * 16 + Vector2i(generated % 16, generated / 16)))

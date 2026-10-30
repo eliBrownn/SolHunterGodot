@@ -1,5 +1,176 @@
 # Vastra integration
 
+## Generic foliage on existing emanator cells — October 30, 2026
+
+The generic-foliage rollout uses the existing grass/emanator cell owner. Grass
+blades and a selected foliage body share `flora_id`, region, reserve and activity;
+visual patches never admit extra records. The foliage body supplies its ground
+intake/emission anatomy to the same presentation endpoint, with grass kept around
+it. Receiver specialists keep their own cells and anchors clear. Unclassed
+receiving foliage remains a draft anatomy study, not a new live receiver rule.
+Coverage, model size alternatives and camera/streaming reconstruction do not
+change membership, reserves or transactions. The source evidence, placement
+contract and focused validation are indexed in the current
+[foliage rollout](procedural-plants.md#generic-foliage-world-rollout--october-30-2026).
+
+Performance follow-up: flora neighbor queries use bounded, kind-indexed caches
+invalidated by completed-region admission and eviction. Missing neighborhoods
+still return null; callers receive independent results. Active IDs are cached
+until membership/focus changes, and identical active sets do not rebuild the
+expedition's regional index. These are derived lookups, not new ecology rules.
+Conserved-transfer curves are cached by endpoints, path seed and geometry tuning,
+with a 256-entry bound and terrain/rebuild invalidation. Caller copies protect
+cached paths from root-path adjustments. See the
+[optimization evidence](research/world-optimization.md).
+
+## Generated vegetation registration and system hierarchy
+
+Owner requirement, October 29, 2026: **every generated living plant belongs to
+Vastra through its canonical geographic cell**. This includes grass, flowers,
+shrubs, ferns, fungi used as living vegetation, reeds/rushes, trees, and the
+existing authored pond's lilies/bank plants. This is a required integration
+contract for future plant content, model replacements and biome additions.
+
+Plants are infrastructure for circulation, root recipients, paid repair and the
+classified vegetation/Vessel ecology. Missing registration leaves visible life
+outside those systems; registering each graphical clump separately would instead
+invent extra reserves, charge and repair capacity. Neither outcome is acceptable.
+Membership does not mean a plant is currently charged, acting, visible or within
+the bounded active simulation area.
+
+| Owner / hierarchy | Responsibility and required link |
+| --- | --- |
+| Godot geography → generated habitat/site → absolute cell (`WorldTerrain`) | Decides canonical flora membership through `flora_kind`; all four land biomes participate. Protected access and slope admission remain mandatory. |
+| Geographic 12-cell region → flora definition (`FloraCatalog`) | Enumerates stable cell IDs and kinds without needing render chunks. Complete neighborhoods prevent camera-order bias; active area plus tree halo bounds work. |
+| Expedition → saved flora policy/ledger → cell reserve (`ExpeditionState`) | Sole live/saved writer; admits each definition once at zero reserve, retains identity and conserved energy through reload, eviction and reactivation. |
+| `FloraTraits`, `PlantVastra` and `VesselEcology` | Resolve existing functional roles and paid, bounded transactions using those same registered cells. Affinity remains independently owned. |
+| Scenery resource → generated instance → chunk endpoint | Explicit `NatureAssetEntry.living` declares vegetation; each living endpoint carries `flora_id = FloraCatalog.id_for(cell)`. Many clumps in a cell share its reserve. Chunk ownership is rendering ownership only. |
+| Vastra presentation | Reads saved transfers and endpoint anchors. Particle density, visibility, camera, foliage toggles and model filenames cannot register energy or change recipients. |
+
+`NatureComposition` rejects living dressing outside canonical membership. Ground
+specialists and meadow grass already consume `flora_kind`; fallback undergrowth
+now does too. Living membership no longer uses botanical filename keywords, so
+numbered/custom replacement models remain connected. Rocks, fallen logs and dead
+wood use explicit nonliving entries; tree art uses `NatureSettings.nonliving_trees`.
+A dead visual variant does not delete its canonical tree-slot state or turn the
+render palette into an ecological writer.
+
+The fixed `resources/scenery/bounded_composition.tres` pond placement definition
+is also generation evidence for its existing water/bank vegetation.
+`WorldTerrain.authored_wetland_flora` reconstructs those exact admitted living
+placements with rendering absent. Bare water/sand gains no blanket terrestrial
+population. This narrow authored exception preserves its existing coordinates,
+footprint, pond level and clearance checks; active art settings do not own the
+registration. Aquatic/bank bodies retain their original art rather than being
+replaced by a land specialist. Changes to this fixed definition's living coverage
+must be reviewed as generation/admission changes, not merely cosmetic edits.
+
+Registration remains lazy and budgeted: generated definitions outside the active
+area need not all occupy the saved ledger at once. Trees in the query halo and
+plants in the active geographic area follow the established admission policy.
+No offline refill, duplicate cell reserves, global unbounded simulation, new
+plant abilities or save-format migration is introduced by fixing missing coverage.
+Previously omitted generated wetland plants enter at zero on ordinary admission.
+
+Content acceptance must prove arbitrary asset names register, nonliving art does
+not, each generated living endpoint resolves to its canonical cell, clump count
+cannot duplicate a reserve, and camera-free catalogue admission plus save/load
+preserve membership. Existing energy/repair/root/feeding checks remain required
+when those mechanics change. See `tests/plant_vastra.gd` and
+`tests/biome_scenery.gd` for the connected coverage.
+
+Source reference rechecked read-only at SolHunterSource commit
+`d6f0902d77ed46a2f7d251c354792a4cc9210bc4`: `vastra.py` and
+`tests/test_vastra_foundation.py` preserve sparse state, detached reads and
+validated persistence. Existing plant-cycle reconciliation below still applies;
+this work fixes generated membership and ownership, without importing another
+world generator or inventing new circulation rules.
+
+### Registration verification — October 29, 2026
+
+Godot 4.7.2: plant hierarchy/circulation/save journey **812 checks passed**, including
+the real Direct3D 12 renderer; generated biome coverage **3,892 passed**; Vessel
+ecology **73 passed**; Vastra integration **38 passed**. The plant suite now uses
+`-- --capture-plants`, avoiding the production scene's separate `--capture`
+routine, which otherwise rebuilt fixtures during the rendered journey. Captures
+under `artifacts/plant-vastra/` cover charge, travel, arrival and outward root flow.
+Hierarchy documentation links and scoped whitespace checks passed.
+
+The final editor import found an unrelated mixed tab/space parse error in
+`tools/development_workstation.gd:185`. The affected plant/biome/Vastra suites
+above pass; this is not a claim that the full-project import or full validator
+passes. The workstation file was left unchanged by that registration work.
+The later [temporary lab-world integration](development-workstation.md#temporary-lab-world-from-the-game)
+corrected its indentation; editor import then passed. The earlier blocker is
+historical, not a remaining import failure.
+
+## Root overflow and Sol feeding — October 29, 2026
+
+Owner direction: object reserves must not accumulate beyond 100; trees expel excess
+around them like roots, nearby Sols absorb it as food, and visible strands carry
+actual quantities from source to destination. This is a real conservation change,
+not a cosmetic source of new energy. The owner explicitly approved the save-format
+change and the resulting need for a new expedition with older development saves.
+
+The implementation caps each plant/tree's stored reserve at its configured
+threshold (100 by default). Preserve received excess in a separate saved stock
+around a tree's roots. Root strands debit that stock and deliver bounded, finite
+packets to canonical nearby plants; incoming root packets reserve capacity so
+ambient refill cannot fill their destination first. Nearby available wild Sols
+and the active field companion consume this excess at a bounded provisional rate,
+with the consumed food recorded against the existing individual ID. This first
+feeding slice grants no HP, XP, stat bonuses or invented hunger/starvation rules.
+
+Accounting must include object reserves, root stock, in-flight packets, paid repair
+and energy eaten by Sols. Recipient credit occurs once on arrival; unavailable
+destinations or work-budget limits must retain energy safely. Camera, visibility,
+particle budget, pause and save/load cannot duplicate or destroy energy.
+
+Saved format: expedition snapshot 20 and plant ledger 2; per-node
+`roots`, a `fed` map by Sol identity, a root/ordinary packet discriminator and saved
+root/feeding rates and radius. Provisional defaults: 8 units/active second
+root distribution, 4 units/active second per Sol, 3-cell feeding radius. Existing
+ordinary tree recipient selection remains unbiased. Existing development saves
+are rejected with the current new-expedition message, with no deletion or
+automatic rewrite. This follows PROJECT_STANDARD.md's October 27 policy that old
+test saves are disposable and migrations are out of scope. No old save is deleted
+or automatically rewritten. The field companion uses the player's authoritative
+field cell as its feeding anchor; wild Sols use saved roaming cells. Stored,
+sealed, unavailable and battling individuals do not feed from the field.
+
+Strand heads use saved departure/arrival ticks and reach the actual recipient
+before the tail clears. Finite filaments taper with metric distance; longer routes
+become thinner while retaining the broader irregular wiggle envelope. Pixel-sized
+coverage preserves a visible arrival. Real root packets use ground-level endpoints
+and curves rather than the tree-crown attachment mode.
+
+Source reconciliation: inspected SolHunterSource at
+`d6f0902d77ed46a2f7d251c354792a4cc9210bc4`, including
+`src/systems/world/vastra.py`, `vastra_simulation.py`,
+`tests/test_vastra_foundation.py` and targeted systems/tests/docs searches. Its
+concentration/overload separation, sparse read-only inspection and bounded
+transactions remain relevant. No tree-root overflow/Sol food implementation was
+found in that targeted lookup. The owner's direction supplies the new rule;
+Godot retains generation authority. Required checks are conservation through
+simultaneous arrivals, excess expulsion, plant capacity reservations, bounded
+nearby feeding, pause/inactive behavior, exactly-once delivery, save validation,
+JSON mid-flight resume and a rendered root-transfer review. This supersedes the
+version-19 notes below that allowed reserves over capacity as queued relay energy.
+
+Validation with Godot 4.7.2: plant/root/feeding journey 330 checks, current rendering
+295, inspection 22, persistent foundation 76 and owned companion 40, all passing.
+The final Direct3D 12 root journey completed with no engine/script errors; captures
+under `artifacts/plant-vastra/`, including `root-overflow.png`, were inspected.
+`artifacts/vastra-roots-render.log` records the final 330-check rendered run.
+The live save/load test needed access to Godot's disposable `user://` test-save
+folder; its successful retry is `artifacts/vastra-root-persistence.log`.
+The scoped whitespace check passed. These are focused checks, not a full-suite
+or target-device pass. Earlier full-suite limitations remain documented below.
+
+If the arrival work budget is busy, the packet remains visible at its destination
+until the actual credit, then clears its tail from that delivery time. These
+rendering annotations are derived and never saved as extra energy transactions.
+
 Owner direction: [October 28 combat/restoration retcon](decisions/2026-10-28-vastra-combat-and-restoration.md).
 This connects the current expedition and battle systems; it does not declare the
 storm rescue or D2/D6 complete.
@@ -53,21 +224,35 @@ combat remains future work. Existing class bonuses remain separate.
 
 ## Presentation
 
-Normal 3D play includes at most 24 local cosmetic current ribbons by default,
-using subtle refraction and occasional luminous strands. Explicit signed changes
-take priority over the sparse ambient sample. Neutral currents are white;
-affinity color comes from actual imprinted tile affinity. Richness strengthens
-visibility, positive overload adds tangled motion and surges, and negative
-conditions retain smooth flow. Rendering never creates or modifies Vastra state.
-Inspection shows signed overload and describes restorative conditions.
-Matching combat affinity produces a short rising current and percentage cue.
+October 29 world foundation: geographic cells (12 terrain cells per side) own
+vegetation-supported regions independently of render chunks and explorer position.
+Only complete scenery coverage is admitted. Stable sampling selects up to 16
+vegetation anchors per geographic owner; Sols only clear the visual field. Loaded
+scenery supplies evidence of actual living plants, never ecological writes.
+
+The renderer selects a bounded set of regions for the camera, retains seeded
+geometry and region-owned phases, and converts absolute positions to the floating
+render origin. Selection does not change retained region membership, density or
+phase. Broad quiet refractive volumes surround shared living groups; smaller
+connections bridge groups. Separate geometry/materials carry intermittent wisps.
+The carrier never oscillates. Local concentration supplies strength and inward
+signal potential, local affinity supplies complementary optics, and existing sun
+and saved active time supply lighting and motion. Soft depth/camera intersections
+replace the removed explorer-centered radius fade. Raw concentration and revealed
+field heatmaps remain separate, read-only diagnostics.
+
+Inspection shows signed overload and describes restorative conditions. Matching
+combat affinity retains the short rising current and percentage cue. See the
+[resource evaluation](research/vastra-resource-evaluation.md#world-foundation-delivery)
+for current validation and performance evidence. Later optimization notes below
+are historical measurements of the replaced renderer, not current performance.
 
 ## Tuning and acceptance
 
 `resources/vastra_settings.tres` connects natural recovery, restorative assistance,
 environmental damage scaling and local current settings. `resources/move_library.tres`
-connects per-ability effects. Restart to change current enable/count; the live
-simulation reads settings on active ticks. Saved movebooks retain their authored
+connects per-ability effects. Restart to change current enable/count; other visual settings refresh within
+0.5 seconds. The live simulation reads settings on active ticks. Saved movebooks retain their authored
 move snapshots; omitted new fields use documented defaults. Start a fresh
 expedition to review newly authored move flags in the library.
 
@@ -154,3 +339,294 @@ rendered current checks, 38 Vastra integration checks, 93 natural recovery check
 and 76 persistent-foundation checks. The new rendered capture is
 `artifacts/vastra-optimization/rendered.png`. The earlier full-suite limitations
 remain recorded above; this optimization did not rerun unrelated combat suites.
+
+
+October 29 owner direction reserves the asset at a strand's animated arrival end
+as a future Vastra charge generator. The presentation exposes unique destination
+references and a future-generator role, while rates, capacity, timing, storage,
+persistent asset admission and gameplay effects remain open. No charge is generated
+from render frames, visible strands or particle arrivals. See the
+[height-tier visual slice](vastra-visual-roadmap.md#height-tier-strands-motes-and-deferred-charge-sources--october-29-2026)
+for the source reconciliation, hook contract and current implementation limits.
+
+
+## Plant energy circulation and natural repair — October 29, 2026
+
+Owner direction establishes a stored-energy cycle: plants refill gradually from
+ambient Vastra; reaching 100 can send energy to a nearby tree. Trees relay it onward.
+Target selection must not favor low reserves, damage, stress or other need. The
+owner clarified that “auto-level” means natural balance and repair, not growth/XP
+levels. Preserve the existing ribbon, peak, tail, refraction, ripple and mote look.
+This supersedes both the old concentration-seeking cosmetic flow and the deferred
+“destination generates charge” label above.
+
+### Owners and identities
+
+`WorldTerrain.flora_kind` owns canonical living-plant/tree admission from existing
+terrain decisions. One generated cell represents one grass/plant reserve or tree;
+rendered clump count does not multiply energy. All four terrestrial biomes
+participate, including Heath and Marsh. This is
+independent of the biome's cosmetic grass/plant palette. Water and sand admit
+only the fixed authored wetland's actual living placements, as specified in the
+[registration contract](#generated-vegetation-registration-and-system-hierarchy). The old Meadow/Forest-only admission filter was
+removed to correct biome sections with no plant Vastra activity.
+`FloraCatalog` prepares complete
+12-cell geographic regions within the existing frame budget, reusing exact prepared
+terrain cells when available. Its queries are camera independent. Nearby candidate
+search waits for every intersecting region, so partial scenery loading cannot bias
+recipient choice. Halo admission stores only trees; ground plants are admitted in
+the player's active geographic area. Derived catalogue memory is bounded.
+
+`ExpeditionState` is the sole live/saved writer. `PlantVastra` prepares bounded
+transactions; plants have stable world-context cell IDs, reserves, timestamps and
+per-source emission serials. The saved policy and in-flight packets belong to the
+expedition. Camera movement, zoom, foliage settings, current visibility and particle
+count cannot emit or credit a packet. Explicit art studies use `study_mode`; normal
+play never uses their autonomous prototype pulses.
+
+### Initial policy — provisional balance
+
+- A source reaches 100, debits one 100-unit packet and retains any queued excess.
+  A source with no eligible tree keeps its reserve. All eligible nearby trees have
+  equal selection probability; the deterministic seed/source/emission serial makes
+  choices replayable without reading target energy or damage.
+- Ambient concentration scales refill rate up to a provisional four units per
+  active second at concentration 100. A reserve at/above threshold absorbs no more
+  ambient energy until it has room. Concentration is an availability reading, not
+  the same stored-energy unit, and is not decremented by this first refill model.
+- Local repair spends ten reserve units per positive overload point, at most one
+  point per serviced plant per activity tick. Repair happens before onward transfer.
+  Negative restorative overload, affinity and unrelated habitat conditions are not
+  consumed or rewritten. Existing natural recovery remains in force.
+- Trees accept incoming packets even when full; excess is queued relay energy,
+  with at most one emission per source visit/tick. Finite travel time prevents an
+  instantaneous chain or loop. This is not a demand-routing system or a promise of
+  a finalized global ecological equilibrium.
+- Provisional travel speed is 0.35 cells per active second. The actual arrival tick
+  is saved; the finite visual pulse uses that same timing and increasing phase.
+  A packet is credited exactly once on arrival, independently of whether it was
+  visible. Tails may remain briefly after the head arrives, without repeating it.
+- Default active service is the player's current region plus one neighboring ring,
+  with a 64-source/64-arrival work budget per activity tick. This scope depends on
+  player geography, not the camera. Inactive-area reserves and incoming energy are
+  retained; reactivation grants no offline/inactive refill. The scope is bounded
+  active simulation, not an unlimited full-world/offline simulation.
+- Plants start with zero reserve on first canonical admission. Numerical values are
+  typed Inspector tuning captured for new expeditions; loaded expeditions keep their
+  saved policy. Transfer height tiers retain approximately three-cell plant reach
+  and fifteen-cell tree reach. Graphical clump positions resolve the admitted cell
+  into the already approved ground/base/crown presentation.
+
+The ledger accounts for all absorbed energy as stored reserve + in-flight energy +
+energy spent repairing. Save validation rejects a broken balance, nonfinite values,
+unknown nodes, invalid flight times, duplicate deliveries and malformed policy.
+Snapshot version 19 adds this ledger. Earlier development snapshots are rejected
+through the existing incompatible-save/new-expedition path; no user save file is
+rewritten or migrated automatically.
+
+### Mechanics evidence
+
+Read-only source reconciliation used SolHunterSource's local
+`development/world-redesign-0.2` ref at
+`d6f0902d77ed46a2f7d251c354792a4cc9210bc4`, inspecting
+`src/systems/world/vastra.py`, `vastra_simulation.py`, the activity caller in
+`src/core/game.py`, `tests/test_vastra_foundation.py` and the regional equilibrium
+audit. Existing source separates concentration/overload, keeps ambient reads
+read-only and bounds active-clock updates. A targeted search of source, docs and
+tests found no plant-at-100/tree-transfer implementation to port. The new owner
+rule therefore supplies this missing mechanic; rates and costs above remain
+provisional. The reference checkout's working-tree cleanliness was not verified.
+Godot retains generation authority; no source-repository files were copied or edited.
+
+### Review path
+
+`tests/plant_vastra.gd` covers threshold gating, unbiased full-tree eligibility,
+conserved transfers and relay cycles, paid repair, negative-overload preservation,
+refill/pause/reactivation, JSON mid-flight resume, corrupt-ledger rejection and
+complete deterministic catalogue admission. Its connected real-scene journey tests
+99 -> charge -> emission -> finite visible strand -> one arrival credit. Run it with
+Direct3D 12 and `-- --capture-plants` for the actual reserve-99, in-transit and arrival
+captures under `artifacts/plant-vastra/`. The shared validator now includes it.
+
+Final balance, larger-world service/device budgets and further plant/terrain repair
+types remain open. No RPG levels, automatic Sol effects, affinity transfer, passive
+human rewards, harvesting or new ecological-overload source is introduced.
+
+### Mechanical activation validation
+
+Godot 4.7.2 import passed. The final Direct3D 12 connected plant suite passed
+282 checks with zero failures, including the populated active-clock network and
+canonical save validation. The art-study current suite passed 295 checks in the
+broader run. Script ownership passed with 155 mapped scripts and 155 UID sidecars;
+the scoped whitespace check passed. Captures were inspected under
+`artifacts/plant-vastra/`.
+
+The complete validator is not a clean pass. It initially stopped after the stats
+suite printed 3,686 passing checks but returned an unsuccessful process exit;
+an isolated retry passed those checks and exited zero. Continuing the remaining
+suites passed combat polish (24), then stopped at two existing enemy-hit/retained-HP
+expectations in `tests/combat_sequencing.gd` (39 checks, two failures). That live
+fixture keeps world simulation in smoke mode, so canonical plant admission and
+circulation remain inactive. Combat files and assertions were not changed for
+this feature. Logs are `full-validation.log`, `stats-exit.log`,
+`remaining-validation.log` and `final-focused.log` under the same artifact folder.
+Later suites were not executed; no full-suite or device-performance acceptance
+is claimed.
+
+
+## Vegetation and Vessel runtime pilot — October 29, 2026
+
+Owner authorized implementation after the vegetation/Vessel design review, then
+supplied tropical plants as placeholders. This is a connected prototype under the
+Bible's design, not final ecology balance, species art or a completed storm system.
+
+`FloraTraits` assigns stable grass/receiver classes independently of affinity and
+rendered clump count. In activated expeditions only grass takes the existing
+ambient refill; trees and specialists receive transfers. The current refill model
+still scales from concentration without debiting ambient concentration; a shared
+regional source-allocation budget remains future work. Generic baseline repair,
+reserve cap 100, root overflow, Sol feeding and unbiased tree recipients remain.
+
+`VesselEcology` prepares transactions; `ExpeditionState` is the only writer.
+One resident group is admitted per complete active flora region, anchored to a
+stable grass cell. Defaults service up to nine groups; at most 128 persistent
+groups are admitted. No admissions beyond that safety cap are implied. Traveling
+groups, splitting/merging and individual lifecycle are not delivered. The swarm's
+reserve is capped at 100. Feeding prefers root surplus and preserves 50 units of
+source reserve when drawing plant energy, preventing first-transfer starvation.
+
+Plant expenditure includes energy transferred into swarms. The separate swarm
+ledger accounts for that draw as retained swarm energy plus response consumption.
+For combined accounting, subtract swarm draw from plant expenditure before adding
+swarm reserves/consumption; it is not a second energy source. Mender and other
+specialist costs remain direct plant expenditure. Rendering cannot change either
+ledger. Specialist work rotates with the existing flora cursor; nearby queries
+reuse canonical region indexes rather than scanning all nodes per group.
+
+First class functions are bounded: Menders spend two units per extra positive
+local overload point repaired; Wardens spend one per intercepted nearby Vessel
+discharge point; Regulators spend one per serviced response tick and help it
+settle after three response ticks. These are prototype constants. Warden protection
+does not cancel direct combat ability consequences; Regulator delivery-cadence
+modulation and botanical regrowth remain future work. Generic recovery is retained.
+
+Signals carry origin node, original event identity/time, expiry and visited nodes.
+A trace crosses a rooted connection only on its real packet arrival. Replays,
+cycles and relays cannot refresh expiry or repeat delivery to the same node.
+Signals can prompt investigation, not grant energy or remote omniscience.
+
+Swarms investigate positive local overload increases or sustained stranded root
+stock (default 300 units nearby for eight serviced ticks). Normal overflow alone
+is harmless. After investigation a supplied response can escalate, adding bounded
+local overload; it then enters a finite recovery period. Its own discharge is
+recorded in the local baseline, not repeatedly reclassified as a new external
+alarm. This natural trigger is a provisional gameplay detector, not settled lore.
+
+Storm admission preserves the 3x3 overload footprint, protected access, suitable
+clock-derived cloudy/rainy conditions and a deterministic chance per response
+identity. Missing protection fails closed. `storm_chance_percent` defaults to
+zero: production storm activation stays off while storm behavior is authored in
+the separate storm discussion. A finite local presentation timer exists for
+explicit tests/tuning; exposure, protection, storm traversal and full lifecycle
+are not delivered and no HP/XP effects are invented.
+
+The optional `ecology` extension keeps existing version-20 snapshots readable.
+It captures policy once, validates references/energy/expiry and normalizes JSON
+numbers. No player save file is automatically rewritten. Rebuild active geography
+from canonical flora on load; inactive groups receive no invented refill/catch-up.
+Shared active time runs through tactical combat; explicit pause stops it.
+
+### Player-facing delivery
+
+Owner-authorized particle promotion, October 29: `vessel_swarms.gd` now consumes
+saved state through `scenes/vessel_particle_swarm.tscn`. Each group uses one GPU
+emitter with up to 24 visual orb heads, ten fading samples per trail and two
+shared billboard passes (direct radial warp mask, then orb/trail glow). The
+existing group limit, picking, plant presentation and warning remain in place.
+GPU paths retain state-dependent gathering, response motion and recovery height.
+Stable group seeds keep visual placement independent of render-slot order.
+
+The renderer supplies saved active seconds; the emitter's independent preview
+clock is disabled. Pausing or holding that clock holds paths, trails and anger
+blending; render delta/camera cannot change energy or advance swarms. Response
+states request visual anger 0 normally, 0.4 responding and 1 escalating, blended
+at one unit per active second. This is presentation, not a new anger mechanic.
+Warp is almost imperceptible calm (0.07 px default peak), then rises quadratically
+with anger to 28 px at full response. RGB separation follows anger squared too.
+Actual discharges retain a single-line local warning. Storm visuals remain
+inactive under the default policy. Emissive glow adds no per-orb light nodes.
+
+The reusable particle scene exposes visual scale, flight radius/speed, wake
+duration/sample count and tint/distortion tuning. Restart the game to apply
+structural edits; live anger/aberration setters apply immediately. Runtime clamps
+the authored visual count to 1–24 and always enforces the shared clock. Individual
+affinity tint still comes from the existing environment/palette owner. No save
+schema, population, feeding, storm admission or generation rule changed.
+
+Particle promotion validation: Godot 4.7.2 headless and Forward+ / Direct3D 12
+`tests/vessel_ecology.gd` passed 71 checks each, including the particle pool,
+shared clock, render-state immutability and existing inspection/picking checks.
+The connected capture was inspected. The rendered check used a fresh ignored
+local profile after a prior stale shader-cache error; the final run was clean.
+
+Group picking and specialist plant targets reuse existing Observe/Details actions.
+Observe follows visible activity while open; neutral/idle text invents no flowing
+energy or healing. Details distinguishes reserve, ambient concentration, class,
+active function and a locally received trace; it reveals no unseen instigator.
+Ecological targets expose compact additional facts while ordinary target Details
+keeps its existing graph-only presentation. The normal ground target stays a plant;
+selecting a visible swarm explicitly selects the group instead.
+
+`VegetationAppearance` owns optional class art paths and fitted height/width,
+separate from saved mechanics. Owner-supplied CraftPix models 019/015/017 serve as
+Warden/Mender/Regulator artwork. Their palette is bound at presentation time.
+Specialist bodies now belong to the ordinary streamed chunks,
+using their stable seed/cell class identity even beyond active ecology. They
+reconstruct with the same positions and models after chunk eviction. Local ecology
+selects nearby activity pulses only; its nearest-24/12-cell list no longer owns
+plant model creation or removal. Rendering these bodies never admits simulated
+flora, adds reserves, advances time or credits packets.
+Raw files
+remain local-only; absent files use the existing CC0 nature fallback. See
+[asset provenance](../assets/nature/PROVENANCE.md#tropical-plant-class-placeholders--october-29-2026).
+
+Validation and next work are indexed in the world roadmap. Runtime evidence lives
+under ignored `artifacts/vessel-response/`; no full-suite or target-device pass is
+claimed. Balance, larger-world admission/service limits, biome/species authoring,
+regional supply budgets and owner experience acceptance remain open.
+
+Validation: [pilot evidence and remaining delivery](world-exploration-roadmap.md#pilot-validation-and-remaining-delivery).
+
+### Grass lab functional connection review — October 30, 2026
+
+Owner requirement: Vastra visuals must connect to the systems Vastra actually
+serves. The grass fixture now exercises the existing `ExpeditionState` /
+`PlantVastra` owners with eight isolated test definitions, rather than drawing
+arbitrary links between grass positions. Its renderer consumes `flora_transfers`
+and rejects missing/mismatched cell endpoints. Visible packets retain flight IDs,
+source/destination IDs and root/energy recipient roles; reserves belong to cells,
+never to graphical blades. Seeded test stock is explicitly identified in the HUD.
+The current review covers grass emissions, tree receipt and root return. Specialist
+repair/regulation/protection, Vessel and Sol feeding need their own actual
+recipient/state projections when shown; this lab does not substitute decorative
+links for those systems. Existing production `transfer_asset` already verifies
+`flora_id` against each ledger node. See the grass fixture section in
+[the workstation guide](development-workstation.md#grass-with-vastra-comparison--october-30-2026).
+
+### Shared grass presentation integration — October 30, 2026
+
+Grass is the built-in emanator presentation under `AuthoredPlantLibrary.add_cell`,
+alongside authored emanators, reservoir trees and specialist receivers. The same
+owner coordinates body selection, ground cover and endpoint fallback. Grass
+blades and specialist ground cover share their canonical cell reserve; authored
+emanators replace the default grass body. Density and visibility never admit or
+remove saved flora. Weather reaches all plant renderers through the library;
+plant event animations consume the same existing canonical-cell groups.
+
+This preserves existing mechanics evidence and the generated-membership contract.
+Read-only reference checked `vastra_simulation.py` and
+`tests/test_vastra_foundation.py` at SolHunterSource commit
+`d6f0902d77ed46a2f7d251c354792a4cc9210bc4`: ambient reads remain separate from
+bounded saved activity updates. No reference files were copied or modified.
+Focused integration results and the broader rendered-pair fixture limitation are
+recorded in [procedural plants](procedural-plants.md#grass-under-the-shared-plant-owner--october-30-2026).

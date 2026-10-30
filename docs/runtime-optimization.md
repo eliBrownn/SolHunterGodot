@@ -1,5 +1,84 @@
 # Runtime optimization
 
+## Live plant palette and Vastra consumers — October 30, 2026
+
+The live procedural fallback palette now loads 68 compressed, prebuilt art
+definitions under `resources/plants/runtime_palette/`. Recipes, dimensions,
+accepted full-resolution geometry, organ anchors and canonical placement stay
+unchanged. Bake-time compaction preserves native mesh LODs. The three neutral
+tissue materials become one material with the same colors carried in vertices,
+removing two material surfaces per design. Exact mesh-space picking bins are
+also built offline, rather than reconstructed by a cold streamed cell.
+
+Regenerate with the pinned engine using `--headless --path . --script
+tools/bake_runtime_plants.gd` after changing the shared plant builders or picking
+index. The manifest fingerprints those inputs, including the bake tool. The tool
+rejects changes to its inputs during baking. Development/editor binaries reject
+stale manifests; missing/stale entries use the original deterministic builders.
+Exports package the versioned bake with the build (compiled script remapping
+prevents checking source-file hashes there). Include the manifest JSON in export
+filters when preparing an export. Authored plant-library entries retain priority;
+the bake does not enable drafts, change ecological admission or enter saves.
+
+Chunk MultiMeshes assemble their row-major transform/color buffers in the
+existing bounded preparation slices and submit one completed buffer per batch.
+Individual root pivots, linear colors, blade alpha, picking and animation
+membership are retained. Publication remains atomic; GPU upload is still an
+indivisible operation, not a hard frame-time guarantee.
+
+Live filament rendering no longer constructs the hidden legacy ribbon surfaces,
+per-vertex optical readings or connected-region fields. Conserved packet IDs,
+paths, organ endpoints and clocks still feed the filament consumer. Explicit
+legacy/debug views and optional scenery lights retain their required paths.
+Changing between consumers invalidates the projection immediately. State,
+periodic source/tuning and camera invalidations coalesce into one refresh per
+frame; transfer sorting computes each source distance once.
+
+`tests/bottleneck_regressions.gd` is connected to the existing validator and
+checks all baked definitions, anatomy/dimensions, geometry counts/bounds,
+material merging, baked-versus-fresh triangle bins, stale/missing bake rejection,
+MultiMesh upload/animation membership and consumer switches. Its rendered run
+also checks transform and color readback. `tools/profile_bottlenecks.gd` compares
+the original builder and baked path over eight identical chunks and checks exact
+cell, cosmetic-placement and living-source equivalence. An optional
+`-- --reference=res://<archived-solid-chunk.gd>` also compares a captured prior
+upload implementation. It is CPU work evidence, not a whole-game FPS assertion.
+
+Evidence for this pass is under `artifacts/bottleneck-fixes/`. Rendered paired
+tree samples for meadow and woodland were inspected; their images matched
+pixel-for-pixel with native LOD disabled for the full-resolution comparison.
+Performance and final validation results are recorded below after measurement.
+
+## Terrain detail scheduling and material reuse — October 30, 2026
+
+Detailed terrain now advances before temporary coverage. When visible coverage
+has gaps, half the remaining frame work budget is reserved for it; once coverage
+exists, detail can use the full remaining budget. This prevents cold fallback
+preparation from repeatedly taking all detail time. Existing flora admission,
+chunk publication limits and saved generation settings remain authoritative.
+
+Terrain material samples share a bounded 32,768-vertex cache across neighboring
+faces, shoreline skirts and near/far meshes. It combines soil and path sampling,
+uses weak expedition ownership, and discards values on terrain replacement.
+Eviction affects computation only; returned arrays cannot mutate cached weights.
+
+The Godot 4.7.2 repeated-sample comparison recorded 686.618 ms before and
+32.566 ms with reuse for 2,312 matching samples. This is material-sampling CPU
+work, not whole-game FPS. Focused material (4,811), loading (64) and stutter
+(353) checks passed. Editor scanning/class registration completed without script
+parse errors, but editor safe-save failed; no clean import pass is claimed.
+Loading/stutter fixtures retain
+their Canvas/ObjectDB shutdown warnings. Evidence is under
+`artifacts/terrain_audit/`; rendered completion evidence is recorded separately.
+
+The generation-12 Direct3D 12 review drained all 68 initially queued detail
+chunks through normal scheduling with accelerated frame calls. The final capture
+(`fixed-view.png`) was inspected at the fixed 35-degree/zero-orbit camera and
+shows the corrected pond-bank slope. Its 28.182-second accelerated workload is
+not real-time travel/FPS evidence. The earlier 1,800 real-frame sample still had
+42 queued chunks after 57.313 seconds; distant-detail latency remains measurable
+follow-up work rather than a claim of instant full-world loading.
+
 October 28, 2026. Scope: the six opportunities identified in the owner's code
 review. Generation rules, collision, identity, clocks, combat resolution and save
 formats are retained. This document records implementation and evidence; project
@@ -12,8 +91,8 @@ workflow remains in [PROJECT_STANDARD.md](PROJECT_STANDARD.md).
   One indivisible operation can overrun it; this is not a hard frame-time cap.
   A chunk is published only when its cells and geometry are complete. Camera
   replanning, new expeditions and load/rebuild discard stale work. Existing
-  temporary ground continues to cover queued chunks. Initial visible terrain
-  and explicit rebuilds remain synchronous to preserve immediate coverage.
+  temporary ground continues to cover queued chunks. The October 30 loading follow-up below limits synchronous detail to the player
+  chunk and preserves initial coverage with coarse generated terrain.
 - Battle layouts reuse tile nodes, terrain overlay meshes, per-side Sol views
   and target-preview markers. Unused markers are hidden, and scale/position/color
   are reset on reuse. Session/state replacement releases the pools. Existing
@@ -264,3 +343,151 @@ movement/admission still peaked at 45.86 ms and a simulation callback batch at
 18.05 ms. Startup and explicit save/new/load remain synchronous. Results are
 desktop observations, not isolated GPU benchmarks or Thor qualification; the
 initial restricted-launch audit is not a controlled before/after baseline.
+
+## Loading and runtime follow-up — October 30, 2026
+
+Plan: measure the current checkout; reduce synchronous startup/rebuild work;
+reuse validated save candidates; remove unused optical work and repeated uploads;
+route plant animation to its geographic chunks; verify geometry, persistence,
+streaming lifecycle and rendered coverage. These steps are implemented below.
+
+- Solid-world rebuilds publish the player's detail chunk immediately. The existing
+  coarse-ground renderer covers pending visible terrain before returning; nearby
+  detail then uses the existing bounded streaming jobs. Flat-world loading retains
+  its visible-tile path. World generation, movement and saved ecology remain the
+  authorities while detailed scenery is pending.
+- Startup no longer compacts/tints/picks the entire biome palette. Existing shared
+  asset caches prepare only assets actually requested by generated chunks.
+- Streamed chunks prepare shared terrain material uniforms and biome patches once,
+  rather than repeating that setup for each of their 256 one-cell work steps.
+- Save reading retains the state and terrain admitted by validation and passes
+  those exact objects to the load. Every candidate still checks format, state,
+  generation parameters, flora membership, roaming positions and player position.
+  No persistent trust cache or unchecked restore flag is introduced. Save-only
+  validation does not allocate a restored state unnecessarily.
+- Filament mode skips the hidden legacy particle/light update when no optional
+  scene lights consume it. Optional lighting, legacy study rendering and debug
+  heatmaps retain their existing paths.
+- Filament path uploads invalidate on path changes or floating-origin changes;
+  other uniforms update by value. Clearing positions are transformed once when
+  their input changes, rather than separately for every transfer every frame.
+- Plant events route directly to canonical 16-cell chunk owners, including negative
+  coordinates. Unchanged paused poses skip transform writes; removed/replaced
+  chunks restore their previous animated instances before reuse.
+
+### Measurements and limits
+
+Godot 4.7.2, current dirty development checkout, disposable save, headless CPU
+study (`tools/profile_loading.gd`). Baseline and initial corrected coverage run:
+
+| Operation | Before | After |
+| --- | ---: | ---: |
+| Scene initialization after resource loading | 35,536 ms | 5,234 ms |
+| Explicit warm rebuild | 11,483 ms | 1,092 ms |
+| Disposable save load | 32,591 ms | 3,477 ms |
+| Synchronous detailed chunks | 51 | 1 |
+
+Resource loading was approximately 3.7–3.8 seconds separately. These samples use
+in-process rebuilds/loads and retain OS/driver caches; they are observations, not
+performance thresholds or a claim about every save size. This profiling save has
+no flora ledger; the regression fixture separately exercises a populated ledger.
+
+The final rendered D3D12/RTX 3070 sample at 2560 × 1369 initialized in 5,924 ms
+plus 2,689 ms resource loading and loaded its disposable save in 3,203 ms. There
+were 52 initial coarse chunks. Removing repeated chunk setup improved the 1,800
+frame streaming sample from 8 to 21 newly published detail chunks (46.2 and 37.3
+seconds respectively). This is not complete-detail acceptance: 47 chunks remained
+queued in the latter sample. One cold cell/asset operation reached 205 ms and
+an individual preparation slice reached 209 ms; asset compilation remains
+indivisible. The new loading behavior makes the expedition available sooner but
+does not eliminate all streaming hitches. No density, draw-distance, simulation
+rate or visual-quality tuning was reduced. No Thor/device acceptance is claimed.
+
+Evidence: `artifacts/loading/` contains the disposable save, profiling output,
+rendered first/streaming views and validation logs. `tests/loading_regressions.gd`
+is included in the existing validator; it verifies initial ground coverage,
+populated save admission/rejection, chunk routing/restoration, paused work skips,
+and filament invalidation. Existing smoke coverage now accepts generated coarse
+ground while detail is queued, and the eviction fixture waits for its second
+streamed chunk. Validation results are recorded after the final checks below.
+
+Validation: Godot import/parse passed. Focused suites passed: loading regressions
+60, runtime optimization 62, world optimization 8,488, stutter regressions 353,
+Vastra currents 129, persistence foundation 76, and rendered plant-event animation
+45 checks (9,213 combined). Script ownership passed with 181 mapped scripts/UIDs.
+Headless plant-event geometry readback has two failures also reproduced with the
+original animation loop; the rendered D3D12 test passes all 45 assertions.
+
+The final solid-world smoke journey completed 2,532 checks with one unrelated
+stale assertion expecting eight rogue mesh pieces, while the configured player is
+now the grave knight. Coverage, movement and save/new/load assertions passed. This
+is not a full-validator pass, and that model-specific assertion remains unchanged.
+Earlier restricted runs could not write disposable user-data fixtures; the final
+persistence/journey runs used normal Godot access. Existing Canvas/ObjectDB exit
+warnings were also present in the initial baseline. No commits, staging, push or
+merge were performed; the checkout's pre-existing content changes are preserved.
+
+### Grass surface reuse — October 30, 2026
+
+Dense blade placement now resolves each canonical cell's four terrain vertices
+and two triangle slope checks once, rather than once per candidate blade. Blade
+height interpolation retains the canonical triangle split and original floating
+point offsets. Specialized terrain scripts retain their surface-query overrides.
+No density, draw distance, appearance or reserve tuning changed.
+
+A paired 256-cell CPU comparison against the pre-edit script matched complete
+batch dictionaries and living-source records at divisions 2, 8 and 16, both with
+and without specialist center clearance (six comparisons, zero differences).
+At 16 divisions the measured placement work fell from 129.185 to 73.250 ms and
+120.989 to 69.096 ms (about 43%); at 8 divisions it fell from 47.832 to 29.171 ms
+and 41.446 to 25.882 ms. These are single-run local CPU observations, not FPS or
+GPU claims. The copied baseline and comparison harness are disposable local
+artifacts under `artifacts/deep-optimization/`.
+
+Godot 4.7.2 import/parse passed with normal editor-directory access. Focused
+validation passed: `tests/grass_surface_optimization.gd` (26,745 checks across
+13,371 blades, two canonical seeds and a surface-override fixture),
+`tests/foliage_rollout.gd` (7,293 checks), and `tests/world_optimization.gd`
+(4,328 checks). The latter reported Canvas/ObjectDB exit warnings. This is not
+a full-validator pass or rendered gameplay/FPS acceptance. Changes remain
+uncommitted on `codex/deep-grass-optimization`, preserving the existing dirty
+checkout; the edited grass script was already untracked before this pass.
+
+### Launch preparation — October 30, 2026
+
+The world controller no longer constructs a default WorldTerrain before its
+configured new expedition replaces it. Terrain is initialized by the existing
+validated new-expedition path before gameplay starts. Raw heightfield integer
+vertices now use a bounded 32,768-entry derived FIFO cache, shared by repeated
+foundation, road and drainage preparation. Cache eviction reconstructs identical
+values and does not affect saved parameters. Terrain material masks use the
+canonical visible-trail query without constructing full affinity/ecology cell
+records; specialized review sample overrides retain their original behavior.
+Optional legacy animation packs and the Development Lab scene load on first use.
+
+The existing `tools/profile_loading.gd` headless study measured resource loading
+plus scene readiness at 10.369 seconds before and 8.565 seconds after (about 17%
+less). Scene preparation alone fell from 6.625 to 4.804 seconds (about 27%).
+Disposable-save loading measured 3.793 versus 2.746 seconds. Both samples retained
+one detailed player chunk, 55 coarse ground chunks and 72 queued detail chunks;
+coverage and detail settings were not reduced. These are local single-run CPU
+observations with OS caches retained, not process-to-playable guarantees. Resource
+loading itself was effectively unchanged (3.745 versus 3.761 seconds). Other
+rendering work was being edited concurrently and was preserved, so this is not
+an isolated whole-renderer benchmark.
+
+The rendered production scene reached a visible first frame; its screenshot is
+`artifacts/launch-optimization/first-frame.png`. That run fell back from Vulkan
+to Direct3D 12 and measured 17.858 seconds from script entry to captured frame;
+it is separate evidence, not comparable to the headless CPU figure. The lab
+round-trip retry passed after concurrent shader edits settled. No renderer
+configuration changes were made by this launch pass. Raw logs and copied
+pre-edit scripts live under `artifacts/launch-optimization/`.
+
+Final focused validation: Godot 4.7.2 import/parse passed; launch optimization
+742, loading regressions 74, terrain heightfield 298, terrain geography 8,754,
+world generation 147 across 11 seeds, and development-world round trips 31 checks
+passed (10,046 total). Loading fixtures retain the previously observed
+Canvas/ObjectDB exit warnings. The full configured validator and an exported
+build were not run. Reviewed changes remain uncommitted alongside the owner's
+existing changes on `codex/deep-grass-optimization`; no staging or push occurred.

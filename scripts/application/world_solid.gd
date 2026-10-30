@@ -9,6 +9,8 @@ const TerrainRay = preload("res://scripts/presentation/terrain_ray.gd")
 @export_group("3D View")
 ## Perspective, dolly range, draw/stream/shadow distances, sky and fog. Restart/reapply to use edits.
 @export var view_settings: View3DSettings = preload("res://resources/view_3d_settings.tres")
+## Optional specialist plant art. Missing local models use the bundled CC0 fallback.
+@export var vegetation_appearance: VegetationAppearance = preload("res://resources/vegetation_appearance.tres")
 ## Imported biome meshes, visual sizes and nonblocking decoration density. Rebuild/restart to apply; not saved.
 @export var nature_settings: NatureSettings = preload("res://resources/nature_settings.tres")
 ## Cosmetic roof trim only. Rebuild/restart applies, including loaded expeditions.
@@ -29,6 +31,7 @@ var solid_chunks: Dictionary = {}
 var retained_solid: Dictionary = {}
 var retired_solid: Array[Node3D] = []
 var detail_cache_reuses := 0
+var scenery_fades: Dictionary = {}
 var stream_job: RefCounted
 var max_stream_slice_ms := 0.0
 var max_stream_geometry_ms := 0.0
@@ -37,25 +40,27 @@ var streaming_ground := preload("res://scripts/presentation/streaming_ground.gd"
 var selection := Node3D.new()
 var player_shadow := MeshInstance3D.new()
 var visibility_aid: Node3D
+var pixel_effect: CanvasLayer
+var camera_ground_y := 0.0
+var camera_ground_at := Vector2.ZERO
+var camera_ground_source: WorldTerrain
+var vessel_swarms: Node3D
+@export_group("Plant event animations")
+@export_range(0.0,2.0,0.1) var plant_animation_strength := 1.0
+@export_range(0.5,3.0,0.1) var plant_animation_duration := 1.6
+var plant_animation = preload("res://scripts/presentation/plant_animation.gd").new()
+var authored_plant_revision := -1
 
 func _ready() -> void:
+	preload("res://scripts/scenery/plant_library.gd").all()
+	authored_plant_revision=preload("res://scripts/scenery/plant_library.gd").revision
 	active_view = view_settings if view_settings != null and view_settings.valid() else View3DSettings.new()
 	if active_view != view_settings:
 		push_warning("Invalid 3D view settings; using defaults.")
 	active_nature = nature_settings if nature_settings != null and nature_settings.valid() else NatureSettings.new()
 	if active_nature != nature_settings:
 		push_warning("Invalid nature settings; using the default visual palette.")
-	if active_nature.composition != null:
-		# Compile the small bounded static palette before publishing streamed chunks.
-		for patch in active_nature.composition.patches:
-			for entry in patch.entries:
-				entry.admitted_model()
-	# Flatten and prepare shared static mesh/picking data before walking begins.
-	for palette in [active_nature.common_trees, active_nature.hardy_trees, active_nature.rocks, active_nature.undergrowth]:
-		for asset in palette:
-			preload("res://scripts/scenery/nature_art.gd").compact_parts(asset)
-			for piece in preload("res://scripts/scenery/nature_art.gd").parts(asset).pieces:
-				MeshPicking.prepare(piece.mesh)
+	# Shared art/picking caches prepare only assets actually requested by chunks.
 	capture_directory = "res://artifacts/solid3d"
 	super._ready()
 	# Rebase after the 2D simulation updates its camera, avoiding a one-frame ground lag.
@@ -88,15 +93,31 @@ func _ready() -> void:
 	atmosphere_controller = preload("res://scripts/presentation/atmosphere_controller.gd").new()
 	add_child(atmosphere_controller)
 	atmosphere_controller.bind(self, atmosphere_settings)
+	vessel_swarms = preload("res://scripts/presentation/vessel_swarms.gd").new()
+	add_child(vessel_swarms)
+	vessel_swarms.bind(world)
 	sync_ground()
 	view_hint = world.label("", 14, Color("e1c791"))
 	view_hint.position = Vector2(350, 30)
 	world.hud.add_child(view_hint)
 	get_viewport().size_changed.connect(view_changed)
 	view_changed()
+	pixel_effect = preload("res://scripts/presentation/pixel_effect.gd").new()
+	pixel_effect.native_msaa = active_view.multisample_antialiasing
+	pixel_effect.level = active_view.pixel_effect_level
+	add_child(pixel_effect)
+	# The temporary lab is a separate world; hosted fixtures must not create switches.
+	if get_parent() == get_tree().root:
+		var lab_switch := preload("res://tools/development_world_toggle.gd").new()
+		lab_switch.name = "DevelopmentWorldToggle"
+		add_child(lab_switch)
+		lab_switch.bind(self)
 
 func configure_environment() -> void:
 	get_viewport().msaa_3d = active_view.multisample_antialiasing
+	if pixel_effect != null:
+		pixel_effect.native_msaa = active_view.multisample_antialiasing
+		pixel_effect.set_level(active_view.pixel_effect_level)
 	environment.ssao_enabled = active_view.ambient_occlusion
 	environment.ssao_radius = active_view.occlusion_radius
 	environment.ssao_intensity = active_view.occlusion_intensity
@@ -113,6 +134,8 @@ func configure_environment() -> void:
 	sky.radiance_size = Sky.RADIANCE_SIZE_128
 	environment.sky = sky
 	environment.background_mode = Environment.BG_SKY
+	# Keep post-processing glow disabled.
+	environment.glow_enabled = false
 	environment.fog_enabled = true
 	environment.fog_mode = Environment.FOG_MODE_DEPTH
 	environment.fog_light_color = active_view.horizon_color
@@ -128,6 +151,7 @@ func apply_atmosphere_settings() -> void:
 		atmosphere_controller.configure(atmosphere_settings)
 
 func reset_camera() -> void:
+	camera_ground_source = null
 	camera_focus = Vector3.ZERO
 	target_size = active_view.starting_distance if active_view != null else 22.0
 	view_elevation = clampf(camera_elevation, 10, 80) if is_finite(camera_elevation) else 35.0
@@ -138,18 +162,27 @@ func apply_camera() -> void:
 	update_camera_pose()
 	view_changed()
 
-func update_camera_pose() -> void:
+func update_camera_pose(delta: float = 0.0) -> void:
 	if active_view == null:
 		return
 	camera.projection = Camera3D.PROJECTION_PERSPECTIVE
 	camera.fov = active_view.field_of_view
 	camera.near = 0.1
-	camera.far = active_view.render_distance
+	camera.far = active_view.render_distance+preload("res://scripts/scenery/plant_library.gd").maximum_height()
 	var elevation := deg_to_rad(view_elevation)
 	var azimuth := deg_to_rad(view_azimuth)
 	var focus := camera_focus
 	if world != null:
-		focus.y = world.terrain.surface_height(world.camera.position / 32.0 + Vector2(focus.x, focus.z))
+		var at: Vector2 = world.camera.position / 32.0 + Vector2(focus.x, focus.z)
+		var target_height: float = world.terrain.surface_height(at)
+		if camera_ground_source != world.terrain or at.distance_to(camera_ground_at) > 2.0 or active_view.height_smoothing_seconds <= 0.0:
+			camera_ground_y = target_height
+		elif delta > 0.0 and not world.paused:
+			camera_ground_y = lerpf(camera_ground_y, target_height, 1.0 - exp(-delta / active_view.height_smoothing_seconds))
+			camera_ground_y = clampf(camera_ground_y, target_height - 0.35, target_height + 0.35)
+		camera_ground_source = world.terrain
+		camera_ground_at = at
+		focus.y = camera_ground_y
 	camera.position = Vector3(sin(azimuth) * cos(elevation), sin(elevation), cos(azimuth) * cos(elevation)) * target_size + focus
 	if world != null:
 		var camera_at: Vector2 = world.camera.position / 32.0 + Vector2(camera.position.x, camera.position.z)
@@ -159,7 +192,7 @@ func update_camera_pose() -> void:
 
 func height_bound() -> float:
 	var tuning: Dictionary = world.terrain.relief
-	return (float(tuning.broad_amplitude) + float(tuning.detail_amplitude) + float(tuning.micro_amplitude)) * 2.0 + 1.0
+	return (float(tuning.broad_amplitude) + float(tuning.detail_amplitude) + float(tuning.micro_amplitude)) * 2.0 + 5.0 * float(tuning.landform_strength) + float(tuning.mountain_height) + 1.0
 
 func pointer_world(pointer: Vector2 = get_viewport().get_mouse_position()) -> Variant:
 	pointer_terrain_depth = INF
@@ -198,24 +231,58 @@ func stream_key() -> String:
 	return "%d:%d:%d:%d:%d" % [floori(world.camera.position.x / 128.0), floori(world.camera.position.y / 128.0), WorldTerrain.floor_div(world.cell.x, 16), WorldTerrain.floor_div(world.cell.y, 16), view_revision]
 
 func stream_plan() -> Array[Vector2i]:
-	return ViewStreaming.plan(camera, world.camera.position / 32.0, world.cell, active_view, active_nature.tree_height * 1.2 + 3 + height_bound(), -height_bound())
+	var library:=preload("res://scripts/scenery/plant_library.gd")
+	return ViewStreaming.plan(camera, world.camera.position / 32.0, world.cell, active_view, maxf(active_nature.canopy_height_bound(),library.maximum_height()) + 3 + height_bound(), -height_bound(), library.maximum_width()*0.5)
 
 func chunk_visible(coord: Vector2i) -> bool:
-	return ViewStreaming.visible(camera, Vector2(coord * 16) - world.camera.position / 32.0, active_nature.tree_height * 1.2 + 3 + height_bound(), 0.0, -height_bound())
+	var library:=preload("res://scripts/scenery/plant_library.gd")
+	return ViewStreaming.visible(camera, Vector2(coord * 16) - world.camera.position / 32.0, maxf(active_nature.canopy_height_bound(),library.maximum_height()) + 3 + height_bound(), library.maximum_width()*0.5, -height_bound())
 
 func stream_capacity() -> int:
-	var radius := ceili((active_view.render_distance + active_view.stream_margin) / 16.0) + 1
+	var margin:=maxf(active_view.stream_margin,preload("res://scripts/scenery/plant_library.gd").maximum_width()*0.5)
+	var radius := ceili((active_view.render_distance + margin) / 16.0) + 1
 	return (radius * 2 + 1) * (radius * 2 + 1) + 18
+
+func keep_stream_chunk(coord: Vector2i) -> bool:
+	# Keep published scenery through camera turns. The player-centered square
+	# stays inside stream_capacity; movement eventually retires distant chunks.
+	var local: Vector2i = world.terrain.chunk_of(world.cell)
+	var margin:=maxf(active_view.stream_margin,preload("res://scripts/scenery/plant_library.gd").maximum_width()*0.5)
+	var radius := ceili((active_view.render_distance + margin) / 16.0) + 1
+	return absi(coord.x - local.x) <= radius and absi(coord.y - local.y) <= radius
 
 func configure_asset_distances(chunk: Node3D) -> void:
 	for mesh in chunk.get_children():
 		if mesh is GeometryInstance3D:
+			if mesh.name.begins_with("nature_"): mesh.lod_bias = active_view.scenery_lod_bias
 			mesh.visibility_range_end = active_view.detail_distance if mesh.name.begins_with("nature_detail_") else 0.0
-			mesh.visibility_range_end_margin = 4.0
-			mesh.visibility_range_fade_mode = GeometryInstance3D.VISIBILITY_RANGE_FADE_DISABLED
+			mesh.visibility_range_end_margin = 12.0
+			if mesh.name.begins_with("nature_detail_meadow"):
+				mesh.visibility_range_end = minf(active_view.grass_distance, active_view.render_distance)
+				mesh.visibility_range_end_margin = 8.0
+			mesh.visibility_range_fade_mode = GeometryInstance3D.VISIBILITY_RANGE_FADE_SELF if mesh.visibility_range_end > 0 else GeometryInstance3D.VISIBILITY_RANGE_FADE_DISABLED
 
 func _process(delta: float) -> void:
+	plant_animation.update(world.persistent_state,solid_chunks,world.cell,plant_animation_strength,plant_animation_duration)
+	var library := preload("res://scripts/scenery/plant_library.gd")
+	if authored_plant_revision<0: authored_plant_revision=library.revision
+	elif authored_plant_revision!=library.revision:
+		authored_plant_revision=library.revision
+		refresh_authored_plant_scenery()
+	update_camera_pose(delta)
 	trim_detail_cache()
+	for chunk: Node3D in scenery_fades.keys():
+		if not is_instance_valid(chunk):
+			scenery_fades.erase(chunk)
+			continue
+		var weight: float = minf(1.0, float(scenery_fades[chunk]) + delta / 0.6)
+		for mesh in chunk.get_children():
+			if mesh is GeometryInstance3D and mesh.name.begins_with("nature_"):
+				mesh.transparency = 1.0 - smoothstep(0.0, 1.0, weight)
+		if weight >= 1.0:
+			scenery_fades.erase(chunk)
+		else:
+			scenery_fades[chunk] = weight
 	for index in range(mini(active_view.chunks_per_frame, retired_solid.size())):
 		retired_solid.pop_front().free()
 	sync_ground()
@@ -223,17 +290,39 @@ func _process(delta: float) -> void:
 	if atmosphere_controller != null:
 		atmosphere_controller.update()
 
+func refresh_authored_plant_scenery() -> void:
+	# Derived render data only. Expedition, terrain, clock and flora reserves survive.
+	cancel_stream_chunk()
+	for coord in world.chunks.keys(): world.remove_chunk(coord)
+	for chunk: Node3D in retained_solid.values(): retired_solid.append(chunk)
+	retained_solid.clear()
+	world.last_chunk=Vector2i(999999,999999)
+	world.last_stream_key=""
+	world.plan_chunks()
+
 func update_horizon(_delta: float) -> void:
 	# Camera motion must not pull fog over the trainer. Temporary ground covers
 	# visible queued chunks while detailed terrain/scenery keeps its frame budget.
 	environment.fog_depth_end = active_view.render_distance - 4.0
 	environment.fog_depth_begin = environment.fog_depth_end * active_view.fog_start_fraction
 
+func stream_ground_has_gaps() -> bool:
+	update_camera_pose()
+	var planes := camera.get_frustum()
+	var origin: Vector2 = world.camera.position / 32.0
+	var height := height_bound()
+	for coord: Vector2i in world.pending:
+		if streaming_ground.chunks.has(coord) or streaming_ground.retained.has(coord):
+			continue
+		if ViewStreaming.visible_with_planes(planes, Vector2(coord * 16) - origin, height, 0.0, -height):
+			return true
+	return false
+
 func prepare_stream_ground(deadline_usec: int) -> void:
 	# The simulation moves first. Use the new pose for coverage, sharing the
 	# detailed terrain deadline rather than spending a second unbounded budget.
 	update_camera_pose()
-	streaming_ground.sync(world.terrain, world.pending, camera, world.camera.position / 32.0, height_bound(), active_view.stream_ground_step, active_view.stream_ground_cache_chunks, deadline_usec)
+	streaming_ground.sync(world.terrain, world.pending, camera, world.camera.position / 32.0, height_bound(), active_view.stream_ground_step, active_view.stream_ground_cache_chunks, deadline_usec, active_nature)
 
 func pointer_object_cell(pointer: Vector2, fallback: Variant) -> Variant:
 	pointer_subject = ""
@@ -273,6 +362,11 @@ func pointer_object_cell(pointer: Vector2, fallback: Variant) -> Variant:
 				distance = depth
 				selected = object.cell
 				pointer_subject = object.get("subject", "")
+	if vessel_swarms != null:
+		var ecological: Dictionary = vessel_swarms.pick(origin, direction, distance)
+		if not ecological.is_empty():
+			selected = ecological.cell
+			pointer_subject = ecological.subject
 	return selected
 
 func sync_ground() -> void:
@@ -285,9 +379,13 @@ func sync_ground() -> void:
 	for kind in ["water", "bank", "shore_rim"]:
 		if SolidChunk.meshes.has(kind):
 			SolidChunk.meshes[kind].material.set_shader_parameter("world_origin", origin)
+	# Shared terrain materials use absolute coordinates despite the camera-relative root.
+	for kind in SolidChunk.meshes:
+		if str(kind).begins_with("grass_") or str(kind).begins_with("trail_"):
+			SolidChunk.meshes[kind].surface_get_material(0).set_shader_parameter("world_origin", origin)
 	var player_at: Vector2 = Vector2(player_visual.position.x, player_visual.position.z) + world.camera.position / 32.0
 	player_shadow.position = Vector3(player_visual.position.x, world.terrain.surface_height(player_at) + 0.045, player_visual.position.z)
-	player_shadow.basis = Basis(Quaternion(Vector3.UP, world.terrain.surface_normal(player_at)))
+	player_shadow.basis = Basis(Quaternion(Vector3.UP, world.terrain.surface_normal(player_at))).scaled(Vector3(1, 1, 0.55) * player_visual.model_height / 1.7)
 	selection.visible = world.hover_outline.visible
 	if selection.visible:
 		var hovered: Vector2 = world.hover_outline.position / 32.0
@@ -306,7 +404,8 @@ func build_player_shadow() -> void:
 	disc.height = 0.002
 	disc.radial_segments = 16
 	player_shadow.mesh = disc
-	player_shadow.scale.z = 0.55
+	player_shadow.scale = Vector3.ONE * player_visual.model_height / 1.7
+	player_shadow.scale.z *= 0.55
 	player_shadow.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 	var material := StandardMaterial3D.new()
 	material.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
@@ -364,11 +463,18 @@ func publish_solid(coord: Vector2i, cells: Array[Dictionary]) -> void:
 		stream_job = null
 	else:
 		chunk = SolidChunk.new()
+		chunk.vegetation_appearance = vegetation_appearance
 		chunk.position = Vector3(coord.x * 16, 0, coord.y * 16)
 		chunk.build(cells, world.terrain, coord, active_nature)
+	# Keep imported cutouts in their normal depth-writing pass. Instance alpha
+	# forces whole plant batches into transparency and can hide/sort them wrongly.
+	for mesh in chunk.get_children():
+		if mesh is GeometryInstance3D and mesh.name.begins_with("nature_"):
+			mesh.transparency = 0.0
 	configure_asset_distances(chunk)
 	chunk.set_meta("source_terrain", world.terrain)
 	chunk.set_meta("source_nature", active_nature)
+	chunk.set_meta("source_vegetation", vegetation_appearance)
 	chunk.set_meta("source_cells", cells)
 	if chunk.get_parent() == null:
 		solid_root.add_child(chunk)
@@ -381,7 +487,9 @@ func prepare_stream_chunk(coord: Vector2i, deadline_usec: int) -> Variant:
 	if cached_detail_valid(coord):
 		return retained_solid[coord].get_meta("source_cells")
 	if stream_job == null:
-		stream_job = preload("res://scripts/presentation/stream_chunk_job.gd").new(world.terrain, coord, active_nature, SolidChunk.new())
+		var chunk := SolidChunk.new()
+		chunk.vegetation_appearance = vegetation_appearance
+		stream_job = preload("res://scripts/presentation/stream_chunk_job.gd").new(world.terrain, coord, active_nature, chunk)
 	var ready: bool = stream_job.advance(deadline_usec)
 	for stage in stream_step_peaks:
 		stream_step_peaks[stage] = maxf(stream_step_peaks[stage], stream_job.step_peaks[stage])
@@ -403,6 +511,11 @@ func _exit_tree() -> void:
 func remove_solid(coord: Vector2i) -> void:
 	if solid_chunks.has(coord):
 		var chunk: Node3D = solid_chunks[coord]
+		if scenery_fades.has(chunk):
+			scenery_fades.erase(chunk)
+			for mesh in chunk.get_children():
+				if mesh is GeometryInstance3D:
+					mesh.transparency = 0.0
 		chunk.hide()
 		if retained_solid.has(coord):
 			retired_solid.append(retained_solid[coord])
@@ -414,7 +527,7 @@ func cached_detail_valid(coord: Vector2i) -> bool:
 	if not retained_solid.has(coord):
 		return false
 	var chunk: Node3D = retained_solid[coord]
-	if chunk.get_meta("source_terrain", null) == world.terrain and chunk.get_meta("source_nature", null) == active_nature:
+	if chunk.get_meta("source_terrain", null) == world.terrain and chunk.get_meta("source_nature", null) == active_nature and chunk.get_meta("source_vegetation", null) == vegetation_appearance:
 		return true
 	retired_solid.append(chunk)
 	retained_solid.erase(coord)
@@ -427,6 +540,8 @@ func trim_detail_cache() -> void:
 		retained_solid.erase(oldest)
 
 func build_solid_places() -> void:
+	camera_ground_source = null
+	scenery_fades.clear()
 	# Rebuild/load is an explicit synchronous boundary, and must drop old worlds.
 	for chunk in retained_solid.values():
 		chunk.free()
@@ -458,6 +573,9 @@ func build_solid_places() -> void:
 				place_root.pick_objects[index].subject = "Pond side path"
 	place_root.finish()
 	sync_ground()
+	# Coarse generated terrain covers the first view; expensive scenery arrives
+	# through the normal resumable jobs instead of blocking every visible chunk.
+	streaming_ground.sync(world.terrain,world.pending,camera,world.camera.position/32.0,height_bound(),active_view.stream_ground_step,active_view.stream_ground_cache_chunks,0,active_nature)
 
 func build_prop(key: String, at: Vector2) -> void:
 	var wood := Color("72523b")
