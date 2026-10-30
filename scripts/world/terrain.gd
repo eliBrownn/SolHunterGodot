@@ -357,4 +357,3 @@ func extract_chunk(coord: Vector2i) -> Array[Dictionary]:
 		for x in range(CHUNK_SIZE):
 			cells.append(sample(coord * CHUNK_SIZE + Vector2i(x, y)))
 	return cells
-

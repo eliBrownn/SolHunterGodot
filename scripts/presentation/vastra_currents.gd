@@ -7,6 +7,7 @@ const MAX_PARTICLES := 128
 const MAX_GLOW_LIGHTS := 8
 var glow_lights: Array[OmniLight3D] = []
 var study_mode := false # Explicit art fixture only; live play consumes conserved simulation transfers.
+var filament_renderer: Node3D
 var world: Node2D
 var tuning: VastraSettings
 var state: ExpeditionState
@@ -64,6 +65,8 @@ var refresh_stage_peaks: Dictionary = {}
 
 func bind(source: Node2D) -> void:
 	world = source
+	filament_renderer=preload("res://scripts/presentation/vastra_filament_renderer.gd").new()
+	add_child(filament_renderer)
 	tuning = world.vastra_settings if world.vastra_settings != null and world.vastra_settings.valid() else VastraSettings.new()
 	material.shader = preload("res://shaders/vastra_current.gdshader")
 	material.set_shader_parameter("network", true)
@@ -1076,6 +1079,14 @@ func sync_wisps(full: bool = true) -> void:
 			wisp_material.set_shader_parameter(name, value)
 	update_particles()
 	update_glow_lights()
+	if filament_renderer!=null:
+		filament_renderer.sync(self)
+		if tuning.particle_filaments!=null and tuning.particle_filaments.enabled and tuning.particle_filaments.valid() and not study_mode:
+			batch.hide()
+			wisp_batch.hide()
+			previous_batch.hide()
+			previous_wisps.hide()
+			particle_batch.hide()
 
 # Bounded real lights illuminate scenery; HDR emission supplies the visible glow.
 # Read the same analytic mote positions, so pause, transfer arrival and rebasing

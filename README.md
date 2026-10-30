@@ -190,3 +190,9 @@ Quests, caves, economy and production wildlife simulation remain future work.
 The game automatically opens maximized to the available screen and adapts its
 view/UI to the current aspect ratio. It remains resizable; there is no fixed
 physical startup-window size. Restart the game after display-setting updates.
+
+## In-game Vastra particle experiment
+
+This branch enables the particle renderer in `scenes/world_3d.tscn`. See
+[controls, comparison and verification](docs/vastra-particles-game.md). The full
+lab remains available at `scenes/vastra_particle_lab.tscn`.

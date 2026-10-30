@@ -1,6 +1,8 @@
-[gd_resource type="Resource" script_class="VastraSettings" load_steps=2 format=3]
+[gd_resource type="Resource" script_class="VastraSettings" load_steps=3 format=3]
 
 [ext_resource type="Script" path="res://scripts/sols/vastra_settings.gd" id="1"]
+
+[ext_resource type="Resource" path="res://resources/vastra_particle_settings.tres" id="2"]
 
 [resource]
 script = ExtResource("1")
@@ -37,3 +39,5 @@ current_canopy_links = 2
 current_canopy_arc = 0.18
 current_height_range_multiplier = 5.0
 current_range_height = 3.0
+
+particle_filaments = ExtResource("2")

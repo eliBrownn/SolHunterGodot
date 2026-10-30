@@ -132,7 +132,12 @@ const SOURCE_REGION_SIZE := FloraCatalog.REGION_SIZE
 func plant_parameters() -> Dictionary:
 	return {"threshold": plant_threshold, "refill": plant_refill_rate, "repair_cost": plant_repair_cost, "repair_points": plant_repair_points, "speed": plant_transfer_speed, "work_limit": plant_work_limit, "active_radius": plant_active_radius, "ground_reach": current_ground_reach, "tree_reach": current_ground_reach * current_height_range_multiplier, "root_rate": plant_root_rate, "feeding_rate": sol_feeding_rate, "feeding_radius": sol_feeding_radius}
 
+@export_group("Particle Filament Branch Experiment")
+## Rendering comparison switch and optical tuning; never affects ecological transactions.
+@export var particle_filaments: VastraParticleSettings
+
 func valid() -> bool:
+	if particle_filaments!=null and not particle_filaments.valid(): return false
 	if not is_finite(current_distance_taper) or current_distance_taper < 0 or current_distance_taper > 4: return false
 	if not is_finite(current_flow_spread) or current_flow_spread < 0.0 or current_flow_spread > 2.0:
 		return false

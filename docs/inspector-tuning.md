@@ -800,3 +800,13 @@ The [story workshop](story-tools.md) exposes Preview Events on its root. StoryEv
 and StoryChoice resources expose IDs, prose, prerequisites and assigned facts;
 edits apply on the next opening. Saved decisions retain their stable IDs. The
 normal game has no automatically enabled campaign events.
+
+## Vastra particle renderer branch
+
+`resources/vastra_particle_settings.tres` is assigned through
+`VastraSettings.particle_filaments`. It enables GPU curved filaments in the
+normal 3D expedition. Disable its `enabled` property to compare the original
+surface renderer. Visibility/transfer visibility include zero; thickness,
+filament length, history, refraction and send-pulse controls use active time.
+See [in-game contract and checks](vastra-particles-game.md). The full lab and
+owner baseline remain separate authoring tools.
