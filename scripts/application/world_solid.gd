@@ -9,6 +9,8 @@ const TerrainRay = preload("res://scripts/presentation/terrain_ray.gd")
 @export_group("3D View")
 ## Perspective, dolly range, draw/stream/shadow distances, sky and fog. Restart/reapply to use edits.
 @export var view_settings: View3DSettings = preload("res://resources/view_3d_settings.tres")
+## Optional specialist plant art. Missing local models use the bundled CC0 fallback.
+@export var vegetation_appearance: VegetationAppearance = preload("res://resources/vegetation_appearance.tres")
 ## Imported biome meshes, visual sizes and nonblocking decoration density. Rebuild/restart to apply; not saved.
 @export var nature_settings: NatureSettings = preload("res://resources/nature_settings.tres")
 ## Cosmetic roof trim only. Rebuild/restart applies, including loaded expeditions.
@@ -29,6 +31,7 @@ var solid_chunks: Dictionary = {}
 var retained_solid: Dictionary = {}
 var retired_solid: Array[Node3D] = []
 var detail_cache_reuses := 0
+var scenery_fades: Dictionary = {}
 var stream_job: RefCounted
 var max_stream_slice_ms := 0.0
 var max_stream_geometry_ms := 0.0
@@ -37,6 +40,11 @@ var streaming_ground := preload("res://scripts/presentation/streaming_ground.gd"
 var selection := Node3D.new()
 var player_shadow := MeshInstance3D.new()
 var visibility_aid: Node3D
+var pixel_effect: CanvasLayer
+var camera_ground_y := 0.0
+var camera_ground_at := Vector2.ZERO
+var camera_ground_source: WorldTerrain
+var vessel_swarms: Node3D
 
 func _ready() -> void:
 	active_view = view_settings if view_settings != null and view_settings.valid() else View3DSettings.new()
@@ -50,6 +58,11 @@ func _ready() -> void:
 		for patch in active_nature.composition.patches:
 			for entry in patch.entries:
 				entry.admitted_model()
+	for biome in active_nature.biomes:
+		for asset in biome.trees:
+			preload("res://scripts/scenery/nature_art.gd").compact_parts(asset)
+		for entry in biome.details:
+			entry.admitted_model()
 	# Flatten and prepare shared static mesh/picking data before walking begins.
 	for palette in [active_nature.common_trees, active_nature.hardy_trees, active_nature.rocks, active_nature.undergrowth]:
 		for asset in palette:
@@ -88,15 +101,25 @@ func _ready() -> void:
 	atmosphere_controller = preload("res://scripts/presentation/atmosphere_controller.gd").new()
 	add_child(atmosphere_controller)
 	atmosphere_controller.bind(self, atmosphere_settings)
+	vessel_swarms = preload("res://scripts/presentation/vessel_swarms.gd").new()
+	add_child(vessel_swarms)
+	vessel_swarms.bind(world)
 	sync_ground()
 	view_hint = world.label("", 14, Color("e1c791"))
 	view_hint.position = Vector2(350, 30)
 	world.hud.add_child(view_hint)
 	get_viewport().size_changed.connect(view_changed)
 	view_changed()
+	pixel_effect = preload("res://scripts/presentation/pixel_effect.gd").new()
+	pixel_effect.native_msaa = active_view.multisample_antialiasing
+	pixel_effect.level = active_view.pixel_effect_level
+	add_child(pixel_effect)
 
 func configure_environment() -> void:
 	get_viewport().msaa_3d = active_view.multisample_antialiasing
+	if pixel_effect != null:
+		pixel_effect.native_msaa = active_view.multisample_antialiasing
+		pixel_effect.set_level(active_view.pixel_effect_level)
 	environment.ssao_enabled = active_view.ambient_occlusion
 	environment.ssao_radius = active_view.occlusion_radius
 	environment.ssao_intensity = active_view.occlusion_intensity
@@ -113,6 +136,8 @@ func configure_environment() -> void:
 	sky.radiance_size = Sky.RADIANCE_SIZE_128
 	environment.sky = sky
 	environment.background_mode = Environment.BG_SKY
+	# Keep post-processing glow disabled.
+	environment.glow_enabled = false
 	environment.fog_enabled = true
 	environment.fog_mode = Environment.FOG_MODE_DEPTH
 	environment.fog_light_color = active_view.horizon_color
@@ -128,6 +153,7 @@ func apply_atmosphere_settings() -> void:
 		atmosphere_controller.configure(atmosphere_settings)
 
 func reset_camera() -> void:
+	camera_ground_source = null
 	camera_focus = Vector3.ZERO
 	target_size = active_view.starting_distance if active_view != null else 22.0
 	view_elevation = clampf(camera_elevation, 10, 80) if is_finite(camera_elevation) else 35.0
@@ -138,7 +164,7 @@ func apply_camera() -> void:
 	update_camera_pose()
 	view_changed()
 
-func update_camera_pose() -> void:
+func update_camera_pose(delta: float = 0.0) -> void:
 	if active_view == null:
 		return
 	camera.projection = Camera3D.PROJECTION_PERSPECTIVE
@@ -149,7 +175,16 @@ func update_camera_pose() -> void:
 	var azimuth := deg_to_rad(view_azimuth)
 	var focus := camera_focus
 	if world != null:
-		focus.y = world.terrain.surface_height(world.camera.position / 32.0 + Vector2(focus.x, focus.z))
+		var at: Vector2 = world.camera.position / 32.0 + Vector2(focus.x, focus.z)
+		var target_height: float = world.terrain.surface_height(at)
+		if camera_ground_source != world.terrain or at.distance_to(camera_ground_at) > 2.0 or active_view.height_smoothing_seconds <= 0.0:
+			camera_ground_y = target_height
+		elif delta > 0.0 and not world.paused:
+			camera_ground_y = lerpf(camera_ground_y, target_height, 1.0 - exp(-delta / active_view.height_smoothing_seconds))
+			camera_ground_y = clampf(camera_ground_y, target_height - 0.35, target_height + 0.35)
+		camera_ground_source = world.terrain
+		camera_ground_at = at
+		focus.y = camera_ground_y
 	camera.position = Vector3(sin(azimuth) * cos(elevation), sin(elevation), cos(azimuth) * cos(elevation)) * target_size + focus
 	if world != null:
 		var camera_at: Vector2 = world.camera.position / 32.0 + Vector2(camera.position.x, camera.position.z)
@@ -159,7 +194,7 @@ func update_camera_pose() -> void:
 
 func height_bound() -> float:
 	var tuning: Dictionary = world.terrain.relief
-	return (float(tuning.broad_amplitude) + float(tuning.detail_amplitude) + float(tuning.micro_amplitude)) * 2.0 + 1.0
+	return (float(tuning.broad_amplitude) + float(tuning.detail_amplitude) + float(tuning.micro_amplitude)) * 2.0 + 5.0 * float(tuning.landform_strength) + 1.0
 
 func pointer_world(pointer: Vector2 = get_viewport().get_mouse_position()) -> Variant:
 	pointer_terrain_depth = INF
@@ -198,10 +233,10 @@ func stream_key() -> String:
 	return "%d:%d:%d:%d:%d" % [floori(world.camera.position.x / 128.0), floori(world.camera.position.y / 128.0), WorldTerrain.floor_div(world.cell.x, 16), WorldTerrain.floor_div(world.cell.y, 16), view_revision]
 
 func stream_plan() -> Array[Vector2i]:
-	return ViewStreaming.plan(camera, world.camera.position / 32.0, world.cell, active_view, active_nature.tree_height * 1.2 + 3 + height_bound(), -height_bound())
+	return ViewStreaming.plan(camera, world.camera.position / 32.0, world.cell, active_view, active_nature.canopy_height_bound() + 3 + height_bound(), -height_bound())
 
 func chunk_visible(coord: Vector2i) -> bool:
-	return ViewStreaming.visible(camera, Vector2(coord * 16) - world.camera.position / 32.0, active_nature.tree_height * 1.2 + 3 + height_bound(), 0.0, -height_bound())
+	return ViewStreaming.visible(camera, Vector2(coord * 16) - world.camera.position / 32.0, active_nature.canopy_height_bound() + 3 + height_bound(), 0.0, -height_bound())
 
 func stream_capacity() -> int:
 	var radius := ceili((active_view.render_distance + active_view.stream_margin) / 16.0) + 1
@@ -211,11 +246,25 @@ func configure_asset_distances(chunk: Node3D) -> void:
 	for mesh in chunk.get_children():
 		if mesh is GeometryInstance3D:
 			mesh.visibility_range_end = active_view.detail_distance if mesh.name.begins_with("nature_detail_") else 0.0
-			mesh.visibility_range_end_margin = 4.0
-			mesh.visibility_range_fade_mode = GeometryInstance3D.VISIBILITY_RANGE_FADE_DISABLED
+			if mesh.name == "nature_detail_meadow": mesh.visibility_range_end = active_view.render_distance
+			mesh.visibility_range_end_margin = 12.0
+			mesh.visibility_range_fade_mode = GeometryInstance3D.VISIBILITY_RANGE_FADE_SELF if mesh.visibility_range_end > 0 else GeometryInstance3D.VISIBILITY_RANGE_FADE_DISABLED
 
 func _process(delta: float) -> void:
+	update_camera_pose(delta)
 	trim_detail_cache()
+	for chunk: Node3D in scenery_fades.keys():
+		if not is_instance_valid(chunk):
+			scenery_fades.erase(chunk)
+			continue
+		var weight: float = minf(1.0, float(scenery_fades[chunk]) + delta / 0.6)
+		for mesh in chunk.get_children():
+			if mesh is GeometryInstance3D and mesh.name.begins_with("nature_"):
+				mesh.transparency = 1.0 - smoothstep(0.0, 1.0, weight)
+		if weight >= 1.0:
+			scenery_fades.erase(chunk)
+		else:
+			scenery_fades[chunk] = weight
 	for index in range(mini(active_view.chunks_per_frame, retired_solid.size())):
 		retired_solid.pop_front().free()
 	sync_ground()
@@ -233,7 +282,7 @@ func prepare_stream_ground(deadline_usec: int) -> void:
 	# The simulation moves first. Use the new pose for coverage, sharing the
 	# detailed terrain deadline rather than spending a second unbounded budget.
 	update_camera_pose()
-	streaming_ground.sync(world.terrain, world.pending, camera, world.camera.position / 32.0, height_bound(), active_view.stream_ground_step, active_view.stream_ground_cache_chunks, deadline_usec)
+	streaming_ground.sync(world.terrain, world.pending, camera, world.camera.position / 32.0, height_bound(), active_view.stream_ground_step, active_view.stream_ground_cache_chunks, deadline_usec, active_nature)
 
 func pointer_object_cell(pointer: Vector2, fallback: Variant) -> Variant:
 	pointer_subject = ""
@@ -273,6 +322,11 @@ func pointer_object_cell(pointer: Vector2, fallback: Variant) -> Variant:
 				distance = depth
 				selected = object.cell
 				pointer_subject = object.get("subject", "")
+	if vessel_swarms != null:
+		var ecological: Dictionary = vessel_swarms.pick(origin, direction, distance)
+		if not ecological.is_empty():
+			selected = ecological.cell
+			pointer_subject = ecological.subject
 	return selected
 
 func sync_ground() -> void:
@@ -287,7 +341,7 @@ func sync_ground() -> void:
 			SolidChunk.meshes[kind].material.set_shader_parameter("world_origin", origin)
 	var player_at: Vector2 = Vector2(player_visual.position.x, player_visual.position.z) + world.camera.position / 32.0
 	player_shadow.position = Vector3(player_visual.position.x, world.terrain.surface_height(player_at) + 0.045, player_visual.position.z)
-	player_shadow.basis = Basis(Quaternion(Vector3.UP, world.terrain.surface_normal(player_at)))
+	player_shadow.basis = Basis(Quaternion(Vector3.UP, world.terrain.surface_normal(player_at))).scaled(Vector3(1, 1, 0.55) * player_visual.model_height / 1.7)
 	selection.visible = world.hover_outline.visible
 	if selection.visible:
 		var hovered: Vector2 = world.hover_outline.position / 32.0
@@ -306,7 +360,8 @@ func build_player_shadow() -> void:
 	disc.height = 0.002
 	disc.radial_segments = 16
 	player_shadow.mesh = disc
-	player_shadow.scale.z = 0.55
+	player_shadow.scale = Vector3.ONE * player_visual.model_height / 1.7
+	player_shadow.scale.z *= 0.55
 	player_shadow.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 	var material := StandardMaterial3D.new()
 	material.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
@@ -360,6 +415,10 @@ func publish_solid(coord: Vector2i, cells: Array[Dictionary]) -> void:
 		detail_cache_reuses += 1
 	elif stream_job != null and stream_job.coord == coord and stream_job.terrain == world.terrain and stream_job.cells == cells:
 		chunk = stream_job.chunk
+		scenery_fades[chunk] = 0.0
+		for mesh in chunk.get_children():
+			if mesh is GeometryInstance3D and mesh.name.begins_with("nature_"):
+				mesh.transparency = 1.0
 		stream_job.chunk = null
 		stream_job = null
 	else:
@@ -403,6 +462,11 @@ func _exit_tree() -> void:
 func remove_solid(coord: Vector2i) -> void:
 	if solid_chunks.has(coord):
 		var chunk: Node3D = solid_chunks[coord]
+		if scenery_fades.has(chunk):
+			scenery_fades.erase(chunk)
+			for mesh in chunk.get_children():
+				if mesh is GeometryInstance3D:
+					mesh.transparency = 0.0
 		chunk.hide()
 		if retained_solid.has(coord):
 			retired_solid.append(retained_solid[coord])
@@ -427,6 +491,8 @@ func trim_detail_cache() -> void:
 		retained_solid.erase(oldest)
 
 func build_solid_places() -> void:
+	camera_ground_source = null
+	scenery_fades.clear()
 	# Rebuild/load is an explicit synchronous boundary, and must drop old worlds.
 	for chunk in retained_solid.values():
 		chunk.free()

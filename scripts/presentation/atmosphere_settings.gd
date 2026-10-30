@@ -1,6 +1,19 @@
 class_name AtmosphereSettings
 extends Resource
 ## Presentation only. Cycle/weather derive from the saved active exploration clock.
+const MoodPalette = preload("res://scripts/presentation/world_mood_palette.gd")
+
+@export_group("Painterly Lighting")
+## Softer highlight response; disable for the original linear tone mapping.
+@export var filmic_tonemapping := true
+## Blend procedural sky illumination into the ambient fill.
+@export var sky_ambient_enabled := true
+@export_range(0.0, 1.0, 0.05) var sky_ambient_contribution := 0.65
+## Static presentation palette. No automatic danger or encounter inference.
+@export var mood_enabled := true
+@export var lighting_mood: Resource = preload("res://resources/moods/welcoming.tres")
+## Preferred 0.65 plus the owner's relative 10% pre-test increase.
+@export_range(0.0, 1.0, 0.005) var mood_strength := 0.715
 
 @export_group("Day and Night")
 ## Disable to preview Starting Phase without advancing the sky. Does not change saved time.
@@ -17,12 +30,12 @@ extends Resource
 @export var sun_color := Color("fff1d9")
 @export_range(0.0, 0.8, 0.02) var moon_energy := 0.32
 @export var moon_color := Color("a7c9f0")
-@export_range(0.0, 2.0, 0.05) var day_ambient := 0.6
-@export_range(0.0, 0.6, 0.02) var night_ambient := 0.28
+@export_range(0.0, 2.0, 0.05) var day_ambient := 0.55
+@export_range(0.0, 0.6, 0.02) var night_ambient := 0.22
 @export var day_ambient_color := Color("c6dbed")
 @export var night_ambient_color := Color("7894b6")
 ## Linear scene exposure. Applies to the world, not HUD text.
-@export_range(0.5, 1.5, 0.05) var exposure := 1.05
+@export_range(0.5, 1.5, 0.05) var exposure := 1.2
 ## Shadow opacity and PCF blur; low normal bias keeps small props grounded.
 @export_range(0.0, 1.0, 0.05) var shadow_opacity := 0.8
 @export_range(0.5, 3.0, 0.1) var shadow_blur := 1.5
@@ -41,6 +54,8 @@ extends Resource
 ## Active exploration seconds per weather interval; blends at the start of each interval.
 @export_range(60.0, 1800.0, 30.0) var weather_seconds := 300.0
 @export_range(1.0, 60.0, 1.0) var transition_seconds := 20.0
+## Cloud cover brings haze closer than clear weather. Multiplies the view fog onset.
+@export_range(0.4, 1.0, 0.05) var cloudy_fog_fraction := 0.85
 ## Rain starts depth fog this fraction earlier, without changing terrain clipping or simulation.
 @export_range(0.4, 1.0, 0.05) var rain_fog_fraction := 0.75
 ## Relative automatic-weather weights. At least one must be positive.
@@ -49,9 +64,20 @@ extends Resource
 @export_range(0.0, 1.0, 0.05) var rain_weight := 0.2
 ## Bounded nearby rain particles. Zero keeps rain lighting/fog but disables streaks.
 @export_range(0, 1200, 50) var rain_particles := 500
+## Optional locally installed leaf VFX. Applies when atmosphere settings are applied.
+## Zero disables leaves; missing vendor art is silently omitted.
+@export_range(0, 96, 1) var wind_leaf_particles := 32
 
 func valid() -> bool:
-	var ranges := [[day_seconds, 120, 7200], [starting_phase, 0, 1], [sun_elevation, 25, 80], [sun_azimuth, -180, 180], [sun_energy, 0, 3], [moon_energy, 0, 0.8], [day_ambient, 0, 2], [night_ambient, 0, 0.6], [exposure, 0.5, 1.5], [shadow_opacity, 0, 1], [shadow_blur, 0.5, 3], [horizon_curve, 0.2, 1.2], [cloud_scale, 0.05, 0.5], [cloud_softness, 0.04, 0.3], [weather_seconds, 60, 1800], [transition_seconds, 1, 60], [clear_weight, 0, 1], [cloudy_weight, 0, 1], [rain_weight, 0, 1]]
+	if wind_leaf_particles < 0 or wind_leaf_particles > 96:
+		return false
+	if not is_finite(sky_ambient_contribution) or sky_ambient_contribution < 0 or sky_ambient_contribution > 1:
+		return false
+	if not is_finite(mood_strength) or mood_strength < 0 or mood_strength > 1:
+		return false
+	if not lighting_mood is MoodPalette or not lighting_mood.valid():
+		return false
+	var ranges := [[cloudy_fog_fraction, 0.4, 1.0], [day_seconds, 120, 7200], [starting_phase, 0, 1], [sun_elevation, 25, 80], [sun_azimuth, -180, 180], [sun_energy, 0, 3], [moon_energy, 0, 0.8], [day_ambient, 0, 2], [night_ambient, 0, 0.6], [exposure, 0.5, 1.5], [shadow_opacity, 0, 1], [shadow_blur, 0.5, 3], [horizon_curve, 0.2, 1.2], [cloud_scale, 0.05, 0.5], [cloud_softness, 0.04, 0.3], [weather_seconds, 60, 1800], [transition_seconds, 1, 60], [clear_weight, 0, 1], [cloudy_weight, 0, 1], [rain_weight, 0, 1]]
 	for row in ranges:
 		if not is_finite(row[0]) or row[0] < row[1] or row[0] > row[2]:
 			return false

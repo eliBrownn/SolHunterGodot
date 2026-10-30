@@ -1,0 +1,124 @@
+[gd_resource type="Resource" script_class="NatureComposition" format=3]
+
+[ext_resource type="PackedScene" path="res://assets/nature/CommonTree_1.gltf" id="1_84wep"]
+[ext_resource type="PackedScene" path="res://assets/nature/CommonTree_2.gltf" id="2_p1gl2"]
+[ext_resource type="PackedScene" path="res://assets/nature/Pine_1.gltf" id="3_1yu8h"]
+[ext_resource type="PackedScene" path="res://assets/nature/Pine_2.gltf" id="4_yd1yd"]
+[ext_resource type="Script" path="res://scripts/scenery/nature_patch.gd" id="5_4feut"]
+[ext_resource type="Script" path="res://scripts/scenery/nature_asset_entry.gd" id="6_sfwlc"]
+[ext_resource type="PackedScene" path="res://assets/biome_placeholders/fern.tscn" id="7_fnv7c"]
+[ext_resource type="PackedScene" path="res://assets/biome_placeholders/mushroom_cluster.tscn" id="8_vnvks"]
+[ext_resource type="PackedScene" path="res://assets/biome_placeholders/flower_patch.tscn" id="9_0e50l"]
+[ext_resource type="PackedScene" path="res://assets/biome_placeholders/fallen_log.tscn" id="10_care8"]
+[ext_resource type="PackedScene" path="res://assets/biome_placeholders/bush.tscn" id="11_baipx"]
+[ext_resource type="PackedScene" path="res://assets/biome_placeholders/grass_tuft.tscn" id="12_lg63x"]
+[ext_resource type="PackedScene" path="res://assets/biome_placeholders/rock_cluster.tscn" id="13_u12n4"]
+[ext_resource type="PackedScene" path="res://assets/biome_placeholders/dead_snag.tscn" id="14_dgol5"]
+[ext_resource type="PackedScene" path="res://assets/biome_placeholders/reeds.tscn" id="15_dtgua"]
+[ext_resource type="PackedScene" path="res://assets/biome_placeholders/rush_cluster.tscn" id="16_emn2h"]
+[ext_resource type="PackedScene" path="res://assets/biome_placeholders/lily_pad.tscn" id="17_8s61s"]
+[ext_resource type="Script" path="res://scripts/scenery/nature_composition.gd" id="18_2h8sg"]
+[ext_resource type="PackedScene" path="res://assets/biome_placeholders/dry_tree.tscn" id="19_uvty3"]
+[ext_resource type="PackedScene" path="res://assets/nature/DeadTree_1.gltf" id="20_sgq68"]
+[ext_resource type="PackedScene" path="res://assets/nature/Rock_Medium_1.gltf" id="21_2ngp7"]
+[ext_resource type="PackedScene" path="res://assets/nature/Rock_Medium_2.gltf" id="22_xxng8"]
+[ext_resource type="PackedScene" path="res://assets/nature/Rock_Medium_3.gltf" id="23_lpgix"]
+
+[sub_resource type="Resource" id="Resource_jsnty"]
+script = ExtResource("6_sfwlc")
+scene = ExtResource("7_fnv7c")
+uniform_scale = 0.65
+maximum_parts = 16
+
+[sub_resource type="Resource" id="Resource_ji7pn"]
+script = ExtResource("6_sfwlc")
+scene = ExtResource("8_vnvks")
+maximum_parts = 16
+
+[sub_resource type="Resource" id="Resource_eh4sf"]
+script = ExtResource("6_sfwlc")
+scene = ExtResource("9_0e50l")
+uniform_scale = 0.6
+maximum_parts = 16
+
+[sub_resource type="Resource" id="Resource_eotkb"]
+script = ExtResource("6_sfwlc")
+scene = ExtResource("10_care8")
+uniform_scale = 0.45
+maximum_parts = 16
+
+[sub_resource type="Resource" id="Resource_n3b1k"]
+script = ExtResource("6_sfwlc")
+scene = ExtResource("11_baipx")
+uniform_scale = 0.45
+maximum_parts = 16
+
+[sub_resource type="Resource" id="Resource_0l7nm"]
+script = ExtResource("5_4feut")
+habitats = Array[int]([1, 0])
+entries = Array[ExtResource("6_sfwlc")]([SubResource("Resource_jsnty"), SubResource("Resource_ji7pn"), SubResource("Resource_eh4sf"), SubResource("Resource_eotkb"), SubResource("Resource_n3b1k")])
+density_percent = 36
+
+[sub_resource type="Resource" id="Resource_802m4"]
+script = ExtResource("6_sfwlc")
+scene = ExtResource("12_lg63x")
+uniform_scale = 0.6
+maximum_parts = 16
+
+[sub_resource type="Resource" id="Resource_7htjm"]
+script = ExtResource("6_sfwlc")
+scene = ExtResource("13_u12n4")
+uniform_scale = 0.35
+maximum_parts = 16
+
+[sub_resource type="Resource" id="Resource_38klr"]
+script = ExtResource("6_sfwlc")
+scene = ExtResource("14_dgol5")
+uniform_scale = 0.2
+maximum_parts = 16
+
+[sub_resource type="Resource" id="Resource_30cu5"]
+script = ExtResource("5_4feut")
+patch_id = "dryland"
+bounds = Rect2i(92, 12, 24, 24)
+habitats = Array[int]([2])
+entries = Array[ExtResource("6_sfwlc")]([SubResource("Resource_802m4"), SubResource("Resource_7htjm"), SubResource("Resource_38klr")])
+density_percent = 16
+
+[sub_resource type="Resource" id="Resource_4wov4"]
+script = ExtResource("6_sfwlc")
+scene = ExtResource("15_dtgua")
+surface = 1
+uniform_scale = 0.55
+maximum_parts = 16
+
+[sub_resource type="Resource" id="Resource_enryt"]
+script = ExtResource("6_sfwlc")
+scene = ExtResource("16_emn2h")
+surface = 1
+maximum_parts = 16
+
+[sub_resource type="Resource" id="Resource_ncbqh"]
+script = ExtResource("6_sfwlc")
+scene = ExtResource("17_8s61s")
+surface = 2
+uniform_scale = 0.6
+maximum_parts = 16
+
+[sub_resource type="Resource" id="Resource_11c3o"]
+script = ExtResource("6_sfwlc")
+scene = ExtResource("7_fnv7c")
+uniform_scale = 0.55
+maximum_parts = 16
+
+[sub_resource type="Resource" id="Resource_qn3vp"]
+script = ExtResource("5_4feut")
+patch_id = "wetland"
+bounds = Rect2i(24, 28, 40, 40)
+habitats = Array[int]([3, 5, 0, 1, 4])
+entries = Array[ExtResource("6_sfwlc")]([SubResource("Resource_4wov4"), SubResource("Resource_enryt"), SubResource("Resource_ncbqh"), SubResource("Resource_11c3o")])
+density_percent = 40
+
+[resource]
+script = ExtResource("18_2h8sg")
+patches = Array[ExtResource("5_4feut")]([SubResource("Resource_0l7nm"), SubResource("Resource_30cu5"), SubResource("Resource_qn3vp")])

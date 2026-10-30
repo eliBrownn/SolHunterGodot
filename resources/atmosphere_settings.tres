@@ -4,3 +4,11 @@
 
 [resource]
 script = ExtResource("1")
+filmic_tonemapping = true
+sky_ambient_enabled = true
+sky_ambient_contribution = 0.65
+mood_enabled = true
+mood_strength = 0.715
+day_ambient = 0.55
+night_ambient = 0.22
+exposure = 1.2

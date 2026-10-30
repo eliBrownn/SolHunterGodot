@@ -28,15 +28,20 @@ func patch_at(terrain: WorldTerrain, cell: Vector2i) -> NaturePatch:
 	return null
 
 func placement(terrain: WorldTerrain, cell: Vector2i, patch: NaturePatch) -> Dictionary:
+	return placement_for(terrain, cell, patch)
+
+## Shared admission for bounded studies and generated biome dressing.
+static func placement_for(terrain: WorldTerrain, cell: Vector2i, patch: NaturePatch, cluster_cells: int = 3, cluster_fill: int = 68, scale_variation: float = 0.0, cluster_palette: bool = false, bounded_study: bool = true) -> Dictionary:
 	var data := terrain.sample(cell)
 	if not data.ground in patch.habitats or data.obstacle != 0:
 		return {}
 	# Independent cosmetic salts; no dependence on chunk visitation or mutable state.
-	var cluster := Vector2i(WorldTerrain.floor_div(cell.x, 3), WorldTerrain.floor_div(cell.y, 3))
-	if terrain.roll(cluster, 83109) % 100 >= 68 or terrain.roll(cell, 83111) % 100 >= patch.density_percent:
+	var cluster := Vector2i(WorldTerrain.floor_div(cell.x, cluster_cells), WorldTerrain.floor_div(cell.y, cluster_cells))
+	if terrain.roll(cluster, 83109) % 100 >= cluster_fill or terrain.roll(cell, 83111) % 100 >= patch.density_percent:
 		return {}
 	var roll := terrain.roll(cell, 83113)
-	var entry: NatureAssetEntry = patch.entries[roll % patch.entries.size()]
+	var entry_roll := terrain.roll(cluster, 83115) if cluster_palette and roll % 4 != 0 else roll
+	var entry: NatureAssetEntry = patch.entries[entry_roll % patch.entries.size()]
 	var model := entry.admitted_model()
 	if model.is_empty():
 		return {}
@@ -53,17 +58,18 @@ func placement(terrain: WorldTerrain, cell: Vector2i, patch: NaturePatch) -> Dic
 			return {}
 	var point := Vector2(cell) + Vector2(0.5, 0.5)
 	var yaw := float(roll % 6283) / 1000.0
-	var basis := Basis(Vector3.UP, yaw).scaled(Vector3.ONE * entry.uniform_scale)
+	var size_factor := lerpf(1.0 - scale_variation, 1.0 + scale_variation, float(terrain.roll(cell, 83117) % 1001) / 1000.0)
+	var basis := Basis(Vector3.UP, yaw).scaled(Vector3.ONE * entry.uniform_scale * size_factor)
 	var box: AABB = model.bounds
 	var height: float = terrain.pond_at(cell).level + 0.012 if water else terrain.surface_height(point) - 0.015
 	var transform := Transform3D(basis, Vector3(point.x, height, point.y))
 	transform.origin -= basis * Vector3(box.get_center().x, box.position.y, box.get_center().z)
 	var visual: AABB = transform * box
-	if maxf(visual.size.x, visual.size.z) > entry.maximum_width:
+	if maxf(visual.size.x, visual.size.z) > entry.maximum_width or visual.size.y > entry.maximum_height:
 		return {}
 	var rect := Rect2(Vector2(visual.position.x, visual.position.z), Vector2(visual.size.x, visual.size.z)).grow(0.08)
 	var owner := Rect2(Vector2(terrain.chunk_of(cell) * 16), Vector2(16, 16))
-	if not owner.encloses(rect) or not Rect2(patch.bounds).encloses(rect):
+	if bounded_study and (not owner.encloses(rect) or not Rect2(patch.bounds).encloses(rect)):
 		return {}
 	# Entire transformed footprint, not the anchor: protect routes, places,
 	# blockers and stable encounter clearings, including across neighboring cells.
@@ -72,6 +78,10 @@ func placement(terrain: WorldTerrain, cell: Vector2i, patch: NaturePatch) -> Dic
 			var at := Vector2i(x, y)
 			if terrain.scenery_reserved(at) or terrain.route_axes(at, 1) != 0 or terrain.is_camp(at) or terrain.is_landmark(at) or terrain.cabin_footprint.grow(1).has_point(at):
 				return {}
+			if not bounded_study and terrain.world_seed == int(terrain.scenery_parameters.clearing_seed):
+				for clearing in terrain.scenery_parameters.clearings:
+					if Rect2i(int(clearing[0]), int(clearing[1]), int(clearing[2]), int(clearing[3])).has_point(at):
+						return {}
 			for clearing in RequiredSpaces.anchors_for(patch.patch_id):
 				if maxi(absi(at.x - clearing.x), absi(at.y - clearing.y)) <= SceneryRequiredSpaces.RADIUS:
 					return {}

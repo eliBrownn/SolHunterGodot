@@ -1,9 +1,9 @@
 extends Node3D
 ## Visual bridge only: the expedition remains the movement and save authority.
 
-const MODEL = preload("res://assets/characters/rogue/Rogue_Hooded.glb")
-const GENERAL = preload("res://assets/characters/rogue/Rig_Medium_General.glb")
-const MOVEMENT = preload("res://assets/characters/rogue/Rig_Medium_MovementBasic.glb")
+const MODEL = preload("res://scenes/basic_man.tscn")
+
+
 var actor: Node2D
 var terrain_camera: Camera2D
 var ground_height := 0.06
@@ -11,6 +11,8 @@ var model: Node3D
 var animator := AnimationPlayer.new()
 var skeleton: Skeleton3D
 var meshes: Array[MeshInstance3D] = []
+var locomotion: Node3D
+var model_height := 0.85
 ## Trainer sideline run speed in cells per real second. Deployment waits for arrival; no exploration tick.
 @export_range(1.0, 10.0, 0.25) var sideline_walk_speed := 6.0
 var sideline_session: TacticalBattle
@@ -20,15 +22,19 @@ var presentation_cell := Vector2.ZERO
 var sideline_origin := Vector2i.ZERO
 var returning := false
 var facing_initialized := false
+var visual_ground_height := 0.0
+var previous_ground_at := Vector2.ZERO
+var ground_initialized := false
 
 
-func bind(source: Node2D, source_camera: Camera2D, height: float = 1.7) -> void:
+func bind(source: Node2D, source_camera: Camera2D, height: float = 0.85) -> void:
 	actor = source
 	terrain_camera = source_camera
 	model = MODEL.instantiate()
 	add_child(model)
-	model.scale = Vector3.ONE * height / 2.171
-	skeleton = model.get_node("Rig_Medium/Skeleton3D")
+	model.prepare(height)
+	model_height = height
+	skeleton = model.skeleton
 	for node in model.find_children("*", "MeshInstance3D"):
 		meshes.append(node)
 		for surface in range(node.mesh.get_surface_count()):
@@ -36,22 +42,15 @@ func bind(source: Node2D, source_camera: Camera2D, height: float = 1.7) -> void:
 			material.roughness = 0.85
 			node.set_surface_override_material(surface, material)
 	model.add_child(animator)
-	var library := AnimationLibrary.new()
-	for pack in [GENERAL, MOVEMENT]:
-		var rig: Node = pack.instantiate()
-		var source_player: AnimationPlayer = rig.get_node("AnimationPlayer")
-		for name in source_player.get_animation_list():
-			if library.has_animation(name):
-				continue
-			var animation: Animation = source_player.get_animation(name).duplicate(true)
-			if name.begins_with("Idle") or name.begins_with("Walking") or name.begins_with("Running"):
-				animation.loop_mode = Animation.LOOP_LINEAR
-			library.add_animation(name, animation)
-		rig.free()
-	animator.add_animation_library("", library)
+	animator.add_animation_library("", model.animation_library())
 	actor.body.hide()
 	sync_art()
 	animator.advance(0)
+	if skeleton==null: return
+	locomotion = preload("res://scripts/presentation/player_locomotion.gd").new()
+	add_child(locomotion)
+	locomotion.bind(self)
+	terrain_camera.get_parent().rebuilt.connect(func() -> void: ground_initialized = false)
 
 func _process(delta: float) -> void:
 	update_sideline(delta)
@@ -111,7 +110,19 @@ func sync_art(delta: float = 0.0) -> void:
 		relative = presentation_cell + Vector2(0.5, 0.5) - terrain_camera.position / WorldTerrain.CELL_SIZE
 	var source_world: Node2D = terrain_camera.get_parent()
 	var absolute := relative + terrain_camera.position / WorldTerrain.CELL_SIZE
-	position = Vector3(relative.x, source_world.host.ground_height(absolute) + ground_height, relative.y)
+	var target_ground: float = source_world.host.ground_height(absolute)
+	var smooth_seconds: float = source_world.host.player_height_smoothing
+	if not is_finite(smooth_seconds):
+		smooth_seconds = 0.06
+	if not ground_initialized or absolute.distance_to(previous_ground_at) > model_height * 2.0 or smooth_seconds <= 0.0:
+		visual_ground_height = target_ground
+		ground_initialized = true
+	elif not source_world.paused or source_world.encounter_active:
+		visual_ground_height = lerpf(visual_ground_height, target_ground, 1.0 - exp(-maxf(delta, 0.0) / clampf(smooth_seconds, 0.01, 0.2)))
+		# Keep both knees in reach: smooth small seams, never float over a cliff.
+		visual_ground_height = clampf(visual_ground_height, target_ground - model_height * 0.06, target_ground + model_height * 0.06)
+	previous_ground_at = absolute
+	position = Vector3(relative.x, visual_ground_height + ground_height, relative.y)
 	var heading_angle := atan2(actor.facing.x, actor.facing.y)
 	var animation := ("Running_A" if actor.running else "Walking_A") if actor.walking else "Idle_A"
 	if not sideline_route.is_empty():
@@ -131,3 +142,5 @@ func sync_art(delta: float = 0.0) -> void:
 	if animator.current_animation != animation:
 		animator.play(animation, 0.15)
 	animator.speed_scale = 0.0 if world.paused and not world.encounter_active else 1.0
+	if locomotion != null:
+		locomotion.update_pose(absolute, delta, world.paused and not world.encounter_active)

@@ -41,6 +41,9 @@ static func validate(data: Variant) -> bool:
 	if not WorldTerrain.valid_climate(data.get("climate")) or not TerrainReliefSettings.valid_parameters(data.get("relief")) or not ScenerySiteTemplate.valid_parameters(data.get("scenery")):
 		return false
 	var terrain := WorldTerrain.new(int(seed_value), data.climate, data.relief, data.scenery)
+	for row: Dictionary in data.world_state.flora.nodes.values():
+		var at := Vector2i(int(row.cell[0]), int(row.cell[1]))
+		if terrain.flora_kind(at, terrain.sample(at)) != row.kind: return false
 	for identity in data.get("world_state", {}).get("roaming", {}):
 		var row: Dictionary = data.world_state.roaming[identity]
 		var individual: Dictionary = data.world_state.individuals[identity]

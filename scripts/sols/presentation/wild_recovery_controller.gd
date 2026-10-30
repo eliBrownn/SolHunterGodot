@@ -23,10 +23,12 @@ func on_state(next: ExpeditionState) -> void:
 	state.activity_advanced.connect(on_tick)
 
 func on_tick(_tick: int) -> void:
-	if world.paused or world.encounter_active or world.smoke_mode or not settings.valid() or not sightings.settings.enabled:
+	if world.paused or world.smoke_mode or not settings.valid() or not sightings.settings.enabled:
 		return
 	state.configure_wild_recovery(settings.interval_ticks)
 	var occupied := {world.cell: true}
+	if world.host.battles != null:
+		occupied.merge(world.host.battles.activity_reservations())
 	if world.moving:
 		occupied[world.destination] = true
 	for member in sightings.members:
@@ -46,12 +48,17 @@ func on_tick(_tick: int) -> void:
 			continue # An occupied home cannot activate a successor; avoid constructing its species/book.
 		if occupied.has(home) or not world.terrain.fits(home) or state.environment_view(home, {}).get("conditions", {}).has("barrier"):
 			continue
-		var definition := SolSpeciesDefinition.new()
-		definition.species_id = entry.species
-		definition.lineage_id = entry.lineage
-		definition.class_id = entry["class"]
+		var authored: Resource = sightings.settings.catalog_record(entry.species)
+		var definition: SolSpeciesDefinition = authored as SolSpeciesDefinition if authored != null else SolSpeciesDefinition.new()
+		if authored == null:
+			definition.species_id = entry.species
+			definition.lineage_id = entry.lineage
+			definition.class_id = entry["class"]
 		var identity := state.activate_wild_home(base, definition, entry.affinity, library.book(entry.species), true)
 		if not identity.is_empty():
+			sightings.admit_movement(identity, entry.species)
+			if world.host.battles != null:
+				world.host.battles.ensure_movebooks([identity])
 			occupied[home] = true
 			births += 1
 	if births > 0:
@@ -70,5 +77,5 @@ func describe_home(cell: Vector2i) -> String:
 		var seconds := ceili(maxi(0, int(records[base].ready_at) - state.activity_tick()) * ExpeditionContract.ACTIVITY_INTERVAL)
 		if seconds == 0:
 			return "Wildlife return awaits clear ground."
-		return "Wildlife recovering · %d:%02d of exploration time" % [int(seconds / 60), seconds % 60]
+		return "Wildlife recovering · %d:%02d of active world time" % [int(seconds / 60), seconds % 60]
 	return ""

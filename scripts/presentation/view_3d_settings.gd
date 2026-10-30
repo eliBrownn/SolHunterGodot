@@ -10,6 +10,8 @@ extends Resource
 @export_range(5.0, 20.0, 1.0) var minimum_distance := 8.0
 ## Minimum camera height above terrain, in cells. Reapply after editing; prevents low orbits entering hills. Does not clear intervening scenery.
 @export_range(0.1, 3.0, 0.1) var ground_clearance := 0.6
+## Seconds to soften vertical camera motion over terrain seams. Zero follows exactly; Home/rebuild snaps.
+@export_range(0.0, 0.4, 0.01) var height_smoothing_seconds := 0.12
 @export_range(20.0, 48.0, 1.0) var maximum_distance := 40.0
 ## Far clipping depth from the camera in world cells. Also controls the streamed frustum and fog.
 @export_range(48.0, 128.0, 8.0) var render_distance := 72.0
@@ -25,13 +27,15 @@ extends Resource
 @export_range(0, 256, 16) var stream_ground_cache_chunks := 64
 ## Hidden detailed chunks retained for camera reversals. Presentation only; cleared on world rebuild. Reapply to change capacity.
 @export_range(0, 128, 8) var stream_detail_cache_chunks := 32
-## Small decoration draw distance in cells. Zero follows trees to the terrain horizon.
-@export_range(0.0, 128.0, 4.0) var detail_distance := 36.0
+## Small decoration draw distance from the camera in cells, with a 12-cell fade band. Zero follows trees to the terrain horizon.
+@export_range(0.0, 128.0, 4.0) var detail_distance := 48.0
 ## Directional shadow distance from the camera, in cells. Clamped to the terrain render distance.
 @export_range(16.0, 80.0, 4.0) var shadow_distance := 48.0
 ## Begin clear-weather fog at this fraction of the fixed horizon depth. Camera turns do not change it.
-@export_range(0.4, 0.85, 0.05) var fog_start_fraction := 0.8
+@export_range(0.4, 0.98, 0.01) var fog_start_fraction := 0.95
 @export_group("Image Quality")
+## Pixel sampling of the world only; UI and picking stay full resolution. Applies immediately via Options.
+@export_enum("Off", "Very light 1.25x", "Light 1.5x", "Medium 1.75x", "Strong 2x", "Deep 3x") var pixel_effect_level := 0
 ## Contact shading around terrain, trees and characters. Restart/reapply to use edits.
 @export var ambient_occlusion := true
 ## Ambient occlusion radius in world cells.
@@ -43,8 +47,8 @@ extends Resource
 @export_group("Sky")
 ## Owner-supplied procedural sky shader; its uniform parameters remain editable on the generated material.
 @export var sky_shader: Shader = preload("res://shaders/daylight_sky.gdshader")
-@export var cloud_primary: Texture2D = preload("res://assets/sky/clouds_01.tres")
-@export var cloud_secondary: Texture2D = preload("res://assets/sky/clouds_07.tres")
+@export var cloud_primary: Texture2D = preload("res://resources/cloud_noise_1.tres")
+@export var cloud_secondary: Texture2D = preload("res://resources/cloud_noise_2.tres")
 ## Horizon and depth-fog color, kept identical to hide the streaming horizon.
 @export var horizon_color := Color("b7d4ed")
 @export var sky_color := Color("4387c8")
@@ -54,6 +58,10 @@ extends Resource
 @export var cloud_wind := Vector2(0.1, 0.035)
 
 func valid() -> bool:
+	if not is_finite(height_smoothing_seconds) or height_smoothing_seconds < 0.0 or height_smoothing_seconds > 0.4:
+		return false
+	if pixel_effect_level < 0 or pixel_effect_level > 5:
+		return false
 	if not is_finite(ground_clearance) or ground_clearance < 0.1 or ground_clearance > 3.0:
 		return false
 	if stream_detail_cache_chunks < 0 or stream_detail_cache_chunks > 128:
@@ -73,4 +81,4 @@ func valid() -> bool:
 		return false
 	if stream_ground_step not in [1, 2, 4, 8]:
 		return false
-	return multisample_antialiasing in [0, 1, 2, 3] and occlusion_radius >= 0.1 and occlusion_radius <= 4 and occlusion_intensity >= 0 and occlusion_intensity <= 4 and field_of_view >= 35 and field_of_view <= 75 and minimum_distance >= 5 and minimum_distance <= 20 and maximum_distance >= 20 and maximum_distance <= 48 and starting_distance >= minimum_distance and starting_distance <= maximum_distance and render_distance >= 48 and render_distance <= 128 and render_distance > maximum_distance + 4 and stream_margin >= 4 and stream_margin <= 16 and chunks_per_frame >= 1 and chunks_per_frame <= 4 and detail_distance >= 0 and detail_distance <= 128 and shadow_distance >= 16 and shadow_distance <= 80 and fog_start_fraction >= 0.4 and fog_start_fraction <= 0.85 and cloud_density >= 0 and cloud_density <= 1 and sky_shader != null and cloud_primary != null and cloud_secondary != null
+	return multisample_antialiasing in [0, 1, 2, 3] and occlusion_radius >= 0.1 and occlusion_radius <= 4 and occlusion_intensity >= 0 and occlusion_intensity <= 4 and field_of_view >= 35 and field_of_view <= 75 and minimum_distance >= 5 and minimum_distance <= 20 and maximum_distance >= 20 and maximum_distance <= 48 and starting_distance >= minimum_distance and starting_distance <= maximum_distance and render_distance >= 48 and render_distance <= 128 and render_distance > maximum_distance + 4 and stream_margin >= 4 and stream_margin <= 16 and chunks_per_frame >= 1 and chunks_per_frame <= 4 and detail_distance >= 0 and detail_distance <= 128 and shadow_distance >= 16 and shadow_distance <= 80 and fog_start_fraction >= 0.4 and fog_start_fraction <= 0.98 and cloud_density >= 0 and cloud_density <= 1 and sky_shader != null and cloud_primary != null and cloud_secondary != null

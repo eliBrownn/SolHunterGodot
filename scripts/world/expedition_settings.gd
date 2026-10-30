@@ -6,7 +6,7 @@ extends Resource
 ## Seed used at startup. The New Seed action still advances deterministically from the current seed.
 @export_range(0, 2147483646) var initial_seed := 2601026
 ## Seconds per cardinal tile; diagonal travel takes sqrt(2) times this duration. Lower is faster.
-@export_range(0.04, 1.0, 0.005) var move_seconds := 0.195
+@export_range(0.04, 1.0, 0.005) var move_seconds := 0.28
 ## Hold Shift to multiply exploration speed. Provisional presentation tuning; applies immediately, including loaded saves.
 @export_range(1.0, 3.0, 0.05) var run_multiplier := 1.75
 

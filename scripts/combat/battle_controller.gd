@@ -9,6 +9,7 @@ var session: TacticalBattle
 var source_state: ExpeditionState
 var serial := 0
 var enemy_id := ""
+var overload_baseline: Dictionary = {}
 var selection_panel: PanelContainer
 var choice_buttons: Array[Button] = []
 var choice_preview: SubViewportContainer
@@ -135,6 +136,7 @@ func build_ui() -> void:
 	world.hud.add_child(companion_label)
 
 func on_state(state: ExpeditionState) -> void:
+	overload_baseline.clear()
 	playback.reset()
 	completion_failed = false
 	completion_session = null
@@ -264,13 +266,14 @@ func begin_battle(target: Dictionary) -> void:
 	prepared.resisted_cost = library.resisted_cost
 	prepared.vastra_settings = (world.vastra_settings if world.vastra_settings != null and world.vastra_settings.valid() else VastraSettings.new()).duplicate(true)
 	var saved_tiles := source_state.affinity_tiles()
+	var initial_overloads: Dictionary = {}
 	for at: Vector2i in prepared.cells:
 		var environment := source_state.environment_view(at, world.terrain.sample(at))
 		prepared.tile_concentrations[at] = int(environment.concentration)
 		prepared.tile_overloads[at] = int(environment.overload)
+		initial_overloads[AffinityImprint.key(at)] = int(environment.overload)
+		prepared.tile_affinities[at] = environment.affinity
 		var row: Dictionary = saved_tiles.get(AffinityImprint.key(at), {})
-		if not row.is_empty():
-			prepared.tile_affinities[at] = row.affinity
 		for kind in row.get("conditions", {}):
 			var effect: Dictionary = row.conditions[kind]
 			prepared.fields[at] = {"kind": kind, "direction": Vector2i(int(effect.direction[0]), int(effect.direction[1])), "round": 0, "expires": int(effect.level) + 1}
@@ -290,6 +293,7 @@ func begin_battle(target: Dictionary) -> void:
 	impacts.clear()
 	hide_exploration_hud()
 	session = prepared
+	overload_baseline = initial_overloads
 	completion_failed = false
 	completion_session = null
 	commander_was_ready = false
@@ -304,7 +308,8 @@ func begin_battle(target: Dictionary) -> void:
 	encounters.battle_running = true
 	encounters.encounter_panel.hide()
 	world.encounter_active = true
-	world.paused = true
+	# Encounter ownership locks exploration input; only a real pause stops time.
+	world.paused = false
 	sightings.battle_hidden_ids[enemy_id] = true
 	cursor = session.deployment_tiles()[0]
 	battle_panel.show()
@@ -362,7 +367,7 @@ func after_command() -> void:
 		var previous := source_state.active_sol_view()
 		var previous_training: int = int(source_state.stat_view(previous.id).earned)
 		var previous_moves: Dictionary = source_state.movebook(previous.id).learned
-		var details := {"participated": session.participated, "contributed": session.contributed, "enemy_level": int(session.enemy.level), "move_definitions": library.definitions(), "vastra_overloads": session.vastra_overloads.duplicate(true)}
+		var details := {"participated": session.participated, "contributed": session.contributed, "enemy_level": int(session.enemy.level), "move_definitions": library.definitions(), "vastra_overloads": session.vastra_overloads.duplicate(true), "vastra_overload_baseline": overload_baseline.duplicate(true)}
 		if outcome == "captured":
 			details.capture = {"profile": session.enemy.duplicate(true), "hp": session.enemy_hp, "unlocks": library.levels_for(session.enemy.species_id, Array(progression.unlock_levels))}
 		var protection: int = encounters.settings.withdrawal_safe_steps if encounters.settings.valid() else 3
@@ -395,6 +400,7 @@ func after_command() -> void:
 		completion_session = null
 		completion_packet.clear()
 		session = null
+		overload_baseline.clear()
 		serial = 0
 		impacts.clear()
 		sightings.battle_hidden_ids.erase(enemy_id)
@@ -699,6 +705,20 @@ func update_view() -> void:
 
 func display_battle() -> TacticalBattle:
 	return playback.view if playback.busy and playback.view != null else session
+
+func activity_reservations() -> Dictionary:
+	# Reserve committed and displayed combatant cells while wildlife keeps moving.
+	var occupied: Dictionary = {}
+	if session == null:
+		return occupied
+	for battle: TacticalBattle in [session, display_battle()]:
+		occupied[battle.trainer] = true
+		occupied[battle.enemy_cell] = true
+		if battle.phase != "deployment":
+			occupied[battle.ally_cell] = true
+	for at: Vector2i in session.commander_route:
+		occupied[at] = true
+	return occupied
 
 func show_resolution(step: Dictionary) -> void:
 	update_view()

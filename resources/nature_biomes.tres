@@ -1,0 +1,23 @@
+[gd_resource type="Resource" script_class="NatureSettings" format=3]
+
+[ext_resource type="Script" path="res://scripts/scenery/nature_settings.gd" id="settings"]
+[ext_resource type="Script" path="res://scripts/scenery/nature_biome_palette.gd" id="palette"]
+[ext_resource type="Resource" path="res://resources/scenery/bounded_composition.tres" id="composition"]
+[ext_resource type="Resource" path="res://resources/scenery/biomes/meadow_reviewed.tres" id="meadow"]
+[ext_resource type="Resource" path="res://resources/scenery/biomes/woodland_reviewed.tres" id="woodland"]
+[ext_resource type="Resource" path="res://resources/scenery/biomes/heath.tres" id="heath"]
+[ext_resource type="Resource" path="res://resources/scenery/biomes/marsh.tres" id="marsh"]
+
+[ext_resource type="PackedScene" path="res://assets/nature_samples/rocks/Scenes/boulder_round_regular.tscn" id="review_rock0"]
+[ext_resource type="PackedScene" path="res://assets/nature_samples/rocks/Scenes/stone_regular.tscn" id="review_rock1"]
+[ext_resource type="PackedScene" path="res://assets/nature_samples/rocks/Scenes/pillar_column_regular.tscn" id="review_rock2"]
+
+[resource]
+script = ExtResource("settings")
+meadow_enabled = true
+meadow_divisions = 2
+meadow_height = 0.22
+composition = ExtResource("composition")
+biomes = Array[ExtResource("palette")]([ExtResource("meadow"), ExtResource("woodland"), ExtResource("heath"), ExtResource("marsh")])
+
+rocks = Array[PackedScene]([ExtResource("review_rock0"), ExtResource("review_rock1"), ExtResource("review_rock2")])

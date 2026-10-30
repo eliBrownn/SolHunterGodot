@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="VegetationAppearance" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/scenery/vegetation_appearance.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+warden_model = "res://assets/local/tropical_plants/Fbx/Tropical_plant_019.fbx"
+mender_model = "res://assets/local/tropical_plants/Fbx/Tropical_plant_015.fbx"
+regulator_model = "res://assets/local/tropical_plants/Fbx/Tropical_plant_017.fbx"
+warden_height = 0.5
+mender_height = 0.35
+regulator_height = 0.45
+maximum_width = 0.8

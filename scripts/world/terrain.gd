@@ -2,7 +2,7 @@ class_name WorldTerrain
 extends RefCounted
 ## Immutable generated defaults. All decisions use seed, version and absolute cells.
 
-const GENERATION_VERSION := 9 # Preserve captured authored clearings during site admission.
+const GENERATION_VERSION := 11 # Generated affinity patches, with persistent battle overrides.
 const Structures = preload("res://scripts/scenery/authored_structures.gd")
 const CELL_SIZE := 32
 const CHUNK_SIZE := 16
@@ -18,6 +18,7 @@ var climate: Dictionary
 var noise := FastNoiseLite.new()
 var moisture := FastNoiseLite.new()
 var vastra := FastNoiseLite.new()
+var affinity_noise := FastNoiseLite.new()
 var cabin_footprint := Rect2i()
 var cabin_layout: Dictionary = {}
 var scenery_parameters: Dictionary
@@ -36,6 +37,7 @@ var _pond_window := CacheWindow.new(256)
 var _landmark_height := 0.0
 var _cabin_height := 0.0
 var geography := preload("res://scripts/world/terrain_geography.gd").new()
+var geography_ready := false # Foundations must be known before final road admission.
 
 static func default_relief() -> Dictionary:
 	return (preload("res://resources/terrain_rolling.tres") as TerrainReliefSettings).parameters()
@@ -68,6 +70,9 @@ func _init(seed_value: int = 2601026, climate_parameters: Dictionary = {}, relie
 	moisture.frequency = climate.moisture_frequency
 	vastra.seed = seed_value ^ 0x7315
 	vastra.frequency = 0.022
+	affinity_noise.seed = seed_value ^ 0x5A17
+	affinity_noise.frequency = 0.025
+	affinity_noise.noise_type = FastNoiseLite.TYPE_SIMPLEX_SMOOTH
 	relief = relief_parameters.duplicate(true) if TerrainReliefSettings.valid_parameters(relief_parameters) else default_relief()
 	var tuning := TerrainReliefSettings.new()
 	for key in relief:
@@ -79,6 +84,9 @@ func _init(seed_value: int = 2601026, climate_parameters: Dictionary = {}, relie
 		var center := Vector2(cabin_footprint.position) + Vector2(cabin_footprint.size) * 0.5
 		_cabin_height = 0.0 if center.length() < 14.0 else heightfield.surface_height(center)
 	cabin_layout = Structures.cabin_layout(self)
+	geography_ready = true
+	geography.tiles.clear()
+	geography.cell_roads.clear()
 	scenery_parameters = (site_parameters if ScenerySiteTemplate.valid_parameters(site_parameters) else default_scenery()).duplicate(true)
 	var site_template := ScenerySiteTemplate.new()
 	site_template.configure(scenery_parameters)
@@ -227,20 +235,66 @@ func natural_ground(cell: Vector2i) -> int:
 func wetness_at(cell: Vector2i) -> float:
 	return clampf(0.5 + moisture.get_noise_2d(cell.x, cell.y) * 0.5, 0.0, 1.0)
 
+## Living energy-network admission from existing terrain. Render distance and grass
+## density do not own these identities. The visual consumer uses the same plant rule.
+func flora_kind(cell: Vector2i, data: Dictionary) -> String:
+	if data.ground not in [Ground.MEADOW, Ground.FOREST]: return ""
+	if data.obstacle == 1: return "tree"
+	if data.obstacle != 0 or data.trail_visible or scenery_reserved(cell) or route_axes(cell, 1) != 0 or is_camp(cell) or is_landmark(cell) or not slope_fits(cell): return ""
+	return "plant"
+
+## Independent generated channel; no route/scenery compilation.
+func concentration_at(cell: Vector2i) -> int:
+	return clampi(roundi(50 + vastra.get_noise_2d(cell.x, cell.y) * 45), 0, 100)
+
 func sample(cell: Vector2i) -> Dictionary:
 	var ground := natural_ground(cell)
 	var route := route_axes(cell)
 	var reserved := is_camp(cell) or is_landmark(cell) or route != 0
 	var obstacle := obstacle_at(cell, ground, reserved)
 	var visible_trail := absi(cell.y - trail_y(cell.x)) <= 1 or route_axes(cell, -2) != 0
+	var walkable := ground != Ground.WATER and obstacle == 0 and slope_fits(cell)
+	visible_trail = visible_trail and walkable
 	return {"ground": ground, "trail": route != 0, "trail_visible": visible_trail,
 		"route_axes": route,
-		"obstacle": obstacle, "walkable": ground != Ground.WATER and obstacle == 0 and slope_fits(cell),
+		"obstacle": obstacle, "walkable": walkable,
 		"tint": habitat_tint(cell),
 		"variation": roll(cell, 3) % 7,
+		"affinity": affinity_at(cell, ground),
 		"wetness": wetness_at(cell),
-		"concentration": clampi(roundi(50 + vastra.get_noise_2d(cell.x, cell.y) * 45), 0, 100),
+		"concentration": concentration_at(cell),
 		"overload": 0}
+
+## Geographic parents favor an affinity; smooth local fields and habitat narrow it.
+## These are generated defaults only. ExpeditionState owns permanent battle overrides.
+func affinity_at(cell: Vector2i, ground: int = -1) -> String:
+	if ground < 0:
+		ground = natural_ground(cell)
+	var district := Vector2i(floor_div(cell.x, 128), floor_div(cell.y, 128))
+	var parent: int = roll(district, 810) % AffinityImprint.IDS.size()
+	var wetness := wetness_at(cell)
+	var selected := "earth"
+	var strongest := -INF
+	for index in range(AffinityImprint.IDS.size()):
+		var id: String = AffinityImprint.IDS[index]
+		var score := affinity_noise.get_noise_2d(cell.x + index * 7919, cell.y - index * 3571)
+		if index == parent:
+			score += 0.12
+		match id:
+			"water":
+				score += wetness * 0.25 + (0.35 if ground == Ground.WATER else 0.0)
+			"earth":
+				score += 0.16 if ground in [Ground.FOREST, Ground.MEADOW] else 0.0
+			"fire":
+				score += (1.0 - wetness) * 0.25
+			"air":
+				score += 0.16 if ground in [Ground.HEATH, Ground.SAND] else 0.0
+			"lightning":
+				score += wetness * 0.12 if ground == Ground.MARSH else 0.0
+		if score > strongest:
+			strongest = score
+			selected = id
+	return selected
 
 func obstacle_at(cell: Vector2i, ground: int, reserved: bool) -> int:
 	if scenery_reserved(cell):

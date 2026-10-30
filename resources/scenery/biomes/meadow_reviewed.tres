@@ -1,0 +1,60 @@
+[gd_resource type="Resource" script_class="NatureBiomePalette" format=3]
+
+[ext_resource type="Script" path="res://scripts/scenery/nature_biome_palette.gd" id="palette"]
+[ext_resource type="Script" path="res://scripts/scenery/nature_asset_entry.gd" id="entry"]
+[ext_resource type="PackedScene" path="res://assets/nature_samples/foliage/Scenes/tree_juniper_regular.tscn" id="tree0"]
+[ext_resource type="PackedScene" path="res://assets/nature/CommonTree_4.gltf" id="tree1"]
+[ext_resource type="PackedScene" path="res://assets/nature/Grass_Wispy_Short.gltf" id="plant0"]
+[ext_resource type="PackedScene" path="res://assets/nature/Flower_3_Group.gltf" id="plant1"]
+[ext_resource type="PackedScene" path="res://assets/nature/Flower_4_Group.gltf" id="plant2"]
+[ext_resource type="PackedScene" path="res://assets/nature/Clover_1.gltf" id="plant3"]
+
+[sub_resource type="Resource" id="detail0"]
+script = ExtResource("entry")
+scene = ExtResource("plant0")
+uniform_scale = 0.7
+maximum_height = 0.8
+maximum_width = 1.5
+maximum_parts = 16
+maximum_triangles = 4096
+
+[sub_resource type="Resource" id="detail1"]
+script = ExtResource("entry")
+scene = ExtResource("plant1")
+uniform_scale = 0.35
+maximum_height = 0.8
+maximum_width = 1.5
+maximum_parts = 16
+maximum_triangles = 4096
+
+[sub_resource type="Resource" id="detail2"]
+script = ExtResource("entry")
+scene = ExtResource("plant2")
+uniform_scale = 0.3
+maximum_height = 0.8
+maximum_width = 1.5
+maximum_parts = 16
+maximum_triangles = 4096
+
+[sub_resource type="Resource" id="detail3"]
+script = ExtResource("entry")
+scene = ExtResource("plant3")
+uniform_scale = 0.35
+maximum_height = 0.8
+maximum_width = 1.5
+maximum_parts = 16
+maximum_triangles = 4096
+
+[resource]
+script = ExtResource("palette")
+tree_tint = Color(0.839216, 0.874510, 0.713725, 1)
+detail_tint = Color(0.901961, 0.858824, 0.701961, 1)
+scale_variation = 0.35
+cluster_cells = 7
+cluster_fill = 70
+ground = 0
+trees = Array[PackedScene]([ExtResource("tree0"), ExtResource("tree1")])
+tree_height_scale = 0.85
+ground_tint = Color(0.901961, 0.909804, 0.741176, 1)
+density_percent = 14
+details = Array[ExtResource("entry")]([SubResource("detail0"), SubResource("detail1"), SubResource("detail2"), SubResource("detail3")])

@@ -17,6 +17,8 @@ const TEXTURE_SIZE := Vector2i(2048, 1536)
 @export var scenery_settings: ScenerySiteTemplate = preload("res://resources/scenery/woodland_shelter.tres")
 ## Natural recovery timing, strength, and CPU work budget; applies to loaded worlds too.
 @export var vastra_settings: VastraSettings = preload("res://resources/vastra_settings.tres")
+## Saved vegetation classes, expiring signals and bounded Vessel response policy.
+@export var vessel_settings: VesselSettings = preload("res://resources/vessel_settings.tres")
 ## Display, observation range, local movement responses, and animation for the provisional trail Sols.
 @export var sighting_settings: SightingSettings = preload("res://resources/sighting_settings.tres")
 ## Selected owned Sol follows legal species routes, including supported air/water travel. Live tuning; no ownership changes.
@@ -59,15 +61,31 @@ var world: Node2D
 var target_size := 22.0
 @export_group("Player")
 ## Player model height in world cells. Applied at startup; presentation only, not saved.
-@export_range(1.2, 2.4, 0.05) var player_height := 1.7
+@export_range(0.4, 2.4, 0.05) var player_height := 0.85
+## Terrain-aware foot placement and body lean. Read live; cosmetic only.
+@export var player_procedural_movement := true
+## Seconds per alternating procedural footstep. Read live; running uses 80% of this duration.
+@export_range(0.18, 0.8, 0.01) var player_step_seconds := 0.32
+## Full foot travel before another step, as a fraction of player height. Read live.
+@export_range(0.08, 0.4, 0.01) var player_stride_length := 0.2
+## Swing-foot clearance as a fraction of player height. Read live.
+@export_range(0.02, 0.2, 0.01) var player_step_height := 0.09
+## Maximum slope/turn body lean in degrees. Read live.
+@export_range(0.0, 15.0, 0.5) var player_lean_degrees := 8.0
 ## Maximum visual heading change in degrees per second; shortest-arc turning, applies immediately.
 @export_range(90.0, 1440.0, 15.0) var player_turn_speed_degrees := 540.0
+## Seconds for cosmetic body height to follow terrain seams. Zero follows exactly; feet remain on terrain.
+@export_range(0.0, 0.2, 0.01) var player_height_smoothing := 0.06
 @export_group("Interface")
 ## Movable field-menu defaults and theme. Restart after editing; local UI preferences override layout defaults.
 @export var menu_settings: MenuSettings = preload("res://resources/menu_settings.tres")
 ## Controller defaults; local input preferences override these without affecting saves.
 @export var controller_settings: ControllerSettings = preload("res://resources/controller_settings.tres")
 var gamepad: Node
+@export_group("Audio")
+## Game mix hierarchy, cue assignments, zoom blend and shared voice budget. Restart to apply.
+@export var audio_settings: GameAudioSettings = preload("res://resources/audio/game_audio.tres")
+var audio: Node
 var player_visual: Node3D
 var sightings: Node3D
 var companion: Node3D
@@ -126,7 +144,7 @@ func _ready() -> void:
 	add_child(surface)
 	player_visual = PlayerModel.new()
 	add_child(player_visual)
-	player_visual.bind(world.explorer, world.camera, clampf(player_height, 1.2, 2.4) if is_finite(player_height) else 1.7)
+	player_visual.bind(world.explorer, world.camera, clampf(player_height, 0.4, 2.4) if is_finite(player_height) else 0.85)
 	sightings = preload("res://scripts/sols/presentation/authored_sightings.gd").new()
 	add_child(sightings)
 	sightings.bind(world, sighting_settings, sol_visual_settings)
@@ -154,6 +172,9 @@ func _ready() -> void:
 	story = preload("res://scripts/story/story_director.gd").new()
 	add_child(story)
 	story.bind(world)
+	audio = preload("res://scripts/presentation/expedition_audio.gd").new()
+	add_child(audio)
+	audio.bind_expedition(self, audio_settings)
 	get_window().focus_exited.connect(func() -> void: camera_dragging = false)
 	# Match the 2D ground projection to a tilted plane while preserving pixel assets.
 	if OS.get_cmdline_user_args().has("--capture"):

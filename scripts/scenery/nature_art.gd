@@ -3,6 +3,51 @@ extends RefCounted
 
 static var cache: Dictionary = {}
 static var compact_cache: Dictionary = {}
+static var tinted_cache: Dictionary = {}
+static var foliage_materials: Dictionary = {}
+static var foliage_textures: Dictionary = {}
+
+static func foliage_material(source: Material) -> Material:
+	if not source is BaseMaterial3D or source.transparency != BaseMaterial3D.TRANSPARENCY_ALPHA_SCISSOR:
+		return source
+	if foliage_materials.has(source): return foliage_materials[source]
+	var adapted: BaseMaterial3D = source.duplicate()
+	adapted.alpha_antialiasing_mode = BaseMaterial3D.ALPHA_ANTIALIASING_ALPHA_TO_COVERAGE
+	adapted.alpha_antialiasing_edge = adapted.alpha_scissor_threshold * 0.75
+	adapted.texture_filter = BaseMaterial3D.TEXTURE_FILTER_LINEAR_WITH_MIPMAPS_ANISOTROPIC
+	adapted.roughness = 1.0
+	adapted.metallic_specular = 0.0
+	if source.albedo_texture != null:
+		var texture: Texture2D = source.albedo_texture
+		if not foliage_textures.has(texture):
+			var image := texture.get_image().duplicate() as Image
+			if image.is_compressed(): image.decompress()
+			image.generate_mipmaps()
+			foliage_textures[texture] = ImageTexture.create_from_image(image)
+		adapted.albedo_texture = foliage_textures[texture]
+	foliage_materials[source] = adapted
+	return adapted
+
+static func tint_parts(source: Dictionary, tint: Color) -> Dictionary:
+	if tint == Color.WHITE or source.pieces.is_empty():
+		return source
+	var key := "%d:%d" % [source.pieces[0].mesh.get_instance_id(), hash(tint)]
+	if tinted_cache.has(key):
+		return tinted_cache[key]
+	var result: Dictionary = source.duplicate()
+	var pieces: Array[Dictionary] = []
+	for piece in source.pieces:
+		var mesh: ArrayMesh = piece.mesh.duplicate()
+		for index in range(mesh.get_surface_count()):
+			var material: Material = mesh.surface_get_material(index)
+			if material is BaseMaterial3D:
+				var colored: BaseMaterial3D = material.duplicate()
+				colored.albedo_color *= tint
+				mesh.surface_set_material(index, colored)
+		pieces.append({"mesh": mesh, "transform": piece.transform})
+	result.pieces = pieces
+	tinted_cache[key] = result
+	return result
 
 static func compact_parts(scene: PackedScene) -> Dictionary:
 	var key := scene.get_instance_id()
@@ -87,6 +132,12 @@ static func collect(node: Node, parent: Transform3D, result: Array[Dictionary]) 
 	if node is Node3D:
 		transform = parent * node.transform
 	if node is MeshInstance3D and node.mesh != null:
-		result.append({"mesh": node.mesh, "transform": transform})
+		var mesh: Mesh = node.mesh.duplicate()
+		if mesh is ArrayMesh:
+			for surface in range(mesh.get_surface_count()):
+				mesh.surface_set_material(surface, foliage_material(mesh.surface_get_material(surface)))
+		elif mesh is PrimitiveMesh:
+			mesh.material = foliage_material(mesh.material)
+		result.append({"mesh": mesh, "transform": transform})
 	for child in node.get_children():
 		collect(child, transform, result)

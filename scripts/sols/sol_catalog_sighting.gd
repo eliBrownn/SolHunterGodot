@@ -20,13 +20,17 @@ func entry(catalog: SolSpeciesCatalog) -> Dictionary:
 	if not valid(catalog):
 		return {}
 	var species := catalog.find(species_id)
-	var reaction := "Observing"
-	for action in species.ecology.behaviors:
-		if action in ["flee", "approach", "guard"]:
-			reaction = {"flee": "Wary", "approach": "Watching", "guard": "Guarding"}[action]
-	var result := {"x": trail_x, "species": species_id, "name": species.display_name,
-		"lineage": species.lineage_id, "class": species.class_id, "affinity": affinity, "reaction": reaction}
+	var result := species_entry(species, affinity)
+	result.x = trail_x
 	if placement == "bank":
 		result.bank_radius = bank_radius
 		result.bank_step = species.traversal.shore_step
 	return result
+
+static func species_entry(species: Resource, individual_affinity: String) -> Dictionary:
+	var reaction := "Observing"
+	for action in species.ecology.behaviors:
+		if action in ["flee", "approach", "guard"]:
+			reaction = {"flee": "Wary", "approach": "Watching", "guard": "Guarding"}[action]
+	return {"species": species.species_id, "name": species.display_name,
+		"lineage": species.lineage_id, "class": species.class_id, "affinity": individual_affinity, "reaction": reaction}

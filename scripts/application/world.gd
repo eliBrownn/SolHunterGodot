@@ -22,6 +22,7 @@ const StructureView = preload("res://scripts/scenery/structure_view.gd")
 const CLIMATE_SETTINGS = preload("res://resources/climate_settings.tres")
 const VASTRA_SETTINGS = preload("res://resources/vastra_settings.tres")
 const EXPEDITION_SETTINGS = preload("res://resources/expedition_settings.tres")
+const HABITAT_NAMES := ["Meadow", "Woodland", "Heath", "Marsh", "Water", "Shore"]
 const CHUNK_RADIUS := 3
 # Tree upper pieces extend 120 pixels above their ground anchor.
 const VIEW_PROP_MARGIN := 128.0
@@ -45,6 +46,8 @@ var chunks: Dictionary = {}
 var pending: Array[Vector2i] = []
 var last_chunk := Vector2i(999999, 999999)
 var last_stream_key := ""
+var flora_catalog: FloraCatalog
+var flora_focus := Vector2i(2147483647, 2147483647)
 var pending_pointer_hint: Variant = null
 var max_process_ms := 0.0
 var max_simulation_ms := 0.0
@@ -283,6 +286,12 @@ func replace_persistent_state(state: ExpeditionState) -> void:
 		if host.get("progression_settings") is ProgressionSettings:
 			persistent_state.configure_progression(host.get("progression_settings"))
 	persistent_state.set_population_cache_limit(expedition_parameters().population_cache_territories)
+	var flora_tuning: VastraSettings = vastra_settings if vastra_settings != null and vastra_settings.valid() else VastraSettings.new()
+	persistent_state.configure_flora(flora_tuning.plant_parameters())
+	var vessel_tuning: VesselSettings = host.get("vessel_settings") if host != null else null
+	persistent_state.configure_ecology(vessel_tuning.parameters() if vessel_tuning != null and VesselSettings.valid_policy(vessel_tuning.parameters()) else VesselSettings.new().parameters())
+	flora_catalog = FloraCatalog.new(terrain)
+	flora_focus = Vector2i(2147483647, 2147483647)
 	persistent_state.activity_advanced.connect(advance_environment)
 	persistent_state.discovery_recorded.connect(refresh_discoveries)
 
@@ -306,6 +315,8 @@ func advance_environment(_tick: int) -> void:
 	var tuning: VastraSettings = vastra_settings if vastra_settings != null and vastra_settings.valid() else VastraSettings.new()
 	persistent_state.advance_environment(settings, Callable(), tuning)
 	persistent_state.recover_affinity_conditions(tuning)
+	if flora_catalog != null:
+		persistent_state.advance_flora(flora_catalog.trees_near, flora_environment, flora_catalog.plants_near, cell, ecology_protected, ecology_storm_allowed())
 
 func _process(delta: float) -> void:
 	var process_started := Time.get_ticks_usec()
@@ -334,6 +345,10 @@ func _process(delta: float) -> void:
 		max_movement_ms = maxf(max_movement_ms, (Time.get_ticks_usec() - movement_started) / 1000.0)
 	var build_budget: int = host.active_view.chunks_per_frame if host.has_method("stream_plan") else 1
 	var deadline := Time.get_ticks_usec() + int(host.active_view.chunk_work_ms * 1000.0) if host.has_method("prepare_stream_chunk") else 0
+	# Reserve part of the same frame budget for canonical flora so camera-heavy
+	# scenery queues cannot indefinitely starve simulation admission.
+	if not smoke_mode and not paused:
+		prepare_flora(mini(deadline, Time.get_ticks_usec() + 1000) if deadline > 0 else Time.get_ticks_usec() + 1000)
 	if host.has_method("prepare_stream_ground"):
 		host.prepare_stream_ground(deadline)
 	for index in range(mini(build_budget, pending.size())):
@@ -371,8 +386,8 @@ func advance_movement(delta: float, direction: Vector2) -> void:
 		if not moving:
 			if direction.length_squared() < 0.1:
 				break
-			var step := Vector2i(signi(roundi(direction.x * 2)), signi(roundi(direction.y * 2)))
-			if not can_step(cell, cell + step):
+			var step := traversal_step(direction)
+			if step == Vector2i.ZERO:
 				break
 			destination = cell + step
 			progress = 0.0
@@ -398,8 +413,23 @@ func advance_movement(delta: float, direction: Vector2) -> void:
 			break
 	explorer.walking = moving
 	explorer.running = moving and (Input.is_action_pressed("run") or (host.gamepad != null and host.gamepad.sprinting()))
-	camera.position = explorer.position.round()
+	camera.position = explorer.position
 	plan_chunks()
+
+func traversal_step(direction: Vector2) -> Vector2i:
+	var step := Vector2i(signi(roundi(direction.x * 2)), signi(roundi(direction.y * 2)))
+	if can_step(cell, cell + step):
+		return step
+	# Keep moving along a bank, wall or slope when diagonal input hits its edge.
+	# Every candidate uses the same terrain and live-condition collision authority.
+	if step.x != 0 and step.y != 0:
+		var sides: Array[Vector2i] = [Vector2i(step.x, 0), Vector2i(0, step.y)]
+		if absf(direction.y) > absf(direction.x):
+			sides.reverse()
+		for side in sides:
+			if can_step(cell, cell + side):
+				return side
+	return Vector2i.ZERO
 
 func arrived() -> void:
 	persistent_state.observe_territory(cell)
@@ -428,8 +458,13 @@ func plan_chunks() -> void:
 		for coord in desired:
 			if not chunks.has(coord):
 				pending.append(coord)
-		if host.has_method("cancel_stream_chunk") and host.stream_job != null and not pending.has(host.stream_job.coord):
-			host.cancel_stream_chunk()
+		if host.has_method("cancel_stream_chunk") and host.stream_job != null:
+			if pending.has(host.stream_job.coord):
+				# Finish admitted work before a distance sort can replace pending[0].
+				pending.erase(host.stream_job.coord)
+				pending.push_front(host.stream_job.coord)
+			else:
+				host.cancel_stream_chunk()
 		return
 	var current := terrain.chunk_of(cell)
 	if current == last_chunk:
@@ -485,7 +520,9 @@ func publish_chunk(coord: Vector2i, prepared: Array[Dictionary] = []) -> void:
 	max_publish_ms = maxf(max_publish_ms, (Time.get_ticks_usec() - start) / 1000.0)
 
 func update_hud() -> void:
-	location_label.text = "Refuge" if terrain.is_camp(cell) else ("Waystone" if terrain.is_landmark(cell) else "The wilds")
+	var habitat: String = HABITAT_NAMES[terrain.natural_ground(cell)]
+	var place := "Refuge" if terrain.is_camp(cell) else ("Waystone" if terrain.is_landmark(cell) else "")
+	location_label.text = habitat if place.is_empty() else "%s · %s" % [place, habitat]
 	var target := Vector2i.ZERO if visited else terrain.landmark()
 	var distance := roundi(Vector2(target - cell).length())
 	objective.text = "Journey complete · explore freely" if returned else ("Return to the refuge · %d tiles" % distance if visited else "Find the eastern waystone · %d tiles" % distance)
@@ -514,7 +551,17 @@ func message(value: String, session_note: bool = true) -> void:
 	if session_note:
 		history.append_text(value + "\n\n")
 
+func in_development_workstation() -> bool:
+	var ancestor: Node = self
+	while ancestor != null:
+		if ancestor.get_meta("development_workstation", false): return true
+		ancestor = ancestor.get_parent()
+	return false
+
 func save_game(path: String = ExpeditionSave.SAVE_PATH) -> void:
+	if in_development_workstation():
+		message("Workstation test: expedition saving is disabled.", false)
+		return
 	if encounter_active:
 		message("Withdraw before saving your expedition.", false)
 		return
@@ -522,6 +569,9 @@ func save_game(path: String = ExpeditionSave.SAVE_PATH) -> void:
 	message("Expedition saved." if error == OK else "Save failed: " + error_string(error))
 
 func load_game(path: String = ExpeditionSave.SAVE_PATH) -> void:
+	if in_development_workstation():
+		message("Workstation test: expedition loading is disabled.", false)
+		return
 	if encounter_active:
 		message("Withdraw before loading an expedition.", false)
 		return
@@ -573,15 +623,24 @@ func inspect_mouse() -> void:
 
 func describe_cell(hovered: Vector2i) -> void:
 	var data := persistent_state.environment_view(hovered, terrain.sample(hovered))
+	var reserve := persistent_state.flora_reading(hovered)
+	if not reserve.is_empty(): data["flora_reserve"] = reserve
 	hover_outline.position = Vector2(hovered) * 32
 	hover_outline.show()
-	var names := ["Meadow", "Woodland", "Heath", "Marsh", "Water", "Shore"]
 	var subject := inspected_subject if inspected_cell == hovered and not inspected_subject.is_empty() else observation_name(hovered)
+	if subject == "Vessel swarm":
+		var swarm := persistent_state.vessel_reading(hovered)
+		if not swarm.is_empty():
+			data["vessel"] = swarm
+			data["flora_reserve"] = {"energy": float(swarm.energy), "capacity": 100.0, "roots": 0.0, "swarm": true}
+		if inspected_cell == hovered and not inspected_appearance.is_empty(): inspected_appearance = VesselEcology.observe(swarm) if not swarm.is_empty() else "No swarm is visible at this location."
+	elif inspected_cell == hovered and not inspected_appearance.is_empty() and not reserve.get("traits", {}).is_empty() and (subject in ["Tree", "Grass patch"] or subject in FloraTraits.NAMES.values()):
+		inspected_appearance = FloraTraits.appearance(reserve.traits, str(reserve.activity))
 	var recovery_text := ""
 	var wildlife: Variant = host.get("wild_recovery") if host != null else null
 	if wildlife != null:
 		recovery_text = wildlife.describe_home(hovered)
-	inspection_card.update_reading(hovered, subject, names[data.ground], data, recovery_text)
+	inspection_card.update_reading(hovered, subject, HABITAT_NAMES[data.ground], data, recovery_text)
 	inspection_card.show_appearance(inspected_appearance if inspected_cell == hovered else "")
 
 func observation_name(at: Vector2i) -> String:
@@ -599,6 +658,8 @@ func observation_name(at: Vector2i) -> String:
 				return "%s · %s" % [member.entry.name, str(member.sprite.affinity).capitalize()]
 	if at == cell and battle == null:
 		return "Trainer · Exploring the wilderness."
+	var plant := persistent_state.flora_reading(at)
+	if not plant.get("traits", {}).is_empty(): return str(plant.traits.name)
 	var data := terrain.sample(at)
 	if data.obstacle > 0:
 		return ["", "Tree", "Rock", "Refuge cabin"][data.obstacle]
@@ -607,7 +668,7 @@ func observation_name(at: Vector2i) -> String:
 	for prop in place_props:
 		if Vector2i((prop.position / 32.0).floor()) == at:
 			return str(prop.get_meta("asset_key", "World object")).get_file().replace("TX ", "").replace("_", " ")
-	return "Old stone trail" if data.trail_visible else ["Meadow", "Woodland", "Heath", "Marsh", "Water", "Shore"][data.ground]
+	return "Old stone trail" if data.trail_visible else HABITAT_NAMES[data.ground]
 
 func context_item(text: String, id: int, action: Dictionary, disabled: bool = false, hint: String = "") -> void:
 	observation_menu.add_item(text, id)
@@ -641,7 +702,7 @@ func open_observation(pointer: Vector2, target_override: Variant = null, identit
 	var targets: Array[Dictionary] = []
 	# All individuals at the selected cell get their own named actions.
 	# A foreground scenery hit retains its own actions rather than selecting through it.
-	if context_battle == null and (target_override != null or not (host.has_method("pointer_object_cell") and not host.pointer_subject.is_empty())):
+	if observation_subject != "Vessel swarm" and context_battle == null and (target_override != null or not (host.has_method("pointer_object_cell") and not host.pointer_subject.is_empty())):
 		for member in host.sightings.members:
 			if member.sprite.visible and host.sightings.current_cell(member) == at and persistent_state.wild_available(member.id) and (identity.is_empty() or member.id == identity):
 				targets.append(member)
@@ -753,6 +814,11 @@ func observe_cell(_id: int = 0) -> void:
 				break
 
 func appearance_description(at: Vector2i, subject: String) -> String:
+	if subject == "Vessel swarm":
+		var swarm := persistent_state.vessel_reading(at)
+		return VesselEcology.observe(swarm) if not swarm.is_empty() else "No swarm is visible at this location."
+	var plant := persistent_state.flora_reading(at)
+	if not plant.get("traits", {}).is_empty() and (subject in ["Tree", "Grass patch"] or subject in FloraTraits.NAMES.values()): return FloraTraits.appearance(plant.traits, str(plant.activity))
 	for member in host.sightings.members:
 		if member.sprite.visible and host.sightings.current_cell(member) == at and (observation_member_id.is_empty() or member.id == observation_member_id):
 			return "%s has a distinct body shape, surrounded by %s energy." % [member.entry.name, str(member.sprite.affinity)]
@@ -893,3 +959,40 @@ func condition_move_multiplier(from: Vector2i, to: Vector2i) -> float:
 			var dot := delta.x * int(d[0]) + delta.y * int(d[1])
 			return library.world_flow_assisted if dot > 0 else (library.world_flow_resisted if dot < 0 else 1.0)
 	return 1.0
+
+func generated_flora_cell(at: Vector2i) -> Dictionary:
+	var coord := terrain.chunk_of(at)
+	if chunks.has(coord):
+		var local := at - coord * 16
+		return chunks[coord].view.cells[local.y * 16 + local.x]
+	return terrain.sample(at)
+
+func prepare_flora(deadline: int) -> void:
+	if flora_catalog == null or flora_catalog.terrain != terrain:
+		flora_catalog = FloraCatalog.new(terrain)
+		flora_focus = Vector2i(2147483647, 2147483647)
+	var policy := persistent_state.flora_policy()
+	if policy.is_empty(): return
+	var focus := FloraCatalog.region(cell)
+	var changed := focus != flora_focus
+	if changed:
+		flora_catalog.request(cell, int(policy.active_radius), float(policy.tree_reach))
+		flora_focus = focus
+		persistent_state.admit_flora(flora_catalog.active_definitions())
+	var admitted := flora_catalog.advance(deadline, generated_flora_cell)
+	if not admitted.is_empty(): persistent_state.admit_flora(admitted)
+	if changed or not admitted.is_empty(): persistent_state.set_flora_active(flora_catalog.active_ids())
+
+func flora_environment(at: Vector2i) -> Dictionary:
+	return persistent_state.environment_view(at, {"concentration": terrain.concentration_at(at), "overload": 0})
+
+
+func ecology_protected(at: Vector2i) -> bool:
+	# Use canonical geography, never camera visibility, for essential access.
+	return absi(at.x) > 999999 or absi(at.y) > 999999 or terrain.is_camp(at) or terrain.is_landmark(at) or terrain.route_axes(at, 1) != 0 or terrain.scenery_reserved(at)
+
+func ecology_storm_allowed() -> bool:
+	# The existing clock-derived cloudy/rainy conditions permit admission only.
+	# Weather never originates overload. Missing presentation conditions fail closed.
+	var atmosphere: Variant = host.get("atmosphere_controller") if host != null else null
+	return atmosphere != null and atmosphere.settings != null and atmosphere.weather_at(floori(persistent_state.activity_seconds() / atmosphere.settings.weather_seconds)) in ["cloudy", "rain"]

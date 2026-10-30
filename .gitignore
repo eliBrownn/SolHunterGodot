@@ -12,3 +12,14 @@ export_credentials.cfg
 # Local operating system files
 .DS_Store
 Thumbs.db
+
+# Optional owner art; redistribution rights are unresolved.
+assets/characters/basic_man/*.fbx
+assets/characters/basic_man/*.fbx.import
+assets/characters/rogue/*.glb
+assets/characters/rogue/*.glb.import
+assets/characters/rogue/*.png
+assets/characters/rogue/*.png.import
+assets/local/
+assets/sky/clouds_*.tres
+assets/sky/main.gdshader

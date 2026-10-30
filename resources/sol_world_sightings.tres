@@ -1,7 +1,8 @@
-[gd_resource type="Resource" script_class="SightingSettings" load_steps=21 format=3]
+[gd_resource type="Resource" script_class="SightingSettings" load_steps=26 format=3]
 
 [ext_resource type="Script" path="res://scripts/sols/sighting_settings.gd" id="1"]
 [ext_resource type="Script" path="res://scripts/sols/sol_catalog_sighting.gd" id="2"]
+[ext_resource type="Script" path="res://scripts/sols/habitat_encounter_pool.gd" id="habitat"]
 
 [sub_resource type="Resource" id="crown"]
 script = ExtResource("2")
@@ -112,12 +113,45 @@ species_id = "sol_species_0018"
 trail_x = 6
 affinity = "water"
 
+[sub_resource type="Resource" id="habitat_meadow"]
+script = ExtResource("habitat")
+ground = 0
+species_weights = Dictionary[String, int]({
+"sol_species_0003": 1,
+"sol_species_0018": 1
+})
+
+[sub_resource type="Resource" id="habitat_woodland"]
+script = ExtResource("habitat")
+ground = 1
+species_weights = Dictionary[String, int]({
+"sol_species_0001": 1,
+"sol_species_0011": 1
+})
+
+[sub_resource type="Resource" id="habitat_heath"]
+script = ExtResource("habitat")
+ground = 2
+species_weights = Dictionary[String, int]({
+"sol_species_0004": 1,
+"sol_species_0005": 1
+})
+
+[sub_resource type="Resource" id="habitat_marsh"]
+script = ExtResource("habitat")
+ground = 3
+species_weights = Dictionary[String, int]({
+"sol_species_0002": 1,
+"sol_species_0008": 1
+})
+
 [resource]
 script = ExtResource("1")
 species_catalog_path = "res://resources/sol_species/catalog.tres"
 catalog_sightings = Array[Resource]([SubResource("crown"), SubResource("reed"), SubResource("bell"), SubResource("ashquill"), SubResource("rattlehorn"), SubResource("rimefold"), SubResource("browguard"), SubResource("bitterfrill"), SubResource("knucklemole"), SubResource("sailcrest"), SubResource("glass_throat"), SubResource("claspback"), SubResource("foldling"), SubResource("mournveil"), SubResource("pebblewyrm"), SubResource("shadepelt"), SubResource("kilnling"), SubResource("thimblehart")])
 enabled = true
 wilderness_enabled = true
+habitat_encounters = Array[ExtResource("habitat")]([SubResource("habitat_meadow"), SubResource("habitat_woodland"), SubResource("habitat_heath"), SubResource("habitat_marsh")])
 species_profiles_enabled = true
 visible_radius = 28
 reaction_distance = 3

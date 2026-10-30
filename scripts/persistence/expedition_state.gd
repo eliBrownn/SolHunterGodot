@@ -10,8 +10,9 @@ signal human_activity_applied(event: Dictionary, effect: Dictionary)
 signal discovery_recorded(identity: String)
 signal battle_progress_changed
 signal story_changed(event_id: String, choice_id: String)
+signal flora_changed
 
-const VERSION := 17 # Authored event decisions and explicit story facts.
+const VERSION := 20 # Owner-approved capped reserves, expelled root stock and conserved Sol food.
 const MAX_DISCOVERIES := 120 # Source journal retention: oldest discovery rows retire, not individuals.
 const TERRITORY_SIZE := 16 # Source development setting; independent of render chunk size.
 const MAX_CATCH_UP := 2
@@ -27,6 +28,13 @@ var _individuals: Dictionary = {}
 var _tile_deltas: Dictionary = {}
 var _human_activity := HumanVastraActivity.empty_ledger()
 var _natural := VastraNatural.empty_schedule()
+var _flora := PlantVastra.empty()
+var _ecology := VesselEcology.empty()
+var _ecology_activities: Dictionary = {}
+var _ecology_active_groups: Array[String] = []
+var _ecology_regions: Dictionary = {}
+var _flora_active: Array[String] = []
+var _flora_recent: Array[Dictionary] = []
 var _discoveries: Array[Dictionary] = []
 var _roaming: Dictionary = {}
 var _battle := BattleProgress.empty()
@@ -41,6 +49,7 @@ var _buff_settings: ClassBuffSettings = preload("res://resources/class_buff_sett
 var _retraining_items := 3
 var _progression_policy := ProgressionSettings.new().parameters()
 var _wild_recovery_delay := 0 # Bare domain instances do not invent a live recovery policy.
+var _habitat_encounters: Variant = null # Null until the live owner captures its policy once.
 # Derived indexes: never saved and never sources of population or individual identity.
 var _known_homes: Dictionary = {}
 var _wild_homes: Dictionary = {}
@@ -233,6 +242,18 @@ func complete_battle(serial: int, hp: int, outcome: String, grace_steps: int, im
 		return false
 	candidate.affinity_tiles = tiles
 	var vastra_changes: Variant = details.get("vastra_overloads", {})
+	# Merge a live battle's net contribution with concurrent natural repair.
+	if details.has("vastra_overload_baseline"):
+		var baseline: Variant = details.vastra_overload_baseline
+		if not baseline is Dictionary or not vastra_changes is Dictionary or baseline.size() > VastraCombat.MAX_BATTLE_CELLS:
+			return false
+		var merged: Dictionary = {}
+		for key in vastra_changes:
+			if not VastraCombat.valid_key(key) or not VastraCombat.valid_overload(vastra_changes[key]) or not VastraCombat.valid_overload(baseline.get(key)):
+				return false
+			var live := int(_tile_deltas.get(key, {}).get("overload", 0))
+			merged[key] = clampi(live + int(vastra_changes[key]) - int(baseline[key]), VastraCombat.MIN_OVERLOAD, VastraCombat.MAX_OVERLOAD)
+		vastra_changes = merged
 	if not VastraCombat.apply(candidate, vastra_changes, _tick):
 		return false
 	if outcome in ["victory", "captured"]:
@@ -321,6 +342,8 @@ func request_ground(identity: String) -> bool:
 	return true
 
 func record_roaming_step(identity: String, target: Vector2i, action: String, patrol: Dictionary = {}, response: Dictionary = {}, traversal: Dictionary = {}) -> bool:
+	if wild_in_battle(identity):
+		return false
 	var previous := roaming_view(identity)
 	if previous.is_empty() or int(previous.tick) >= _tick:
 		return false
@@ -630,8 +653,17 @@ func advance_environment(policy: Dictionary, profile_resolver: Callable = Callab
 		environment_changed.emit(Vector2i(int(parts[0]), int(parts[1])))
 	return int(prepared.processed)
 
+func capture_habitat_encounters(policy: Array) -> bool:
+	if _habitat_encounters != null or _battle.active or not HabitatEncounterPool.valid_policy(policy):
+		return false
+	_habitat_encounters = HabitatEncounterPool.normalized(policy)
+	return true
+
+func habitat_encounters() -> Variant:
+	return _habitat_encounters.duplicate(true) if _habitat_encounters != null else null
+
 func snapshot() -> Dictionary:
-	return {"version": VERSION, "story": _story.duplicate(true), "activity_tick": _tick, "remainder_seconds": _remainder,
+	return {"version": VERSION, "ecology": _ecology.duplicate(true), "flora": _flora.duplicate(true), "habitat_encounters": _habitat_encounters.duplicate(true) if _habitat_encounters != null else null, "story": _story.duplicate(true), "activity_tick": _tick, "remainder_seconds": _remainder,
 		"territory_size": _territory_size, "territories": _territories.duplicate(true),
 		"individuals": _individuals.duplicate(true), "tile_deltas": _tile_deltas.duplicate(true),
 		"human_activity": _human_activity.duplicate(true), "natural": _natural.duplicate(true),
@@ -642,6 +674,9 @@ static func restore(data: Variant, seed_value: int) -> ExpeditionState:
 		return null
 	var state := ExpeditionState.new(seed_value, int(data.territory_size))
 	state._tick = int(data.activity_tick)
+	state._flora = PlantVastra.normalized(data.flora)
+	state._ecology = VesselEcology.normalized(data.get("ecology", VesselEcology.empty()))
+	state._habitat_encounters = HabitatEncounterPool.normalized(data.habitat_encounters) if data.habitat_encounters != null else null
 	state._story = data.story.duplicate(true)
 	for row in state._story.decisions.values():
 		row.tick = int(row.tick)
@@ -843,10 +878,20 @@ static func valid_snapshot(data: Variant, seed_value: int) -> bool:
 	expected_fields.append("collection")
 	expected_fields.append_array(["sol_stats", "retraining_items"])
 	expected_fields.append("story")
+	expected_fields.append("habitat_encounters")
+	expected_fields.append("flora")
+	if data.has("ecology"): expected_fields.append("ecology")
 	if not RecordShape.keys_match(data, expected_fields):
+		return false
+	if data.habitat_encounters != null and not HabitatEncounterPool.valid_policy(data.habitat_encounters):
 		return false
 	if not SolSpeciesDefinition.whole(seed_value, 0, 2147483646) or not SolSpeciesDefinition.whole(data.activity_tick, 0, ExpeditionContract.MAX_SAFE_INTEGER) or not SolSpeciesDefinition.whole(data.territory_size, 1, 256):
 		return false
+	if not PlantVastra.valid(data.flora, int(data.activity_tick)): return false
+	if data.has("ecology") and not VesselEcology.valid(data.ecology, int(data.activity_tick), data.flora): return false
+	if not data.individuals is Dictionary: return false
+	for id in data.flora.fed:
+		if not data.individuals.has(id): return false
 	if not StoryLedger.valid(data.story, int(data.activity_tick)):
 		return false
 	if not HumanVastraActivity.valid_ledger(data.human_activity, int(data.activity_tick)):
@@ -1043,11 +1088,14 @@ func configure_wild_recovery(interval_ticks: int) -> bool:
 func wild_population_view() -> Dictionary:
 	return _wild_population.duplicate(true)
 
+func wild_in_battle(identity: String) -> bool:
+	return _battle.active and identity == _battle_enemy
+
 func home_occupant(home: String) -> String:
 	return _wild_homes.get(home, "")
 
 func schedule_historical_recovery(home: String) -> bool:
-	if _battle.active or _wild_recovery_delay == 0 or _wild_homes.has(home) or not _known_homes.has(home):
+	if _wild_recovery_delay == 0 or _wild_homes.has(home) or not _known_homes.has(home):
 		return false
 	if _wild_population.has(home) and not _wild_population[home].active:
 		return false
@@ -1066,7 +1114,7 @@ func schedule_historical_recovery(home: String) -> bool:
 	return true
 
 func activate_wild_home(home: String, species: SolSpeciesDefinition, affinity: String, book: Dictionary, vacant: bool) -> String:
-	if _battle.active or not vacant or _wild_homes.has(home) or not _wild_population.has(home) or _individuals.size() >= ExpeditionContract.MAX_INDIVIDUALS or species == null or not species.valid() or not MoveLibrary.valid_book(book):
+	if not vacant or _wild_homes.has(home) or not _wild_population.has(home) or _individuals.size() >= ExpeditionContract.MAX_INDIVIDUALS or species == null or not species.valid() or not MoveLibrary.valid_book(book):
 		return ""
 	var row: Dictionary = _wild_population[home]
 	var origin := SolIdentityContract.parse(home)
@@ -1083,6 +1131,12 @@ func activate_wild_home(home: String, species: SolSpeciesDefinition, affinity: S
 	candidate.sol_stats[identity] = new_stat_record(identity, record.class_id)
 	candidate.movebooks[identity] = book.duplicate(true)
 	candidate.wild_population[home].active = true
+	# Full save validation deliberately rejects active battles. Validate only
+	# this ecology transaction against the last completed receipt; never commit
+	# the projected battle fields or admit an in-progress battle to a save.
+	if candidate.battle.active:
+		candidate.battle.serial -= 1
+	candidate.battle.active = false
 	if not valid_snapshot(candidate, _seed):
 		return ""
 	_individuals[identity] = record
@@ -1289,3 +1343,186 @@ func evolve_companion(id: String, species: SolSpeciesDefinition, profile: Dictio
 	individual_changed.emit(id)
 	battle_progress_changed.emit()
 	return true
+
+func configure_flora(policy: Dictionary) -> bool:
+	if not PlantVastra.valid_policy(policy): return false
+	if _flora.policy == null: _flora.policy = policy.duplicate(true)
+	return true
+
+func flora_policy() -> Dictionary:
+	return _flora.policy.duplicate(true) if _flora.policy != null else {}
+
+func admit_flora(definitions: Array[Dictionary]) -> bool:
+	if _flora.policy == null: return false
+	var unique := {}
+	for row in definitions:
+		if not PlantVastra.valid_definition(row): return false
+		if _flora.nodes.has(row.id) and (_flora.nodes[row.id].kind != row.kind or _flora.nodes[row.id].cell != row.cell): return false
+		if unique.has(row.id) and unique[row.id] != row: return false
+		unique[row.id] = row
+	var added := 0
+	for id in unique:
+		if not _flora.nodes.has(id): added += 1
+	if _flora.nodes.size() + added > PlantVastra.MAX_NODES: return false
+	for id in unique:
+		if not _flora.nodes.has(id):
+			var row: Dictionary = unique[id].duplicate(true)
+			row.merge({"energy": 0.0, "roots": 0.0, "since": _tick, "emissions": 0})
+			_flora.nodes[id] = row
+	return true
+
+func set_flora_active(ids: Array[String]) -> void:
+	# Reactivated plants retain their reserve but receive no invented offline age.
+	var previous := {}
+	for id in _flora_active: previous[id] = true
+	_flora_active.clear()
+	var seen := {}
+	for id in ids:
+		if not _flora.nodes.has(id) or seen.has(id): continue
+		seen[id] = true
+		if not previous.has(id): _flora.nodes[id].since = _tick
+		_flora_active.append(id)
+	_ecology_regions.clear()
+	for id in _flora_active:
+		var owner := FloraCatalog.region(VesselEcology.cell(_flora.nodes[id]))
+		if not _ecology_regions.has(owner): _ecology_regions[owner] = []
+		_ecology_regions[owner].append(id)
+	for owner in _ecology_regions: _ecology_regions[owner].sort()
+
+func flora_view() -> Dictionary:
+	return _flora.duplicate(true)
+
+## Small read-only inspection projection; never copy the entire flora ledger per frame.
+func flora_reading(cell: Vector2i) -> Dictionary:
+	var id := AffinityImprint.key(cell)
+	if _flora.policy == null or not _flora.nodes.has(id): return {}
+	var row: Dictionary = _flora.nodes[id]
+	var trace: Dictionary = _ecology.signals.get(str(int(_ecology.memories.get(id, 0))), {})
+	return {"energy": float(row.energy), "capacity": float(_flora.policy.threshold), "roots": float(row.roots),
+		"traits": FloraTraits.describe(_seed, row) if _ecology.policy != null and _ecology.policy.enabled else {},
+		"activity": str(_ecology_activities.get(id, "idle")), "trace": not trace.is_empty() and int(trace.expires) > _tick}
+
+func sol_vastra_food(identity: String) -> float:
+	return float(_flora.fed.get(identity, 0.0))
+
+func flora_transfers() -> Array[Dictionary]:
+	var result: Array[Dictionary] = []
+	if _flora.policy == null: return result
+	var seconds := activity_seconds()
+	for flight: Dictionary in _flora.flights + _flora_recent:
+		var source: Dictionary = _flora.nodes[flight.source]
+		var tail := 5.0 if source.kind == "tree" else 0.8
+		var pending: bool = not flight.has("credited_tick")
+		var credited_tick := int(flight.get("credited_tick", flight.arrival))
+		if not pending and seconds > float(credited_tick) * ExpeditionContract.ACTIVITY_INTERVAL + tail / float(_flora.policy.speed): continue
+		var copy: Dictionary = flight.duplicate(true)
+		copy["pending"] = pending
+		copy["visual_sent"] = int(flight.sent) + maxi(0, credited_tick - int(flight.arrival))
+		copy["source_node"] = {"id": source.id, "kind": source.kind, "cell": source.cell.duplicate()}
+		var target: Dictionary = _flora.nodes[flight.target]
+		copy["target_node"] = {"id": target.id, "kind": target.kind, "cell": target.cell.duplicate()}
+		result.append(copy)
+	return result
+
+func advance_flora(resolver: Callable, environment: Callable, plants: Callable = Callable(), companion_cell: Variant = null, protected: Callable = Callable(), storm_allowed: bool = false) -> int:
+	if _flora.policy == null: return 0
+	var feeders: Array[Dictionary] = []
+	var identities := individual_ids()
+	identities.sort()
+	for identity: String in identities:
+		if not wild_available(identity) or wild_in_battle(identity): continue
+		var row := roaming_view(identity)
+		feeders.append({"id": identity, "cell": row.cell})
+	if companion_cell is Vector2i and not _battle.active:
+		var companion := active_sol_view()
+		if not companion.is_empty() and companion.hp > 0 and _individuals.get(companion.id, {}).get("location") == "party":
+			feeders.append({"id": companion.id, "cell": [companion_cell.x, companion_cell.y]})
+	var prepared := PlantVastra.prepare(_flora, _tick, _seed, _flora_active, resolver, environment, plants, feeders, _ecology.policy != null and _ecology.policy.enabled)
+	if prepared.is_empty(): return -1
+	if prepared.has("noop"): return 0
+	for id in prepared.changes: _flora.nodes[id] = prepared.changes[id]
+	_flora.flights = prepared.flights
+	_flora.cursor = prepared.cursor
+	_flora.serial = prepared.serial
+	_flora.absorbed += prepared.absorbed
+	_flora.spent += prepared.spent
+	var food_changed: bool = _flora.fed != prepared.fed
+	_flora.fed = prepared.fed
+	_flora.last_tick = _tick
+	for id: String in prepared.repairs:
+		var row: Dictionary = _flora.nodes[id]
+		var cell := Vector2i(int(row.cell[0]), int(row.cell[1]))
+		var key := AffinityImprint.key(cell)
+		var overload: int = int(_tile_deltas.get(key, {}).get("overload", 0))
+		if overload > 0: set_environment(cell, {"overload": maxi(0, overload - int(prepared.repairs[id]))})
+	for arrival: Dictionary in prepared.arrivals:
+		var completed := arrival.duplicate(true)
+		completed["credited_tick"] = _tick
+		_flora_recent.append(completed)
+	while _flora_recent.size() > 128: _flora_recent.pop_front()
+	advance_vessels(prepared.arrivals, environment, protected, storm_allowed)
+	if not prepared.emissions.is_empty() or not prepared.arrivals.is_empty() or food_changed: flora_changed.emit()
+	return prepared.changes.size()
+
+
+func configure_ecology(policy: Dictionary) -> bool:
+	if not VesselSettings.valid_policy(policy): return false
+	# Existing v20 saves without this optional extension capture it once. No save rewrite.
+	if _ecology.policy == null: _ecology.policy = policy.duplicate(true)
+	return true
+
+func ecology_view() -> Dictionary:
+	return _ecology.duplicate(true)
+
+func ecology_policy() -> Dictionary:
+	return _ecology.policy.duplicate(true) if _ecology.policy != null else {}
+
+func active_vessels() -> Array[Dictionary]:
+	var result: Array[Dictionary] = []
+	for id in _ecology_active_groups:
+		if _ecology.groups.has(id): result.append(_ecology.groups[id].duplicate(true))
+	return result
+
+func vessel_reading(at: Vector2i) -> Dictionary:
+	for row in active_vessels():
+		if VesselEcology.cell(row) == at: return row
+	return {}
+
+func advance_vessels(arrivals: Array, environment: Callable, protected: Callable, storm_allowed: bool) -> void:
+	var prepared := VesselEcology.prepare(_ecology, _flora, _flora_active, arrivals, _tick, _seed, environment, protected, storm_allowed, _ecology_regions)
+	if prepared.is_empty(): return
+	_ecology = prepared.ecology
+	_ecology_activities = prepared.activities
+	_ecology_active_groups.clear()
+	var owners := {}
+	for owner: Vector2i in _ecology_regions:
+		owners["vessel:%d:%d" % [owner.x, owner.y]] = true
+	var ids: Array = owners.keys()
+	ids.sort()
+	for id: String in ids:
+		if _ecology.groups.has(id) and _ecology_active_groups.size() < int(_ecology.policy.group_limit): _ecology_active_groups.append(id)
+	for id in prepared.plants: _flora.nodes[id] = prepared.plants[id]
+	# Plant expenditure includes transfer into the swarm ledger. Its drawn/spent
+	# accounts distinguish retained swarm energy from actual consumption.
+	_flora.spent += float(prepared.plant_spent) + float(prepared.drawn)
+	for key: String in prepared.overloads:
+		var parts := key.split(":")
+		set_environment(Vector2i(int(parts[0]), int(parts[1])), {"overload": int(prepared.overloads[key])})
+
+
+func ecology_plants(focus: Vector2i, limit: int = 24) -> Array[Dictionary]:
+	var result: Array[Dictionary] = []
+	if _ecology.policy == null or not _ecology.policy.enabled: return result
+	var candidates: Array[String] = []
+	for id in _flora_active:
+		var row: Dictionary = _flora.nodes[id]
+		if VesselEcology.cell(row).distance_squared_to(focus) > 144 or FloraTraits.category(_seed, row).is_empty(): continue
+		candidates.append(id)
+	candidates.sort_custom(func(a: String, b: String) -> bool:
+		var da := VesselEcology.cell(_flora.nodes[a]).distance_squared_to(focus)
+		var db := VesselEcology.cell(_flora.nodes[b]).distance_squared_to(focus)
+		return a < b if da == db else da < db)
+	for index in range(mini(clampi(limit, 0, 64), candidates.size())):
+		var row: Dictionary = _flora.nodes[candidates[index]]
+		result.append({"id": row.id, "cell": row.cell.duplicate(), "traits": FloraTraits.describe(_seed, row), "activity": str(_ecology_activities.get(row.id, "idle"))})
+	return result

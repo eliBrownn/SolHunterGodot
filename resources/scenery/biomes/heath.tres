@@ -1,0 +1,50 @@
+[gd_resource type="Resource" script_class="NatureBiomePalette" format=3]
+
+[ext_resource type="Script" path="res://scripts/scenery/nature_biome_palette.gd" id="palette"]
+[ext_resource type="Script" path="res://scripts/scenery/nature_asset_entry.gd" id="entry"]
+[ext_resource type="PackedScene" path="res://assets/nature/DeadTree_2.gltf" id="tree0"]
+[ext_resource type="PackedScene" path="res://assets/biome_placeholders/dry_tree.tscn" id="tree1"]
+[ext_resource type="PackedScene" path="res://assets/nature/Grass_Wispy_Tall.gltf" id="plant0"]
+[ext_resource type="PackedScene" path="res://assets/nature/Plant_1.gltf" id="plant1"]
+[ext_resource type="PackedScene" path="res://assets/nature/Pebble_Round_1.gltf" id="plant2"]
+
+[sub_resource type="Resource" id="detail0"]
+script = ExtResource("entry")
+scene = ExtResource("plant0")
+uniform_scale = 0.4
+maximum_height = 0.8
+maximum_width = 1.5
+maximum_parts = 16
+maximum_triangles = 4096
+
+[sub_resource type="Resource" id="detail1"]
+script = ExtResource("entry")
+scene = ExtResource("plant1")
+uniform_scale = 0.55
+maximum_height = 0.8
+maximum_width = 1.5
+maximum_parts = 16
+maximum_triangles = 4096
+
+[sub_resource type="Resource" id="detail2"]
+script = ExtResource("entry")
+scene = ExtResource("plant2")
+uniform_scale = 0.8
+maximum_height = 0.8
+maximum_width = 1.5
+maximum_parts = 16
+maximum_triangles = 4096
+
+[resource]
+script = ExtResource("palette")
+tree_tint = Color(0.768627, 0.674510, 0.525490, 1)
+detail_tint = Color(0.768627, 0.682353, 0.556863, 1)
+scale_variation = 0.4
+cluster_cells = 5
+cluster_fill = 55
+ground = 2
+trees = Array[PackedScene]([ExtResource("tree0"), ExtResource("tree1")])
+tree_height_scale = 0.7
+ground_tint = Color(0.827451, 0.741176, 0.631373, 1)
+density_percent = 18
+details = Array[ExtResource("entry")]([SubResource("detail0"), SubResource("detail1"), SubResource("detail2")])

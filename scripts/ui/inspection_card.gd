@@ -3,6 +3,7 @@ extends PanelContainer
 const MenuTheme = preload("res://scripts/ui/menu_theme.gd")
 var heading := Label.new()
 var access := Label.new()
+var tile_affinity := Label.new()
 var appearance := Label.new()
 var pin := Button.new()
 var journal := Button.new()
@@ -22,6 +23,7 @@ var settings: MenuSettings
 var world: Node2D
 var current_scale := -1.0
 var last_reading: Array = []
+var ecology_details := false
 var metrics := HBoxContainer.new()
 var extra_actions := HBoxContainer.new()
 func bind(source: Node2D, tuning: MenuSettings) -> void:
@@ -46,6 +48,9 @@ func bind(source: Node2D, tuning: MenuSettings) -> void:
 	appearance.add_theme_font_size_override("font_size", 13)
 	appearance.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	appearance.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	tile_affinity.add_theme_font_size_override("font_size", 12)
+	rows.add_child(tile_affinity)
+	tile_affinity.hide()
 	rows.add_child(appearance)
 	appearance.hide()
 	close_button.text = "×"
@@ -111,7 +116,7 @@ func bind(source: Node2D, tuning: MenuSettings) -> void:
 	more.toggled.connect(func(expanded: bool) -> void:
 		metrics.visible = expanded
 		extra_actions.hide()
-		details_scroll.hide()
+		details_scroll.visible = expanded and ecology_details
 		more.text = "Less" if expanded else "Details"
 		more.tooltip_text = "Return to compact inspection" if expanded else "Right-click the target and choose Details"
 		reset_size()
@@ -159,6 +164,9 @@ func bind(source: Node2D, tuning: MenuSettings) -> void:
 			dismiss())
 	hide()
 func update_reading(cell: Vector2i, subject: String, terrain_name: String, data: Dictionary, recovery: String) -> void:
+	ecology_details = data.has("vessel") or not data.get("flora_reserve", {}).get("traits", {}).is_empty()
+	tile_affinity.text = "Tile affinity: " + str(data.affinity).capitalize() if data.has("affinity") else ""
+	tile_affinity.visible = data.has("affinity")
 	var scale: float = world.menu.settings.text_scale if world.menu != null else settings.text_scale
 	var reading := [cell, subject, terrain_name, data, recovery, scale, settings.inspection_width, settings.inspection_meter_height, world.menu.settings.base_text_multiplier if world.menu != null else 1.0]
 	if reading == last_reading:
@@ -177,10 +185,40 @@ func update_reading(cell: Vector2i, subject: String, terrain_name: String, data:
 	access.add_theme_color_override("font_color", Color("d49b92") if blocked else Color("a4c8ac"))
 	var values := {"wetness": roundi(float(data.wetness) * 100), "vastra": int(data.concentration), "overload": int(data.overload)}
 	for key in readings:
+		readings[key].bar.max_value = 100
 		readings[key].value.text = "%d / 100" % values[key]
 		readings[key].bar.value = values[key]
 		readings[key].bar.tooltip_text = readings[key].value.text
+	var reserve: Dictionary = data.get("flora_reserve", {})
+	readings.vastra.label.text = "Swarm reserve" if reserve.get("swarm", false) else ("Vastra reserve" if not reserve.is_empty() else "Vastra")
+	readings.vastra.label.tooltip_text = "Stored plant energy. Rises with absorption/arrival and falls on transfer or repair. Excess is expelled around tree roots." if not reserve.is_empty() else "Vastra concentration, from 0 to 100."
+	if reserve.get("swarm", false): readings.vastra.label.tooltip_text = "Stored swarm energy, transferred from vegetation and spent on response. Separate from ambient concentration."
+	readings.vastra.value.tooltip_text = ""
+	if not reserve.is_empty():
+		readings.vastra.bar.step = 0.01
+		readings.vastra.bar.max_value = float(reserve.capacity)
+		readings.vastra.bar.value = float(reserve.energy)
+		readings.vastra.value.text = "%.1f / %.0f" % [reserve.energy, reserve.capacity]
+		readings.vastra.bar.tooltip_text = readings.vastra.value.text
+		if float(reserve.get("roots", 0.0)) > 0:
+			var root_text := "Around roots: %.1f Vastra, available to nearby plants and Sols." % float(reserve.roots)
+			readings.vastra.value.tooltip_text = root_text
+			readings.vastra.bar.tooltip_text += "\n" + root_text
 	var facts := PackedStringArray(["Cell %s · %s" % [cell, terrain_name]])
+	if not reserve.is_empty():
+		facts.append("Ambient concentration: %d / 100" % int(data.concentration))
+		if float(reserve.get("roots", 0.0)) > 0: facts.append("Around roots: %.1f Vastra" % float(reserve.roots))
+	var traits: Dictionary = reserve.get("traits", {})
+	if not traits.is_empty():
+		facts.append("Growth form: %s / circulation: %s" % [str(traits.form).capitalize(), str(traits.role).capitalize()])
+		if not str(traits["class"]).is_empty(): facts.append("Plant class: " + str(traits["class"]).capitalize())
+		facts.append("Current activity: " + str(reserve.get("activity", "idle")).capitalize())
+		if reserve.get("trace", false): facts.append("Recent local disturbance trace present")
+	var swarm: Dictionary = data.get("vessel", {})
+	if not swarm.is_empty():
+		facts.append("Swarm activity: " + str(swarm.state).capitalize())
+		facts.append("Local group: observations do not identify an unseen cause")
+		if int(swarm.storm_until) > world.persistent_state.activity_tick(): facts.append("Vastra storm active here")
 	if int(data.overload) < 0:
 		facts.append("Restorative Vastra · supports habitat and wildlife recovery")
 	elif int(data.overload) > 0:
@@ -194,6 +232,7 @@ func update_reading(cell: Vector2i, subject: String, terrain_name: String, data:
 	if not recovery.is_empty():
 		facts.append(recovery)
 	details_label.text = "\n".join(facts)
+	details_scroll.visible = more.button_pressed and ecology_details
 	tooltip_text = "Right-click the target and choose Details"
 	if not is_equal_approx(scale, current_scale):
 		preload("res://scripts/ui/ui_text.gd").apply(self, scale, true, world.menu.settings.base_text_multiplier)
@@ -240,6 +279,7 @@ func dismiss() -> void:
 func show_appearance(description: String) -> void:
 	appearance.text = description
 	appearance.visible = not description.is_empty()
+	tile_affinity.visible = description.is_empty() and not tile_affinity.text.is_empty()
 	access.visible = description.is_empty()
 	observe_actions.visible = not description.is_empty()
 	pin.visible = not description.is_empty()

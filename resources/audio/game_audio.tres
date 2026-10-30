@@ -1,0 +1,128 @@
+[gd_resource type="Resource" script_class="GameAudioSettings" load_steps=25 format=3]
+
+[ext_resource type="Script" path="res://scripts/presentation/audio_settings.gd" id="1"]
+[ext_resource type="Script" path="res://scripts/presentation/audio_cue.gd" id="2"]
+
+[ext_resource type="AudioStream" path="res://assets/audio/ambient_sounds/fireplace.ogg" id="Audio_2"]
+[ext_resource type="AudioStream" path="res://assets/audio/ambient_sounds/wind.ogg" id="Audio_3"]
+[ext_resource type="AudioStream" path="res://assets/audio/ambient_sounds/forest-rain.ogg" id="Audio_4"]
+[ext_resource type="AudioStream" path="res://assets/audio/kenney_rpg/chop.ogg" id="Audio_7"]
+[ext_resource type="AudioStream" path="res://assets/audio/kenney_interface/glass_001.wav" id="Audio_8"]
+[ext_resource type="AudioStream" path="res://assets/audio/kenney_rpg/cloth1.ogg" id="Audio_9"]
+[ext_resource type="AudioStream" path="res://assets/audio/kenney_interface/confirmation_001.wav" id="Audio_10"]
+[ext_resource type="AudioStream" path="res://assets/audio/kenney_interface/open_001.wav" id="Audio_11"]
+[ext_resource type="AudioStream" path="res://assets/audio/kenney_interface/close_001.wav" id="Audio_12"]
+
+[sub_resource type="Resource" id="Cue_0"]
+script = ExtResource("2")
+key = &"music_exploration"
+category = "Music"
+looping = true
+spatial = false
+
+[sub_resource type="Resource" id="Cue_1"]
+script = ExtResource("2")
+key = &"music_combat"
+category = "Music"
+looping = true
+spatial = false
+
+[sub_resource type="Resource" id="Cue_2"]
+script = ExtResource("2")
+stream = ExtResource("Audio_2")
+volume_db = -19
+key = &"ambience_refuge"
+category = "Atmosphere"
+looping = true
+spatial = false
+
+[sub_resource type="Resource" id="Cue_3"]
+script = ExtResource("2")
+stream = ExtResource("Audio_3")
+volume_db = -20
+key = &"ambience_wilds"
+category = "Atmosphere"
+looping = true
+spatial = false
+
+[sub_resource type="Resource" id="Cue_4"]
+script = ExtResource("2")
+stream = ExtResource("Audio_4")
+volume_db = -15
+key = &"weather_rain"
+category = "Atmosphere"
+looping = true
+spatial = false
+
+[sub_resource type="Resource" id="Cue_5"]
+script = ExtResource("2")
+key = &"foliage_detail"
+category = "Details"
+looping = true
+spatial = false
+
+[sub_resource type="Resource" id="Cue_6"]
+script = ExtResource("2")
+volume_db = -12
+key = &"footstep"
+category = "Details"
+looping = false
+spatial = true
+
+[sub_resource type="Resource" id="Cue_7"]
+script = ExtResource("2")
+stream = ExtResource("Audio_7")
+volume_db = -12
+key = &"combat_damage"
+category = "Combat"
+looping = false
+spatial = true
+
+[sub_resource type="Resource" id="Cue_8"]
+script = ExtResource("2")
+stream = ExtResource("Audio_8")
+volume_db = -16
+key = &"combat_heal"
+category = "Combat"
+looping = false
+spatial = true
+
+[sub_resource type="Resource" id="Cue_9"]
+script = ExtResource("2")
+stream = ExtResource("Audio_9")
+volume_db = -16
+key = &"combat_effect"
+category = "Combat"
+looping = false
+spatial = true
+
+[sub_resource type="Resource" id="Cue_10"]
+script = ExtResource("2")
+stream = ExtResource("Audio_10")
+volume_db = -16
+key = &"combat_outcome"
+category = "Combat"
+looping = false
+spatial = false
+
+[sub_resource type="Resource" id="Cue_11"]
+script = ExtResource("2")
+stream = ExtResource("Audio_11")
+volume_db = -16
+key = &"ui_open"
+category = "UI"
+looping = false
+spatial = false
+
+[sub_resource type="Resource" id="Cue_12"]
+script = ExtResource("2")
+stream = ExtResource("Audio_12")
+volume_db = -16
+key = &"ui_close"
+category = "UI"
+looping = false
+spatial = false
+
+[resource]
+script = ExtResource("1")
+cues = Array[ExtResource("2")]([SubResource("Cue_0"), SubResource("Cue_1"), SubResource("Cue_2"), SubResource("Cue_3"), SubResource("Cue_4"), SubResource("Cue_5"), SubResource("Cue_6"), SubResource("Cue_7"), SubResource("Cue_8"), SubResource("Cue_9"), SubResource("Cue_10"), SubResource("Cue_11"), SubResource("Cue_12")])

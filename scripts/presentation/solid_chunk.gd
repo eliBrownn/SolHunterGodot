@@ -17,6 +17,8 @@ var shoreline_edges := 0
 var cell_origin := Vector2i.ZERO
 ## Absolute cosmetic records, compared by asset/cell rather than runtime IDs.
 var cosmetic_records: Array[Dictionary] = []
+var living_sources: Dictionary = {}
+var living_regions: Dictionary = {}
 var upload_instances: MultiMesh
 var upload_cursor := 0
 var picking_cursor := 0
@@ -195,6 +197,9 @@ func finish_step() -> bool:
 		var view := MultiMeshInstance3D.new()
 		view.name = kind.replace(":", "_").replace("/", "_")
 		view.multimesh = instances
+		if kind == "nature_detail_meadow":
+			view.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+			view.extra_cull_margin = 0.6
 		add_child(view)
 		batches.erase(kind)
 		upload_instances = null
@@ -221,7 +226,7 @@ func prepare_picking_step() -> bool:
 	picking_cursor = last
 	return picking_cursor == pick_objects.size()
 
-func add_terrain_tile(kind: String, terrain: WorldTerrain, coord: Vector2i, index: int, color: Color, lift: float) -> void:
+func add_terrain_tile(kind: String, terrain: WorldTerrain, coord: Vector2i, index: int, color: Color, lift: float, nature: NatureSettings = null) -> void:
 	if not terrain_surfaces.has(kind):
 		var empty: Array = []
 		empty.resize(Mesh.ARRAY_MAX)
@@ -241,14 +246,20 @@ func add_terrain_tile(kind: String, terrain: WorldTerrain, coord: Vector2i, inde
 	var absolute := coord * 16 + local
 	var shore := terrain.lake_distance(absolute) < 2.8
 	var pond_level: float = terrain.pond_at(absolute).level if shore else 0.0
+	# The movement owner rejects the whole cell when either triangle is too steep.
+	# Carry that exact classification rather than infer access from smoothed normals.
+	var cliff := not terrain.slope_fits(absolute)
 	var offsets := [Vector2i.ZERO, Vector2i.RIGHT, Vector2i.ONE, Vector2i.DOWN]
 	for corner in range(4):
 		var cell: Vector2i = coord * 16 + local + offsets[corner]
 		arrays[Mesh.ARRAY_VERTEX].append(Vector3(local.x + offsets[corner].x, terrain.vertex_height(cell) + lift, local.y + offsets[corner].y))
 		arrays[Mesh.ARRAY_NORMAL].append(terrain.vertex_normal(cell))
 		arrays[Mesh.ARRAY_TEX_UV].append(surface_uvs[source_kind][corner])
-		arrays[Mesh.ARRAY_TEX_UV2].append(Vector2(pond_level, 1.0 if shore else 0.0))
-		arrays[Mesh.ARRAY_COLOR].append(color.srgb_to_linear())
+		arrays[Mesh.ARRAY_TEX_UV2].append(Vector2(pond_level, (1.0 if shore else 0.0) + (2.0 if cliff else 0.0)))
+		var vertex_color := color
+		if nature != null and not nature.biomes.is_empty():
+			vertex_color = terrain.habitat_tint(cell) * nature.ground_tint_at(terrain, cell)
+		arrays[Mesh.ARRAY_COLOR].append(vertex_color.srgb_to_linear())
 	arrays[Mesh.ARRAY_INDEX].append_array(PackedInt32Array([start, start + 1, start + 2, start, start + 2, start + 3]))
 	terrain_surfaces[kind] = arrays
 
@@ -267,35 +278,52 @@ static func overlay_mesh(terrain: WorldTerrain, cell: Vector2i, size: float = 0.
 	mesh.add_surface_from_arrays(Mesh.PRIMITIVE_TRIANGLES, arrays)
 	return mesh
 
-func add_nature(scene: PackedScene, at: Vector3, height: float, yaw: float, category: String) -> void:
-	var model: Dictionary = NatureArt.compact_parts(scene)
+## Register once per authored instance while its chunk is already being prepared.
+func register_living_source(cell: Vector2i, category: String, subject: String, anchor: Vector3, high_anchor: Vector3 = Vector3.INF) -> void:
+	if "dead" in subject.to_lower(): return
+	var alive := category == "tree"
+	if category == "detail":
+		for token in ["grass", "flower", "clover", "fern", "bush", "mushroom", "lily", "reed", "plant"]:
+			alive = alive or token in subject.to_lower()
+	if alive and (not living_sources.has(cell) or (category == "tree" and living_sources[cell].kind != "tree")):
+		living_sources[cell] = {"kind": category, "anchor": anchor, "high_anchor": high_anchor if high_anchor.is_finite() else anchor, "cell": cell, "id": "%s:%d:%d:%.4f:%.4f" % [subject, cell.x, cell.y, anchor.x, anchor.z]}
+		var owner := Vector2i(WorldTerrain.floor_div(cell.x, VastraSettings.SOURCE_REGION_SIZE), WorldTerrain.floor_div(cell.y, VastraSettings.SOURCE_REGION_SIZE))
+		if not living_regions.has(owner): living_regions[owner] = {}
+		living_regions[owner][cell] = living_sources[cell]
+
+func add_nature(scene: PackedScene, at: Vector3, height: float, yaw: float, category: String, tint: Color = Color.WHITE) -> void:
+	var model: Dictionary = NatureArt.tint_parts(NatureArt.compact_parts(scene), tint)
 	var bounds: AABB = model.bounds
 	var factor := height / maxf(0.01, bounds.size.y)
 	var base := Transform3D(Basis(Vector3.UP, yaw).scaled(Vector3.ONE * factor), at)
 	base.origin -= base.basis * Vector3(bounds.get_center().x, bounds.position.y, bounds.get_center().z)
 	for index in range(model.pieces.size()):
 		var piece: Dictionary = model.pieces[index]
-		var key := "nature_%s_%s_%d_%d" % [category, scene.resource_path.get_file().get_basename(), scene.get_instance_id(), index]
+		var key := "nature_%s_%s_%d_%d_%d" % [category, scene.resource_path.get_file().get_basename(), scene.get_instance_id(), index, hash(tint)]
 		meshes[key] = piece.mesh
 		if not batches.has(key):
 			batches[key] = []
 		batches[key].append({"transform": base * piece.transform, "color": Color.WHITE})
+	register_living_source(cell_origin + Vector2i(Vector2(at.x, at.z).floor()), category, scene.resource_path.get_file(), Vector3(at.x + cell_origin.x, at.y + minf(height * 0.25, 0.9), at.z + cell_origin.y), Vector3(at.x + cell_origin.x, at.y + height * 0.96, at.z + cell_origin.y))
 	# Rendering may merge surfaces, but clearance keeps the original per-part
 	# boxes so material grouping cannot enlarge an actor's blocked corridors.
 	for piece in NatureArt.parts(scene).pieces:
-		pick_objects.append({"transform": base * piece.transform, "mesh": piece.mesh, "bounds": piece.mesh.get_aabb(), "cell": cell_origin + Vector2i(Vector2(at.x, at.z).floor()), "category": category, "subject": scene.resource_path.get_file().get_basename().to_snake_case().replace("_", " ").capitalize()})
+		pick_objects.append({"transform": base * piece.transform, "mesh": piece.mesh, "bounds": piece.mesh.get_aabb(), "cell": cell_origin + Vector2i(Vector2(at.x, at.z).floor()), "category": category, "vastra_anchor": Vector3(at.x + cell_origin.x, at.y + minf(height * 0.25, 0.9), at.z + cell_origin.y), "subject": scene.resource_path.get_file().get_basename().to_snake_case().replace("_", " ").capitalize()})
 
 func add_composed_nature(record: Dictionary) -> void:
 	var transform: Transform3D = record.transform
 	transform.origin -= Vector3(cell_origin.x, 0, cell_origin.y)
-	for index in range(record.model.pieces.size()):
-		var piece: Dictionary = record.model.pieces[index]
-		var key := "nature_detail_%s_%d" % [record.asset, index]
+	var tint: Color = record.get("tint", Color.WHITE)
+	var model := NatureArt.tint_parts(record.model, tint)
+	for index in range(model.pieces.size()):
+		var piece: Dictionary = model.pieces[index]
+		var key := "nature_detail_%s_%d_%d" % [record.asset, index, hash(tint)]
 		meshes[key] = piece.mesh
 		if not batches.has(key):
 			batches[key] = []
 		batches[key].append({"transform": transform * piece.transform, "color": Color.WHITE})
-		pick_objects.append({"transform": transform * piece.transform, "mesh": piece.mesh, "bounds": piece.mesh.get_aabb(), "cell": record.cell, "category": "detail", "subject": record.asset.get_file().get_basename().replace("_", " ").capitalize()})
+		pick_objects.append({"transform": transform * piece.transform, "mesh": piece.mesh, "bounds": piece.mesh.get_aabb(), "cell": record.cell, "category": "detail", "vastra_anchor": record.transform * Vector3(model.bounds.get_center().x, model.bounds.position.y + minf(model.bounds.size.y * 0.3, 0.35), model.bounds.get_center().z), "subject": record.asset.get_file().get_basename().replace("_", " ").capitalize()})
+	register_living_source(record.cell, "detail", record.asset, record.transform * Vector3(model.bounds.get_center().x, model.bounds.position.y + minf(model.bounds.size.y * 0.3, 0.35), model.bounds.get_center().z))
 	var stable := record.duplicate()
 	stable.erase("model")
 	cosmetic_records.append(stable)
@@ -351,12 +379,25 @@ func build(cells: Array[Dictionary], terrain: WorldTerrain = null, coord: Vector
 
 ## Same deterministic geometry path as build(), with bounded cell ranges.
 func build_cells(cells: Array[Dictionary], terrain: WorldTerrain, coord: Vector2i, nature: NatureSettings, first: int, count: int) -> void:
+	if nature != null:
+		for variant in range(4):
+			var ground: ShaderMaterial = mesh_for("grass_%d" % variant).surface_get_material(0)
+			ground.set_shader_parameter("ground_base_color", nature.ground_base_color)
+			ground.set_shader_parameter("ground_texture_strength", nature.ground_texture_strength)
 	cell_origin = coord * 16
 	var palette := [Color("647d51"), Color("4c6949"), Color("938164"), Color("55796e"), Color("367e89"), Color("c4b183")]
+	var biome_patches := {}
+	if terrain != null:
+		for biome in nature.biomes:
+			biome_patches[biome.ground] = biome.detail_patch(terrain, coord)
 	for index in range(first, mini(first + count, cells.size())):
 		var data: Dictionary = cells[index]
-		var at := Vector3(index % 16 + 0.5, 0.0, floori(float(index) / 16) + 0.5)
 		var absolute := coord * 16 + Vector2i(index % 16, index / 16)
+		var biome: NatureBiomePalette = nature.biome_for(data.ground)
+		var tint: Color = data.get("tint", Color.WHITE)
+		if biome != null:
+			tint *= nature.ground_tint_at(terrain, absolute) if terrain != null else biome.ground_tint
+		var at := Vector3(index % 16 + 0.5, 0.0, floori(float(index) / 16) + 0.5)
 		var shade: float = (float(data.variation) - 3.0) * 0.009
 		var color: Color = palette[data.ground].lightened(shade)
 		if data.ground == WorldTerrain.Ground.WATER:
@@ -367,7 +408,7 @@ func build_cells(cells: Array[Dictionary], terrain: WorldTerrain, coord: Vector2
 				# The old bare-sand water-cell path exposed triangular mask seams.
 				var heights := terrain.corners(absolute)
 				if maxf(maxf(heights.x, heights.y), maxf(heights.z, heights.w)) >= level - 0.002:
-					add_terrain_tile("grass_%d" % (int(data.variation) % 4), terrain, coord, index, data.get("tint", Color.WHITE), 0.002)
+					add_terrain_tile("grass_%d" % (int(data.variation) % 4), terrain, coord, index, data.get("tint", Color.WHITE), 0.002, nature)
 				add_pond_surface(terrain, absolute, level, color)
 			else:
 				add_piece("water", at + Vector3(0, level - 0.08, 0), Vector3(1.002, 0.16, 1.002), color)
@@ -386,29 +427,42 @@ func build_cells(cells: Array[Dictionary], terrain: WorldTerrain, coord: Vector2
 				add_terrain_tile("ground", terrain, coord, index, color, 0.0)
 				if terrain.lake_distance(absolute) < 1.8:
 					add_pond_surface(terrain, absolute, terrain.pond_at(absolute).level, palette[WorldTerrain.Ground.WATER])
-				add_terrain_tile("grass_%d" % (int(data.variation) % 4), terrain, coord, index, data.get("tint", Color.WHITE), 0.002)
+				add_terrain_tile("grass_%d" % (int(data.variation) % 4), terrain, coord, index, tint, 0.002, nature)
 				if data.trail_visible:
 					add_terrain_tile("trail_%d" % (int(data.variation) % 8), terrain, coord, index, Color("b2b29d"), 0.035)
 			else:
 				add_piece("ground", at + Vector3(0, -0.35, 0), Vector3(1.002, 0.70, 1.002), color)
-				add_piece("grass_%d" % (int(data.variation) % 4), at + Vector3(0, 0.002, 0), Vector3.ONE, data.get("tint", Color.WHITE))
+				add_piece("grass_%d" % (int(data.variation) % 4), at + Vector3(0, 0.002, 0), Vector3.ONE, tint)
 				if data.trail_visible:
 					add_piece("trail_%d" % (int(data.variation) % 8), at + Vector3(0, 0.035, 0), Vector3.ONE, Color("b2b29d"))
 		if terrain != null:
 			at.y = terrain.surface_height(Vector2(absolute) + Vector2(0.5, 0.5))
+			preload("res://scripts/scenery/meadow_art.gd").add_cell(self, terrain, absolute, data, nature)
 		if data.obstacle == 1:
 			var trees: Array[PackedScene] = nature.hardy_trees if data.ground in [WorldTerrain.Ground.HEATH, WorldTerrain.Ground.MARSH] else nature.common_trees
-			add_nature(trees[int(data.variation) % trees.size()], at, nature.tree_height * (0.85 + float(data.variation) * 0.05), float(data.variation) * 1.7, "tree")
+			var height_factor := 0.85 + float(data.variation) * 0.05
+			if biome != null:
+				trees = biome.trees
+				if terrain != null:
+					height_factor = biome.tree_scale_at(terrain, absolute)
+			add_nature(trees[int(data.variation) % trees.size()], at, nature.tree_height * (biome.tree_height_scale if biome != null else 1.0) * height_factor, float(data.variation) * 1.7, "tree", biome.tree_tint if biome != null else Color.WHITE)
 			obstacle_count += 1
 		elif data.obstacle == 2:
 			add_nature(nature.rocks[int(data.variation) % nature.rocks.size()], at, nature.rock_height * (0.9 + float(data.variation) * 0.04), float(data.variation), "rock")
 			obstacle_count += 1
 		elif terrain != null and terrain.scenery_reserved(absolute):
 			pass # Site access and required spaces own this ground before dressing.
+		elif terrain != null and biome != null:
+			var record := NatureComposition.placement_for(terrain, absolute, biome_patches[data.ground], biome.cluster_cells, biome.cluster_fill, biome.scale_variation, true, false)
+			if not record.is_empty():
+				record.tint = biome.detail_tint
+				add_composed_nature(record)
 		elif terrain != null and nature.composition != null and nature.composition.patch_at(terrain, absolute) != null:
 			var patch: NaturePatch = nature.composition.patch_at(terrain, absolute)
 			var record := nature.composition.placement(terrain, absolute, patch)
 			if not record.is_empty():
+				if biome != null:
+					record.tint = biome.detail_tint
 				add_composed_nature(record)
 		elif terrain != null and data.get("walkable", false) and not data.get("trail", false) and not terrain.is_camp(coord * 16 + Vector2i(index % 16, index / 16)) and not terrain.is_landmark(coord * 16 + Vector2i(index % 16, index / 16)):
 			var cell := coord * 16 + Vector2i(index % 16, index / 16)

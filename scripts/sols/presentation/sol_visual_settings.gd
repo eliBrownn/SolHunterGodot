@@ -10,6 +10,8 @@ extends Resource
 @export_range(0.0, 0.6, 0.05) var aura_opacity := 0.22
 ## Bounded decorative motes per Sol. Zero disables effects without hiding the orb.
 @export_range(0, 12) var effect_count := 5
+## Approved particle artwork; clear to restore the original affinity-shaped pixel motes.
+@export var effect_texture: Texture2D = preload("res://assets/effects/kenney_particles/spark_01.png")
 ## Cosmetic effect cycles per second. Zero freezes effects.
 @export_range(0.0, 3.0, 0.1) var effect_speed := 0.6
 ## Ground tint opacity for persistent local affinity imprints. Zero hides tint, not saved state.
@@ -28,6 +30,8 @@ extends Resource
 @export_group("Battle Feedback")
 ## Show transient combat numbers and affinity pulses. This does not affect combat or activity counts.
 @export var feedback_enabled := true
+## Optional local distortion burst on confirmed damage; uses the feedback cue budget/lifetime.
+@export var impact_distortion_enabled := true
 ## Lifetime of a floating combat cue, in real seconds.
 @export_range(0.25, 2.5, 0.05) var feedback_seconds := 0.9
 ## Upward travel of combat text, in world cells.

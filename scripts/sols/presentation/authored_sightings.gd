@@ -58,6 +58,13 @@ func initialize_individuals(_state: ExpeditionState) -> void:
 	roaming_state.individual_changed.connect(motion_callback)
 	if not settings.enabled:
 		return
+	if world.persistent_state.habitat_encounters() == null:
+		var policy: Array = []
+		for pool in settings.habitat_encounters:
+			policy.append(pool.snapshot())
+		if not world.persistent_state.capture_habitat_encounters(policy):
+			return
+	entries_source = null # State replacement must not reuse an old admission policy.
 	for entry in local_entries():
 		var home: Vector2i = entry_home(entry)
 		if not world.terrain.fits(home):
@@ -83,7 +90,9 @@ func admit_movement(identity: String, species_id: String) -> void:
 		world.persistent_state.admit_traversal(identity, authored.traversal.snapshot())
 
 func entry_home(entry: Dictionary) -> Vector2i:
-	return entry.get("home", Vector2i(entry.x, world.terrain.trail_y(entry.x)))
+	if entry.has("home"):
+		return entry.home
+	return Vector2i(entry.x, world.terrain.trail_y(entry.x))
 
 func local_entries() -> Array:
 	if not settings_valid():
@@ -111,8 +120,9 @@ func build_local_entries() -> Array:
 	var authored_entries: Array = entries.duplicate(true)
 	if not settings.wilderness_enabled:
 		return entries
-	# Version-one prototype homes: one deterministic dry slot per 16-cell sector.
+	# One deterministic dry slot per 16-cell sector, with saved habitat eligibility.
 	# Terrain stays authoritative. Identity never depends on streaming or visit order.
+	var habitat_policy: Variant = world.persistent_state.habitat_encounters()
 	var sector: Vector2i = world.terrain.chunk_of(world.cell)
 	for y in range(sector.y - 2, sector.y + 3):
 		for x in range(sector.x - 2, sector.x + 3):
@@ -129,6 +139,13 @@ func build_local_entries() -> Array:
 				if overlaps:
 					continue
 				var entry: Dictionary = ENTRIES[salt % 2].duplicate(true)
+				if habitat_policy != null and not habitat_policy.is_empty():
+					var species_id := HabitatEncounterPool.select_species(habitat_policy, world.terrain.natural_ground(home), world.terrain.roll(home, 1803))
+					var species: Resource = settings.catalog_record(species_id)
+					if species == null:
+						continue # Unknown/unsupported habitats do not fabricate an encounter.
+					entry = SolCatalogSighting.species_entry(species, "earth")
+					entry.habitat_spawn = true
 				entry.home = home
 				entry.affinity = ["earth", "air", "water", "fire"][world.terrain.roll(home, 1801) % 4]
 				entries.append(entry)
@@ -286,11 +303,13 @@ func patrol_goal_allowed(cell: Vector2i) -> bool:
 	return world.terrain.fits(cell) and not world.persistent_state.environment_view(cell, {}).get("conditions", {}).has("barrier")
 
 func advance_roaming(tick: int) -> void:
-	if world.persistent_state != roaming_state or world.paused or world.encounter_active or world.smoke_mode or not settings_valid() or not settings.enabled or not settings.movement_enabled:
+	if world.persistent_state != roaming_state or world.paused or world.smoke_mode or not settings_valid() or not settings.enabled or not settings.movement_enabled:
 		return
 	refresh_ecology_cache(true)
 	roaming_batch_admitted = true
 	var occupied := {world.cell: true}
+	if world.host.battles != null:
+		occupied.merge(world.host.battles.activity_reservations())
 	if world.moving:
 		occupied[world.destination] = true
 	for member in members:
@@ -298,6 +317,8 @@ func advance_roaming(tick: int) -> void:
 			occupied[current_cell(member)] = true
 	for member in members:
 		var saved := roaming_state.roaming_view(member.id)
+		if roaming_state.wild_in_battle(member.id):
+			continue
 		if saved.is_empty() or tick - maxi(0, int(saved.tick)) < settings.movement_interval_ticks:
 			continue
 		var position := current_cell(member)
@@ -401,7 +422,7 @@ func sync_views(delta: float = 0.0) -> void:
 			continue
 		if not was_visible:
 			member.motion.reset(position)
-		elif delta > 0 and not world.paused and not world.encounter_active:
+		elif delta > 0 and not world.paused:
 			member.motion.advance(delta)
 		member.visual_cell = member.motion.position
 		var relative: Vector2 = Vector2(member.visual_cell) * 32.0 + Vector2(16, 16) - world.camera.position
@@ -414,7 +435,7 @@ func sync_views(delta: float = 0.0) -> void:
 			if row.get("traversal", {}).get("mode", "ground") != "ground":
 				member.sprite.ground_y = world.terrain.display_height(at) + 0.08
 		if member.sprite.has_method("sync_locomotion"):
-			var motion_delta := delta if not world.paused and not world.encounter_active and was_visible else 0.0
+			var motion_delta := delta if not world.paused and was_visible else 0.0
 			member.sprite.call("sync_locomotion", Vector2(member.visual_cell) + Vector2(0.5, 0.5), motion_delta, world.host.ground_height)
 		if member.sprite.has_method("set_stance"):
 			member.sprite.call("set_stance", "rest" if row.get("action", "idle") == "idle" else "alert")

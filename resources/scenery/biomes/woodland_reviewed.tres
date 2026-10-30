@@ -1,0 +1,62 @@
+[gd_resource type="Resource" script_class="NatureBiomePalette" format=3]
+
+[ext_resource type="Script" path="res://scripts/scenery/nature_biome_palette.gd" id="palette"]
+[ext_resource type="Script" path="res://scripts/scenery/nature_asset_entry.gd" id="entry"]
+[ext_resource type="PackedScene" path="res://assets/nature_samples/foliage/Scenes/tree_juniper_regular.tscn" id="tree0"]
+[ext_resource type="PackedScene" path="res://assets/nature/CommonTree_2.gltf" id="tree1"]
+[ext_resource type="PackedScene" path="res://assets/nature/Pine_1.gltf" id="tree2"]
+[ext_resource type="PackedScene" path="res://assets/nature/Pine_2.gltf" id="tree3"]
+[ext_resource type="PackedScene" path="res://assets/nature_samples/foliage/Scenes/plant_jello_bush_slim.tscn" id="plant0"]
+[ext_resource type="PackedScene" path="res://assets/nature/Mushroom_Common.gltf" id="plant1"]
+[ext_resource type="PackedScene" path="res://assets/nature/Mushroom_Laetiporus.gltf" id="plant2"]
+[ext_resource type="PackedScene" path="res://assets/nature/Grass_Common_Tall.gltf" id="plant3"]
+
+[sub_resource type="Resource" id="detail0"]
+script = ExtResource("entry")
+scene = ExtResource("plant0")
+uniform_scale = 0.4
+maximum_height = 0.8
+maximum_width = 1.5
+maximum_parts = 16
+maximum_triangles = 4096
+
+[sub_resource type="Resource" id="detail1"]
+script = ExtResource("entry")
+scene = ExtResource("plant1")
+uniform_scale = 0.4
+maximum_height = 0.8
+maximum_width = 1.5
+maximum_parts = 16
+maximum_triangles = 4096
+
+[sub_resource type="Resource" id="detail2"]
+script = ExtResource("entry")
+scene = ExtResource("plant2")
+uniform_scale = 0.5
+maximum_height = 0.8
+maximum_width = 1.5
+maximum_parts = 16
+maximum_triangles = 4096
+
+[sub_resource type="Resource" id="detail3"]
+script = ExtResource("entry")
+scene = ExtResource("plant3")
+uniform_scale = 0.4
+maximum_height = 0.8
+maximum_width = 1.5
+maximum_parts = 16
+maximum_triangles = 4096
+
+[resource]
+script = ExtResource("palette")
+tree_tint = Color(0.88, 0.94, 0.82, 1)
+detail_tint = Color(0.666667, 0.725490, 0.615686, 1)
+scale_variation = 0.4
+cluster_cells = 8
+cluster_fill = 80
+ground = 1
+trees = Array[PackedScene]([ExtResource("tree0"), ExtResource("tree1"), ExtResource("tree2"), ExtResource("tree3")])
+tree_height_scale = 1.3
+ground_tint = Color(0.725490, 0.784314, 0.701961, 1)
+density_percent = 18
+details = Array[ExtResource("entry")]([SubResource("detail0"), SubResource("detail1"), SubResource("detail2"), SubResource("detail3")])

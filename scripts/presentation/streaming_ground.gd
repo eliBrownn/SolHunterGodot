@@ -11,6 +11,7 @@ var visibility_passes := 0
 var last_view: Array = []
 var last_pending: Array[Vector2i] = []
 var source: WorldTerrain
+var source_nature: NatureSettings
 var material := ShaderMaterial.new()
 var max_prepare_ms := 0.0
 var sample_step := 4
@@ -28,11 +29,15 @@ static func region(atlas: AtlasTexture) -> Vector4:
 	var last := (atlas.region.end - Vector2(0.5, 0.5)) / size
 	return Vector4(first.x, first.y, last.x, last.y)
 
-func sync(terrain: WorldTerrain, pending: Array[Vector2i], camera: Camera3D, origin: Vector2, height: float, step: int, retained_limit: int = 64, deadline_usec: int = 0) -> void:
+func sync(terrain: WorldTerrain, pending: Array[Vector2i], camera: Camera3D, origin: Vector2, height: float, step: int, retained_limit: int = 64, deadline_usec: int = 0, nature: NatureSettings = null) -> void:
 	var started := Time.get_ticks_usec()
-	if source != terrain or sample_step != step:
+	if nature != null:
+		material.set_shader_parameter("ground_base_color", nature.ground_base_color)
+		material.set_shader_parameter("ground_texture_strength", nature.ground_texture_strength)
+	if source != terrain or sample_step != step or source_nature != nature:
 		clear()
 		source = terrain
+		source_nature = nature
 		sample_step = step
 	cache_limit = clampi(retained_limit, 0, 256)
 	trim_cache()
@@ -63,7 +68,7 @@ func sync(terrain: WorldTerrain, pending: Array[Vector2i], camera: Camera3D, ori
 					complete = false
 					break
 				ground = MeshInstance3D.new()
-				ground.mesh = build(terrain, coord, sample_step)
+				ground.mesh = build(terrain, coord, sample_step, nature)
 				ground.material_override = material
 				ground.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 				ground.position = Vector3(coord.x * 16, 0, coord.y * 16)
@@ -102,7 +107,7 @@ func clear() -> void:
 	last_view.clear()
 	last_pending.clear()
 
-static func build(terrain: WorldTerrain, coord: Vector2i, step: int = 4) -> ArrayMesh:
+static func build(terrain: WorldTerrain, coord: Vector2i, step: int = 4, nature: NatureSettings = null) -> ArrayMesh:
 	var vertices := PackedVector3Array()
 	var normals := PackedVector3Array()
 	var colors := PackedColorArray()
@@ -116,7 +121,8 @@ static func build(terrain: WorldTerrain, coord: Vector2i, step: int = 4) -> Arra
 			var kind: int = terrain.natural_ground(sample)
 			var water: bool = kind == WorldTerrain.Ground.WATER
 			var level: float = terrain.pond_at(sample).level if water else 0.0
-			var trail: bool = not water and (absi(sample.y - terrain.trail_y(sample.x)) <= 1 or terrain.route_axes(sample, -2) != 0)
+			var trail: bool = not water and terrain.sample(sample).trail_visible
+			var cliff := not water and not terrain.slope_fits(sample)
 			var color: Color = (Color("b2b29d") if trail else terrain.habitat_tint(sample)).srgb_to_linear()
 			var surface_kind := 1.0 if water else (2.0 if trail else 0.0)
 			var start := vertices.size()
@@ -128,14 +134,18 @@ static func build(terrain: WorldTerrain, coord: Vector2i, step: int = 4) -> Arra
 			vertices.append_array(corners)
 			for corner in range(4):
 				normals.append(normal)
-				colors.append(color)
-				uvs.append(Vector2(surface_kind, 0))
+				var vertex_color := color
+				if not water and not trail and nature != null and not nature.biomes.is_empty():
+					var at := cell + Vector2i(roundi(corners[corner].x) - x, roundi(corners[corner].z) - y)
+					vertex_color = (terrain.habitat_tint(at) * nature.ground_tint_at(terrain, at)).srgb_to_linear()
+				colors.append(vertex_color)
+				uvs.append(Vector2(surface_kind, 1.0 if cliff else 0.0))
 			indices.append_array(PackedInt32Array([start, start + 1, start + 2, start, start + 2, start + 3]))
 			# Boundary skirts conceal coarse/full-resolution seams; water skirts also
 			# close temporary shore transitions within a chunk. They never collide.
 			for edge in range(4):
 				if water or [y == 0, x + step == 16, y + step == 16, x == 0][edge]:
-					edges.append([corners[edge], corners[(edge + 1) % 4], color, surface_kind])
+					edges.append([corners[edge], corners[(edge + 1) % 4], surface_kind, colors[start + edge], colors[start + (edge + 1) % 4]])
 	var skirt_depth: float = (float(terrain.relief.broad_amplitude) + float(terrain.relief.detail_amplitude) + float(terrain.relief.micro_amplitude)) * 2 + 2
 	for edge in edges:
 		var first: Vector3 = edge[0]
@@ -146,8 +156,8 @@ static func build(terrain: WorldTerrain, coord: Vector2i, step: int = 4) -> Arra
 		var normal := Vector3(along.z, 0, -along.x).normalized()
 		for corner in range(4):
 			normals.append(normal)
-			colors.append(edge[2])
-			uvs.append(Vector2(edge[3], 0))
+			colors.append(edge[3] if corner < 2 else edge[4])
+			uvs.append(Vector2(edge[2], 0))
 		indices.append_array(PackedInt32Array([start, start + 1, start + 2, start, start + 2, start + 3]))
 	var arrays: Array = []
 	arrays.resize(Mesh.ARRAY_MAX)

@@ -1,0 +1,15 @@
+[gd_resource type="Resource" load_steps=2 format=3]
+[ext_resource type="Script" path="res://scripts/presentation/world_mood_palette.gd" id="1"]
+[resource]
+script = ExtResource("1")
+key = &"welcoming"
+leaf_shadow = Color(0.55, 0.76, 0.68, 1)
+leaf_light = Color(1, 0.94, 0.72, 1)
+leaf_tint = Color(0.86, 0.96, 0.8, 1)
+saturation = 0.95
+sun_tint = Color(1, 0.93, 0.78, 1)
+ambient_tint = Color(0.72, 0.85, 1, 1)
+fog_tint = Color(0.92, 0.97, 0.87, 1)
+fill_scale = 0.85
+exposure_scale = 0.92
+fog_density = 0.002

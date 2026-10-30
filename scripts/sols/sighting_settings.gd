@@ -17,6 +17,9 @@ var species_catalog: Resource:
 		_catalog_override = weakref(value) if value != null else null
 ## Additional explicit test/story sightings. Empty preserves the established expedition roster.
 @export var catalog_sightings: Array[Resource] = []
+## First-form wildlife pools for NEW expeditions. Captured into expedition state before admission.
+## Empty preserves the prototype pool for isolated scenarios. Loaded expeditions retain saved pools.
+@export var habitat_encounters: Array[HabitatEncounterPool] = []
 ## Display and local behavior tuning for trail/wilderness sightings; saved home IDs stay immutable.
 
 ## Show/register trail and wilderness sightings. Disabling hides them without deleting saved individuals.
@@ -38,7 +41,7 @@ var species_catalog: Resource:
 ## Maximum Manhattan distance for deliberate observation with F. Applies to loaded sightings without changing IDs.
 @export_range(1, 6) var observation_distance := 3
 @export_group("Local Movement")
-## Run local movement on active exploration ticks. Turning off retains current saved positions.
+## Run local movement on active world ticks, including combat bystanders. Turning off retains saved positions.
 @export var movement_enabled := true
 ## Number of 0.75-second activity ticks between decisions. Larger is slower; no offline catch-up.
 @export_range(1, 8) var movement_interval_ticks := 1
@@ -108,6 +111,13 @@ func catalog_record(species_id: String) -> Resource:
 	return species_catalog.call("find", species_id) if species_catalog != null else null
 
 func valid() -> bool:
+	var habitat_policy: Array = []
+	for pool in habitat_encounters:
+		if pool == null or not pool.valid(species_catalog):
+			return false
+		habitat_policy.append(pool.snapshot())
+	if not HabitatEncounterPool.valid_policy(habitat_policy):
+		return false
 	if catalog_sightings.size() > MAX_CATALOG_SIGHTINGS or (species_catalog == null and (not catalog_sightings.is_empty() or not species_catalog_path.is_empty() or _catalog_override_set)):
 		return false
 	if species_catalog != null and (not script_matches(species_catalog, "res://scripts/sols/sol_species_catalog.gd") or not species_catalog.call("valid")):
