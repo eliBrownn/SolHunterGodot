@@ -1598,3 +1598,61 @@ interactions still need authoring. The illustrative current -> relic motif ->
 new destination expedition is a candidate first slice, not a mandatory universal
 sequence or an approved specific relic power. Runtime integration and owner
 playtest acceptance remain open.
+
+## Owner-approved nature-only expedition specification — October 31, 2026
+
+The owner approved the detailed nature-only loop before introducing NPCs.
+Discovery -> understanding -> preparation -> new opportunity is the current
+play target. NPCs, shops, dialogue, requests and campaign onboarding follow a
+satisfying nature loop; optional refuge requests remain a later extension.
+Existing story and starter canon remain, not first-slice dependencies.
+
+Natural discoveries comprise living routines, circulation patterns, local
+disturbances and unusual opportunities. Author their actual causes and useful
+evidence instead of generic investigation meters. Low reserve alone means neither
+damage nor overload. Observation separates fact from inference; repeated evidence
+can strengthen an authored finding without mandatory bar-filling.
+
+Companion field usefulness includes sensitive tracking, small-body access,
+elevated observation and controlled physical interaction. Assign specific species,
+targets and costs through authoring, starting with two bounded interactions.
+Reactions invite explicit player cooperation rather than constant scan commands.
+Preserve actual local evidence, reachable space and species anatomy; no remote
+omniscience, automatic hunter transport or unrestricted terrain destruction.
+Individual affinity's protection role remains separate. Some opportunities offer
+alternate approaches; not every path requires one exact creature.
+
+Peaceful contact can use observation, slow approach, companion approach, backing
+away and leaving. Creature posture and movement express response. Useful learning
+or later cooperative sealing can be success without immediate capture. No generic
+trust meter, arbitrary gift economy, automatic stat/trust bonus or mandatory care
+chore is approved. Existing capture/identity contracts remain authoritative.
+
+Discoveries pay off through practical knowledge, existing companion development,
+cooperative encounters or newly feasible access. Each situation must change a
+decision or opportunity; a journal count alone is insufficient. Not every discovery
+needs all payoff types, and not every battle unlocks a path or grants knowledge.
+Findings record immediately and survive defeat, without a report-to-secure gate.
+
+Recognizable safe resting places support ordinary HP/exhaustion recovery, legal
+party/loadout preparation, journal review and saving through the existing system.
+Rest does not automatically cure severe exposure, exceptional injuries or every
+consequence. Recovery timing/limits and remote defeat logistics need authoring.
+No fuel, food, construction supplies, filters or new currency are required just
+to prove the loop. Returning should serve a discovered next goal; party condition
+and exposure supply risk without invented inventory pressure.
+
+Revisit reasons include actual time/weather-supported activity, ecological
+recovery, another companion, learned signs and persistent battle imprints.
+Author each supported response; no automatic weather damage or reward reset.
+Some places may finish in one visit. Avoid empty waiting for unexplained narrow
+event windows; preserve other opportunities and readable reasons to return.
+
+The first compact sample connects a safe resting place, circulation grove,
+sheltered creature habitat and disturbed crossing. Support no-battle observation,
+peaceful cooperation, tactical combat and a preparation-led return. A relic is an
+optional discovery, not a powered-system prerequisite. Start with three worthwhile
+natural discoveries and two useful companion interactions. Review whether players
+return with a finding, consequence or changed plan and can identify their next
+goal. Automated success alone does not establish enjoyment. The world roadmap
+owns sequence; detailed numerical policies and specific content need authoring.
