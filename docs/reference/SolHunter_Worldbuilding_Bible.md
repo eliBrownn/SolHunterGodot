@@ -1538,3 +1538,30 @@ extraction. Recall range and presentation remain open. The owner intends more
 complex recovery later; specific exceptions or failure rules are deferred rather
 than assumed. Companion identity, health and existing contract persist through
 recall; recall is not healing, a new capture or a duplicate creature.
+
+## Owner-approved relic purposes and discovery — October 31, 2026
+
+Different relic types serve different authored purposes: revealing information,
+redirecting Vastra energy or operating local structures. These broad role families
+are approved; individual operations, rewards, costs and final role names still
+require authoring. A relic's appearance does not automatically grant every role.
+
+A working relic receives energy through a real local connection to ambient flow,
+plants or another relic, according to its authored design. Visible intake must
+represent its actual source and transfer; glow or particles cannot create energy.
+This does not approve unlimited harvesting, free plant withdrawals, a global relic
+network or a universal player/Sol energy donation mechanic. Exact source access,
+withdrawal limits, capacity, expenditure and full-recipient behavior remain open.
+Preserve conserved transfers and existing ambient/plant state ownership.
+
+Observable reactions and recurring carved motifs teach relic function. The journal
+records discoveries so learning at one site can help interpret another. Known
+function should follow observed evidence; unknown purpose and history are not
+revealed automatically. Exact motifs, reactions, journal entries and discovery
+triggers require authoring within the existing journal rather than a duplicate
+system. Specific builders, historical recordings, portals and consciousness
+remain unresolved; these choices do not establish them.
+
+The existing black-stone, recessed right-angle carving and crevice-flow direction
+remains authoritative. These are gameplay design decisions, not claims of live
+world placement, powered expedition integration or owner playtest acceptance.
