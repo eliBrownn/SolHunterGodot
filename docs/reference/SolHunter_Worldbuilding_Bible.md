@@ -1283,8 +1283,9 @@ holds participants, attacks and combat storm hazards at the same tactical instan
 Reading commands cannot accumulate exposure, advance attacks or escalate the
 storm. The surrounding world and ambient presentation continue; the explicit
 pause screen retains its separate behavior. Withdrawal is an explicit action
-through the perimeter rather than an accidental click beyond it. Exact escape
-and pursuit rules remain open.
+through the perimeter rather than an accidental click beyond it. It spends a
+readiness action, with success based on clearly previewed battlefield conditions.
+Exact success criteria, action timing and pursuit rules remain open.
 
 When confrontation ends, sustaining circulation disperses but consequences
 remain. Aggressive Vastra abilities leave overload on reached tiles. Healing
@@ -1478,10 +1479,35 @@ rest of combat; exact release timing and buffer duration require authoring.
 
 Inadequate gear warns before engagement but allows the player to take the risk.
 Human exposure advances only during live execution, never while planning or
-choosing a replacement. This does not introduce filter or oxygen maintenance.
+choosing a replacement. It progresses through warning stages toward blackout,
+even if the companion can still fight; withdrawal can prevent that outcome.
+Exact stages, rates and recovery remain open. This does not introduce filter or
+oxygen maintenance.
 
 After storm blackout, recovery depends on location: rescue near settlements,
 prepared extraction or authored recovery in remote regions. The specific method
 must be supported by the location/expedition rather than assumed to be globally
 available. Companion recovery, extraction preparation, destination, elapsed time,
 costs and penalties still need rules. Ordinary Sol defeat remains exhaustion.
+
+### Owner answers: withdrawal, exposure and capture — October 31, 2026
+
+Withdrawal spends a readiness action. Success depends on clearly previewed
+battlefield conditions rather than an unannounced escape rule. Exact criteria,
+probability versus deterministic admission, duration and failed-attempt effects
+remain unresolved; the preview must accurately explain the authored conditions.
+
+Dangerous human exposure progresses through warning stages toward blackout,
+including while the companion remains able to fight. Withdrawal can prevent
+blackout. This is a second route to hunter incapacitation alongside losing all
+companion protection, not a requirement that the party be exhausted first.
+Planning and replacement selection do not advance exposure. Exact thresholds,
+warning presentation, mitigation and post-withdrawal recovery remain open.
+
+Successfully sealing the last opposing Sol ends the confrontation and disperses
+the battle storm. Existing environmental disturbance, overload and lasting tile
+imprints remain under their existing outcome rules; capture is not a cleansing
+or terrain reset. This settles capture's arena outcome without approving a
+mandatory stabilization phase. Exact dispersal presentation and exposure recovery
+remain open; battle-storm dispersal does not erase a separately established
+environmental hazard.
