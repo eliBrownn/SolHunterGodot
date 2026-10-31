@@ -1252,8 +1252,9 @@ Gear capabilities enable more hazardous encounters and regions. Observation
 should communicate likely storm extent, severity and inadequate protection before
 commitment, with warnings and opportunities to withdraw. Gear need not multiply
 Sol damage. Preserve the prohibition on mandatory oxygen, filter replacement or
-constant equipment maintenance. Protection tiers, thresholds and exact admission
-rules remain unresolved.
+constant equipment maintenance. Inadequate gear prompts a pre-engagement warning
+but does not block voluntary engagement. Exposure advances during live execution,
+never tactical planning. Exact protection tiers and exposure thresholds remain open.
 
 Shelter beside a companion during its own battle differs from traversal of an
 established environmental affinity storm. Ordinary battles remain possible between
@@ -1265,12 +1266,15 @@ When the last available fighting Sol is exhausted and protection can no longer
 be sustained, protection breaks down and the hunter succumbs to the storm, losing
 consciousness. Ordinary Sol defeat remains exhaustion, not death; blackout does
 not establish permadeath. In possible 2v2 encounters, one exhausted ally does not
-cause a wipe while another sustains protection. Reserve replacement eligibility
-and timing must be defined before declaring all protection lost.
+cause a wipe while another sustains protection. If the only active Sol is exhausted
+but healthy reserves remain, gear supplies a brief emergency buffer for release
+of a replacement. Choosing the replacement is tactically paused; thinking time
+cannot consume the buffer. Exact buffer duration and release timing remain open.
 
-Recovery requires an authored rescue, extraction or other explanation; blackout
-alone does not explain returning to refuge. Recovery mechanism, checkpoints,
-penalties, item loss and costs remain unresolved.
+Recovery is location-dependent: rescue near settlements, and prepared extraction
+or authored recovery in remote regions. Blackout alone does not explain returning
+to refuge. Exact rescue/extraction logistics, checkpoints, penalties, item loss
+and costs remain unresolved; universal automatic extraction is not established.
 
 ### Tactical pauses, withdrawal and lasting aftermath
 
@@ -1464,3 +1468,20 @@ earlier general danger-readability direction for detonation: observable cues
 must exist, while recognizing their meaning can require experience. The specific
 cues, discovery/journal teaching and intervention opportunities need authoring.
 Ordinary storm-access warnings and planning-time exposure safeguards remain.
+
+### Owner answers: replacement protection and defeat recovery — October 31, 2026
+
+Gear provides a brief emergency protection buffer when the only active Sol falls
+and healthy reserves remain. Replacement selection is tactically paused. This
+resolves protection during the choice without granting immunity throughout the
+rest of combat; exact release timing and buffer duration require authoring.
+
+Inadequate gear warns before engagement but allows the player to take the risk.
+Human exposure advances only during live execution, never while planning or
+choosing a replacement. This does not introduce filter or oxygen maintenance.
+
+After storm blackout, recovery depends on location: rescue near settlements,
+prepared extraction or authored recovery in remote regions. The specific method
+must be supported by the location/expedition rather than assumed to be globally
+available. Companion recovery, extraction preparation, destination, elapsed time,
+costs and penalties still need rules. Ordinary Sol defeat remains exhaustion.
