@@ -1393,6 +1393,27 @@ Battle-arena formation retains its separate confrontation rule and can precede
 high ecological overload; this chain describes escalation and environmental storm
 risk, not a replacement admission rule for every battle.
 
-Signal-overload triggers, escalation thresholds, stabilization/interruption
-mechanisms and detonation consequences remain unresolved. They require authored
-rules before runtime implementation.
+The owner answers below resolve the cause, recovery direction and broad detonation
+consequences. Exact thresholds and execution rules still require authoring before
+runtime implementation.
+
+### Owner answers: signal recovery and detonation — October 31, 2026
+
+Persistent disturbance produces alarms faster than the local Vastra network can
+resolve them, causing signal overload. This defines the approved cause; exact
+alarm rates, processing capacity and thresholds remain tuning/design work.
+Signals carry information, not additional energy. Ordinary fullness and natural
+overflow remain distinct from this persistent alarm escalation.
+
+Removing the disturbance lets signals settle naturally. Regulators and healing
+accelerate recovery; escalation does not automatically require active intervention
+to stop. Signal settling and ecological-overload recovery are distinct processes:
+clearing alarms does not erase existing environmental damage or cancel lasting
+battle imprints. Exact intervention scope, costs and rates remain unresolved.
+
+A living Sol's overload detonation is a rare severe event that can injure the Sol
+and nearby creatures. Death is exceptional, not the normal result. This resolves
+the earlier survivability question at the design level without making every
+angry Sol detonate. Exact trigger, energy source, affected area, injury severity,
+prevention and exceptional-death conditions remain unresolved. Preserve the
+distinction from unjust-death energy release and ordinary exhaustion on defeat.
