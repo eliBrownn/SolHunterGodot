@@ -1565,3 +1565,36 @@ remain unresolved; these choices do not establish them.
 The existing black-stone, recessed right-angle carving and crevice-flow direction
 remains authoritative. These are gameplay design decisions, not claims of live
 world placement, powered expedition integration or owner playtest acceptance.
+
+## Owner-approved discovery-led expedition loop — October 31, 2026
+
+World clues and journal leads drive exploration. Refuge requests offer optional
+direction rather than becoming mandatory permission to explore. The intended
+loop is discovery -> understanding -> preparation -> a new opportunity, within
+the existing refuge-to-wilderness-and-return structure. An authored campaign is
+not required to make this loop useful; its existing delivery deferral remains.
+
+New opportunities combine learned knowledge, gear protection and companion
+capabilities. Some challenges offer alternate approaches where appropriate;
+this does not require every obstacle to have alternatives or approve a specific
+traversal power, relic operation or affinity exception. Each challenge must author
+its actual requirements and preserve existing protection and access rules.
+
+Return to refuge to recover and prepare for a discovered opportunity. Party
+condition and exposure can create pressure to return, while a known next lead
+gives preparation a purpose. This does not add hunger, mandatory upkeep, a new
+currency or automatic rewards for starting an expedition.
+
+Findings are recorded in the journal immediately when discovered and are not
+lost on defeat. Returning or reporting is not required to secure that knowledge.
+This concerns discovered information, not immunity from other defeat consequences
+or automatic retention of every item/reward. It does not alter the current
+active-combat save guard; durable discovery persistence needs an explicit safe
+implementation rather than an unsupported promise of arbitrary crash recovery.
+
+Specific clue chains, useful discovery outcomes, companion capabilities, gear
+services, optional request rewards, revisit conditions and refuge preparation
+interactions still need authoring. The illustrative current -> relic motif ->
+new destination expedition is a candidate first slice, not a mandatory universal
+sequence or an approved specific relic power. Runtime integration and owner
+playtest acceptance remain open.
