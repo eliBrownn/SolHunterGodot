@@ -1295,3 +1295,79 @@ leave a lingering hazard. Peaceful relationships avoid creating a battle storm.
 Exact dissipation, persistent-hazard escalation and recovery rates remain open.
 Formation, escalation, dispersal and aftermath belong to one connected world
 system rather than disposable arena effects.
+
+## Owner-approved foliage, overflow and Vastra instability — October 31, 2026
+
+Status: approved design and visual direction, not runtime implementation. This
+refines the overload presentation language and extends Sol-core presentation.
+Stored energy, ambient concentration, ecological overload and signal overload
+remain distinct; shared visuals do not make them interchangeable quantities.
+
+### Plant reserve, leaf color and posture
+
+Plants and trees express their individual stored Vastra through leaf saturation
+and posture. Low reserves produce softer, pastel foliage and lower leaf posture;
+higher reserves enrich saturation and lift/perk up the leaves. This describes
+foliage posture, not whole-plant levitation or experience levels. Preserve each
+species' authored palette and anatomy rather than turning all charged plants
+green. Reserve is not a direct reading of ambient concentration, injury or habitat
+damage; low reserve alone does not establish illness or death. Exact response
+curves, movement limits and saturation ranges remain art tuning.
+
+### Outward overflow and tile capacity
+
+Use **overflow** for energy beyond storage capacity, distinct from ecological
+**overload**. Plants and trees release incoming excess into outward flows around
+themselves, extending the existing root-like tree circulation. Emission in all
+directions describes distribution around the source, not duplicated energy.
+Outgoing strands divide the available surplus; nearby recipients can receive it
+through actual conserved transfers. Natural overflow alone does not originate
+ecological overload.
+
+Stored object reserves remain capped at 100. The owner's tile direction is to
+release incoming excess beyond a capacity of 100, but the tile's energy account
+must be specified before implementation: whether this is a stored tile reserve
+or an extension of ambient concentration remains unresolved. Do not interpret
+signed ecological overload above 100 as surplus fuel, silently introduce a new
+tile reserve, or clip/delete energy instead of accounting for outward transfer.
+
+### Distortion identifies unstable Vastra activity
+
+Use the Vessel light-warping/chromatic-aberration effect as the common thematic
+language for overload and instability. Plants and tiles do not produce distortion
+auras merely because they are full, overflowing or have a high ecological overload
+reading. Distortion belongs to unstable Vastra activity and overloaded carried
+signals, including affected strands, rather than the plant or terrain surface
+itself. Ordinary energy circulation remains visually distinct from instability;
+richness, brightness or fullness alone does not establish danger.
+
+Vastra transfers can carry important ecological information alongside energy.
+This develops the existing expiring-signal direction; information supplies no
+energy, remote omniscience or proof of Vastra consciousness. Signal overload is
+a separate concept whose causes, thresholds and consequences require definition.
+Conflicting messages, excessive intensity and repeated alarms are possibilities,
+not settled triggers. Preserve real source/recipient accounting and existing
+signal identity, expiry and replay safeguards.
+
+### Sol visual cores, emotion and possible detonation
+
+Every Sol has the established wispy, ball-shaped visual core, also called its
+Sol Orb. It remains part of a species-specific creature design, with placement
+independent of anatomical head and individual affinity independent of species.
+The description of Sols as large Vessels is a visual analogy, not a declaration
+that the two are biologically identical.
+
+During anger, aggression and battle, the core expresses increasing instability
+through the same Vessel warping/chromatic-aberration language. Separate ordinary
+focused battle energy from dangerous escalation: stronger, erratic distortion
+communicates increasing anger or loss of regulation, rather than implying that
+every battle-ready Sol is about to explode. This extends the earlier visual-only
+core canon with emotional/behavioral presentation; it does not establish a core
+energy reserve, brain location or a new combat resource.
+
+Anger-driven instability is a proposed root of possible overload detonation,
+not an automatic explosion rule. Detonation trigger, energy source, thresholds,
+survivability and environmental consequences remain unresolved. Distinguish any
+future living-Sol detonation from the existing unjust-death energy release.
+Ordinary combat defeat remains exhaustion; anger alone does not establish death,
+permadeath or a new failure penalty.
