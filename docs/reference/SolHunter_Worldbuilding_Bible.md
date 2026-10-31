@@ -1324,12 +1324,12 @@ Outgoing strands divide the available surplus; nearby recipients can receive it
 through actual conserved transfers. Natural overflow alone does not originate
 ecological overload.
 
-Stored object reserves remain capped at 100. The owner's tile direction is to
-release incoming excess beyond a capacity of 100, but the tile's energy account
-must be specified before implementation: whether this is a stored tile reserve
-or an extension of ambient concentration remains unresolved. Do not interpret
-signed ecological overload above 100 as surplus fuel, silently introduce a new
-tile reserve, or clip/delete energy instead of accounting for outward transfer.
+Stored object reserves remain capped at 100. For tiles, ambient concentration
+reaches 100 and incoming excess flows to neighboring tiles. There is no additional
+tile reserve implied by this rule. Ecological overload remains a separate signed
+quantity, not surplus fuel. Neighbor distribution, transfer rates and handling
+when surrounding tiles are full remain unresolved; conserve incoming excess
+rather than silently clipping or deleting it.
 
 ### Distortion identifies unstable Vastra activity
 
@@ -1343,11 +1343,11 @@ richness, brightness or fullness alone does not establish danger.
 
 Vastra transfers can carry important ecological information alongside energy.
 This develops the existing expiring-signal direction; information supplies no
-energy, remote omniscience or proof of Vastra consciousness. Signal overload is
-a separate concept whose causes, thresholds and consequences require definition.
-Conflicting messages, excessive intensity and repeated alarms are possibilities,
-not settled triggers. Preserve real source/recipient accounting and existing
-signal identity, expiry and replay safeguards.
+energy, remote omniscience or proof of Vastra consciousness. Persistent disturbance
+produces alarms faster than the network can resolve them, causing signal overload.
+Removing the disturbance lets signals settle; Regulators and healing accelerate
+recovery. Exact rates and thresholds remain open. Preserve source/recipient
+accounting and existing signal identity, expiry and replay safeguards.
 
 ### Sol visual cores, emotion and possible detonation
 
@@ -1365,12 +1365,14 @@ every battle-ready Sol is about to explode. This extends the earlier visual-only
 core canon with emotional/behavioral presentation; it does not establish a core
 energy reserve, brain location or a new combat resource.
 
-Anger-driven instability is a proposed root of possible overload detonation,
-not an automatic explosion rule. Detonation trigger, energy source, thresholds,
-survivability and environmental consequences remain unresolved. Distinguish any
-future living-Sol detonation from the existing unjust-death energy release.
-Ordinary combat defeat remains exhaustion; anger alone does not establish death,
-permadeath or a new failure penalty.
+Living-Sol overload detonation requires an exceptional external disturbance
+combined with the Sol's instability; ordinary anger alone is insufficient.
+Detonation is a rare severe event that can injure the Sol and nearby creatures;
+death is exceptional. The original starter's protection from death still applies.
+The qualifying external disturbances, energy source, thresholds, affected area,
+prevention and exact consequences remain unresolved. Distinguish living-Sol
+detonation from unjust-death energy release. Ordinary defeat remains exhaustion;
+this establishes no permadeath mode or new routine failure penalty.
 
 ### Owner-approved escalation chain — October 31, 2026
 
@@ -1414,6 +1416,26 @@ battle imprints. Exact intervention scope, costs and rates remain unresolved.
 A living Sol's overload detonation is a rare severe event that can injure the Sol
 and nearby creatures. Death is exceptional, not the normal result. This resolves
 the earlier survivability question at the design level without making every
-angry Sol detonate. Exact trigger, energy source, affected area, injury severity,
-prevention and exceptional-death conditions remain unresolved. Preserve the
+angry Sol detonate. An exceptional external disturbance must combine with the
+Sol's instability; the original starter remains protected from death. Qualifying
+disturbances, energy source, affected area, injury severity, prevention and other
+exceptional-death conditions remain unresolved. Preserve the
 distinction from unjust-death energy release and ordinary exhaustion on defeat.
+
+### Owner answers: overflow, exposure and exceptional triggers — October 31, 2026
+
+Tile overflow concerns ambient concentration: at 100, incoming excess flows to
+neighboring tiles, without introducing a separate tile reserve. Ordinary fullness
+remains distinct from ecological overload and signal overload.
+
+Turbulent Vastra flow causes human exposure even before ecological overload is
+high. This supplies the hazard of ordinary battle storms without requiring them
+to begin as heavily damaged habitats. Gear and companion protection remain
+relevant from formation. Exposure tuning and protection thresholds remain open;
+planning time cannot accumulate exposure.
+
+A rare living-Sol detonation requires both the Sol's instability and an exceptional
+external disturbance. Neither ordinary anger nor instability alone is sufficient.
+It can injure the Sol and nearby creatures; death remains exceptional and the
+original starter retains its existing protection from death. The qualifying
+external disturbances and exact prevention/consequence rules remain open.
