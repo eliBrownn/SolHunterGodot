@@ -1371,3 +1371,28 @@ survivability and environmental consequences remain unresolved. Distinguish any
 future living-Sol detonation from the existing unjust-death energy release.
 Ordinary combat defeat remains exhaustion; anger alone does not establish death,
 permadeath or a new failure penalty.
+
+### Owner-approved escalation chain — October 31, 2026
+
+Disruption -> escalating signals -> Vessel/Sol response -> aggressive energy
+release -> ecological overload -> storm risk.
+
+This is the approved causal design for response-driven escalation, not a guarantee
+that every signal or response reaches a storm. Signals communicate conditions;
+they do not create energy. Anger alone does not thereby add ecological overload:
+the aggressive release is a distinct step. Its exact admission rules remain open.
+
+Ordinary fullness follows a separate safe path:
+full reserve -> outward overflow -> redistribution.
+
+A healthy, energy-rich location is not inherently distressed. Normal overflow is
+not itself an overload source. Distortion indicates instability rather than mere
+fullness. Established direct overload sources remain valid; this chain is not a
+mandatory prerequisite for every aggressive ability or human-caused disturbance.
+Battle-arena formation retains its separate confrontation rule and can precede
+high ecological overload; this chain describes escalation and environmental storm
+risk, not a replacement admission rule for every battle.
+
+Signal-overload triggers, escalation thresholds, stabilization/interruption
+mechanisms and detonation consequences remain unresolved. They require authored
+rules before runtime implementation.
