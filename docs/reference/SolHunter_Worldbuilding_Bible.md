@@ -231,7 +231,7 @@ Restoration remains possible without direct player intervention.
 
 ### 17. Storm generation
 
-Simulation-generated Vastra storms require a contiguous 3×3 group of storm-eligible overloaded tiles.
+Accumulated-overload environmental Vastra storms require a contiguous 3×3 group of storm-eligible overloaded tiles. Battle-storm arenas use the separate formation rule in the owner-approved October 31, 2026 section below.
 
 A tile becomes eligible at a configurable overload threshold no greater than 100.
 
@@ -557,7 +557,7 @@ A character may exhibit overlapping values, and relationships can evolve.
 
 ### 38. Tactical battle identity
 
-The ordinary encounter baseline is one allied Sol against one opposing Sol.
+The ordinary encounter baseline is one allied Sol against one opposing Sol. The owner-approved October 31, 2026 section below establishes readiness-based commander combat, live execution, automatic tactical pauses and possible 2v2 expansion.
 
 Combat emphasizes tactical positioning rather than simply selecting the strongest attack.
 
@@ -1181,3 +1181,117 @@ The exact complete 18-class roster, original narrative passages, detailed move l
 No project files or GitHub documents have been edited as part of this compilation.
 
 SolHunter Worldbuilding Bible — consolidated research edition. Confirmed canon, provisional design, and deferred concepts remain distinct until incorporated into the authoritative project documents.
+
+## Owner-approved battle storms and commander combat — October 31, 2026
+
+Status: owner-approved design direction, not implemented mechanics or accepted
+balance. This section supersedes earlier storm-origin restrictions for battle
+storms and establishes readiness-based commander combat as the target. Existing
+turn/AP combat and the disposable real-time trial remain implementation baselines.
+Numerical timing, sizing and protection values remain unresolved.
+
+### Commander timing in the actual world
+
+An individual readiness timeline governs combat, with live execution between
+automatic tactical pauses. When an allied Sol needs an order, combat time stops
+for positioning and move selection with route, cost and timing previews. Committed
+orders execute through movement, preparation, impact and recovery. Success must
+not depend on rapid input or animation playback speed. Ordinary encounters are
+1v1, with possible 2v2 expansion using individual readiness. Exact movement/order
+budgets, Speed conversion, interruptions, simultaneous-event ordering and the
+future role of AP remain unresolved.
+
+Combat uses the actual terrain, obstacles, elevation and Vastra at the encounter
+location. The logical grid supports routes, footprints and previews; creatures
+move smoothly in presentation. Godot world generation remains authoritative.
+Combat owns participant state and combat-relevant local tiles; background systems
+must not independently rewrite those same values. Completion reconciles changes
+once with the continuing world.
+
+### Storm formation, arena extent and disturbance
+
+Battles are intended to be a principal source of encountered Vastra storms.
+Sols committing to confrontation draw local currents into a turbulent circulation
+that establishes the arena before the first damaging move. Formation need not
+start at maximum ecological overload. Aggressive Vastra-powered abilities add
+overload on their actually affected tiles and can intensify disturbance. Purely
+non-Vastra physical attacks remain distinct; ordinary noncombat Sol behavior does
+not thereby originate overload. Concentration remains independent of overload.
+
+The storm gathers around existing geography and thematically binds a stable set
+of battlefield tiles without moving or literally freezing the landscape. Larger
+Sols invoke larger arenas. Establish the footprint once at formation, using the
+largest participant and sufficient reachable fighting space for all participants.
+Possible 2v2 encounters must fit without simply doubling a circular radius.
+Perimeters follow traversable geography; ordinary movement does not resize them.
+Exact sizing remains tuning.
+
+Arena extent is separate from severity and lasting damage. Small encounters may
+produce a low shimmering disturbance; major confrontations may produce violent
+currents. Larger arenas do not automatically damage every enclosed tile. The
+confrontation sustains the boundary, while overload expresses disturbance.
+Restorative moves can calm conditions without deleting the arena mid-battle.
+
+Battle storms have their own formation rule. The earlier probabilistic contiguous
+3x3 overloaded-tile requirement continues to govern accumulated-overload
+**environmental storms**, not battle-arena admission. Battles may leave conditions
+supporting persistent environmental storms; not every storm must come from combat.
+Authored narrative storms, including the opening, and other established storm
+sources remain possible. This does not change ordinary weather or require every
+duel to devastate a habitat.
+
+### Hunter protection, gear and defeat
+
+The hunter commands from a sheltered position at the storm margin rather than
+acting as a second fighting unit. Mask and clothing manage baseline exposure;
+the companion stabilizes tolerable flow around the hunter. Combat protection is
+automatic, not a repeatedly refreshed shield or manually positioned bubble. This
+explains both equipment and the hunter's separation from direct creature attacks.
+
+Gear capabilities enable more hazardous encounters and regions. Observation
+should communicate likely storm extent, severity and inadequate protection before
+commitment, with warnings and opportunities to withdraw. Gear need not multiply
+Sol damage. Preserve the prohibition on mandatory oxygen, filter replacement or
+constant equipment maintenance. Protection tiers, thresholds and exact admission
+rules remain unresolved.
+
+Shelter beside a companion during its own battle differs from traversal of an
+established environmental affinity storm. Ordinary battles remain possible between
+different individual affinities. This extends rather than removes the existing
+matching-affinity rule for ordinary storm traversal; it grants no universal storm
+immunity or unrestricted passage. Quantum and pure-storm exceptions remain open.
+
+When the last available fighting Sol is exhausted and protection can no longer
+be sustained, protection breaks down and the hunter succumbs to the storm, losing
+consciousness. Ordinary Sol defeat remains exhaustion, not death; blackout does
+not establish permadeath. In possible 2v2 encounters, one exhausted ally does not
+cause a wipe while another sustains protection. Reserve replacement eligibility
+and timing must be defined before declaring all protection lost.
+
+Recovery requires an authored rescue, extraction or other explanation; blackout
+alone does not explain returning to refuge. Recovery mechanism, checkpoints,
+penalties, item loss and costs remain unresolved.
+
+### Tactical pauses, withdrawal and lasting aftermath
+
+The storm supports a bounded battlefield, not literal time-stopping lore. Planning
+holds participants, attacks and combat storm hazards at the same tactical instant.
+Reading commands cannot accumulate exposure, advance attacks or escalate the
+storm. The surrounding world and ambient presentation continue; the explicit
+pause screen retains its separate behavior. Withdrawal is an explicit action
+through the perimeter rather than an accidental click beyond it. Exact escape
+and pursuit rules remain open.
+
+When confrontation ends, sustaining circulation disperses but consequences
+remain. Aggressive Vastra abilities leave overload on reached tiles. Healing
+reduces overload independently of HP restored and can push it negative into
+restorative conditions. Successful move activity determines lasting tile affinity
+under the existing move-affinity/activity rules. Temporary conditions recover
+without erasing that imprint. Dispersal does not reset terrain, cancel lasting
+effects or replay completion transactions.
+
+Restrained fights can leave modest disturbance; repeated destructive battles can
+leave a lingering hazard. Peaceful relationships avoid creating a battle storm.
+Exact dissipation, persistent-hazard escalation and recovery rates remain open.
+Formation, escalation, dispersal and aftermath belong to one connected world
+system rather than disposable arena effects.
