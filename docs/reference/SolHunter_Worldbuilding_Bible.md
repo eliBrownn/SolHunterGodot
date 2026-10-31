@@ -1327,9 +1327,10 @@ ecological overload.
 Stored object reserves remain capped at 100. For tiles, ambient concentration
 reaches 100 and incoming excess flows to neighboring tiles. There is no additional
 tile reserve implied by this rule. Ecological overload remains a separate signed
-quantity, not surplus fuel. Neighbor distribution, transfer rates and handling
-when surrounding tiles are full remain unresolved; conserve incoming excess
-rather than silently clipping or deleting it.
+quantity, not surplus fuel. If neighbors are full, incoming excess continues
+spreading outward through the network until capacity is available. Redistribution
+speed is limited; conserve energy in transfer rather than clipping or deleting it.
+Exact routing, rates and accounting while transfers await capacity remain open.
 
 ### Distortion identifies unstable Vastra activity
 
@@ -1369,8 +1370,9 @@ Living-Sol overload detonation requires an exceptional external disturbance
 combined with the Sol's instability; ordinary anger alone is insufficient.
 Detonation is a rare severe event that can injure the Sol and nearby creatures;
 death is exceptional. The original starter's protection from death still applies.
-The qualifying external disturbances, energy source, thresholds, affected area,
-prevention and exact consequences remain unresolved. Distinguish living-Sol
+Severe environmental Vastra surges and deliberate core interference are qualifying
+external disturbances. They still require the Sol's instability. Exact energy
+source, thresholds, affected area, prevention and consequences remain open. Distinguish living-Sol
 detonation from unjust-death energy release. Ordinary defeat remains exhaustion;
 this establishes no permadeath mode or new routine failure penalty.
 
@@ -1417,9 +1419,10 @@ A living Sol's overload detonation is a rare severe event that can injure the So
 and nearby creatures. Death is exceptional, not the normal result. This resolves
 the earlier survivability question at the design level without making every
 angry Sol detonate. An exceptional external disturbance must combine with the
-Sol's instability; the original starter remains protected from death. Qualifying
-disturbances, energy source, affected area, injury severity, prevention and other
-exceptional-death conditions remain unresolved. Preserve the
+Sol's instability; the original starter remains protected from death. Severe
+environmental surges and deliberate core interference qualify. Energy source,
+affected area, injury severity, prevention and exceptional-death conditions
+remain unresolved. Preserve the
 distinction from unjust-death energy release and ordinary exhaustion on defeat.
 
 ### Owner answers: overflow, exposure and exceptional triggers — October 31, 2026
@@ -1437,5 +1440,27 @@ planning time cannot accumulate exposure.
 A rare living-Sol detonation requires both the Sol's instability and an exceptional
 external disturbance. Neither ordinary anger nor instability alone is sufficient.
 It can injure the Sol and nearby creatures; death remains exceptional and the
-original starter retains its existing protection from death. The qualifying
-external disturbances and exact prevention/consequence rules remain open.
+original starter retains its existing protection from death. Severe environmental
+Vastra surges and deliberate core interference qualify as external disturbances;
+exact prevention and consequence rules remain open.
+
+### Owner answers: network spread and learned warnings — October 31, 2026
+
+When a tile and its neighbors are at ambient concentration 100, incoming excess
+continues spreading outward through the network until capacity is available.
+Redistribution has limited speed; it is not an instantaneous world-wide search or
+an automatic overload source. Exact routing and conserved in-flight/backlogged
+energy accounting remain implementation design work.
+
+Both severe environmental Vastra surges and deliberate core interference can
+supply the exceptional external disturbance for a living-Sol detonation. The
+Sol must also be unstable; neither external disturbance alone nor ordinary anger
+alone establishes a detonation. Exact thresholds remain open.
+
+Detonation warnings depend on observation and learned knowledge. Inexperienced
+hunters may miss or misinterpret the signs; a universally understood warning
+prompt or guaranteed intervention window is not established. This refines the
+earlier general danger-readability direction for detonation: observable cues
+must exist, while recognizing their meaning can require experience. The specific
+cues, discovery/journal teaching and intervention opportunities need authoring.
+Ordinary storm-access warnings and planning-time exposure safeguards remain.
