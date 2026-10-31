@@ -1197,9 +1197,10 @@ automatic tactical pauses. When an allied Sol needs an order, combat time stops
 for positioning and move selection with route, cost and timing previews. Committed
 orders execute through movement, preparation, impact and recovery. Success must
 not depend on rapid input or animation playback speed. Ordinary encounters are
-1v1, with possible 2v2 expansion using individual readiness. Exact movement/order
-budgets, Speed conversion, interruptions, simultaneous-event ordering and the
-future role of AP remain unresolved.
+1v1, with possible 2v2 expansion using individual readiness. At readiness the
+player commits several moves and movement as one plan within a shared AP budget.
+Exact AP totals/costs, movement allowances, Speed conversion, interruption rules,
+plan recovery timing and simultaneous-event ordering remain unresolved.
 
 Combat uses the actual terrain, obstacles, elevation and Vastra at the encounter
 location. The logical grid supports routes, footprints and previews; creatures
@@ -1487,8 +1488,10 @@ oxygen maintenance.
 After storm blackout, recovery depends on location: rescue near settlements,
 prepared extraction or authored recovery in remote regions. The specific method
 must be supported by the location/expedition rather than assumed to be globally
-available. Companion recovery, extraction preparation, destination, elapsed time,
-costs and penalties still need rules. Ordinary Sol defeat remains exhaustion.
+available. Initially an emergency Seal recall secures released companions before
+hunter blackout, including when companions remain healthy. More complex companion
+recovery is deferred. Extraction preparation, destination, elapsed time, costs
+and penalties still need rules. Ordinary Sol defeat remains exhaustion.
 
 ### Owner answers: withdrawal, exposure and capture — October 31, 2026
 
@@ -1511,3 +1514,27 @@ or terrain reset. This settles capture's arena outcome without approving a
 mandatory stabilization phase. Exact dispersal presentation and exposure recovery
 remain open; battle-storm dispersal does not erase a separately established
 environmental hazard.
+
+### Owner answers: AP plans, committed aim and emergency recall — October 31, 2026
+
+When a Sol becomes ready, the player may arrange several moves and movement
+within one shared AP budget and commit them as one plan. Combat time resumes for
+execution; individual steps do not grant free replanning. This resolves the role
+of AP without finalizing the current implementation's numerical defaults. Exact
+costs, plan ordering constraints, handling of interrupted/invalid later steps,
+resource spending/refunds and when the next readiness occurs remain open.
+
+Attacks resolve against their committed aim. A target that moves out of the
+committed attack's reach/area or behind cover can cause a miss or blockage.
+There is no automatic chase or replacement attack. Exact aim-lock timing,
+telegraphing and multi-move-plan aim previews require authoring; this does not
+silently give every attack creature tracking.
+
+For the initial recovery design, emergency Seal recall secures released companions
+before the hunter blacks out from exposure, even if those companions remain
+healthy. The established location-dependent rescue/extraction rules then apply.
+This does not establish remote recall from arbitrary distances or universal
+extraction. Recall range and presentation remain open. The owner intends more
+complex recovery later; specific exceptions or failure rules are deferred rather
+than assumed. Companion identity, health and existing contract persist through
+recall; recall is not healing, a new capture or a duplicate creature.
