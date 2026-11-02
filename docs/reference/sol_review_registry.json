@@ -1,0 +1,357 @@
+{
+  "revision": "sol-round-01",
+  "status": "pending_owner_visual_review",
+  "reference": "",
+  "selected_codes": [
+    "SOL01",
+    "SOL02",
+    "SOL03",
+    "SOL04",
+    "SOL05",
+    "SOL06",
+    "SOL07",
+    "SOL08",
+    "SOL09",
+    "SOL10",
+    "SOL11",
+    "SOL12",
+    "SOL13",
+    "SOL14",
+    "SOL15",
+    "SOL16",
+    "SOL17",
+    "SOL18"
+  ],
+  "plants": [
+    {
+      "class_id": "beast",
+      "code": "SOL01",
+      "name": "Crown-Ear",
+      "species_id": "sol_species_0001",
+      "views": [
+        "SOL01-0.png",
+        "SOL01-1.png"
+      ],
+      "pair": "SOL01-pair.jpg",
+      "biome": "beast",
+      "group": "Catalog Sol model",
+      "plant_id": "sol_species_0001",
+      "status": "Current catalog presentation / visual review only",
+      "requested": true,
+      "approved": false,
+      "note": "Review appearance, anatomy, silhouette and colors. Decisions do not change mechanics or publish models automatically."
+    },
+    {
+      "class_id": "tideborn",
+      "code": "SOL02",
+      "name": "Reedback",
+      "species_id": "sol_species_0002",
+      "views": [
+        "SOL02-0.png",
+        "SOL02-1.png"
+      ],
+      "pair": "SOL02-pair.jpg",
+      "biome": "tideborn",
+      "group": "Catalog Sol model",
+      "plant_id": "sol_species_0002",
+      "status": "Current catalog presentation / visual review only",
+      "requested": true,
+      "approved": false,
+      "note": "Review appearance, anatomy, silhouette and colors. Decisions do not change mechanics or publish models automatically."
+    },
+    {
+      "class_id": "verdant",
+      "code": "SOL03",
+      "name": "Bellroot",
+      "species_id": "sol_species_0003",
+      "views": [
+        "SOL03-0.png",
+        "SOL03-1.png"
+      ],
+      "pair": "SOL03-pair.jpg",
+      "biome": "verdant",
+      "group": "Catalog Sol model",
+      "plant_id": "sol_species_0003",
+      "status": "Current catalog presentation / visual review only",
+      "requested": true,
+      "approved": false,
+      "note": "Review appearance, anatomy, silhouette and colors. Decisions do not change mechanics or publish models automatically."
+    },
+    {
+      "class_id": "cinderkin",
+      "code": "SOL04",
+      "name": "Ashquill",
+      "species_id": "sol_species_0004",
+      "views": [
+        "SOL04-0.png",
+        "SOL04-1.png"
+      ],
+      "pair": "SOL04-pair.jpg",
+      "biome": "cinderkin",
+      "group": "Catalog Sol model",
+      "plant_id": "sol_species_0004",
+      "status": "Current catalog presentation / visual review only",
+      "requested": true,
+      "approved": false,
+      "note": "Review appearance, anatomy, silhouette and colors. Decisions do not change mechanics or publish models automatically."
+    },
+    {
+      "class_id": "stormforged",
+      "code": "SOL05",
+      "name": "Rattlehorn",
+      "species_id": "sol_species_0005",
+      "views": [
+        "SOL05-0.png",
+        "SOL05-1.png"
+      ],
+      "pair": "SOL05-pair.jpg",
+      "biome": "stormforged",
+      "group": "Catalog Sol model",
+      "plant_id": "sol_species_0005",
+      "status": "Current catalog presentation / visual review only",
+      "requested": true,
+      "approved": false,
+      "note": "Review appearance, anatomy, silhouette and colors. Decisions do not change mechanics or publish models automatically."
+    },
+    {
+      "class_id": "frostbound",
+      "code": "SOL06",
+      "name": "Rimefold",
+      "species_id": "sol_species_0006",
+      "views": [
+        "SOL06-0.png",
+        "SOL06-1.png"
+      ],
+      "pair": "SOL06-pair.jpg",
+      "biome": "frostbound",
+      "group": "Catalog Sol model",
+      "plant_id": "sol_species_0006",
+      "status": "Current catalog presentation / visual review only",
+      "requested": true,
+      "approved": false,
+      "note": "Review appearance, anatomy, silhouette and colors. Decisions do not change mechanics or publish models automatically."
+    },
+    {
+      "class_id": "warborn",
+      "code": "SOL07",
+      "name": "Browguard",
+      "species_id": "sol_species_0007",
+      "views": [
+        "SOL07-0.png",
+        "SOL07-1.png"
+      ],
+      "pair": "SOL07-pair.jpg",
+      "biome": "warborn",
+      "group": "Catalog Sol model",
+      "plant_id": "sol_species_0007",
+      "status": "Current catalog presentation / visual review only",
+      "requested": true,
+      "approved": false,
+      "note": "Review appearance, anatomy, silhouette and colors. Decisions do not change mechanics or publish models automatically."
+    },
+    {
+      "class_id": "blightborn",
+      "code": "SOL08",
+      "name": "Bitterfrill",
+      "species_id": "sol_species_0008",
+      "views": [
+        "SOL08-0.png",
+        "SOL08-1.png"
+      ],
+      "pair": "SOL08-pair.jpg",
+      "biome": "blightborn",
+      "group": "Catalog Sol model",
+      "plant_id": "sol_species_0008",
+      "status": "Current catalog presentation / visual review only",
+      "requested": true,
+      "approved": false,
+      "note": "Review appearance, anatomy, silhouette and colors. Decisions do not change mechanics or publish models automatically."
+    },
+    {
+      "class_id": "earthbound",
+      "code": "SOL09",
+      "name": "Knucklemole",
+      "species_id": "sol_species_0009",
+      "views": [
+        "SOL09-0.png",
+        "SOL09-1.png"
+      ],
+      "pair": "SOL09-pair.jpg",
+      "biome": "earthbound",
+      "group": "Catalog Sol model",
+      "plant_id": "sol_species_0009",
+      "status": "Current catalog presentation / visual review only",
+      "requested": true,
+      "approved": false,
+      "note": "Review appearance, anatomy, silhouette and colors. Decisions do not change mechanics or publish models automatically."
+    },
+    {
+      "class_id": "skyborne",
+      "code": "SOL10",
+      "name": "Sailcrest",
+      "species_id": "sol_species_0010",
+      "views": [
+        "SOL10-0.png",
+        "SOL10-1.png"
+      ],
+      "pair": "SOL10-pair.jpg",
+      "biome": "skyborne",
+      "group": "Catalog Sol model",
+      "plant_id": "sol_species_0010",
+      "status": "Current catalog presentation / visual review only",
+      "requested": true,
+      "approved": false,
+      "note": "Review appearance, anatomy, silhouette and colors. Decisions do not change mechanics or publish models automatically."
+    },
+    {
+      "class_id": "mindweaver",
+      "code": "SOL11",
+      "name": "Glass-Throat",
+      "species_id": "sol_species_0011",
+      "views": [
+        "SOL11-0.png",
+        "SOL11-1.png"
+      ],
+      "pair": "SOL11-pair.jpg",
+      "biome": "mindweaver",
+      "group": "Catalog Sol model",
+      "plant_id": "sol_species_0011",
+      "status": "Current catalog presentation / visual review only",
+      "requested": true,
+      "approved": false,
+      "note": "Review appearance, anatomy, silhouette and colors. Decisions do not change mechanics or publish models automatically."
+    },
+    {
+      "class_id": "swarmkin",
+      "code": "SOL12",
+      "name": "Claspback",
+      "species_id": "sol_species_0012",
+      "views": [
+        "SOL12-0.png",
+        "SOL12-1.png"
+      ],
+      "pair": "SOL12-pair.jpg",
+      "biome": "swarmkin",
+      "group": "Catalog Sol model",
+      "plant_id": "sol_species_0012",
+      "status": "Current catalog presentation / visual review only",
+      "requested": true,
+      "approved": false,
+      "note": "Review appearance, anatomy, silhouette and colors. Decisions do not change mechanics or publish models automatically."
+    },
+    {
+      "class_id": "eldritch",
+      "code": "SOL13",
+      "name": "Foldling",
+      "species_id": "sol_species_0013",
+      "views": [
+        "SOL13-0.png",
+        "SOL13-1.png"
+      ],
+      "pair": "SOL13-pair.jpg",
+      "biome": "eldritch",
+      "group": "Catalog Sol model",
+      "plant_id": "sol_species_0013",
+      "status": "Current catalog presentation / visual review only",
+      "requested": true,
+      "approved": false,
+      "note": "Review appearance, anatomy, silhouette and colors. Decisions do not change mechanics or publish models automatically."
+    },
+    {
+      "class_id": "wraithborn",
+      "code": "SOL14",
+      "name": "Mournveil",
+      "species_id": "sol_species_0014",
+      "views": [
+        "SOL14-0.png",
+        "SOL14-1.png"
+      ],
+      "pair": "SOL14-pair.jpg",
+      "biome": "wraithborn",
+      "group": "Catalog Sol model",
+      "plant_id": "sol_species_0014",
+      "status": "Current catalog presentation / visual review only",
+      "requested": true,
+      "approved": false,
+      "note": "Review appearance, anatomy, silhouette and colors. Decisions do not change mechanics or publish models automatically."
+    },
+    {
+      "class_id": "wyrmkin",
+      "code": "SOL15",
+      "name": "Pebblewyrm",
+      "species_id": "sol_species_0015",
+      "views": [
+        "SOL15-0.png",
+        "SOL15-1.png"
+      ],
+      "pair": "SOL15-pair.jpg",
+      "biome": "wyrmkin",
+      "group": "Catalog Sol model",
+      "plant_id": "sol_species_0015",
+      "status": "Current catalog presentation / visual review only",
+      "requested": true,
+      "approved": false,
+      "note": "Review appearance, anatomy, silhouette and colors. Decisions do not change mechanics or publish models automatically."
+    },
+    {
+      "class_id": "umbral",
+      "code": "SOL16",
+      "name": "Shadepelt",
+      "species_id": "sol_species_0016",
+      "views": [
+        "SOL16-0.png",
+        "SOL16-1.png"
+      ],
+      "pair": "SOL16-pair.jpg",
+      "biome": "umbral",
+      "group": "Catalog Sol model",
+      "plant_id": "sol_species_0016",
+      "status": "Current catalog presentation / visual review only",
+      "requested": true,
+      "approved": false,
+      "note": "Review appearance, anatomy, silhouette and colors. Decisions do not change mechanics or publish models automatically."
+    },
+    {
+      "class_id": "construct",
+      "code": "SOL17",
+      "name": "Kilnling",
+      "species_id": "sol_species_0017",
+      "views": [
+        "SOL17-0.png",
+        "SOL17-1.png"
+      ],
+      "pair": "SOL17-pair.jpg",
+      "biome": "construct",
+      "group": "Catalog Sol model",
+      "plant_id": "sol_species_0017",
+      "status": "Current catalog presentation / visual review only",
+      "requested": true,
+      "approved": false,
+      "note": "Review appearance, anatomy, silhouette and colors. Decisions do not change mechanics or publish models automatically."
+    },
+    {
+      "class_id": "feyborn",
+      "code": "SOL18",
+      "name": "Thimblehart",
+      "species_id": "sol_species_0018",
+      "views": [
+        "SOL18-0.png",
+        "SOL18-1.png"
+      ],
+      "pair": "SOL18-pair.jpg",
+      "biome": "feyborn",
+      "group": "Catalog Sol model",
+      "plant_id": "sol_species_0018",
+      "status": "Current catalog presentation / visual review only",
+      "requested": true,
+      "approved": false,
+      "note": "Review appearance, anatomy, silhouette and colors. Decisions do not change mechanics or publish models automatically."
+    }
+  ],
+  "preferences": [
+    "Preserve species identity and independent individual affinity.",
+    "Review silhouette, anatomy, colors, face and visual-core placement.",
+    "Use close-ups and retain earlier pictures when requesting revisions."
+  ],
+  "history": []
+}

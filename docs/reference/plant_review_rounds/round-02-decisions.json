@@ -1,0 +1,59 @@
+{
+  "revision": "round-02",
+  "preferences": [
+    "Ordinary foliage should be bushy and leaf-filled, using M35 / Foliage 5 as the reference.",
+    "Give plants varied leaf shapes and silhouettes, with reproducible random leaf choices when a redo is requested.",
+    "Avoid excessive thickness in trunks, branches and leaves; M12 should have slender growth and long hanging leaves.",
+    "Keep explicitly requested leaf colors while changing leaf shape or supporting structure.",
+    "Apply written notes even when a plant is marked accept or keep-original.",
+    "Keep species-specific character: a fern for H33, more vertical growth for H11, and upward reach for S10.",
+    "Preserve originals and earlier review rounds for close-up comparison."
+  ],
+  "decisions": [
+    {
+      "code": "M12",
+      "decision": "accept",
+      "note": ""
+    },
+    {
+      "code": "M15",
+      "decision": "accept",
+      "note": ""
+    },
+    {
+      "code": "M19",
+      "decision": "accept",
+      "note": ""
+    },
+    {
+      "code": "H11",
+      "decision": "accept",
+      "note": ""
+    },
+    {
+      "code": "H12",
+      "decision": "accept",
+      "note": ""
+    },
+    {
+      "code": "H33",
+      "decision": "accept",
+      "note": ""
+    },
+    {
+      "code": "S10",
+      "decision": "accept",
+      "note": ""
+    },
+    {
+      "code": "S18",
+      "decision": "accept",
+      "note": ""
+    },
+    {
+      "code": "S19",
+      "decision": "accept",
+      "note": ""
+    }
+  ]
+}

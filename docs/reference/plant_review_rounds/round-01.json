@@ -1,0 +1,2736 @@
+{
+  "version": 1,
+  "revision": "round-01",
+  "status": "pending_owner_visual_review",
+  "reference_code": "M35",
+  "selected_codes": [
+    "M12",
+    "M15",
+    "M19",
+    "M20",
+    "H10",
+    "H11",
+    "H12",
+    "H33",
+    "S04",
+    "S07",
+    "S10",
+    "S18",
+    "S19",
+    "S33",
+    "S34"
+  ],
+  "direction": [
+    "Bushier ordinary foliage using M35 Folded cluster as reference",
+    "More diverse plant foliage and seeded leaf changes for selected candidates",
+    "S07 retains leaf morphology and pigment; rebuild trunk, branch and root proportions"
+  ],
+  "general_foliage_settings": {
+    "branches": 10,
+    "foliage": 1.45,
+    "foliage_fullness": 1.5,
+    "plant_recursive_depth": 0,
+    "branching_depth": 0,
+    "spread_ratio": 0.85,
+    "height_ratio": 1.12,
+    "leaf_scale": 1.12,
+    "leaf_width": 1.3,
+    "droop": 0.25,
+    "branch_irregularity": 0.28
+  },
+  "overrides": {
+    "M12": {
+      "settings": {
+        "leaf_architecture": 1,
+        "leaf_width": 1.472,
+        "leaf_scale": 0.861,
+        "tip_taper": 1.426,
+        "leaf_lobes": 3,
+        "lobe_depth": 0.387,
+        "curl": 0.342,
+        "droop": 0.184,
+        "leaf_asymmetry": 0.335,
+        "tree_leaf_cards": false,
+        "foliage_fullness": 1.5,
+        "branching_depth": 1,
+        "foliage": 1.35
+      },
+      "seed": 103100,
+      "keep_leaves": false,
+      "note": "Seeded replacement leaf morphology; awaiting owner review."
+    },
+    "M15": {
+      "settings": {
+        "leaf_architecture": 3,
+        "leaf_width": 0.812,
+        "leaf_scale": 0.875,
+        "tip_taper": 0.902,
+        "leaf_lobes": 5,
+        "lobe_depth": 0.521,
+        "curl": 0.204,
+        "droop": 0.197,
+        "leaf_asymmetry": 0.387,
+        "tree_leaf_cards": false,
+        "foliage_fullness": 1.5,
+        "branching_depth": 1,
+        "foliage": 1.35
+      },
+      "seed": 103401,
+      "keep_leaves": false,
+      "note": "Seeded replacement leaf morphology; awaiting owner review."
+    },
+    "M19": {
+      "settings": {
+        "leaf_architecture": 3,
+        "leaf_width": 1.196,
+        "leaf_scale": 0.908,
+        "tip_taper": 0.991,
+        "leaf_lobes": 2,
+        "lobe_depth": 0.161,
+        "curl": 0.65,
+        "droop": 0.351,
+        "leaf_asymmetry": 0.135,
+        "tree_leaf_cards": false,
+        "foliage_fullness": 1.5,
+        "branching_depth": 1,
+        "foliage": 1.35
+      },
+      "seed": 103702,
+      "keep_leaves": false,
+      "note": "Seeded replacement leaf morphology; awaiting owner review."
+    },
+    "M20": {
+      "settings": {
+        "leaf_architecture": 2,
+        "leaf_width": 0.956,
+        "leaf_scale": 1.036,
+        "tip_taper": 0.609,
+        "leaf_lobes": 4,
+        "lobe_depth": 0.434,
+        "curl": 0.628,
+        "droop": 0.366,
+        "leaf_asymmetry": 0.419,
+        "tree_leaf_cards": false,
+        "foliage_fullness": 1.5,
+        "branching_depth": 1,
+        "foliage": 1.35
+      },
+      "seed": 104003,
+      "keep_leaves": false,
+      "note": "Seeded replacement leaf morphology; awaiting owner review."
+    },
+    "H10": {
+      "settings": {
+        "leaf_architecture": 2,
+        "leaf_width": 0.946,
+        "leaf_scale": 1.6,
+        "tip_taper": 1.079,
+        "leaf_lobes": 2,
+        "lobe_depth": 0.564,
+        "curl": 0.487,
+        "droop": 0.222,
+        "leaf_asymmetry": 0.204,
+        "tree_leaf_cards": false,
+        "foliage_fullness": 1.5,
+        "branching_depth": 0,
+        "branches": 9,
+        "foliage": 1.4,
+        "plant_recursive_depth": 0
+      },
+      "seed": 104304,
+      "keep_leaves": false,
+      "note": "Seeded replacement leaf morphology; awaiting owner review."
+    },
+    "H11": {
+      "settings": {
+        "leaf_architecture": 1,
+        "leaf_width": 0.912,
+        "leaf_scale": 1.6,
+        "tip_taper": 1.57,
+        "leaf_lobes": 3,
+        "lobe_depth": 0.588,
+        "curl": 0.239,
+        "droop": 0.284,
+        "leaf_asymmetry": 0.398,
+        "tree_leaf_cards": false,
+        "foliage_fullness": 1.5,
+        "branching_depth": 0,
+        "branches": 9,
+        "foliage": 1.4,
+        "plant_recursive_depth": 0
+      },
+      "seed": 104605,
+      "keep_leaves": false,
+      "note": "Seeded replacement leaf morphology; awaiting owner review."
+    },
+    "H12": {
+      "settings": {
+        "leaf_architecture": 2,
+        "leaf_width": 0.911,
+        "leaf_scale": 0.946,
+        "tip_taper": 1.215,
+        "leaf_lobes": 1,
+        "lobe_depth": 0.562,
+        "curl": 0.351,
+        "droop": 0.154,
+        "leaf_asymmetry": 0.429,
+        "tree_leaf_cards": false,
+        "foliage_fullness": 1.5,
+        "branching_depth": 1,
+        "foliage": 1.35
+      },
+      "seed": 104906,
+      "keep_leaves": false,
+      "note": "Seeded replacement leaf morphology; awaiting owner review."
+    },
+    "H33": {
+      "settings": {
+        "leaf_architecture": 2,
+        "leaf_width": 1.107,
+        "leaf_scale": 1.15,
+        "tip_taper": 1.681,
+        "leaf_lobes": 2,
+        "lobe_depth": 0.613,
+        "curl": 0.388,
+        "droop": 0.263,
+        "leaf_asymmetry": 0.408,
+        "tree_leaf_cards": false,
+        "foliage_fullness": 1.5,
+        "branching_depth": 0,
+        "foliage_variation": 4
+      },
+      "seed": 105207,
+      "keep_leaves": false,
+      "note": "Seeded replacement leaf morphology; awaiting owner review."
+    },
+    "S04": {
+      "settings": {
+        "leaf_architecture": 1,
+        "leaf_width": 1.65,
+        "leaf_scale": 1.9,
+        "tip_taper": 0.718,
+        "leaf_lobes": 3,
+        "lobe_depth": 0.115,
+        "curl": 0.409,
+        "droop": 0.263,
+        "leaf_asymmetry": 0.413,
+        "tree_leaf_cards": false,
+        "foliage_fullness": 1.5,
+        "branching_depth": 0,
+        "foliage_variation": 4,
+        "height_ratio": 0.3,
+        "organ_height": 0.7
+      },
+      "seed": 105508,
+      "keep_leaves": false,
+      "note": "Seeded replacement leaf morphology; awaiting owner review."
+    },
+    "S07": {
+      "settings": {
+        "branches": 6,
+        "node_count": 7,
+        "tree_fork_depth": 2,
+        "tree_fork_spread": 0.58,
+        "stem_thickness": 1.45,
+        "trunk_curve": 0.095,
+        "trunk_lean": 0.14,
+        "branch_reach": 1.05,
+        "branch_curve": 0.1,
+        "branch_rise_degrees": 43.0,
+        "spread_ratio": 1.2,
+        "root_reach": 0.7,
+        "crown_habit": 2,
+        "branch_irregularity": 0.3
+      },
+      "seed": 0,
+      "keep_leaves": true,
+      "note": "Preserve leaf shape, color and material; rebuild supporting body."
+    },
+    "S10": {
+      "settings": {
+        "leaf_architecture": 3,
+        "leaf_width": 1.473,
+        "leaf_scale": 1.6,
+        "tip_taper": 0.618,
+        "leaf_lobes": 3,
+        "lobe_depth": 0.608,
+        "curl": 0.214,
+        "droop": 0.314,
+        "leaf_asymmetry": 0.369,
+        "tree_leaf_cards": false,
+        "foliage_fullness": 1.5,
+        "branching_depth": 0,
+        "branches": 9,
+        "foliage": 1.4,
+        "plant_recursive_depth": 0
+      },
+      "seed": 106110,
+      "keep_leaves": false,
+      "note": "Seeded replacement leaf morphology; awaiting owner review."
+    },
+    "S18": {
+      "settings": {
+        "leaf_architecture": 2,
+        "leaf_width": 1.494,
+        "leaf_scale": 0.952,
+        "tip_taper": 0.498,
+        "leaf_lobes": 3,
+        "lobe_depth": 0.612,
+        "curl": 0.306,
+        "droop": 0.264,
+        "leaf_asymmetry": 0.121,
+        "tree_leaf_cards": false,
+        "foliage_fullness": 1.5,
+        "branching_depth": 1,
+        "foliage": 1.35
+      },
+      "seed": 106411,
+      "keep_leaves": false,
+      "note": "Seeded replacement leaf morphology; awaiting owner review."
+    },
+    "S19": {
+      "settings": {
+        "leaf_architecture": 2,
+        "leaf_width": 1.231,
+        "leaf_scale": 0.869,
+        "tip_taper": 0.9,
+        "leaf_lobes": 5,
+        "lobe_depth": 0.251,
+        "curl": 0.527,
+        "droop": 0.311,
+        "leaf_asymmetry": 0.426,
+        "tree_leaf_cards": false,
+        "foliage_fullness": 1.5,
+        "branching_depth": 1,
+        "foliage": 1.35
+      },
+      "seed": 106712,
+      "keep_leaves": false,
+      "note": "Seeded replacement leaf morphology; awaiting owner review."
+    },
+    "S33": {
+      "settings": {
+        "leaf_architecture": 2,
+        "leaf_width": 1.65,
+        "leaf_scale": 1.9,
+        "tip_taper": 0.656,
+        "leaf_lobes": 1,
+        "lobe_depth": 0.384,
+        "curl": 0.582,
+        "droop": 0.223,
+        "leaf_asymmetry": 0.228,
+        "tree_leaf_cards": false,
+        "foliage_fullness": 1.5,
+        "branching_depth": 0,
+        "foliage_variation": 4,
+        "height_ratio": 0.3,
+        "organ_height": 0.7
+      },
+      "seed": 107013,
+      "keep_leaves": false,
+      "note": "Seeded replacement leaf morphology; awaiting owner review."
+    },
+    "S34": {
+      "settings": {
+        "leaf_architecture": 2,
+        "leaf_width": 1.65,
+        "leaf_scale": 1.9,
+        "tip_taper": 1.61,
+        "leaf_lobes": 5,
+        "lobe_depth": 0.388,
+        "curl": 0.653,
+        "droop": 0.284,
+        "leaf_asymmetry": 0.164,
+        "tree_leaf_cards": false,
+        "foliage_fullness": 1.5,
+        "branching_depth": 0,
+        "foliage_variation": 4,
+        "height_ratio": 0.3,
+        "organ_height": 0.7
+      },
+      "seed": 107314,
+      "keep_leaves": false,
+      "note": "Seeded replacement leaf morphology; awaiting owner review."
+    }
+  },
+  "roster": [
+    {
+      "biome": "Meadow",
+      "code": "M01",
+      "group": "Named catalog",
+      "height": 0.263913154602051,
+      "name": "Open fan",
+      "plant_id": "official_meadow_open_fan",
+      "status": "Catalog / emanator",
+      "views": [
+        "M01-0.png",
+        "M01-1.png"
+      ],
+      "width": 0.800000011920929,
+      "pair": "M01-pair.jpg"
+    },
+    {
+      "biome": "Meadow",
+      "code": "M02",
+      "group": "Named catalog",
+      "height": 0.388169288635254,
+      "name": "Low rosette",
+      "plant_id": "official_meadow_low_rosette",
+      "status": "Catalog / emanator",
+      "views": [
+        "M02-0.png",
+        "M02-1.png"
+      ],
+      "width": 0.799999952316284,
+      "pair": "M02-pair.jpg"
+    },
+    {
+      "biome": "Meadow",
+      "code": "M03",
+      "group": "Named catalog",
+      "height": 0.388943433761597,
+      "name": "Cupped leaves",
+      "plant_id": "official_meadow_cupped_leaves",
+      "status": "Catalog / emanator",
+      "views": [
+        "M03-0.png",
+        "M03-1.png"
+      ],
+      "width": 0.799999952316284,
+      "pair": "M03-pair.jpg"
+    },
+    {
+      "biome": "Meadow",
+      "code": "M04",
+      "group": "Named catalog",
+      "height": 0.260759055614471,
+      "name": "Branching spray",
+      "plant_id": "official_meadow_branching_spray",
+      "status": "Catalog / emanator",
+      "views": [
+        "M04-0.png",
+        "M04-1.png"
+      ],
+      "width": 0.800000011920929,
+      "pair": "M04-pair.jpg"
+    },
+    {
+      "biome": "Meadow",
+      "code": "M05",
+      "group": "Named catalog",
+      "height": 0.449999988079071,
+      "name": "Folded cluster",
+      "plant_id": "official_meadow_folded_cluster",
+      "status": "Catalog / emanator",
+      "views": [
+        "M05-0.png",
+        "M05-1.png"
+      ],
+      "width": 0.694699048995972,
+      "pair": "M05-pair.jpg"
+    },
+    {
+      "biome": "Meadow",
+      "code": "M06",
+      "group": "Named catalog",
+      "height": 0.334962278604507,
+      "name": "Golden ground fans",
+      "plant_id": "official_meadow_golden_ground_fans",
+      "status": "Catalog / emanator",
+      "views": [
+        "M06-0.png",
+        "M06-1.png"
+      ],
+      "width": 1.33732414245605,
+      "pair": "M06-pair.jpg"
+    },
+    {
+      "biome": "Meadow",
+      "code": "M07",
+      "group": "Named catalog",
+      "height": 5.07156848907471,
+      "name": "Crimson umbrella",
+      "plant_id": "official_meadow_crimson_umbrella",
+      "status": "Catalog / reservoir",
+      "views": [
+        "M07-0.png",
+        "M07-1.png"
+      ],
+      "width": 4.91365385055542,
+      "pair": "M07-pair.jpg"
+    },
+    {
+      "biome": "Meadow",
+      "code": "M08",
+      "group": "Named catalog",
+      "height": 1.09863924980164,
+      "name": "Amber spiral bowl",
+      "plant_id": "meadow_amber_spiral_bowl",
+      "status": "Catalog / receiver / study only",
+      "views": [
+        "M08-0.png",
+        "M08-1.png"
+      ],
+      "width": 1.88760197162628,
+      "pair": "M08-pair.jpg"
+    },
+    {
+      "biome": "Meadow",
+      "code": "M09",
+      "group": "Named catalog",
+      "height": 1.63897848129272,
+      "name": "Indigo shield fan",
+      "plant_id": "official_meadow_indigo_shield_fan",
+      "status": "Catalog / receiver / warden",
+      "views": [
+        "M09-0.png",
+        "M09-1.png"
+      ],
+      "width": 3.62281560897827,
+      "pair": "M09-pair.jpg"
+    },
+    {
+      "biome": "Meadow",
+      "code": "M10",
+      "group": "Named catalog",
+      "height": 1.39099764823914,
+      "name": "Ivory candelabra",
+      "plant_id": "official_meadow_ivory_candelabra",
+      "status": "Catalog / receiver / mender",
+      "views": [
+        "M10-0.png",
+        "M10-1.png"
+      ],
+      "width": 2.93883085250854,
+      "pair": "M10-pair.jpg"
+    },
+    {
+      "biome": "Meadow",
+      "code": "M11",
+      "group": "Named catalog",
+      "height": 2.23568749427795,
+      "name": "Turquoise coil",
+      "plant_id": "official_meadow_turquoise_coil",
+      "status": "Catalog / receiver / regulator",
+      "views": [
+        "M11-0.png",
+        "M11-1.png"
+      ],
+      "width": 2.64846134185791,
+      "pair": "M11-pair.jpg"
+    },
+    {
+      "biome": "Meadow",
+      "code": "M12",
+      "group": "Named catalog",
+      "height": 7.97618961334229,
+      "name": "New plant",
+      "plant_id": "official_meadow_new_plant",
+      "status": "Catalog / reservoir",
+      "views": [
+        "M12-0.png",
+        "M12-1.png"
+      ],
+      "width": 7.74075984954834,
+      "pair": "M12-pair.jpg"
+    },
+    {
+      "biome": "Meadow",
+      "code": "M13",
+      "group": "Trees and specialists",
+      "height": 1.79364740848541,
+      "name": "Tree 1 / small",
+      "plant_id": "procedural_0_1_0",
+      "status": "Procedural reservoir / crown family 1",
+      "views": [
+        "M13-0.png",
+        "M13-1.png"
+      ],
+      "width": 1.78255140781403,
+      "pair": "M13-pair.jpg"
+    },
+    {
+      "biome": "Meadow",
+      "code": "M14",
+      "group": "Trees and specialists",
+      "height": 6.36817312240601,
+      "name": "Tree 2 / medium",
+      "plant_id": "procedural_0_1_1",
+      "status": "Procedural reservoir / crown family 1",
+      "views": [
+        "M14-0.png",
+        "M14-1.png"
+      ],
+      "width": 6.42684555053711,
+      "pair": "M14-pair.jpg"
+    },
+    {
+      "biome": "Meadow",
+      "code": "M15",
+      "group": "Trees and specialists",
+      "height": 10.8094520568848,
+      "name": "Tree 3 / large",
+      "plant_id": "procedural_0_1_2",
+      "status": "Procedural reservoir / crown family 1",
+      "views": [
+        "M15-0.png",
+        "M15-1.png"
+      ],
+      "width": 7.54695320129395,
+      "pair": "M15-pair.jpg"
+    },
+    {
+      "biome": "Meadow",
+      "code": "M16",
+      "group": "Trees and specialists",
+      "height": 2.28681302070618,
+      "name": "Tree 4 / small",
+      "plant_id": "procedural_0_1_3",
+      "status": "Procedural reservoir / crown family 2",
+      "views": [
+        "M16-0.png",
+        "M16-1.png"
+      ],
+      "width": 1.78967928886414,
+      "pair": "M16-pair.jpg"
+    },
+    {
+      "biome": "Meadow",
+      "code": "M17",
+      "group": "Trees and specialists",
+      "height": 6.28910970687866,
+      "name": "Tree 5 / medium",
+      "plant_id": "procedural_0_1_4",
+      "status": "Procedural reservoir / crown family 2",
+      "views": [
+        "M17-0.png",
+        "M17-1.png"
+      ],
+      "width": 4.76834392547607,
+      "pair": "M17-pair.jpg"
+    },
+    {
+      "biome": "Meadow",
+      "code": "M18",
+      "group": "Trees and specialists",
+      "height": 10.8908405303955,
+      "name": "Tree 6 / large",
+      "plant_id": "procedural_0_1_5",
+      "status": "Procedural reservoir / crown family 2",
+      "views": [
+        "M18-0.png",
+        "M18-1.png"
+      ],
+      "width": 6.93497657775879,
+      "pair": "M18-pair.jpg"
+    },
+    {
+      "biome": "Meadow",
+      "code": "M19",
+      "group": "Trees and specialists",
+      "height": 2.28407287597656,
+      "name": "Tree 7 / small",
+      "plant_id": "procedural_0_1_6",
+      "status": "Procedural reservoir / crown family 3",
+      "views": [
+        "M19-0.png",
+        "M19-1.png"
+      ],
+      "width": 2.25946545600891,
+      "pair": "M19-pair.jpg"
+    },
+    {
+      "biome": "Meadow",
+      "code": "M20",
+      "group": "Trees and specialists",
+      "height": 7.95368719100952,
+      "name": "Tree 8 / medium",
+      "plant_id": "procedural_0_1_7",
+      "status": "Procedural reservoir / crown family 3",
+      "views": [
+        "M20-0.png",
+        "M20-1.png"
+      ],
+      "width": 7.87152099609375,
+      "pair": "M20-pair.jpg"
+    },
+    {
+      "biome": "Meadow",
+      "code": "M21",
+      "group": "Trees and specialists",
+      "height": 14.1040887832642,
+      "name": "Tree 9 / large",
+      "plant_id": "procedural_0_1_8",
+      "status": "Procedural reservoir / crown family 3",
+      "views": [
+        "M21-0.png",
+        "M21-1.png"
+      ],
+      "width": 14.3623838424683,
+      "pair": "M21-pair.jpg"
+    },
+    {
+      "biome": "Meadow",
+      "code": "M22",
+      "group": "Trees and specialists",
+      "height": 0.0749575197696686,
+      "name": "Warden 1",
+      "plant_id": "procedural_0_3_0",
+      "status": "Procedural specialist / small",
+      "views": [
+        "M22-0.png",
+        "M22-1.png"
+      ],
+      "width": 0.182191908359528,
+      "pair": "M22-pair.jpg"
+    },
+    {
+      "biome": "Meadow",
+      "code": "M23",
+      "group": "Trees and specialists",
+      "height": 0.341579914093018,
+      "name": "Warden 2",
+      "plant_id": "procedural_0_3_1",
+      "status": "Procedural specialist / medium",
+      "views": [
+        "M23-0.png",
+        "M23-1.png"
+      ],
+      "width": 0.660000026226044,
+      "pair": "M23-pair.jpg"
+    },
+    {
+      "biome": "Meadow",
+      "code": "M24",
+      "group": "Trees and specialists",
+      "height": 0.930614590644836,
+      "name": "Warden 3",
+      "plant_id": "procedural_0_3_2",
+      "status": "Procedural specialist / large",
+      "views": [
+        "M24-0.png",
+        "M24-1.png"
+      ],
+      "width": 1.4300000667572,
+      "pair": "M24-pair.jpg"
+    },
+    {
+      "biome": "Meadow",
+      "code": "M25",
+      "group": "Trees and specialists",
+      "height": 0.0692605748772621,
+      "name": "Mender 1",
+      "plant_id": "procedural_0_4_0",
+      "status": "Procedural specialist / small",
+      "views": [
+        "M25-0.png",
+        "M25-1.png"
+      ],
+      "width": 0.0871007889509201,
+      "pair": "M25-pair.jpg"
+    },
+    {
+      "biome": "Meadow",
+      "code": "M26",
+      "group": "Trees and specialists",
+      "height": 0.372656852006912,
+      "name": "Mender 2",
+      "plant_id": "procedural_0_4_1",
+      "status": "Procedural specialist / medium",
+      "views": [
+        "M26-0.png",
+        "M26-1.png"
+      ],
+      "width": 0.433468580245972,
+      "pair": "M26-pair.jpg"
+    },
+    {
+      "biome": "Meadow",
+      "code": "M27",
+      "group": "Trees and specialists",
+      "height": 1.46366393566132,
+      "name": "Mender 3",
+      "plant_id": "procedural_0_4_2",
+      "status": "Procedural specialist / large",
+      "views": [
+        "M27-0.png",
+        "M27-1.png"
+      ],
+      "width": 1.4300000667572,
+      "pair": "M27-pair.jpg"
+    },
+    {
+      "biome": "Meadow",
+      "code": "M28",
+      "group": "Trees and specialists",
+      "height": 0.0701625272631645,
+      "name": "Regulator 1",
+      "plant_id": "procedural_0_5_0",
+      "status": "Procedural specialist / small",
+      "views": [
+        "M28-0.png",
+        "M28-1.png"
+      ],
+      "width": 0.0525671616196632,
+      "pair": "M28-pair.jpg"
+    },
+    {
+      "biome": "Meadow",
+      "code": "M29",
+      "group": "Trees and specialists",
+      "height": 0.426807880401611,
+      "name": "Regulator 2",
+      "plant_id": "procedural_0_5_1",
+      "status": "Procedural specialist / medium",
+      "views": [
+        "M29-0.png",
+        "M29-1.png"
+      ],
+      "width": 0.659999966621399,
+      "pair": "M29-pair.jpg"
+    },
+    {
+      "biome": "Meadow",
+      "code": "M30",
+      "group": "Trees and specialists",
+      "height": 0.893639028072357,
+      "name": "Regulator 3",
+      "plant_id": "procedural_0_5_2",
+      "status": "Procedural specialist / large",
+      "views": [
+        "M30-0.png",
+        "M30-1.png"
+      ],
+      "width": 1.42999994754791,
+      "pair": "M30-pair.jpg"
+    },
+    {
+      "biome": "Meadow",
+      "code": "M31",
+      "group": "Foliage and leaf grass",
+      "height": 0.188076660037041,
+      "name": "Foliage 1",
+      "plant_id": "foliage_0_0_emanator",
+      "status": "Open fan / emanator",
+      "views": [
+        "M31-0.png",
+        "M31-1.png"
+      ],
+      "width": 0.799999952316284,
+      "pair": "M31-pair.jpg"
+    },
+    {
+      "biome": "Meadow",
+      "code": "M32",
+      "group": "Foliage and leaf grass",
+      "height": 0.338376224040985,
+      "name": "Foliage 2",
+      "plant_id": "foliage_0_1_emanator",
+      "status": "Low rosette / emanator",
+      "views": [
+        "M32-0.png",
+        "M32-1.png"
+      ],
+      "width": 0.799999952316284,
+      "pair": "M32-pair.jpg"
+    },
+    {
+      "biome": "Meadow",
+      "code": "M33",
+      "group": "Foliage and leaf grass",
+      "height": 0.38653951883316,
+      "name": "Foliage 3",
+      "plant_id": "foliage_0_2_emanator",
+      "status": "Cupped leaves / emanator",
+      "views": [
+        "M33-0.png",
+        "M33-1.png"
+      ],
+      "width": 0.800000071525574,
+      "pair": "M33-pair.jpg"
+    },
+    {
+      "biome": "Meadow",
+      "code": "M34",
+      "group": "Foliage and leaf grass",
+      "height": 0.21965229511261,
+      "name": "Foliage 4",
+      "plant_id": "foliage_0_3_emanator",
+      "status": "Branching spray / emanator",
+      "views": [
+        "M34-0.png",
+        "M34-1.png"
+      ],
+      "width": 0.799999952316284,
+      "pair": "M34-pair.jpg"
+    },
+    {
+      "biome": "Meadow",
+      "code": "M35",
+      "group": "Foliage and leaf grass",
+      "height": 0.439992904663086,
+      "name": "Foliage 5",
+      "plant_id": "foliage_0_4_emanator",
+      "status": "Folded cluster / emanator",
+      "views": [
+        "M35-0.png",
+        "M35-1.png"
+      ],
+      "width": 0.800000011920929,
+      "pair": "M35-pair.jpg"
+    },
+    {
+      "biome": "Meadow",
+      "code": "M36",
+      "group": "Foliage and leaf grass",
+      "height": 0.299999982118607,
+      "name": "Leaf grass 1",
+      "plant_id": "foliage_0_0_emanator_cover",
+      "status": "Leaf grass / emanator",
+      "views": [
+        "M36-0.png",
+        "M36-1.png"
+      ],
+      "width": 0.223474279046059,
+      "pair": "M36-pair.jpg"
+    },
+    {
+      "biome": "Meadow",
+      "code": "M37",
+      "group": "Foliage and leaf grass",
+      "height": 0.299999982118607,
+      "name": "Leaf grass 2",
+      "plant_id": "foliage_0_1_emanator_cover",
+      "status": "Leaf grass / emanator",
+      "views": [
+        "M37-0.png",
+        "M37-1.png"
+      ],
+      "width": 0.320877522230148,
+      "pair": "M37-pair.jpg"
+    },
+    {
+      "biome": "Meadow",
+      "code": "M38",
+      "group": "Foliage and leaf grass",
+      "height": 0.299999982118607,
+      "name": "Leaf grass 3",
+      "plant_id": "foliage_0_2_emanator_cover",
+      "status": "Leaf grass / emanator",
+      "views": [
+        "M38-0.png",
+        "M38-1.png"
+      ],
+      "width": 0.322831749916077,
+      "pair": "M38-pair.jpg"
+    },
+    {
+      "biome": "Meadow",
+      "code": "M39",
+      "group": "Foliage and leaf grass",
+      "height": 0.300000011920929,
+      "name": "Leaf grass 4",
+      "plant_id": "foliage_0_3_emanator_cover",
+      "status": "Leaf grass / emanator",
+      "views": [
+        "M39-0.png",
+        "M39-1.png"
+      ],
+      "width": 0.231413885951042,
+      "pair": "M39-pair.jpg"
+    },
+    {
+      "biome": "Meadow",
+      "code": "M40",
+      "group": "Foliage and leaf grass",
+      "height": 0.299999982118607,
+      "name": "Leaf grass 5",
+      "plant_id": "foliage_0_4_emanator_cover",
+      "status": "Leaf grass / emanator",
+      "views": [
+        "M40-0.png",
+        "M40-1.png"
+      ],
+      "width": 0.298770606517792,
+      "pair": "M40-pair.jpg"
+    },
+    {
+      "biome": "Meadow",
+      "code": "M41",
+      "group": "Named catalog",
+      "height": 4.65172672271729,
+      "name": "Saved / New plant",
+      "plant_id": "new_plant_311335385",
+      "status": "Authored library / reservoir",
+      "views": [
+        "M41-0.png",
+        "M41-1.png"
+      ],
+      "width": 10.9992294311523,
+      "pair": "M41-pair.jpg"
+    },
+    {
+      "biome": "Woodland",
+      "code": "W01",
+      "group": "Named catalog",
+      "height": 0.260808527469635,
+      "name": "Divided frond",
+      "plant_id": "official_woodland_divided_frond",
+      "status": "Catalog / emanator",
+      "views": [
+        "W01-0.png",
+        "W01-1.png"
+      ],
+      "width": 0.899999976158142,
+      "pair": "W01-pair.jpg"
+    },
+    {
+      "biome": "Woodland",
+      "code": "W02",
+      "group": "Named catalog",
+      "height": 0.483004540205002,
+      "name": "Layered leaves",
+      "plant_id": "official_woodland_layered_leaves",
+      "status": "Catalog / emanator",
+      "views": [
+        "W02-0.png",
+        "W02-1.png"
+      ],
+      "width": 0.900000035762787,
+      "pair": "W02-pair.jpg"
+    },
+    {
+      "biome": "Woodland",
+      "code": "W03",
+      "group": "Named catalog",
+      "height": 0.502377808094025,
+      "name": "Hanging folds",
+      "plant_id": "official_woodland_hanging_folds",
+      "status": "Catalog / emanator",
+      "views": [
+        "W03-0.png",
+        "W03-1.png"
+      ],
+      "width": 0.900000035762787,
+      "pair": "W03-pair.jpg"
+    },
+    {
+      "biome": "Woodland",
+      "code": "W04",
+      "group": "Named catalog",
+      "height": 0.319850832223892,
+      "name": "Arching stems",
+      "plant_id": "official_woodland_arching_stems",
+      "status": "Catalog / emanator",
+      "views": [
+        "W04-0.png",
+        "W04-1.png"
+      ],
+      "width": 0.899999976158142,
+      "pair": "W04-pair.jpg"
+    },
+    {
+      "biome": "Woodland",
+      "code": "W05",
+      "group": "Named catalog",
+      "height": 0.699999928474426,
+      "name": "Broad shade leaves",
+      "plant_id": "official_woodland_broad_shade_leaves",
+      "status": "Catalog / emanator",
+      "views": [
+        "W05-0.png",
+        "W05-1.png"
+      ],
+      "width": 0.888319969177246,
+      "pair": "W05-pair.jpg"
+    },
+    {
+      "biome": "Woodland",
+      "code": "W06",
+      "group": "Named catalog",
+      "height": 0.618621230125427,
+      "name": "Silver runners",
+      "plant_id": "official_woodland_silver_runners",
+      "status": "Catalog / emanator",
+      "views": [
+        "W06-0.png",
+        "W06-1.png"
+      ],
+      "width": 3.59802007675171,
+      "pair": "W06-pair.jpg"
+    },
+    {
+      "biome": "Woodland",
+      "code": "W07",
+      "group": "Named catalog",
+      "height": 6.21501159667969,
+      "name": "Blue twin arch",
+      "plant_id": "official_woodland_blue_twin_arch",
+      "status": "Catalog / reservoir",
+      "views": [
+        "W07-0.png",
+        "W07-1.png"
+      ],
+      "width": 4.46602630615234,
+      "pair": "W07-pair.jpg"
+    },
+    {
+      "biome": "Woodland",
+      "code": "W08",
+      "group": "Named catalog",
+      "height": 1.65819847583771,
+      "name": "Wine pendants",
+      "plant_id": "woodland_wine_pendants",
+      "status": "Catalog / receiver / study only",
+      "views": [
+        "W08-0.png",
+        "W08-1.png"
+      ],
+      "width": 2.36664748191834,
+      "pair": "W08-pair.jpg"
+    },
+    {
+      "biome": "Woodland",
+      "code": "W09",
+      "group": "Named catalog",
+      "height": 1.16374182701111,
+      "name": "Bronze rib dome",
+      "plant_id": "official_woodland_bronze_rib_dome",
+      "status": "Catalog / receiver / warden",
+      "views": [
+        "W09-0.png",
+        "W09-1.png"
+      ],
+      "width": 3.2685923576355,
+      "pair": "W09-pair.jpg"
+    },
+    {
+      "biome": "Woodland",
+      "code": "W10",
+      "group": "Named catalog",
+      "height": 1.71083641052246,
+      "name": "Lavender hanging bells",
+      "plant_id": "official_woodland_lavender_hanging_bells",
+      "status": "Catalog / receiver / mender",
+      "views": [
+        "W10-0.png",
+        "W10-1.png"
+      ],
+      "width": 2.37547969818115,
+      "pair": "W10-pair.jpg"
+    },
+    {
+      "biome": "Woodland",
+      "code": "W11",
+      "group": "Named catalog",
+      "height": 2.49452638626099,
+      "name": "Jade tiers",
+      "plant_id": "official_woodland_jade_tiers",
+      "status": "Catalog / receiver / regulator",
+      "views": [
+        "W11-0.png",
+        "W11-1.png"
+      ],
+      "width": 2.34371542930603,
+      "pair": "W11-pair.jpg"
+    },
+    {
+      "biome": "Woodland",
+      "code": "W12",
+      "group": "Trees and specialists",
+      "height": 2.20586490631104,
+      "name": "Tree 1 / small",
+      "plant_id": "procedural_1_1_0",
+      "status": "Procedural reservoir / crown family 1",
+      "views": [
+        "W12-0.png",
+        "W12-1.png"
+      ],
+      "width": 1.55562138557434,
+      "pair": "W12-pair.jpg"
+    },
+    {
+      "biome": "Woodland",
+      "code": "W13",
+      "group": "Trees and specialists",
+      "height": 7.92221546173096,
+      "name": "Tree 2 / medium",
+      "plant_id": "procedural_1_1_1",
+      "status": "Procedural reservoir / crown family 1",
+      "views": [
+        "W13-0.png",
+        "W13-1.png"
+      ],
+      "width": 4.85574531555176,
+      "pair": "W13-pair.jpg"
+    },
+    {
+      "biome": "Woodland",
+      "code": "W14",
+      "group": "Trees and specialists",
+      "height": 15.1371574401855,
+      "name": "Tree 3 / large",
+      "plant_id": "procedural_1_1_2",
+      "status": "Procedural reservoir / crown family 1",
+      "views": [
+        "W14-0.png",
+        "W14-1.png"
+      ],
+      "width": 9.22655391693115,
+      "pair": "W14-pair.jpg"
+    },
+    {
+      "biome": "Woodland",
+      "code": "W15",
+      "group": "Trees and specialists",
+      "height": 1.63811802864075,
+      "name": "Tree 4 / small",
+      "plant_id": "procedural_1_1_3",
+      "status": "Procedural reservoir / crown family 2",
+      "views": [
+        "W15-0.png",
+        "W15-1.png"
+      ],
+      "width": 1.20923292636871,
+      "pair": "W15-pair.jpg"
+    },
+    {
+      "biome": "Woodland",
+      "code": "W16",
+      "group": "Trees and specialists",
+      "height": 6.29821920394897,
+      "name": "Tree 5 / medium",
+      "plant_id": "procedural_1_1_4",
+      "status": "Procedural reservoir / crown family 2",
+      "views": [
+        "W16-0.png",
+        "W16-1.png"
+      ],
+      "width": 4.1325511932373,
+      "pair": "W16-pair.jpg"
+    },
+    {
+      "biome": "Woodland",
+      "code": "W17",
+      "group": "Trees and specialists",
+      "height": 11.4223804473877,
+      "name": "Tree 6 / large",
+      "plant_id": "procedural_1_1_5",
+      "status": "Procedural reservoir / crown family 2",
+      "views": [
+        "W17-0.png",
+        "W17-1.png"
+      ],
+      "width": 5.82047176361084,
+      "pair": "W17-pair.jpg"
+    },
+    {
+      "biome": "Woodland",
+      "code": "W18",
+      "group": "Trees and specialists",
+      "height": 1.75097846984863,
+      "name": "Tree 7 / small",
+      "plant_id": "procedural_1_1_6",
+      "status": "Procedural reservoir / crown family 3",
+      "views": [
+        "W18-0.png",
+        "W18-1.png"
+      ],
+      "width": 1.4487030506134,
+      "pair": "W18-pair.jpg"
+    },
+    {
+      "biome": "Woodland",
+      "code": "W19",
+      "group": "Trees and specialists",
+      "height": 5.1741828918457,
+      "name": "Tree 8 / medium",
+      "plant_id": "procedural_1_1_7",
+      "status": "Procedural reservoir / crown family 3",
+      "views": [
+        "W19-0.png",
+        "W19-1.png"
+      ],
+      "width": 4.65020895004272,
+      "pair": "W19-pair.jpg"
+    },
+    {
+      "biome": "Woodland",
+      "code": "W20",
+      "group": "Trees and specialists",
+      "height": 16.2527503967285,
+      "name": "Tree 9 / large",
+      "plant_id": "procedural_1_1_8",
+      "status": "Procedural reservoir / crown family 3",
+      "views": [
+        "W20-0.png",
+        "W20-1.png"
+      ],
+      "width": 11.2452869415283,
+      "pair": "W20-pair.jpg"
+    },
+    {
+      "biome": "Woodland",
+      "code": "W21",
+      "group": "Trees and specialists",
+      "height": 0.0575066357851028,
+      "name": "Warden 1",
+      "plant_id": "procedural_1_3_0",
+      "status": "Procedural specialist / small",
+      "views": [
+        "W21-0.png",
+        "W21-1.png"
+      ],
+      "width": 0.143438130617142,
+      "pair": "W21-pair.jpg"
+    },
+    {
+      "biome": "Woodland",
+      "code": "W22",
+      "group": "Trees and specialists",
+      "height": 0.27419576048851,
+      "name": "Warden 2",
+      "plant_id": "procedural_1_3_1",
+      "status": "Procedural specialist / medium",
+      "views": [
+        "W22-0.png",
+        "W22-1.png"
+      ],
+      "width": 0.659999966621399,
+      "pair": "W22-pair.jpg"
+    },
+    {
+      "biome": "Woodland",
+      "code": "W23",
+      "group": "Trees and specialists",
+      "height": 0.891731083393097,
+      "name": "Warden 3",
+      "plant_id": "procedural_1_3_2",
+      "status": "Procedural specialist / large",
+      "views": [
+        "W23-0.png",
+        "W23-1.png"
+      ],
+      "width": 1.4300000667572,
+      "pair": "W23-pair.jpg"
+    },
+    {
+      "biome": "Woodland",
+      "code": "W24",
+      "group": "Trees and specialists",
+      "height": 0.0624570734798908,
+      "name": "Mender 1",
+      "plant_id": "procedural_1_4_0",
+      "status": "Procedural specialist / small",
+      "views": [
+        "W24-0.png",
+        "W24-1.png"
+      ],
+      "width": 0.0406647622585297,
+      "pair": "W24-pair.jpg"
+    },
+    {
+      "biome": "Woodland",
+      "code": "W25",
+      "group": "Trees and specialists",
+      "height": 0.568451225757599,
+      "name": "Mender 2",
+      "plant_id": "procedural_1_4_1",
+      "status": "Procedural specialist / medium",
+      "views": [
+        "W25-0.png",
+        "W25-1.png"
+      ],
+      "width": 0.463648170232773,
+      "pair": "W25-pair.jpg"
+    },
+    {
+      "biome": "Woodland",
+      "code": "W26",
+      "group": "Trees and specialists",
+      "height": 1.07360625267029,
+      "name": "Mender 3",
+      "plant_id": "procedural_1_4_2",
+      "status": "Procedural specialist / large",
+      "views": [
+        "W26-0.png",
+        "W26-1.png"
+      ],
+      "width": 1.00160467624664,
+      "pair": "W26-pair.jpg"
+    },
+    {
+      "biome": "Woodland",
+      "code": "W27",
+      "group": "Trees and specialists",
+      "height": 0.064779058098793,
+      "name": "Regulator 1",
+      "plant_id": "procedural_1_5_0",
+      "status": "Procedural specialist / small",
+      "views": [
+        "W27-0.png",
+        "W27-1.png"
+      ],
+      "width": 0.0719403624534607,
+      "pair": "W27-pair.jpg"
+    },
+    {
+      "biome": "Woodland",
+      "code": "W28",
+      "group": "Trees and specialists",
+      "height": 0.453011959791183,
+      "name": "Regulator 2",
+      "plant_id": "procedural_1_5_1",
+      "status": "Procedural specialist / medium",
+      "views": [
+        "W28-0.png",
+        "W28-1.png"
+      ],
+      "width": 0.316508412361145,
+      "pair": "W28-pair.jpg"
+    },
+    {
+      "biome": "Woodland",
+      "code": "W29",
+      "group": "Trees and specialists",
+      "height": 1.05441665649414,
+      "name": "Regulator 3",
+      "plant_id": "procedural_1_5_2",
+      "status": "Procedural specialist / large",
+      "views": [
+        "W29-0.png",
+        "W29-1.png"
+      ],
+      "width": 0.794852375984192,
+      "pair": "W29-pair.jpg"
+    },
+    {
+      "biome": "Woodland",
+      "code": "W30",
+      "group": "Foliage and leaf grass",
+      "height": 0.21581469476223,
+      "name": "Foliage 1",
+      "plant_id": "foliage_1_0_emanator",
+      "status": "Divided frond / emanator",
+      "views": [
+        "W30-0.png",
+        "W30-1.png"
+      ],
+      "width": 0.899999976158142,
+      "pair": "W30-pair.jpg"
+    },
+    {
+      "biome": "Woodland",
+      "code": "W31",
+      "group": "Foliage and leaf grass",
+      "height": 0.417568147182465,
+      "name": "Foliage 2",
+      "plant_id": "foliage_1_1_emanator",
+      "status": "Layered leaves / emanator",
+      "views": [
+        "W31-0.png",
+        "W31-1.png"
+      ],
+      "width": 0.899999976158142,
+      "pair": "W31-pair.jpg"
+    },
+    {
+      "biome": "Woodland",
+      "code": "W32",
+      "group": "Foliage and leaf grass",
+      "height": 0.517365872859955,
+      "name": "Foliage 3",
+      "plant_id": "foliage_1_2_emanator",
+      "status": "Hanging folds / emanator",
+      "views": [
+        "W32-0.png",
+        "W32-1.png"
+      ],
+      "width": 0.899999976158142,
+      "pair": "W32-pair.jpg"
+    },
+    {
+      "biome": "Woodland",
+      "code": "W33",
+      "group": "Foliage and leaf grass",
+      "height": 0.26889169216156,
+      "name": "Foliage 4",
+      "plant_id": "foliage_1_3_emanator",
+      "status": "Arching stems / emanator",
+      "views": [
+        "W33-0.png",
+        "W33-1.png"
+      ],
+      "width": 0.900000035762787,
+      "pair": "W33-pair.jpg"
+    },
+    {
+      "biome": "Woodland",
+      "code": "W34",
+      "group": "Foliage and leaf grass",
+      "height": 0.564896643161774,
+      "name": "Foliage 5",
+      "plant_id": "foliage_1_4_emanator",
+      "status": "Broad shade leaves / emanator",
+      "views": [
+        "W34-0.png",
+        "W34-1.png"
+      ],
+      "width": 0.899999976158142,
+      "pair": "W34-pair.jpg"
+    },
+    {
+      "biome": "Woodland",
+      "code": "W35",
+      "group": "Foliage and leaf grass",
+      "height": 0.349999994039536,
+      "name": "Leaf grass 1",
+      "plant_id": "foliage_1_0_emanator_cover",
+      "status": "Leaf grass / emanator",
+      "views": [
+        "W35-0.png",
+        "W35-1.png"
+      ],
+      "width": 0.308925926685333,
+      "pair": "W35-pair.jpg"
+    },
+    {
+      "biome": "Woodland",
+      "code": "W36",
+      "group": "Foliage and leaf grass",
+      "height": 0.349999994039536,
+      "name": "Leaf grass 2",
+      "plant_id": "foliage_1_1_emanator_cover",
+      "status": "Leaf grass / emanator",
+      "views": [
+        "W36-0.png",
+        "W36-1.png"
+      ],
+      "width": 0.363130331039429,
+      "pair": "W36-pair.jpg"
+    },
+    {
+      "biome": "Woodland",
+      "code": "W37",
+      "group": "Foliage and leaf grass",
+      "height": 0.349999994039536,
+      "name": "Leaf grass 3",
+      "plant_id": "foliage_1_2_emanator_cover",
+      "status": "Leaf grass / emanator",
+      "views": [
+        "W37-0.png",
+        "W37-1.png"
+      ],
+      "width": 0.312513321638107,
+      "pair": "W37-pair.jpg"
+    },
+    {
+      "biome": "Woodland",
+      "code": "W38",
+      "group": "Foliage and leaf grass",
+      "height": 0.350000023841858,
+      "name": "Leaf grass 4",
+      "plant_id": "foliage_1_3_emanator_cover",
+      "status": "Leaf grass / emanator",
+      "views": [
+        "W38-0.png",
+        "W38-1.png"
+      ],
+      "width": 0.291274726390839,
+      "pair": "W38-pair.jpg"
+    },
+    {
+      "biome": "Woodland",
+      "code": "W39",
+      "group": "Foliage and leaf grass",
+      "height": 0.349999994039536,
+      "name": "Leaf grass 5",
+      "plant_id": "foliage_1_4_emanator_cover",
+      "status": "Leaf grass / emanator",
+      "views": [
+        "W39-0.png",
+        "W39-1.png"
+      ],
+      "width": 0.314781129360199,
+      "pair": "W39-pair.jpg"
+    },
+    {
+      "biome": "Heath",
+      "code": "H01",
+      "group": "Named catalog",
+      "height": 0.229153141379356,
+      "name": "Compact cushion",
+      "plant_id": "official_heath_compact_cushion",
+      "status": "Catalog / emanator",
+      "views": [
+        "H01-0.png",
+        "H01-1.png"
+      ],
+      "width": 0.600000023841858,
+      "pair": "H01-pair.jpg"
+    },
+    {
+      "biome": "Heath",
+      "code": "H02",
+      "group": "Named catalog",
+      "height": 0.25,
+      "name": "Curled thick leaves",
+      "plant_id": "official_heath_curled_thick_leaves",
+      "status": "Catalog / emanator",
+      "views": [
+        "H02-0.png",
+        "H02-1.png"
+      ],
+      "width": 0.48381707072258,
+      "pair": "H02-pair.jpg"
+    },
+    {
+      "biome": "Heath",
+      "code": "H03",
+      "group": "Named catalog",
+      "height": 0.25,
+      "name": "Overlapping scales",
+      "plant_id": "official_heath_overlapping_scales",
+      "status": "Catalog / emanator",
+      "views": [
+        "H03-0.png",
+        "H03-1.png"
+      ],
+      "width": 0.555586159229279,
+      "pair": "H03-pair.jpg"
+    },
+    {
+      "biome": "Heath",
+      "code": "H04",
+      "group": "Named catalog",
+      "height": 0.209098219871521,
+      "name": "Twisted low branches",
+      "plant_id": "official_heath_twisted_low_branches",
+      "status": "Catalog / emanator",
+      "views": [
+        "H04-0.png",
+        "H04-1.png"
+      ],
+      "width": 0.600000023841858,
+      "pair": "H04-pair.jpg"
+    },
+    {
+      "biome": "Heath",
+      "code": "H05",
+      "group": "Named catalog",
+      "height": 0.25,
+      "name": "Upright folds",
+      "plant_id": "official_heath_upright_folds",
+      "status": "Catalog / emanator",
+      "views": [
+        "H05-0.png",
+        "H05-1.png"
+      ],
+      "width": 0.316345900297165,
+      "pair": "H05-pair.jpg"
+    },
+    {
+      "biome": "Heath",
+      "code": "H06",
+      "group": "Named catalog",
+      "height": 0.726793646812439,
+      "name": "Rust antlers",
+      "plant_id": "official_heath_rust_antlers",
+      "status": "Catalog / emanator",
+      "views": [
+        "H06-0.png",
+        "H06-1.png"
+      ],
+      "width": 1.41385388374329,
+      "pair": "H06-pair.jpg"
+    },
+    {
+      "biome": "Heath",
+      "code": "H07",
+      "group": "Named catalog",
+      "height": 5.65664100646973,
+      "name": "Bone jointed caudex",
+      "plant_id": "official_heath_bone_jointed_caudex",
+      "status": "Catalog / reservoir",
+      "views": [
+        "H07-0.png",
+        "H07-1.png"
+      ],
+      "width": 5.32816123962402,
+      "pair": "H07-pair.jpg"
+    },
+    {
+      "biome": "Heath",
+      "code": "H08",
+      "group": "Named catalog",
+      "height": 0.722324013710022,
+      "name": "Plum paddle cluster",
+      "plant_id": "heath_plum_paddle_cluster",
+      "status": "Catalog / receiver / study only",
+      "views": [
+        "H08-0.png",
+        "H08-1.png"
+      ],
+      "width": 2.22494769096375,
+      "pair": "H08-pair.jpg"
+    },
+    {
+      "biome": "Heath",
+      "code": "H09",
+      "group": "Named catalog",
+      "height": 0.917635202407837,
+      "name": "Oxide thorn crown",
+      "plant_id": "official_heath_oxide_thorn_crown",
+      "status": "Catalog / receiver / warden",
+      "views": [
+        "H09-0.png",
+        "H09-1.png"
+      ],
+      "width": 2.90298414230347,
+      "pair": "H09-pair.jpg"
+    },
+    {
+      "biome": "Heath",
+      "code": "H10",
+      "group": "Named catalog",
+      "height": 0.603914082050323,
+      "name": "Gold cushion blooms",
+      "plant_id": "official_heath_gold_cushion_blooms",
+      "status": "Catalog / receiver / mender",
+      "views": [
+        "H10-0.png",
+        "H10-1.png"
+      ],
+      "width": 2.75327038764954,
+      "pair": "H10-pair.jpg"
+    },
+    {
+      "biome": "Heath",
+      "code": "H11",
+      "group": "Named catalog",
+      "height": 2.06646156311035,
+      "name": "Scarlet zigzag",
+      "plant_id": "official_heath_scarlet_zigzag",
+      "status": "Catalog / receiver / regulator",
+      "views": [
+        "H11-0.png",
+        "H11-1.png"
+      ],
+      "width": 2.46573400497437,
+      "pair": "H11-pair.jpg"
+    },
+    {
+      "biome": "Heath",
+      "code": "H12",
+      "group": "Trees and specialists",
+      "height": 1.91420197486877,
+      "name": "Tree 1 / small",
+      "plant_id": "procedural_2_1_0",
+      "status": "Procedural reservoir / crown family 1",
+      "views": [
+        "H12-0.png",
+        "H12-1.png"
+      ],
+      "width": 1.84082460403442,
+      "pair": "H12-pair.jpg"
+    },
+    {
+      "biome": "Heath",
+      "code": "H13",
+      "group": "Trees and specialists",
+      "height": 5.73203086853027,
+      "name": "Tree 2 / medium",
+      "plant_id": "procedural_2_1_1",
+      "status": "Procedural reservoir / crown family 1",
+      "views": [
+        "H13-0.png",
+        "H13-1.png"
+      ],
+      "width": 5.63400459289551,
+      "pair": "H13-pair.jpg"
+    },
+    {
+      "biome": "Heath",
+      "code": "H14",
+      "group": "Trees and specialists",
+      "height": 10.0846767425537,
+      "name": "Tree 3 / large",
+      "plant_id": "procedural_2_1_2",
+      "status": "Procedural reservoir / crown family 1",
+      "views": [
+        "H14-0.png",
+        "H14-1.png"
+      ],
+      "width": 8.21823501586914,
+      "pair": "H14-pair.jpg"
+    },
+    {
+      "biome": "Heath",
+      "code": "H15",
+      "group": "Trees and specialists",
+      "height": 2.3994255065918,
+      "name": "Tree 4 / small",
+      "plant_id": "procedural_2_1_3",
+      "status": "Procedural reservoir / crown family 2",
+      "views": [
+        "H15-0.png",
+        "H15-1.png"
+      ],
+      "width": 2.21420979499817,
+      "pair": "H15-pair.jpg"
+    },
+    {
+      "biome": "Heath",
+      "code": "H16",
+      "group": "Trees and specialists",
+      "height": 6.55699157714844,
+      "name": "Tree 5 / medium",
+      "plant_id": "procedural_2_1_4",
+      "status": "Procedural reservoir / crown family 2",
+      "views": [
+        "H16-0.png",
+        "H16-1.png"
+      ],
+      "width": 5.42243051528931,
+      "pair": "H16-pair.jpg"
+    },
+    {
+      "biome": "Heath",
+      "code": "H17",
+      "group": "Trees and specialists",
+      "height": 15.0595407485962,
+      "name": "Tree 6 / large",
+      "plant_id": "procedural_2_1_5",
+      "status": "Procedural reservoir / crown family 2",
+      "views": [
+        "H17-0.png",
+        "H17-1.png"
+      ],
+      "width": 9.98216152191162,
+      "pair": "H17-pair.jpg"
+    },
+    {
+      "biome": "Heath",
+      "code": "H18",
+      "group": "Trees and specialists",
+      "height": 1.69925022125244,
+      "name": "Tree 7 / small",
+      "plant_id": "procedural_2_1_6",
+      "status": "Procedural reservoir / crown family 3",
+      "views": [
+        "H18-0.png",
+        "H18-1.png"
+      ],
+      "width": 1.60874319076538,
+      "pair": "H18-pair.jpg"
+    },
+    {
+      "biome": "Heath",
+      "code": "H19",
+      "group": "Trees and specialists",
+      "height": 8.04927349090576,
+      "name": "Tree 8 / medium",
+      "plant_id": "procedural_2_1_7",
+      "status": "Procedural reservoir / crown family 3",
+      "views": [
+        "H19-0.png",
+        "H19-1.png"
+      ],
+      "width": 7.2705249786377,
+      "pair": "H19-pair.jpg"
+    },
+    {
+      "biome": "Heath",
+      "code": "H20",
+      "group": "Trees and specialists",
+      "height": 16.5651912689209,
+      "name": "Tree 9 / large",
+      "plant_id": "procedural_2_1_8",
+      "status": "Procedural reservoir / crown family 3",
+      "views": [
+        "H20-0.png",
+        "H20-1.png"
+      ],
+      "width": 16.1220378875732,
+      "pair": "H20-pair.jpg"
+    },
+    {
+      "biome": "Heath",
+      "code": "H21",
+      "group": "Trees and specialists",
+      "height": 0.0671591311693192,
+      "name": "Warden 1",
+      "plant_id": "procedural_2_3_0",
+      "status": "Procedural specialist / small",
+      "views": [
+        "H21-0.png",
+        "H21-1.png"
+      ],
+      "width": 0.219999998807907,
+      "pair": "H21-pair.jpg"
+    },
+    {
+      "biome": "Heath",
+      "code": "H22",
+      "group": "Trees and specialists",
+      "height": 0.192117542028427,
+      "name": "Warden 2",
+      "plant_id": "procedural_2_3_1",
+      "status": "Procedural specialist / medium",
+      "views": [
+        "H22-0.png",
+        "H22-1.png"
+      ],
+      "width": 0.659999966621399,
+      "pair": "H22-pair.jpg"
+    },
+    {
+      "biome": "Heath",
+      "code": "H23",
+      "group": "Trees and specialists",
+      "height": 0.623843431472778,
+      "name": "Warden 3",
+      "plant_id": "procedural_2_3_2",
+      "status": "Procedural specialist / large",
+      "views": [
+        "H23-0.png",
+        "H23-1.png"
+      ],
+      "width": 1.42999994754791,
+      "pair": "H23-pair.jpg"
+    },
+    {
+      "biome": "Heath",
+      "code": "H24",
+      "group": "Trees and specialists",
+      "height": 0.0479410886764526,
+      "name": "Mender 1",
+      "plant_id": "procedural_2_4_0",
+      "status": "Procedural specialist / small",
+      "views": [
+        "H24-0.png",
+        "H24-1.png"
+      ],
+      "width": 0.219999998807907,
+      "pair": "H24-pair.jpg"
+    },
+    {
+      "biome": "Heath",
+      "code": "H25",
+      "group": "Trees and specialists",
+      "height": 0.162697732448578,
+      "name": "Mender 2",
+      "plant_id": "procedural_2_4_1",
+      "status": "Procedural specialist / medium",
+      "views": [
+        "H25-0.png",
+        "H25-1.png"
+      ],
+      "width": 0.660000026226044,
+      "pair": "H25-pair.jpg"
+    },
+    {
+      "biome": "Heath",
+      "code": "H26",
+      "group": "Trees and specialists",
+      "height": 0.351408571004868,
+      "name": "Mender 3",
+      "plant_id": "procedural_2_4_2",
+      "status": "Procedural specialist / large",
+      "views": [
+        "H26-0.png",
+        "H26-1.png"
+      ],
+      "width": 1.4300000667572,
+      "pair": "H26-pair.jpg"
+    },
+    {
+      "biome": "Heath",
+      "code": "H27",
+      "group": "Trees and specialists",
+      "height": 0.087234154343605,
+      "name": "Regulator 1",
+      "plant_id": "procedural_2_5_0",
+      "status": "Procedural specialist / small",
+      "views": [
+        "H27-0.png",
+        "H27-1.png"
+      ],
+      "width": 0.112991645932198,
+      "pair": "H27-pair.jpg"
+    },
+    {
+      "biome": "Heath",
+      "code": "H28",
+      "group": "Trees and specialists",
+      "height": 0.436827570199966,
+      "name": "Regulator 2",
+      "plant_id": "procedural_2_5_1",
+      "status": "Procedural specialist / medium",
+      "views": [
+        "H28-0.png",
+        "H28-1.png"
+      ],
+      "width": 0.660000026226044,
+      "pair": "H28-pair.jpg"
+    },
+    {
+      "biome": "Heath",
+      "code": "H29",
+      "group": "Trees and specialists",
+      "height": 1.11643278598785,
+      "name": "Regulator 3",
+      "plant_id": "procedural_2_5_2",
+      "status": "Procedural specialist / large",
+      "views": [
+        "H29-0.png",
+        "H29-1.png"
+      ],
+      "width": 1.42999994754791,
+      "pair": "H29-pair.jpg"
+    },
+    {
+      "biome": "Heath",
+      "code": "H30",
+      "group": "Foliage and leaf grass",
+      "height": 0.153222218155861,
+      "name": "Foliage 1",
+      "plant_id": "foliage_2_0_emanator",
+      "status": "Compact cushion / emanator",
+      "views": [
+        "H30-0.png",
+        "H30-1.png"
+      ],
+      "width": 0.600000023841858,
+      "pair": "H30-pair.jpg"
+    },
+    {
+      "biome": "Heath",
+      "code": "H31",
+      "group": "Foliage and leaf grass",
+      "height": 0.249999985098839,
+      "name": "Foliage 2",
+      "plant_id": "foliage_2_1_emanator",
+      "status": "Curled thick leaves / emanator",
+      "views": [
+        "H31-0.png",
+        "H31-1.png"
+      ],
+      "width": 0.566539824008942,
+      "pair": "H31-pair.jpg"
+    },
+    {
+      "biome": "Heath",
+      "code": "H32",
+      "group": "Foliage and leaf grass",
+      "height": 0.25,
+      "name": "Foliage 3",
+      "plant_id": "foliage_2_2_emanator",
+      "status": "Overlapping scales / emanator",
+      "views": [
+        "H32-0.png",
+        "H32-1.png"
+      ],
+      "width": 0.463364630937576,
+      "pair": "H32-pair.jpg"
+    },
+    {
+      "biome": "Heath",
+      "code": "H33",
+      "group": "Foliage and leaf grass",
+      "height": 0.156663000583649,
+      "name": "Foliage 4",
+      "plant_id": "foliage_2_3_emanator",
+      "status": "Twisted low branches / emanator",
+      "views": [
+        "H33-0.png",
+        "H33-1.png"
+      ],
+      "width": 0.600000023841858,
+      "pair": "H33-pair.jpg"
+    },
+    {
+      "biome": "Heath",
+      "code": "H34",
+      "group": "Foliage and leaf grass",
+      "height": 0.249999985098839,
+      "name": "Foliage 5",
+      "plant_id": "foliage_2_4_emanator",
+      "status": "Upright folds / emanator",
+      "views": [
+        "H34-0.png",
+        "H34-1.png"
+      ],
+      "width": 0.38274484872818,
+      "pair": "H34-pair.jpg"
+    },
+    {
+      "biome": "Heath",
+      "code": "H35",
+      "group": "Foliage and leaf grass",
+      "height": 0.219999998807907,
+      "name": "Leaf grass 1",
+      "plant_id": "foliage_2_0_emanator_cover",
+      "status": "Leaf grass / emanator",
+      "views": [
+        "H35-0.png",
+        "H35-1.png"
+      ],
+      "width": 0.256112068891525,
+      "pair": "H35-pair.jpg"
+    },
+    {
+      "biome": "Heath",
+      "code": "H36",
+      "group": "Foliage and leaf grass",
+      "height": 0.219999998807907,
+      "name": "Leaf grass 2",
+      "plant_id": "foliage_2_1_emanator_cover",
+      "status": "Leaf grass / emanator",
+      "views": [
+        "H36-0.png",
+        "H36-1.png"
+      ],
+      "width": 0.250736594200134,
+      "pair": "H36-pair.jpg"
+    },
+    {
+      "biome": "Heath",
+      "code": "H37",
+      "group": "Foliage and leaf grass",
+      "height": 0.219999998807907,
+      "name": "Leaf grass 3",
+      "plant_id": "foliage_2_2_emanator_cover",
+      "status": "Leaf grass / emanator",
+      "views": [
+        "H37-0.png",
+        "H37-1.png"
+      ],
+      "width": 0.217839971184731,
+      "pair": "H37-pair.jpg"
+    },
+    {
+      "biome": "Heath",
+      "code": "H38",
+      "group": "Foliage and leaf grass",
+      "height": 0.219999998807907,
+      "name": "Leaf grass 4",
+      "plant_id": "foliage_2_3_emanator_cover",
+      "status": "Leaf grass / emanator",
+      "views": [
+        "H38-0.png",
+        "H38-1.png"
+      ],
+      "width": 0.220823913812637,
+      "pair": "H38-pair.jpg"
+    },
+    {
+      "biome": "Heath",
+      "code": "H39",
+      "group": "Foliage and leaf grass",
+      "height": 0.219999998807907,
+      "name": "Leaf grass 5",
+      "plant_id": "foliage_2_4_emanator_cover",
+      "status": "Leaf grass / emanator",
+      "views": [
+        "H39-0.png",
+        "H39-1.png"
+      ],
+      "width": 0.254088491201401,
+      "pair": "H39-pair.jpg"
+    },
+    {
+      "biome": "Marsh",
+      "code": "S01",
+      "group": "Named catalog",
+      "height": 0.516228497028351,
+      "name": "Upright sails",
+      "plant_id": "official_marsh_upright_sails",
+      "status": "Catalog / emanator",
+      "views": [
+        "S01-0.png",
+        "S01-1.png"
+      ],
+      "width": 0.600000023841858,
+      "pair": "S01-pair.jpg"
+    },
+    {
+      "biome": "Marsh",
+      "code": "S02",
+      "group": "Named catalog",
+      "height": 0.839165687561035,
+      "name": "Ribbon leaves",
+      "plant_id": "official_marsh_ribbon_leaves",
+      "status": "Catalog / emanator",
+      "views": [
+        "S02-0.png",
+        "S02-1.png"
+      ],
+      "width": 0.600000023841858,
+      "pair": "S02-pair.jpg"
+    },
+    {
+      "biome": "Marsh",
+      "code": "S03",
+      "group": "Named catalog",
+      "height": 0.617944657802582,
+      "name": "Hollow sheaths",
+      "plant_id": "official_marsh_hollow_sheaths",
+      "status": "Catalog / emanator",
+      "views": [
+        "S03-0.png",
+        "S03-1.png"
+      ],
+      "width": 0.600000023841858,
+      "pair": "S03-pair.jpg"
+    },
+    {
+      "biome": "Marsh",
+      "code": "S04",
+      "group": "Named catalog",
+      "height": 0.853873014450073,
+      "name": "Overlapping cups",
+      "plant_id": "official_marsh_overlapping_cups",
+      "status": "Catalog / emanator",
+      "views": [
+        "S04-0.png",
+        "S04-1.png"
+      ],
+      "width": 0.599999964237213,
+      "pair": "S04-pair.jpg"
+    },
+    {
+      "biome": "Marsh",
+      "code": "S05",
+      "group": "Named catalog",
+      "height": 0.553121328353882,
+      "name": "Arching narrow leaves",
+      "plant_id": "official_marsh_arching_narrow_leaves",
+      "status": "Catalog / emanator",
+      "views": [
+        "S05-0.png",
+        "S05-1.png"
+      ],
+      "width": 0.600000023841858,
+      "pair": "S05-pair.jpg"
+    },
+    {
+      "biome": "Marsh",
+      "code": "S06",
+      "group": "Named catalog",
+      "height": 0.666158378124237,
+      "name": "Mint reed spires",
+      "plant_id": "official_marsh_mint_reed_spires",
+      "status": "Catalog / emanator",
+      "views": [
+        "S06-0.png",
+        "S06-1.png"
+      ],
+      "width": 0.718692064285278,
+      "pair": "S06-pair.jpg"
+    },
+    {
+      "biome": "Marsh",
+      "code": "S07",
+      "group": "Named catalog",
+      "height": 7.72293138504028,
+      "name": "Violet stilt curtain",
+      "plant_id": "official_marsh_violet_stilt_curtain",
+      "status": "Catalog / reservoir",
+      "views": [
+        "S07-0.png",
+        "S07-1.png"
+      ],
+      "width": 5.40183353424072,
+      "pair": "S07-pair.jpg"
+    },
+    {
+      "biome": "Marsh",
+      "code": "S08",
+      "group": "Named catalog",
+      "height": 1.67921757698059,
+      "name": "Cyan trumpets",
+      "plant_id": "marsh_cyan_trumpets",
+      "status": "Catalog / receiver / study only",
+      "views": [
+        "S08-0.png",
+        "S08-1.png"
+      ],
+      "width": 3.22634744644165,
+      "pair": "S08-pair.jpg"
+    },
+    {
+      "biome": "Marsh",
+      "code": "S09",
+      "group": "Named catalog",
+      "height": 2.01065063476563,
+      "name": "Copper sail wall",
+      "plant_id": "official_marsh_copper_sail_wall",
+      "status": "Catalog / receiver / warden",
+      "views": [
+        "S09-0.png",
+        "S09-1.png"
+      ],
+      "width": 2.90627288818359,
+      "pair": "S09-pair.jpg"
+    },
+    {
+      "biome": "Marsh",
+      "code": "S10",
+      "group": "Named catalog",
+      "height": 0.746406674385071,
+      "name": "Blue wing blooms",
+      "plant_id": "official_marsh_blue_wing_blooms",
+      "status": "Catalog / receiver / mender",
+      "views": [
+        "S10-0.png",
+        "S10-1.png"
+      ],
+      "width": 1.73740363121033,
+      "pair": "S10-pair.jpg"
+    },
+    {
+      "biome": "Marsh",
+      "code": "S11",
+      "group": "Named catalog",
+      "height": 2.68641638755798,
+      "name": "Peach branching pipes",
+      "plant_id": "official_marsh_peach_branching_pipes",
+      "status": "Catalog / receiver / regulator",
+      "views": [
+        "S11-0.png",
+        "S11-1.png"
+      ],
+      "width": 3.80497145652771,
+      "pair": "S11-pair.jpg"
+    },
+    {
+      "biome": "Marsh",
+      "code": "S12",
+      "group": "Trees and specialists",
+      "height": 1.55889701843262,
+      "name": "Tree 1 / small",
+      "plant_id": "procedural_3_1_0",
+      "status": "Procedural reservoir / crown family 1",
+      "views": [
+        "S12-0.png",
+        "S12-1.png"
+      ],
+      "width": 1.14485943317413,
+      "pair": "S12-pair.jpg"
+    },
+    {
+      "biome": "Marsh",
+      "code": "S13",
+      "group": "Trees and specialists",
+      "height": 6.17382526397705,
+      "name": "Tree 2 / medium",
+      "plant_id": "procedural_3_1_1",
+      "status": "Procedural reservoir / crown family 1",
+      "views": [
+        "S13-0.png",
+        "S13-1.png"
+      ],
+      "width": 3.5878050327301,
+      "pair": "S13-pair.jpg"
+    },
+    {
+      "biome": "Marsh",
+      "code": "S14",
+      "group": "Trees and specialists",
+      "height": 9.98097324371338,
+      "name": "Tree 3 / large",
+      "plant_id": "procedural_3_1_2",
+      "status": "Procedural reservoir / crown family 1",
+      "views": [
+        "S14-0.png",
+        "S14-1.png"
+      ],
+      "width": 5.06339073181152,
+      "pair": "S14-pair.jpg"
+    },
+    {
+      "biome": "Marsh",
+      "code": "S15",
+      "group": "Trees and specialists",
+      "height": 1.76658987998962,
+      "name": "Tree 4 / small",
+      "plant_id": "procedural_3_1_3",
+      "status": "Procedural reservoir / crown family 2",
+      "views": [
+        "S15-0.png",
+        "S15-1.png"
+      ],
+      "width": 1.21000027656555,
+      "pair": "S15-pair.jpg"
+    },
+    {
+      "biome": "Marsh",
+      "code": "S16",
+      "group": "Trees and specialists",
+      "height": 7.46137571334839,
+      "name": "Tree 5 / medium",
+      "plant_id": "procedural_3_1_4",
+      "status": "Procedural reservoir / crown family 2",
+      "views": [
+        "S16-0.png",
+        "S16-1.png"
+      ],
+      "width": 3.82138776779175,
+      "pair": "S16-pair.jpg"
+    },
+    {
+      "biome": "Marsh",
+      "code": "S17",
+      "group": "Trees and specialists",
+      "height": 14.5727767944336,
+      "name": "Tree 6 / large",
+      "plant_id": "procedural_3_1_5",
+      "status": "Procedural reservoir / crown family 2",
+      "views": [
+        "S17-0.png",
+        "S17-1.png"
+      ],
+      "width": 5.77312564849854,
+      "pair": "S17-pair.jpg"
+    },
+    {
+      "biome": "Marsh",
+      "code": "S18",
+      "group": "Trees and specialists",
+      "height": 2.49206829071045,
+      "name": "Tree 7 / small",
+      "plant_id": "procedural_3_1_6",
+      "status": "Procedural reservoir / crown family 3",
+      "views": [
+        "S18-0.png",
+        "S18-1.png"
+      ],
+      "width": 1.98485398292542,
+      "pair": "S18-pair.jpg"
+    },
+    {
+      "biome": "Marsh",
+      "code": "S19",
+      "group": "Trees and specialists",
+      "height": 5.27082538604736,
+      "name": "Tree 8 / medium",
+      "plant_id": "procedural_3_1_7",
+      "status": "Procedural reservoir / crown family 3",
+      "views": [
+        "S19-0.png",
+        "S19-1.png"
+      ],
+      "width": 3.72982168197632,
+      "pair": "S19-pair.jpg"
+    },
+    {
+      "biome": "Marsh",
+      "code": "S20",
+      "group": "Trees and specialists",
+      "height": 14.9168472290039,
+      "name": "Tree 9 / large",
+      "plant_id": "procedural_3_1_8",
+      "status": "Procedural reservoir / crown family 3",
+      "views": [
+        "S20-0.png",
+        "S20-1.png"
+      ],
+      "width": 9.08066654205322,
+      "pair": "S20-pair.jpg"
+    },
+    {
+      "biome": "Marsh",
+      "code": "S21",
+      "group": "Trees and specialists",
+      "height": 0.0745965242385864,
+      "name": "Warden 1",
+      "plant_id": "procedural_3_3_0",
+      "status": "Procedural specialist / small",
+      "views": [
+        "S21-0.png",
+        "S21-1.png"
+      ],
+      "width": 0.0810290426015854,
+      "pair": "S21-pair.jpg"
+    },
+    {
+      "biome": "Marsh",
+      "code": "S22",
+      "group": "Trees and specialists",
+      "height": 0.437097370624542,
+      "name": "Warden 2",
+      "plant_id": "procedural_3_3_1",
+      "status": "Procedural specialist / medium",
+      "views": [
+        "S22-0.png",
+        "S22-1.png"
+      ],
+      "width": 0.367545068264008,
+      "pair": "S22-pair.jpg"
+    },
+    {
+      "biome": "Marsh",
+      "code": "S23",
+      "group": "Trees and specialists",
+      "height": 0.887261152267456,
+      "name": "Warden 3",
+      "plant_id": "procedural_3_3_2",
+      "status": "Procedural specialist / large",
+      "views": [
+        "S23-0.png",
+        "S23-1.png"
+      ],
+      "width": 1.4300000667572,
+      "pair": "S23-pair.jpg"
+    },
+    {
+      "biome": "Marsh",
+      "code": "S24",
+      "group": "Trees and specialists",
+      "height": 0.0786655321717262,
+      "name": "Mender 1",
+      "plant_id": "procedural_3_4_0",
+      "status": "Procedural specialist / small",
+      "views": [
+        "S24-0.png",
+        "S24-1.png"
+      ],
+      "width": 0.219999998807907,
+      "pair": "S24-pair.jpg"
+    },
+    {
+      "biome": "Marsh",
+      "code": "S25",
+      "group": "Trees and specialists",
+      "height": 0.270226567983627,
+      "name": "Mender 2",
+      "plant_id": "procedural_3_4_1",
+      "status": "Procedural specialist / medium",
+      "views": [
+        "S25-0.png",
+        "S25-1.png"
+      ],
+      "width": 0.659999966621399,
+      "pair": "S25-pair.jpg"
+    },
+    {
+      "biome": "Marsh",
+      "code": "S26",
+      "group": "Trees and specialists",
+      "height": 0.787250876426697,
+      "name": "Mender 3",
+      "plant_id": "procedural_3_4_2",
+      "status": "Procedural specialist / large",
+      "views": [
+        "S26-0.png",
+        "S26-1.png"
+      ],
+      "width": 1.4300000667572,
+      "pair": "S26-pair.jpg"
+    },
+    {
+      "biome": "Marsh",
+      "code": "S27",
+      "group": "Trees and specialists",
+      "height": 0.0690152198076248,
+      "name": "Regulator 1",
+      "plant_id": "procedural_3_5_0",
+      "status": "Procedural specialist / small",
+      "views": [
+        "S27-0.png",
+        "S27-1.png"
+      ],
+      "width": 0.0947404205799103,
+      "pair": "S27-pair.jpg"
+    },
+    {
+      "biome": "Marsh",
+      "code": "S28",
+      "group": "Trees and specialists",
+      "height": 0.435086309909821,
+      "name": "Regulator 2",
+      "plant_id": "procedural_3_5_1",
+      "status": "Procedural specialist / medium",
+      "views": [
+        "S28-0.png",
+        "S28-1.png"
+      ],
+      "width": 0.390859723091125,
+      "pair": "S28-pair.jpg"
+    },
+    {
+      "biome": "Marsh",
+      "code": "S29",
+      "group": "Trees and specialists",
+      "height": 1.18325209617615,
+      "name": "Regulator 3",
+      "plant_id": "procedural_3_5_2",
+      "status": "Procedural specialist / large",
+      "views": [
+        "S29-0.png",
+        "S29-1.png"
+      ],
+      "width": 0.474394917488098,
+      "pair": "S29-pair.jpg"
+    },
+    {
+      "biome": "Marsh",
+      "code": "S30",
+      "group": "Foliage and leaf grass",
+      "height": 0.480381548404694,
+      "name": "Foliage 1",
+      "plant_id": "foliage_3_0_emanator",
+      "status": "Upright sails / emanator",
+      "views": [
+        "S30-0.png",
+        "S30-1.png"
+      ],
+      "width": 0.600000023841858,
+      "pair": "S30-pair.jpg"
+    },
+    {
+      "biome": "Marsh",
+      "code": "S31",
+      "group": "Foliage and leaf grass",
+      "height": 0.804552018642426,
+      "name": "Foliage 2",
+      "plant_id": "foliage_3_1_emanator",
+      "status": "Ribbon leaves / emanator",
+      "views": [
+        "S31-0.png",
+        "S31-1.png"
+      ],
+      "width": 0.600000023841858,
+      "pair": "S31-pair.jpg"
+    },
+    {
+      "biome": "Marsh",
+      "code": "S32",
+      "group": "Foliage and leaf grass",
+      "height": 0.593999624252319,
+      "name": "Foliage 3",
+      "plant_id": "foliage_3_2_emanator",
+      "status": "Hollow sheaths / emanator",
+      "views": [
+        "S32-0.png",
+        "S32-1.png"
+      ],
+      "width": 0.600000023841858,
+      "pair": "S32-pair.jpg"
+    },
+    {
+      "biome": "Marsh",
+      "code": "S33",
+      "group": "Foliage and leaf grass",
+      "height": 0.853873014450073,
+      "name": "Foliage 4",
+      "plant_id": "foliage_3_3_emanator",
+      "status": "Overlapping cups / emanator",
+      "views": [
+        "S33-0.png",
+        "S33-1.png"
+      ],
+      "width": 0.599999964237213,
+      "pair": "S33-pair.jpg"
+    },
+    {
+      "biome": "Marsh",
+      "code": "S34",
+      "group": "Foliage and leaf grass",
+      "height": 0.5466228723526,
+      "name": "Foliage 5",
+      "plant_id": "foliage_3_4_emanator",
+      "status": "Arching narrow leaves / emanator",
+      "views": [
+        "S34-0.png",
+        "S34-1.png"
+      ],
+      "width": 0.599999964237213,
+      "pair": "S34-pair.jpg"
+    },
+    {
+      "biome": "Marsh",
+      "code": "S35",
+      "group": "Foliage and leaf grass",
+      "height": 0.440665692090988,
+      "name": "Leaf grass 1",
+      "plant_id": "foliage_3_0_emanator_cover",
+      "status": "Leaf grass / emanator",
+      "views": [
+        "S35-0.png",
+        "S35-1.png"
+      ],
+      "width": 0.399999976158142,
+      "pair": "S35-pair.jpg"
+    },
+    {
+      "biome": "Marsh",
+      "code": "S36",
+      "group": "Foliage and leaf grass",
+      "height": 0.449999988079071,
+      "name": "Leaf grass 2",
+      "plant_id": "foliage_3_1_emanator_cover",
+      "status": "Leaf grass / emanator",
+      "views": [
+        "S36-0.png",
+        "S36-1.png"
+      ],
+      "width": 0.364745438098907,
+      "pair": "S36-pair.jpg"
+    },
+    {
+      "biome": "Marsh",
+      "code": "S37",
+      "group": "Foliage and leaf grass",
+      "height": 0.448928236961365,
+      "name": "Leaf grass 3",
+      "plant_id": "foliage_3_2_emanator_cover",
+      "status": "Leaf grass / emanator",
+      "views": [
+        "S37-0.png",
+        "S37-1.png"
+      ],
+      "width": 0.399999976158142,
+      "pair": "S37-pair.jpg"
+    },
+    {
+      "biome": "Marsh",
+      "code": "S38",
+      "group": "Foliage and leaf grass",
+      "height": 0.449999988079071,
+      "name": "Leaf grass 4",
+      "plant_id": "foliage_3_3_emanator_cover",
+      "status": "Leaf grass / emanator",
+      "views": [
+        "S38-0.png",
+        "S38-1.png"
+      ],
+      "width": 0.314810037612915,
+      "pair": "S38-pair.jpg"
+    },
+    {
+      "biome": "Marsh",
+      "code": "S39",
+      "group": "Foliage and leaf grass",
+      "height": 0.41362076997757,
+      "name": "Leaf grass 5",
+      "plant_id": "foliage_3_4_emanator_cover",
+      "status": "Leaf grass / emanator",
+      "views": [
+        "S39-0.png",
+        "S39-1.png"
+      ],
+      "width": 0.399999976158142,
+      "pair": "S39-pair.jpg"
+    }
+  ],
+  "biome_foliage_settings": {
+    "Marsh": {
+      "height_ratio": 0.3,
+      "leaf_scale": 1.9,
+      "leaf_width": 1.65,
+      "organ_height": 0.7
+    }
+  }
+}
