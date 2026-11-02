@@ -1,0 +1,15 @@
+{
+  "contract_version": 1,
+  "id": "plant_community_lab",
+  "domain": "Plants",
+  "title": "communities",
+  "description": "Compare scatter and habitat patches on matching synthetic ground with a protected path.",
+  "execution": "runtime",
+  "scene": "res://scenes/plant_community_lab.tscn",
+  "storage": "user://workstation/editor_bridge.cfg; authoring actions retain their existing destination.",
+  "reason": "Isolated runtime simulation controlled through the editor Lab workspace.",
+  "fixture_key": "plant_community_lab",
+  "label": "Plants / communities",
+  "order": 26,
+  "host": "workstation"
+}

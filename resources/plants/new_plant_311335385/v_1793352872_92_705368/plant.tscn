@@ -1,0 +1,13 @@
+[gd_scene format=3 uid="uid://bsppkn88bd737"]
+
+[ext_resource type="ArrayMesh" path="res://resources/plants/new_plant_311335385/v_1793352872_92_705368/outer_growth.res" id="1_nmgci"]
+[ext_resource type="ArrayMesh" path="res://resources/plants/new_plant_311335385/v_1793352872_92_705368/connected_vastra_anatomy.res" id="2_lkox0"]
+
+[node name="Plant" type="Node3D" unique_id=199590457]
+
+[node name="OuterGrowth" type="MeshInstance3D" parent="." unique_id=1726095446]
+transform = Transform3D(0.99999803, 0, 0.0019910915, 0, 1, 0, -0.0019910915, 0, 0.99999803, 0, 0, 0)
+mesh = ExtResource("1_nmgci")
+
+[node name="ConnectedVastraAnatomy" type="MeshInstance3D" parent="." unique_id=1249835954]
+mesh = ExtResource("2_lkox0")

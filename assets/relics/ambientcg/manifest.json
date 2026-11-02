@@ -1,0 +1,33 @@
+{
+  "provider": "ambientCG / Lennart Demes",
+  "license": "CC0-1.0",
+  "license_source": "https://docs.ambientcg.com/license/",
+  "id": "Bricks060",
+  "source": "https://ambientcg.com/a/Bricks060",
+  "download": "https://ambientcg.com/get?file=Bricks060_1K-JPG.zip",
+  "resolution": "1K-JPG",
+  "archive_bytes": 7852794,
+  "archive_sha256": "e8dce6fd843fce863bd60aa118ae904d52cef020b4db7d343a2e389fc489ac6f",
+  "files": [
+    {
+      "path": "bricks060/Bricks060_1K-JPG_AmbientOcclusion.jpg",
+      "bytes": 555466,
+      "sha256": "1e7209acbc67b231209631ca5d645f3e1ae02ab817dbda469acc2e747e78d55d"
+    },
+    {
+      "path": "bricks060/Bricks060_1K-JPG_Color.jpg",
+      "bytes": 1169954,
+      "sha256": "d56a6900be43dc9d37c0725257a04ee4e0d3840efd53ad9bab82cc6897de8435"
+    },
+    {
+      "path": "bricks060/Bricks060_1K-JPG_NormalGL.jpg",
+      "bytes": 1838326,
+      "sha256": "c4b8fffa7cb3d2e9462f93d6e65ffcd6e8edc2f202b782018ae6a508c23998cd"
+    },
+    {
+      "path": "bricks060/Bricks060_1K-JPG_Roughness.jpg",
+      "bytes": 640257,
+      "sha256": "143f9c13813031150016ffdf6f771deb6f9c0852a4a28a143b8b8b575f00d22f"
+    }
+  ]
+}

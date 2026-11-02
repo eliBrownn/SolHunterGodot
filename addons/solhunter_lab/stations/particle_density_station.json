@@ -1,0 +1,15 @@
+{
+  "contract_version": 1,
+  "id": "particle_density_station",
+  "domain": "Particles",
+  "title": "density and overdraw",
+  "description": "Compare synthetic transparent-particle load; not device qualification.",
+  "execution": "runtime",
+  "scene": "res://scenes/particle_density_station.tscn",
+  "storage": "user://workstation/editor_bridge.cfg; authoring actions retain their existing destination.",
+  "reason": "Isolated runtime simulation controlled through the editor Lab workspace.",
+  "fixture_key": "particle_density_station",
+  "label": "Particles / density and overdraw",
+  "order": 18,
+  "host": "workstation"
+}

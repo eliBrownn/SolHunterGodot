@@ -1,0 +1,15 @@
+{
+  "contract_version": 1,
+  "id": "rimefold_workshop",
+  "domain": "Sols",
+  "title": "Rimefold",
+  "description": "Inspect existing Rimefold controls and presentation in an isolated fixture.",
+  "execution": "runtime",
+  "scene": "res://scenes/rimefold_workshop.tscn",
+  "storage": "user://workstation/editor_bridge.cfg; authoring actions retain their existing destination.",
+  "reason": "Isolated runtime simulation controlled through the editor Lab workspace.",
+  "fixture_key": "rimefold_workshop",
+  "label": "Sols / Rimefold",
+  "order": 10,
+  "host": "workstation"
+}

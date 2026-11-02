@@ -1,0 +1,13 @@
+{
+  "contract_version": 1,
+  "id": "lab.legacy_workstation",
+  "domain": "All stations",
+  "title": "Development workstation",
+  "description": "Open the current review workstation and its full fixture catalogue.",
+  "execution": "runtime",
+  "scene": "res://scenes/development_workstation.tscn",
+  "storage": "user://workstation/workspace.cfg, reviews.cfg and local captures.",
+  "reason": "Existing station controls, comparisons and reviews remain available during migration.",
+  "host": "standalone",
+  "order": 101
+}

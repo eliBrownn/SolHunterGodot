@@ -1,0 +1,15 @@
+{
+  "contract_version": 1,
+  "id": "terrain_preview",
+  "domain": "Terrain",
+  "title": "landforms",
+  "description": "Inspect generated landforms and access using Godot generation.",
+  "execution": "runtime",
+  "scene": "res://scenes/terrain_preview.tscn",
+  "storage": "user://workstation/editor_bridge.cfg; authoring actions retain their existing destination.",
+  "reason": "Isolated runtime simulation controlled through the editor Lab workspace.",
+  "fixture_key": "terrain_preview",
+  "label": "Terrain / landforms",
+  "order": 5,
+  "host": "workstation"
+}

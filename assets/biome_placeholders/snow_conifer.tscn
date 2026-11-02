@@ -1,0 +1,30 @@
+[gd_scene load_steps=5 format=3]
+
+[sub_resource type="StandardMaterial3D" id="needles"]
+albedo_color = Color(0.18, 0.32, 0.3, 1)
+roughness = 1.0
+[sub_resource type="StandardMaterial3D" id="snow"]
+albedo_color = Color(0.83, 0.9, 0.92, 1)
+roughness = 1.0
+[sub_resource type="CylinderMesh" id="tree"]
+material = SubResource("needles")
+top_radius = 0.0
+bottom_radius = 1.0
+height = 3.6
+radial_segments = 7
+rings = 1
+[sub_resource type="CylinderMesh" id="cap"]
+material = SubResource("snow")
+top_radius = 0.0
+bottom_radius = 0.87
+height = 2.55
+radial_segments = 7
+rings = 1
+
+[node name="SnowConiferPlaceholder" type="Node3D"]
+[node name="Tree" type="MeshInstance3D" parent="."]
+position = Vector3(0, 1.8, 0)
+mesh = SubResource("tree")
+[node name="SnowCap" type="MeshInstance3D" parent="."]
+position = Vector3(0, 2.55, 0)
+mesh = SubResource("cap")

@@ -11,17 +11,214 @@ try {
     if ($LASTEXITCODE -ne 0 -or $version -notmatch '^4\.7\.2\.stable\.') {
         throw "Expected Godot 4.7.2 stable; received '$version'."
     }
+    function Invoke-CheckedGodot([string[]] $EngineArguments) {
+        $savedPreference = $ErrorActionPreference
+        try {
+            $ErrorActionPreference = 'Continue'
+            $engineOutput = @(& $engine @EngineArguments 2>&1)
+            $engineExit = $LASTEXITCODE
+        } finally { $ErrorActionPreference = $savedPreference }
+        foreach ($line in $engineOutput) { Write-Host $line }
+        if ($engineExit -ne 0 -or ($engineOutput | Where-Object { $_.ToString() -match '^(SCRIPT ERROR|ERROR):' })) {
+            throw "Godot reported an engine/script error or a nonzero exit code ($engineExit)."
+        }
+    }
     Write-Host "Validating with Godot $version"
+    Write-Host 'Checking script ownership, references and UID continuity'
+    & python (Join-Path $PSScriptRoot 'check_script_ownership.py')
+    if ($LASTEXITCODE -ne 0) { throw 'Script ownership validation failed.' }
 
-    & $engine --headless --path $projectRoot --editor --import --quit
+
+    Invoke-CheckedGodot @('--headless', '--path', $projectRoot, '--editor', '--import', '--quit')
     if ($LASTEXITCODE -ne 0) { throw 'Godot import failed.' }
 
-    foreach ($suite in @('tests/smoke.gd', 'tests/world_generation.gd')) {
+    Write-Host 'Running tests/lab_plugin.gd'
+    Invoke-CheckedGodot @('--headless', '--path', $projectRoot, '--script', 'tests/lab_plugin.gd')
+    Write-Host 'Running tests/lab_bridge_protocol.gd'
+    Invoke-CheckedGodot @('--headless', '--path', $projectRoot, '--script', 'tests/lab_bridge_protocol.gd')
+    Write-Host 'Running tests/lab_sol_session.gd'
+    Invoke-CheckedGodot @('--headless', '--path', $projectRoot, '--script', 'tests/lab_sol_session.gd')
+    Write-Host 'Running tests/lab_plant_updates.gd'
+    Invoke-CheckedGodot @('--headless', '--path', $projectRoot, '--script', 'tests/lab_plant_updates.gd')
+    Write-Host 'Running tests/streaming_bounds.gd'
+    Invoke-CheckedGodot @('--headless', '--path', $projectRoot, '--script', 'tests/streaming_bounds.gd')
+    Write-Host 'Running tests/cell_preparation.gd'
+    Invoke-CheckedGodot @('--headless', '--path', $projectRoot, '--script', 'tests/cell_preparation.gd')
+    Write-Host 'Running tests/chunk_render_limits.gd'
+    Invoke-CheckedGodot @('--headless', '--path', $projectRoot, '--script', 'tests/chunk_render_limits.gd')
+    Write-Host 'Running tests/geography_preparation.gd'
+    Invoke-CheckedGodot @('--headless', '--path', $projectRoot, '--script', 'tests/geography_preparation.gd')
+    Write-Host 'Running tests/relief_query_optimization.gd'
+    Invoke-CheckedGodot @('--headless', '--path', $projectRoot, '--script', 'tests/relief_query_optimization.gd')
+
+    Write-Host 'Running tests/combat_arena_ui.gd'
+    Invoke-CheckedGodot @('--headless', '--path', $projectRoot, '--script', 'tests/combat_arena_ui.gd')
+    Write-Host 'Running tests/combat_action_budget.gd'
+    foreach ($alphaSuite in @('tests/nature_alpha_contracts.gd', 'tests/nature_field_actions.gd', 'tests/readiness_expedition.gd', 'tests/ambient_vastra.gd')) {
+        Write-Host "Running $alphaSuite"
+        Invoke-CheckedGodot @('--headless', '--path', $projectRoot, '--script', $alphaSuite)
+    }
+    Invoke-CheckedGodot @('--headless', '--path', $projectRoot, '--script', 'tests/combat_action_budget.gd')
+    Write-Host 'Running tests/early_combat_moves.gd'
+    Invoke-CheckedGodot @('--headless', '--path', $projectRoot, '--script', 'tests/early_combat_moves.gd')
+    Write-Host 'Running tests/audio_framework.gd'
+    Invoke-CheckedGodot @('--headless', '--path', $projectRoot, '--script', 'tests/audio_framework.gd')
+    Write-Host 'Running tests/plant_species.gd'
+    Invoke-CheckedGodot @('--headless', '--path', $projectRoot, '--script', 'tests/plant_species.gd')
+    Write-Host 'Running tests/flora_rarity.gd'
+    Invoke-CheckedGodot @('--headless', '--path', $projectRoot, '--script', 'tests/flora_rarity.gd')
+    Write-Host 'Running tests/plant_community.gd'
+    Invoke-CheckedGodot @('--headless', '--path', $projectRoot, '--script', 'tests/plant_community.gd')
+    Write-Host 'Running tests/plant_community_integration.gd'
+    Invoke-CheckedGodot @('--headless', '--path', $projectRoot, '--script', 'tests/plant_community_integration.gd')
+    Write-Host 'Running tests/plant_internal_spacing.gd'
+    Invoke-CheckedGodot @('--headless', '--path', $projectRoot, '--script', 'tests/plant_internal_spacing.gd')
+    Write-Host 'Running tests/wind_presentation.gd'
+    Invoke-CheckedGodot @('--headless', '--path', $projectRoot, '--script', 'tests/wind_presentation.gd')
+    Write-Host 'Running tests/foliage_generation_flow.gd'
+    Invoke-CheckedGodot @('--headless', '--path', $projectRoot, '--script', 'tests/foliage_generation_flow.gd')
+    Write-Host 'Running tests/distance_tiers.gd'
+    Invoke-CheckedGodot @('--headless', '--path', $projectRoot, '--script', 'tests/distance_tiers.gd')
+    Write-Host 'Running tests/vegetation_visual_queue.gd'
+    Invoke-CheckedGodot @('--headless', '--path', $projectRoot, '--script', 'tests/vegetation_visual_queue.gd')
+    Write-Host 'Running tests/leaf_reserve_links.gd'
+    Invoke-CheckedGodot @('--headless', '--path', $projectRoot, '--script', 'tests/leaf_reserve_links.gd')
+    Write-Host 'Running tests/foliage_rollout.gd'
+    Invoke-CheckedGodot @('--headless', '--path', $projectRoot, '--script', 'tests/foliage_rollout.gd')
+    Write-Host 'Running tests/foliage_geography.gd'
+    Invoke-CheckedGodot @('--headless', '--path', $projectRoot, '--script', 'tests/foliage_geography.gd')
+    Write-Host 'Running tests/plant_live_integration.gd'
+    Invoke-CheckedGodot @('--headless', '--path', $projectRoot, '--script', 'tests/plant_live_integration.gd')
+
+    foreach ($suite in @('tests/smoke.gd', 'tests/world_generation.gd', 'tests/solid_geometry.gd', 'tests/building_collision.gd', 'tests/presentation.gd', 'tests/persistent_foundation.gd', 'tests/human_vastra_activity.gd', 'tests/vastra_natural.gd', 'tests/plant_vastra.gd', 'tests/vessel_ecology.gd', 'tests/vastra_integration.gd', 'tests/vastra_currents.gd', 'tests/vastra_mist_flow.gd', 'tests/population_summary.gd', 'tests/inspector_tuning.gd', 'tests/authored_sightings.gd', 'tests/sol_observation.gd', 'tests/local_sol_reactions.gd', 'tests/encounter_initiation.gd', 'tests/first_playable_battle.gd', 'tests/combat_world_continuity.gd', 'tests/sol_orbs.gd', 'tests/affinity_moves.gd', 'tests/battle_feedback.gd', 'tests/wild_population_recovery.gd')) {
         Write-Host "Running $suite"
-        & $engine --headless --path $projectRoot --script $suite
+        Invoke-CheckedGodot @('--headless', '--path', $projectRoot, '--script', $suite)
         if ($LASTEXITCODE -ne 0) { throw "Validation failed: $suite" }
     }
-    Write-Host 'Import and both validation suites passed.'
+    Write-Host 'Running tests/sol_wandering.gd'
+    Invoke-CheckedGodot @('--headless', '--path', $projectRoot, '--script', 'tests/sol_wandering.gd')
+    Write-Host 'Running tests/sol_player_reactions.gd'
+    Invoke-CheckedGodot @('--headless', '--path', $projectRoot, '--script', 'tests/sol_player_reactions.gd')
+    Write-Host 'Running tests/sol_species_catalog.gd'
+    Invoke-CheckedGodot @('--headless', '--path', $projectRoot, '--script', 'tests/sol_species_catalog.gd')
+    Write-Host 'Running tests/sol_creature_models.gd'
+    Invoke-CheckedGodot @('--headless', '--path', $projectRoot, '--script', 'tests/sol_creature_models.gd')
+    Write-Host 'Running tests/sol_creature_fallback.gd'
+    Invoke-CheckedGodot @('--headless', '--path', $projectRoot, '--script', 'tests/sol_creature_fallback.gd')
+    Write-Host 'Running tests/sol_anatomy_batch.gd'
+    Invoke-CheckedGodot @('--headless', '--path', $projectRoot, '--script', 'tests/sol_anatomy_batch.gd')
+    Write-Host 'Running tests/sol_anatomy_integration.gd'
+    Invoke-CheckedGodot @('--headless', '--path', $projectRoot, '--script', 'tests/sol_anatomy_integration.gd', '--', '--species=sol_species_0008,sol_species_0011,sol_species_0012,sol_species_0013')
+    Write-Host 'Running tests/sol_class_coverage.gd'
+    Invoke-CheckedGodot @('--headless', '--path', $projectRoot, '--script', 'tests/sol_class_coverage.gd')
+    Write-Host 'Running tests/plant_sharing.gd'
+    Invoke-CheckedGodot @('--headless', '--path', $projectRoot, '--script', 'tests/plant_sharing.gd')
+    Write-Host 'Running tests/startup_gate.gd'
+    Invoke-CheckedGodot @('--headless', '--path', $projectRoot, '--script', 'tests/startup_gate.gd')
+    Write-Host 'Running tests/sol_procedural_ground.gd'
+    Invoke-CheckedGodot @('--headless', '--path', $projectRoot, '--script', 'tests/sol_procedural_ground.gd')
+    Write-Host 'Running tests/sol_air_water.gd'
+    Invoke-CheckedGodot @('--headless', '--path', $projectRoot, '--script', 'tests/sol_air_water.gd')
+    Write-Host 'Running tests/sol_ecology.gd'
+    Invoke-CheckedGodot @('--headless', '--path', $projectRoot, '--script', 'tests/sol_ecology.gd')
+    Write-Host 'Running tests/sol_behavior_hierarchy.gd'
+    Invoke-CheckedGodot @('--headless', '--path', $projectRoot, '--script', 'tests/sol_behavior_hierarchy.gd')
+    Write-Host 'Running tests/owned_companion.gd'
+    Invoke-CheckedGodot @('--headless', '--path', $projectRoot, '--script', 'tests/owned_companion.gd')
+    Write-Host 'Running tests/owned_companion_traversal.gd'
+    Invoke-CheckedGodot @('--headless', '--path', $projectRoot, '--script', 'tests/owned_companion_traversal.gd')
+    Write-Host 'Running tests/sol_game_rollout.gd'
+    Invoke-CheckedGodot @('--headless', '--path', $projectRoot, '--script', 'tests/sol_game_rollout.gd')
+    Write-Host 'Running tests/sol_natural_movement.gd'
+    Invoke-CheckedGodot @('--headless', '--path', $projectRoot, '--script', 'tests/sol_natural_movement.gd')
+    Write-Host 'Running tests/sol_activity.gd'
+    Invoke-CheckedGodot @('--headless', '--path', $projectRoot, '--script', 'tests/sol_activity.gd')
+    Write-Host 'Running tests/ai_seals_progression.gd'
+    Invoke-CheckedGodot @('--headless', '--path', $projectRoot, '--script', 'tests/ai_seals_progression.gd')
+    Write-Host 'Running tests/sol_stats_and_classes.gd'
+    Invoke-CheckedGodot @('--headless', '--path', $projectRoot, '--script', 'tests/sol_stats_and_classes.gd')
+    Write-Host 'Running tests/combat_polish.gd'
+    Invoke-CheckedGodot @('--headless', '--path', $projectRoot, '--script', 'tests/combat_polish.gd')
+    Write-Host 'Running tests/combat_sequencing.gd'
+    Invoke-CheckedGodot @('--headless', '--path', $projectRoot, '--script', 'tests/combat_sequencing.gd')
+    Write-Host 'Running tests/combat_consequences.gd'
+    Invoke-CheckedGodot @('--headless', '--path', $projectRoot, '--script', 'tests/combat_consequences.gd')
+    Write-Host 'Running tests/combat_pacing.gd'
+    Invoke-CheckedGodot @('--headless', '--path', $projectRoot, '--script', 'tests/combat_pacing.gd')
+    Write-Host 'Running tests/run_menu_layout.gd'
+    Invoke-CheckedGodot @('--headless', '--path', $projectRoot, '--script', 'tests/run_menu_layout.gd')
+    Write-Host 'Running tests/inspection_card.gd'
+    Invoke-CheckedGodot @('--headless', '--path', $projectRoot, '--script', 'tests/inspection_card.gd')
+    Write-Host 'Running tests/ui_playtest_blockers.gd'
+    Invoke-CheckedGodot @('--headless', '--path', $projectRoot, '--script', 'tests/ui_playtest_blockers.gd')
+    Write-Host 'Running tests/controller_expedition.gd'
+    Invoke-CheckedGodot @('--headless', '--path', $projectRoot, '--script', 'tests/controller_expedition.gd')
+    Write-Host 'Running tests/connected_polish.gd'
+    Invoke-CheckedGodot @('--headless', '--path', $projectRoot, '--script', 'tests/connected_polish.gd')
+    Write-Host 'Running tests/world_interactions.gd'
+    Invoke-CheckedGodot @('--headless', '--path', $projectRoot, '--script', 'tests/world_interactions.gd')
+    Write-Host 'Running tests/mouse_first_ui.gd'
+    Invoke-CheckedGodot @('--headless', '--path', $projectRoot, '--script', 'tests/mouse_first_ui.gd')
+    Write-Host 'Running tests/mouse_controls.gd'
+    Invoke-CheckedGodot @('--headless', '--path', $projectRoot, '--script', 'tests/mouse_controls.gd')
+    Write-Host 'Running tests/running.gd'
+    Invoke-CheckedGodot @('--headless', '--path', $projectRoot, '--script', 'tests/running.gd')
+    Write-Host 'Running tests/player_traversal.gd'
+    Invoke-CheckedGodot @('--headless', '--path', $projectRoot, '--script', 'tests/player_traversal.gd')
+    Write-Host 'Running tests/full_3d.gd'
+    Invoke-CheckedGodot @('--headless', '--path', $projectRoot, '--script', 'tests/full_3d.gd')
+    Write-Host 'Running tests/wilderness_presentation.gd'
+    Invoke-CheckedGodot @('--headless', '--path', $projectRoot, '--script', 'tests/wilderness_presentation.gd')
+    Write-Host 'Running tests/view_3d.gd'
+    Invoke-CheckedGodot @('--headless', '--path', $projectRoot, '--script', 'tests/view_3d.gd')
+    Write-Host 'Running tests/loading_regressions.gd'
+    Invoke-CheckedGodot @('--headless', '--path', $projectRoot, '--script', 'tests/loading_regressions.gd')
+    Write-Host 'Running tests/bottleneck_regressions.gd'
+    Invoke-CheckedGodot @('--headless', '--path', $projectRoot, '--script', 'tests/bottleneck_regressions.gd')
+    Write-Host 'Running tests/wetland_query_cache.gd'
+    Invoke-CheckedGodot @('--headless', '--path', $projectRoot, '--script', 'tests/wetland_query_cache.gd')
+    Write-Host 'Running tests/save_terrain_reuse.gd'
+    Invoke-CheckedGodot @('--headless', '--path', $projectRoot, '--script', 'tests/save_terrain_reuse.gd')
+    Write-Host 'Running tests/admission_work.gd'
+    Invoke-CheckedGodot @('--headless', '--path', $projectRoot, '--script', 'tests/admission_work.gd')
+    Write-Host 'Running tests/runtime_work_reuse.gd'
+    Invoke-CheckedGodot @('--headless', '--path', $projectRoot, '--script', 'tests/runtime_work_reuse.gd')
+    Write-Host 'Running tests/runtime_optimization.gd'
+    Invoke-CheckedGodot @('--headless', '--path', $projectRoot, '--script', 'tests/runtime_optimization.gd')
+    Write-Host 'Running tests/runtime_hot_paths.gd'
+    Invoke-CheckedGodot @('--headless', '--path', $projectRoot, '--script', 'tests/runtime_hot_paths.gd')
+    Write-Host 'Running tests/stutter_regressions.gd'
+    Invoke-CheckedGodot @('--headless', '--path', $projectRoot, '--script', 'tests/stutter_regressions.gd')
+    Write-Host 'Running tests/world_optimization.gd'
+    Invoke-CheckedGodot @('--headless', '--path', $projectRoot, '--script', 'tests/world_optimization.gd')
+    Write-Host 'Running tests/fog_horizon.gd'
+    Invoke-CheckedGodot @('--headless', '--path', $projectRoot, '--script', 'tests/fog_horizon.gd')
+    Write-Host 'Running tests/atmosphere.gd'
+    Invoke-CheckedGodot @('--headless', '--path', $projectRoot, '--script', 'tests/atmosphere.gd')
+    Write-Host 'Running tests/live_menu_window.gd'
+    Invoke-CheckedGodot @('--headless', '--path', $projectRoot, '--script', 'tests/live_menu_window.gd')
+    Write-Host 'Running tests/sol_menu.gd'
+    Invoke-CheckedGodot @('--headless', '--path', $projectRoot, '--script', 'tests/sol_menu.gd')
+    Write-Host 'Running tests/field_menu.gd'
+    Invoke-CheckedGodot @('--headless', '--path', $projectRoot, '--script', 'tests/field_menu.gd')
+    Write-Host 'Running tests/nature_composition.gd'
+    Invoke-CheckedGodot @('--headless', '--path', $projectRoot, '--script', 'tests/nature_composition.gd')
+    Write-Host 'Running tests/scenery_sites.gd'
+    Invoke-CheckedGodot @('--headless', '--path', $projectRoot, '--script', 'tests/scenery_sites.gd')
+    Write-Host 'Running tests/terrain_heightfield.gd'
+    Invoke-CheckedGodot @('--headless', '--path', $projectRoot, '--script', 'tests/terrain_heightfield.gd')
+    Write-Host 'Running tests/terrain_integration.gd'
+    Invoke-CheckedGodot @('--headless', '--path', $projectRoot, '--script', 'tests/terrain_integration.gd')
+    Write-Host 'Running tests/terrain_ray_optimization.gd'
+    Invoke-CheckedGodot @('--headless', '--path', $projectRoot, '--script', 'tests/terrain_ray_optimization.gd')
+    Write-Host 'Running tests/terrain_geography.gd'
+    Invoke-CheckedGodot @('--headless', '--path', $projectRoot, '--script', 'tests/terrain_geography.gd')
+    Write-Host 'Running tests/water_shoreline.gd'
+    Invoke-CheckedGodot @('--headless', '--path', $projectRoot, '--script', 'tests/water_shoreline.gd')
+    Write-Host 'Running smoke journey against solid 3D scene'
+    Invoke-CheckedGodot @('--headless', '--path', $projectRoot, '--script', 'tests/smoke.gd', '--', '--scene=res://scenes/world_3d.tscn')
+    if ($LASTEXITCODE -ne 0) { throw 'Solid 3D journey validation failed.' }
+    Write-Host 'Import, geometry, generation and both scene journeys passed.'
     exit 0
 }
 catch {

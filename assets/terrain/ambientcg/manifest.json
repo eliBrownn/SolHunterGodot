@@ -1,0 +1,845 @@
+{
+  "provider": "ambientCG / Lennart Demes",
+  "license": "CC0-1.0",
+  "license_source": "https://docs.ambientcg.com/license/",
+  "resolution": "2K-JPG",
+  "assets": [
+    {
+      "id": "Grass001",
+      "source": "https://ambientcg.com/a/Grass001",
+      "download": "https://ambientcg.com/get?file=Grass001_2K-JPG.zip",
+      "archive_bytes": 38930280,
+      "archive_sha256": "a47570077b55f260a6c54890a560087caffb9eb8b2b78a84f8247ba1966d7d1d",
+      "files": [
+        {
+          "path": "grass001/Grass001_2K-JPG.usdc",
+          "bytes": 2966,
+          "sha256": "46c1e1769e3aa08e243eeaca333f83799e35676aeabc490794942ee960c3e85f"
+        },
+        {
+          "path": "grass001/Grass001_2K-JPG_AmbientOcclusion.jpg",
+          "bytes": 3644975,
+          "sha256": "7aa2c5ac4db77005b92bed77399189c9219300ada2f3d86c3c0fea51bba5a3f1"
+        },
+        {
+          "path": "grass001/Grass001_2K-JPG_Color.jpg",
+          "bytes": 6953345,
+          "sha256": "8a8bfcffd087134caad2a7def216f3dd2d307fbe02340ca47e3c5c71f49d50b4"
+        },
+        {
+          "path": "grass001/Grass001_2K-JPG_Displacement.jpg",
+          "bytes": 3460522,
+          "sha256": "1c6b8ad765f374958cc3fb35e4965830d3f967ec5764957d913c07494d8ea12d"
+        },
+        {
+          "path": "grass001/Grass001_2K-JPG_NormalDX.jpg",
+          "bytes": 9975086,
+          "sha256": "26343d7d725a2d5e3f82d0c3fbc9319f517715df08297a4ee42c96dde88815c7"
+        },
+        {
+          "path": "grass001/Grass001_2K-JPG_NormalGL.jpg",
+          "bytes": 9979388,
+          "sha256": "7ccaf9e28ea7a533e590c2e07a39e141017a5a5db8b7241730a3c287c540e881"
+        },
+        {
+          "path": "grass001/Grass001_2K-JPG_Roughness.jpg",
+          "bytes": 3286058,
+          "sha256": "2a2a3f9220a351f14858075d4c6ba1ff7fde8bedd7009c94cb432bc2b9a362e4"
+        },
+        {
+          "path": "grass001/Grass001_2K-JPG.blend",
+          "bytes": 1109012,
+          "sha256": "bfcbf5afe4e4a5ee6c94299901f67c37e77ef4e45929deb21bdfac5d15611f56"
+        },
+        {
+          "path": "grass001/Grass001_2K-JPG.mtlx",
+          "bytes": 2257,
+          "sha256": "f36528e236c247acd62c7e2a8458b9cc76f33409fee9eca0a395f6d38081fb2a"
+        },
+        {
+          "path": "grass001/Grass001_2K-JPG.tres",
+          "bytes": 1015,
+          "sha256": "fb500e7975631aa5e1029008e0dd9673008604ad163e5f486370729248c3b338"
+        },
+        {
+          "path": "grass001/Grass001.png",
+          "bytes": 513474,
+          "sha256": "84a3be21509aad8878c2fbdbcfccfe3fc83c00c98b05f8ea7c37e9a54ac937c6"
+        }
+      ]
+    },
+    {
+      "id": "Grass004",
+      "source": "https://ambientcg.com/a/Grass004",
+      "download": "https://ambientcg.com/get?file=Grass004_2K-JPG.zip",
+      "archive_bytes": 39900302,
+      "archive_sha256": "d7d3f08e8bb1e59aed0c3dbb85ea0b46d5308481f89b6a3fd62c0ec9e862245b",
+      "files": [
+        {
+          "path": "grass004/Grass004_2K-JPG.usdc",
+          "bytes": 2969,
+          "sha256": "665e52e00a4bad2580d23f4f27395d70f6ea2b918b6e3bf5283147064c941ff4"
+        },
+        {
+          "path": "grass004/Grass004_2K-JPG_AmbientOcclusion.jpg",
+          "bytes": 3659925,
+          "sha256": "0f9180993db4c7b9479ad2a4b65763d90e8668fb7e800baff68cac1883a9dff5"
+        },
+        {
+          "path": "grass004/Grass004_2K-JPG_Color.jpg",
+          "bytes": 7644307,
+          "sha256": "735b141c8f1972e70a45879424f1238fea9f887324173097785f4ac36e67e9a3"
+        },
+        {
+          "path": "grass004/Grass004_2K-JPG_Displacement.jpg",
+          "bytes": 3491166,
+          "sha256": "7b3f8f545fad85bd980330dc29bb59fc5c76ea3099fb1ef2a29fb1d916f602c9"
+        },
+        {
+          "path": "grass004/Grass004_2K-JPG_NormalDX.jpg",
+          "bytes": 10011482,
+          "sha256": "8681bb16df1050d50053b38a5a24aa1d235ce35e1888fcbff8a97a1dd11bf034"
+        },
+        {
+          "path": "grass004/Grass004_2K-JPG_NormalGL.jpg",
+          "bytes": 10015079,
+          "sha256": "15ccad231764049d6581a52076d02bb6b627df77895cb0508e4017d8a4877fef"
+        },
+        {
+          "path": "grass004/Grass004_2K-JPG_Roughness.jpg",
+          "bytes": 3413801,
+          "sha256": "c449fdf1e779eb7be5a19c1d58ee28cc155ed0523a141b151f3cbc843c4ae2e3"
+        },
+        {
+          "path": "grass004/Grass004_2K-JPG.blend",
+          "bytes": 1109012,
+          "sha256": "d8cbb65c8a9949b50efadc237bba88c3af16d9549a43c7a7e2fbd26962f9afcb"
+        },
+        {
+          "path": "grass004/Grass004_2K-JPG.mtlx",
+          "bytes": 2257,
+          "sha256": "2cde288cf2966f6fc27994e017728fa472f0707ad732388ec97db9cfc397b0ba"
+        },
+        {
+          "path": "grass004/Grass004_2K-JPG.tres",
+          "bytes": 1015,
+          "sha256": "39b9d9cb5fcd5972f2442d94ffd17e1c292cd737a423c3cd9717f73aded124ac"
+        },
+        {
+          "path": "grass004/Grass004.png",
+          "bytes": 546989,
+          "sha256": "14f62961dadd53dc3f6fce716c4aed1ce4c2c7e63a9d3d0117f38d2bd5e74762"
+        }
+      ]
+    },
+    {
+      "id": "Grass005",
+      "source": "https://ambientcg.com/a/Grass005",
+      "download": "https://ambientcg.com/get?file=Grass005_2K-JPG.zip",
+      "archive_bytes": 39523019,
+      "archive_sha256": "89183d8dceabc3c23a26978f426e1662143dd2f84f1dc3586a1592d101e5234b",
+      "files": [
+        {
+          "path": "grass005/Grass005_2K-JPG.usdc",
+          "bytes": 2995,
+          "sha256": "7964f7200f624bca4ad0e047e5052e6f2def53f57fee784e2017af0340c18cc4"
+        },
+        {
+          "path": "grass005/Grass005_2K-JPG_AmbientOcclusion.jpg",
+          "bytes": 4167608,
+          "sha256": "cfb633134b164b376c9cbbd06774c6465570e3f156caa8ece080104ac00c7d09"
+        },
+        {
+          "path": "grass005/Grass005_2K-JPG_Color.jpg",
+          "bytes": 7710363,
+          "sha256": "2acdf15d09e790a114743f21bc0332a86e386cb77c54507323d626f67f0f2e10"
+        },
+        {
+          "path": "grass005/Grass005_2K-JPG_Displacement.jpg",
+          "bytes": 3275876,
+          "sha256": "b58d794d468457cc0e57539fde2bb55905e85d1af3fd692afc0fb064d870937e"
+        },
+        {
+          "path": "grass005/Grass005_2K-JPG_NormalDX.jpg",
+          "bytes": 9636597,
+          "sha256": "d3b852042a4b314dbefc2d1738d10d2573fc54c10c93ba98a8bbc8fa5432405e"
+        },
+        {
+          "path": "grass005/Grass005_2K-JPG_NormalGL.jpg",
+          "bytes": 9634506,
+          "sha256": "c8406e8b784fbcd22d706fbe0c24175c327bca7e19ad8d09457fad8a05089548"
+        },
+        {
+          "path": "grass005/Grass005_2K-JPG_Roughness.jpg",
+          "bytes": 3473702,
+          "sha256": "20c302c4cf059d6676d83528ae7cbf62ca35944e691dc6377a164ce9c31c8e67"
+        },
+        {
+          "path": "grass005/Grass005_2K-JPG.blend",
+          "bytes": 1109428,
+          "sha256": "daab58b8f18539c88dbf59fe0f0676c2ca60045cf7585012c5f93e4424a2ca65"
+        },
+        {
+          "path": "grass005/Grass005_2K-JPG.mtlx",
+          "bytes": 2257,
+          "sha256": "644c4bbb67da343c405ffbd2e5a83982303a8e3c7ee9972b9eeec39267d35502"
+        },
+        {
+          "path": "grass005/Grass005_2K-JPG.tres",
+          "bytes": 1015,
+          "sha256": "222424d6377717685609e9e9184a0a49ee83ffb54c0822831a49d71a7204a233"
+        },
+        {
+          "path": "grass005/Grass005.png",
+          "bytes": 506576,
+          "sha256": "55f99b897f6bf0c6e43bd05fcadcc0c3b1b36f78e216df0e790eec4ff3c711e6"
+        }
+      ]
+    },
+    {
+      "id": "Ground019",
+      "source": "https://ambientcg.com/a/Ground019",
+      "download": "https://ambientcg.com/get?file=Ground019_2K-JPG.zip",
+      "archive_bytes": 34363004,
+      "archive_sha256": "253aa6ee4b97a2302b4b1b43d31701f9714619f9f8db385c98c5dd22a5c5e2e7",
+      "files": [
+        {
+          "path": "ground019/Ground019_2K-JPG.usdc",
+          "bytes": 3010,
+          "sha256": "d44c6c74cf5760023c460c8a34b7f5db1339665c5cf477838a4a3daf9f4ff0c5"
+        },
+        {
+          "path": "ground019/Ground019_2K-JPG_AmbientOcclusion.jpg",
+          "bytes": 2480888,
+          "sha256": "9494ee3b048b3cf10bde5771f092f2ae5d117a88fc9695b439fed9ac31603855"
+        },
+        {
+          "path": "ground019/Ground019_2K-JPG_Color.jpg",
+          "bytes": 6589550,
+          "sha256": "3a612087b15f8cb78b1fd40dc45f283ee4e477391ae64b8fa876f690bf7cfdc1"
+        },
+        {
+          "path": "ground019/Ground019_2K-JPG_Displacement.jpg",
+          "bytes": 1824349,
+          "sha256": "6e19f16b5938ea026f8ef7bc7cb6e06b74beef99d4ee4712d315cba3ce1d686f"
+        },
+        {
+          "path": "ground019/Ground019_2K-JPG_NormalDX.jpg",
+          "bytes": 9477866,
+          "sha256": "67f5e792b2406091037bf5690eb502c21d65a7583ac2235db5fc8e7f655873b6"
+        },
+        {
+          "path": "ground019/Ground019_2K-JPG_NormalGL.jpg",
+          "bytes": 9475105,
+          "sha256": "f1c4aac873fe6845e033978d8f93a2293154e4474fb06deb4f446c7830994ac4"
+        },
+        {
+          "path": "ground019/Ground019_2K-JPG_Roughness.jpg",
+          "bytes": 2877163,
+          "sha256": "f15414ea3ad7faeb23fef19882b128f696338df320f16bb45dd75fefe9429353"
+        },
+        {
+          "path": "ground019/Ground019_2K-JPG.blend",
+          "bytes": 1109636,
+          "sha256": "d55ec45924f3969678e0ec6e1ebc32f1d3a34ffd549b6a46f70bb2fd645d1b7e"
+        },
+        {
+          "path": "ground019/Ground019_2K-JPG.mtlx",
+          "bytes": 2272,
+          "sha256": "40a83d51574104a61e83768478bd25e310b08645a60e8500cc52258183040785"
+        },
+        {
+          "path": "ground019/Ground019_2K-JPG.tres",
+          "bytes": 1020,
+          "sha256": "c9df5c30f0c028a9fa4ae07928612cfb759ba6775acb35cb47785b0a43b53ca0"
+        },
+        {
+          "path": "ground019/Ground019.png",
+          "bytes": 520081,
+          "sha256": "9286cbdc3383f03da559637effcd407e1438b17af07166f9dfd82070133f827c"
+        }
+      ]
+    },
+    {
+      "id": "Ground037",
+      "source": "https://ambientcg.com/a/Ground037",
+      "download": "https://ambientcg.com/get?file=Ground037_2K-JPG.zip",
+      "archive_bytes": 37874033,
+      "archive_sha256": "defa9f880ec692eb3ef5435fd7bc7b8721c0d577f7824ea18ac68537f01ab65b",
+      "files": [
+        {
+          "path": "ground037/Ground037_2K-JPG.usdc",
+          "bytes": 2982,
+          "sha256": "bb69c0da69c3c79ddec436dceaab7a5a146a5943a0e6d66e0b086d8e26103acc"
+        },
+        {
+          "path": "ground037/Ground037_2K-JPG_AmbientOcclusion.jpg",
+          "bytes": 2102448,
+          "sha256": "f8529644aff137ccc4566b7304b3e55b97bc4a8a1ada3aa92d4f5f42dac6e687"
+        },
+        {
+          "path": "ground037/Ground037_2K-JPG_Color.jpg",
+          "bytes": 8674228,
+          "sha256": "86af35a54593548543a291a54bddfd3568fd90268f8f65d0f8e743b37d714782"
+        },
+        {
+          "path": "ground037/Ground037_2K-JPG_Displacement.jpg",
+          "bytes": 1721182,
+          "sha256": "265716730968d421d685209f8155d65f3d4502e98ecd07d87ac514e5baa3762d"
+        },
+        {
+          "path": "ground037/Ground037_2K-JPG_NormalDX.jpg",
+          "bytes": 10344770,
+          "sha256": "0876e5e70deb91a8bb1db1e44df1e82016d8e360f3406a53b8a4e25e378b006d"
+        },
+        {
+          "path": "ground037/Ground037_2K-JPG_NormalGL.jpg",
+          "bytes": 10341826,
+          "sha256": "99743f03f5f818d4a0ee3dca289d5c6f125b1e05f1e624a541455e2f7fb29eec"
+        },
+        {
+          "path": "ground037/Ground037_2K-JPG_Roughness.jpg",
+          "bytes": 3058522,
+          "sha256": "5484c117706e5937afa103c82795cbacb6c3b76d1a056b47942ca91d00efbbb9"
+        },
+        {
+          "path": "ground037/Ground037_2K-JPG.blend",
+          "bytes": 1109220,
+          "sha256": "3fc61d48bb4f99d6d7ed55d2e429655f0a9ec3acbd8b6b0b947a198b8873fa88"
+        },
+        {
+          "path": "ground037/Ground037_2K-JPG.mtlx",
+          "bytes": 2272,
+          "sha256": "c3376f925071e5adc024505fb6a6d33f5bd765d2973d1eed8a03b3f12089c1c2"
+        },
+        {
+          "path": "ground037/Ground037_2K-JPG.tres",
+          "bytes": 1020,
+          "sha256": "062a0cadad560b29980dc5f622dbe2d3ae8324c301559af8fcd77ad478474e56"
+        },
+        {
+          "path": "ground037/Ground037.png",
+          "bytes": 513329,
+          "sha256": "c84e7babaa1a8375d3f80669deda8e2df06b4ab6d548fb087503cc7925976c8f"
+        }
+      ]
+    },
+    {
+      "id": "Ground048",
+      "source": "https://ambientcg.com/a/Ground048",
+      "download": "https://ambientcg.com/get?file=Ground048_2K-JPG.zip",
+      "archive_bytes": 38873290,
+      "archive_sha256": "8219d18b030f1b930002b35e719432997ac6356f7e100d9d5c3474d3a2965272",
+      "files": [
+        {
+          "path": "ground048/Ground048_2K-JPG.usdc",
+          "bytes": 2979,
+          "sha256": "3ca98e4fa2e3f12f12c1efea92870bb4fe7aed1f472fcea849fabe49446d3e79"
+        },
+        {
+          "path": "ground048/Ground048_2K-JPG_AmbientOcclusion.jpg",
+          "bytes": 3482177,
+          "sha256": "d98b5639dbfa583ec17c4572a22d7a01d606c8219749bab85c77fd11defd8bee"
+        },
+        {
+          "path": "ground048/Ground048_2K-JPG_Color.jpg",
+          "bytes": 8557668,
+          "sha256": "318d8a406a954234f9e8715d74913fcab39d5f736f0a85c18d25b6d437c1a0d1"
+        },
+        {
+          "path": "ground048/Ground048_2K-JPG_Displacement.jpg",
+          "bytes": 2270498,
+          "sha256": "49a6f9a05074963f579c2045c2c755468a2bc3c7af818fdd841add8acb3a20bc"
+        },
+        {
+          "path": "ground048/Ground048_2K-JPG_NormalDX.jpg",
+          "bytes": 10148551,
+          "sha256": "1e75c6344f51fcc42b7c8e6949cd5cd7db867bb9f9a76f592f45851add6f1f5a"
+        },
+        {
+          "path": "ground048/Ground048_2K-JPG_NormalGL.jpg",
+          "bytes": 10144107,
+          "sha256": "55ecc35cd86e1d6ee484de4aa4999fcc5bc36308ade0863ff08b6cd12d190f7d"
+        },
+        {
+          "path": "ground048/Ground048_2K-JPG_Roughness.jpg",
+          "bytes": 2649482,
+          "sha256": "f4703745b49ca4f6561a38f4fbd64b546c773e3e381f6465827359a7dc486030"
+        },
+        {
+          "path": "ground048/Ground048_2K-JPG.blend",
+          "bytes": 1109220,
+          "sha256": "1b64412ab301ab0528b10f948f8ef9fe05723f14d8b2366e0f43d248e2d2b7b8"
+        },
+        {
+          "path": "ground048/Ground048_2K-JPG.mtlx",
+          "bytes": 2272,
+          "sha256": "5ab65c71d183f8aefcac3e670dfd44004fd16415dc08c9c0c556be5cf40f2146"
+        },
+        {
+          "path": "ground048/Ground048_2K-JPG.tres",
+          "bytes": 1020,
+          "sha256": "52af4451b96f37c5cedfbd71cc87c0d7899b923cc339519bf89c4fb89d136897"
+        },
+        {
+          "path": "ground048/Ground048.png",
+          "bytes": 503146,
+          "sha256": "3013501d9c6605f0c129dfb9800fe969ada7f2947425d5f9782e74003958634f"
+        }
+      ]
+    },
+    {
+      "id": "Ground054",
+      "source": "https://ambientcg.com/a/Ground054",
+      "download": "https://ambientcg.com/get?file=Ground054_2K-JPG.zip",
+      "archive_bytes": 32987812,
+      "archive_sha256": "643e7c8689bac041f17c660eff6a5459bfe0535d4466737beb0e64902b23235a",
+      "files": [
+        {
+          "path": "ground054/Ground054_2K-JPG.usdc",
+          "bytes": 2997,
+          "sha256": "5cbdd3ca23b8395da81b14132ad669d50adb518929040efb79b61dd8cfd6f9dc"
+        },
+        {
+          "path": "ground054/Ground054_2K-JPG_AmbientOcclusion.jpg",
+          "bytes": 2291629,
+          "sha256": "e2492e2ced9a853de4cf3a904848dff90c92d22e7545d0e941c4d0273670270c"
+        },
+        {
+          "path": "ground054/Ground054_2K-JPG_Color.jpg",
+          "bytes": 6859366,
+          "sha256": "9f9459ae378584f568c9da887a30ab5987890df422af5a157763a51992e61245"
+        },
+        {
+          "path": "ground054/Ground054_2K-JPG_Displacement.jpg",
+          "bytes": 1296415,
+          "sha256": "d4b7d6852246637352c58875d147f051cdde1ff58b44d14109471b1a9e062113"
+        },
+        {
+          "path": "ground054/Ground054_2K-JPG_NormalDX.jpg",
+          "bytes": 9053784,
+          "sha256": "9e20a41c6dde507de86f2f01115543e789c80ef891ea6f84393da6b175604cde"
+        },
+        {
+          "path": "ground054/Ground054_2K-JPG_NormalGL.jpg",
+          "bytes": 9053937,
+          "sha256": "39fd2827adfdd4fe53ad58d3ebcae686f789eb9f171d996de8356431ec6fc90d"
+        },
+        {
+          "path": "ground054/Ground054_2K-JPG_Roughness.jpg",
+          "bytes": 2896658,
+          "sha256": "2f977986be51d4e07e7a3a03051e49049f9c94cefb0246a714400d2a076c8044"
+        },
+        {
+          "path": "ground054/Ground054_2K-JPG.blend",
+          "bytes": 1109428,
+          "sha256": "37959b02006544cdee2e1e3f877f30d5310b74010db0d26d9f17fb97e33f8916"
+        },
+        {
+          "path": "ground054/Ground054_2K-JPG.mtlx",
+          "bytes": 2272,
+          "sha256": "fa4f1bbe6606a0b739da4c9cf0fdd74b55f4a93ef1b7b417bf66cf32ddb6ade3"
+        },
+        {
+          "path": "ground054/Ground054_2K-JPG.tres",
+          "bytes": 1020,
+          "sha256": "80e9293ec8e42729d31a391183d341ff3fdaa989454b456413c72e1fc80c502e"
+        },
+        {
+          "path": "ground054/Ground054.png",
+          "bytes": 418224,
+          "sha256": "c7c09a613efeb06ccd5e60224194af9d6969abad3a175ff1c16dc677f2fcf19c"
+        }
+      ]
+    },
+    {
+      "id": "Rock020",
+      "source": "https://ambientcg.com/a/Rock020",
+      "download": "https://ambientcg.com/get?file=Rock020_2K-JPG.zip",
+      "archive_bytes": 27420393,
+      "archive_sha256": "e769d6563a137b3d437c7c538fefeea8198f8de41d3b58913a5f4480c0ea27d2",
+      "files": [
+        {
+          "path": "rock020/Rock020_2K-JPG.usdc",
+          "bytes": 2992,
+          "sha256": "82e73a2c3299a4f48d05d26b448a01796754e46f5e8252945f23a6beb19f9f18"
+        },
+        {
+          "path": "rock020/Rock020_2K-JPG_AmbientOcclusion.jpg",
+          "bytes": 1329803,
+          "sha256": "44e505a8bed34646c4cadcc652a38be8e4923c32afe23c95ff2854f6e022168d"
+        },
+        {
+          "path": "rock020/Rock020_2K-JPG_Color.jpg",
+          "bytes": 5533024,
+          "sha256": "ee15cc074f433b482657bbd2333d31da2f4a10650d67a72f8999c6edd3174bac"
+        },
+        {
+          "path": "rock020/Rock020_2K-JPG_Displacement.jpg",
+          "bytes": 830129,
+          "sha256": "e4fbb7446fd27b18038c16be73d86341bd92276ef79df2bccadcc2e4574b6844"
+        },
+        {
+          "path": "rock020/Rock020_2K-JPG_NormalDX.jpg",
+          "bytes": 8016932,
+          "sha256": "b526393f597d7c9d25d2aa3312ed3350127cd9b2044e57588f305ee62a774a15"
+        },
+        {
+          "path": "rock020/Rock020_2K-JPG_NormalGL.jpg",
+          "bytes": 7988493,
+          "sha256": "957d89e181eaf07de8ac2b86cf142dd7d0af7be7325b65b13f203e9faabcba05"
+        },
+        {
+          "path": "rock020/Rock020_2K-JPG_Roughness.jpg",
+          "bytes": 2247270,
+          "sha256": "b70970d40ae4913498a3aecb3361cff444f88d2325f8da4d06b96c2019b574d5"
+        },
+        {
+          "path": "rock020/Rock020_2K-JPG.blend",
+          "bytes": 1109428,
+          "sha256": "b4aeb668fd3be03a670060be168161d8d5e39c0c7821757cecb77016b73a653f"
+        },
+        {
+          "path": "rock020/Rock020_2K-JPG.mtlx",
+          "bytes": 2242,
+          "sha256": "f4ad266c0d4400b6a7b882bd621f54b98bb622dadbedd8398e88136195674ac1"
+        },
+        {
+          "path": "rock020/Rock020_2K-JPG.tres",
+          "bytes": 1010,
+          "sha256": "2dbfc817933491ac199282a973282669da1f7937c542f93c9e29ed839ad5be43"
+        },
+        {
+          "path": "rock020/Rock020.png",
+          "bytes": 356974,
+          "sha256": "e6704a8e306d5a419ebc248c322656c94ec1752af0c2ea8bdce5ef219140d4e9"
+        }
+      ]
+    },
+    {
+      "id": "Rock028",
+      "source": "https://ambientcg.com/a/Rock028",
+      "download": "https://ambientcg.com/get?file=Rock028_2K-JPG.zip",
+      "archive_bytes": 32603118,
+      "archive_sha256": "38dcda3dffed92845fd4bca303c4934fcee5b87a929f7f760afa98b9a93bad45",
+      "files": [
+        {
+          "path": "rock028/Rock028_2K-JPG.usdc",
+          "bytes": 3000,
+          "sha256": "a716cc902243305f846d5244d39d9492b8650219ce6b2da8f5b585835abc3b3e"
+        },
+        {
+          "path": "rock028/Rock028_2K-JPG_AmbientOcclusion.jpg",
+          "bytes": 1766867,
+          "sha256": "3558ffb4641bd8f1946780c176b6bd8572c18e184983f06a5440e1332cefb384"
+        },
+        {
+          "path": "rock028/Rock028_2K-JPG_Color.jpg",
+          "bytes": 5706131,
+          "sha256": "b3cc1621eedaba64812694b64185e8b37601b0524d113ae4cfd5768397466816"
+        },
+        {
+          "path": "rock028/Rock028_2K-JPG_Displacement.jpg",
+          "bytes": 839966,
+          "sha256": "7b68e68198e38a1d5f58422c7fa49a39b2d1aa7dc73b9ebf2bd890d62bb201f9"
+        },
+        {
+          "path": "rock028/Rock028_2K-JPG_NormalDX.jpg",
+          "bytes": 9983635,
+          "sha256": "b2ddc9edf7433dddbc70e84003b469ae1320b75b1b42f92adf4fbfe77669273c"
+        },
+        {
+          "path": "rock028/Rock028_2K-JPG_NormalGL.jpg",
+          "bytes": 10037203,
+          "sha256": "93e8365fb8c4a497e67123b93bc35e3a779c895b1ea6343c2616d71b625cad7a"
+        },
+        {
+          "path": "rock028/Rock028_2K-JPG_Roughness.jpg",
+          "bytes": 2736640,
+          "sha256": "9926f6cdd47cd54abd81c0e1d9b14644753d12c289206913ba4151a7e2c72379"
+        },
+        {
+          "path": "rock028/Rock028_2K-JPG.blend",
+          "bytes": 1109428,
+          "sha256": "7be5e024e1dddbce58cc0d0e2b0585a1192674a1b20bcd680ec3c2fd172e3d12"
+        },
+        {
+          "path": "rock028/Rock028_2K-JPG.mtlx",
+          "bytes": 2242,
+          "sha256": "7b332ed64966cbe62e226b1c7b4a85049bb2e4d2ce5392b5708fd3f3af316983"
+        },
+        {
+          "path": "rock028/Rock028_2K-JPG.tres",
+          "bytes": 1010,
+          "sha256": "b3a9d6f5d3303134d1e939627dd51d7667a755246623780582746ae7f721ef30"
+        },
+        {
+          "path": "rock028/Rock028.png",
+          "bytes": 414898,
+          "sha256": "48a105903956e116d90bf6e521f0fbc4e1f49b679dcfd3e7bb675a1f5d7cb197"
+        }
+      ]
+    },
+    {
+      "id": "Rock029",
+      "source": "https://ambientcg.com/a/Rock029",
+      "download": "https://ambientcg.com/get?file=Rock029_2K-JPG.zip",
+      "archive_bytes": 33402916,
+      "archive_sha256": "88ae30780d19bda3577503df76fda3e2e1c01076f1e76a1d76d6dcd630d48fe2",
+      "files": [
+        {
+          "path": "rock029/Rock029_2K-JPG.usdc",
+          "bytes": 3008,
+          "sha256": "22a2b586d901cdcbc10e1a804ca108ce4fa352b919d0c0a9718db1348ca6d2fd"
+        },
+        {
+          "path": "rock029/Rock029_2K-JPG_AmbientOcclusion.jpg",
+          "bytes": 2073150,
+          "sha256": "6ace46d7e10b47dda4341ab93a1923d79ba2de2ec40b1ce28bdfd12c1b7e326d"
+        },
+        {
+          "path": "rock029/Rock029_2K-JPG_Color.jpg",
+          "bytes": 6431872,
+          "sha256": "9e6d95f5a5859109ee8ae04222de499e1761cfe1a39411f95676a59e79657753"
+        },
+        {
+          "path": "rock029/Rock029_2K-JPG_Displacement.jpg",
+          "bytes": 811546,
+          "sha256": "136f488d381e7031da7819b61df6a81bf92ab1337f2a6552a11963e4a0d8d7d3"
+        },
+        {
+          "path": "rock029/Rock029_2K-JPG_NormalDX.jpg",
+          "bytes": 10110450,
+          "sha256": "d03355f472f195fee20298795ee0ed8b1d6bfd1bcd022c96cd7134e70062bed1"
+        },
+        {
+          "path": "rock029/Rock029_2K-JPG_NormalGL.jpg",
+          "bytes": 10138137,
+          "sha256": "7fabd41db3f6a6a19053191d5a518031d22b52fc7dc3cbd81794d2484e80cb92"
+        },
+        {
+          "path": "rock029/Rock029_2K-JPG_Roughness.jpg",
+          "bytes": 2324777,
+          "sha256": "ecf17721cc8af9565904d9fef7ce7e0017e1241b8254b9d45562ecfcb6cd1181"
+        },
+        {
+          "path": "rock029/Rock029_2K-JPG.blend",
+          "bytes": 1109636,
+          "sha256": "3de65d711156eaf14222b79651cfb4c4cad83569a625b5d6491b4f1d10c18775"
+        },
+        {
+          "path": "rock029/Rock029_2K-JPG.mtlx",
+          "bytes": 2242,
+          "sha256": "6398f4433d95f9ed6070b73d92167ce3b8987e7a8778b90a7e3ef44f9e4c2475"
+        },
+        {
+          "path": "rock029/Rock029_2K-JPG.tres",
+          "bytes": 1010,
+          "sha256": "1a1bee7733d5020cb27194f016f5f58645a61b9e141ee0d0f40be7f93573805f"
+        },
+        {
+          "path": "rock029/Rock029.png",
+          "bytes": 394978,
+          "sha256": "2ce9fe212eaa384b3d350463167a3004057fb9cebd1c55811a927b807a6656b7"
+        }
+      ]
+    },
+    {
+      "id": "Rock030",
+      "source": "https://ambientcg.com/a/Rock030",
+      "download": "https://ambientcg.com/get?file=Rock030_2K-JPG.zip",
+      "archive_bytes": 33491328,
+      "archive_sha256": "18992ddc09f8f0cc60eceb875243c0c2449666c662ab7fedbd8bdea4b3d15a99",
+      "files": [
+        {
+          "path": "rock030/Rock030_2K-JPG.usdc",
+          "bytes": 2996,
+          "sha256": "9f583c0a65f36d64c31c786937d3c508a7c6d97f7bfa858929fd64562b1d8d2c"
+        },
+        {
+          "path": "rock030/Rock030_2K-JPG_AmbientOcclusion.jpg",
+          "bytes": 2102489,
+          "sha256": "f430913d66ff94e55c384d006e0365808b304dee513db4c27eeab49385c1c265"
+        },
+        {
+          "path": "rock030/Rock030_2K-JPG_Color.jpg",
+          "bytes": 5905796,
+          "sha256": "c7169827afa47148833a3d778bd2827f12b124852efcabf3364910b1cb6d4beb"
+        },
+        {
+          "path": "rock030/Rock030_2K-JPG_Displacement.jpg",
+          "bytes": 950184,
+          "sha256": "f78b29522ae74863c11435038efbe4795e36276cacc4823d91d754a3d04b3509"
+        },
+        {
+          "path": "rock030/Rock030_2K-JPG_NormalDX.jpg",
+          "bytes": 10228560,
+          "sha256": "c825dedeb63d47b7f235341543f3f9fe8d10727993e5e5efac6dd9cd13869c04"
+        },
+        {
+          "path": "rock030/Rock030_2K-JPG_NormalGL.jpg",
+          "bytes": 10244967,
+          "sha256": "bf4b029b98fc771887e80807e28f97488c3a8936369152bd1020b2535415a5af"
+        },
+        {
+          "path": "rock030/Rock030_2K-JPG_Roughness.jpg",
+          "bytes": 2506870,
+          "sha256": "a057169aa693438170a969249eb7e1113078f04c38b3fc2766fdccf21d5a918f"
+        },
+        {
+          "path": "rock030/Rock030_2K-JPG.blend",
+          "bytes": 1109428,
+          "sha256": "e9318a3d76425720bde59f2fc0baa2ec9845acb8d7f0bafe7ef49a48b03a608c"
+        },
+        {
+          "path": "rock030/Rock030_2K-JPG.mtlx",
+          "bytes": 2242,
+          "sha256": "d27eff5f41d2365ff737f6407b84cfa93a78ee9de8661bd3eca3054ea7e34c43"
+        },
+        {
+          "path": "rock030/Rock030_2K-JPG.tres",
+          "bytes": 1010,
+          "sha256": "a127dd98fe8b2cd7124be96a768281e244bd113ac2eef5ca7d51f291aef98744"
+        },
+        {
+          "path": "rock030/Rock030.png",
+          "bytes": 434696,
+          "sha256": "2165d5fe3e6eb4b75439196b99fb9f4478eb9332bada7b5e0ecd236204613c2d"
+        }
+      ]
+    },
+    {
+      "id": "Rock035",
+      "source": "https://ambientcg.com/a/Rock035",
+      "download": "https://ambientcg.com/get?file=Rock035_2K-JPG.zip",
+      "archive_bytes": 32989877,
+      "archive_sha256": "92a770060e3c631fd7733b267f195a450240bd8ae6c5539b814e15e6fb6b1513",
+      "files": [
+        {
+          "path": "rock035/Rock035_2K-JPG.usdc",
+          "bytes": 3006,
+          "sha256": "715e21d155988bc465c5bc799e410e0128162e194f96025a2a63a9e4a0c042dd"
+        },
+        {
+          "path": "rock035/Rock035_2K-JPG_AmbientOcclusion.jpg",
+          "bytes": 2093010,
+          "sha256": "bd1684542c52610bce29f2df8a6e9e64f11c052c808f3eccd9086b5bbdd252eb"
+        },
+        {
+          "path": "rock035/Rock035_2K-JPG_Color.jpg",
+          "bytes": 5601503,
+          "sha256": "a37852d15dca9a5fe16f2b86b82ed400ea048fa42ff774192a6567013075c889"
+        },
+        {
+          "path": "rock035/Rock035_2K-JPG_Displacement.jpg",
+          "bytes": 904557,
+          "sha256": "f83f5d0bed614db6f5de20374f3f3c3211bb9435c649b62612bc00c5046c9e03"
+        },
+        {
+          "path": "rock035/Rock035_2K-JPG_NormalDX.jpg",
+          "bytes": 10186643,
+          "sha256": "59e521f9884e5a04b503669e317248ad584f14ebc5c6094b816bbd26049f6c92"
+        },
+        {
+          "path": "rock035/Rock035_2K-JPG_NormalGL.jpg",
+          "bytes": 10194915,
+          "sha256": "2c8b62a4dd0b7306c93519b72846ee92a9a3820dc348c2732ae521658e720c3c"
+        },
+        {
+          "path": "rock035/Rock035_2K-JPG_Roughness.jpg",
+          "bytes": 2520984,
+          "sha256": "fcb394a485e707bcfd823beb2f3a82e5998e76e51d9c729f49c4c741982133db"
+        },
+        {
+          "path": "rock035/Rock035_2K-JPG.blend",
+          "bytes": 1109636,
+          "sha256": "5ef6c7eb718b9b15572588733da8fc67611ffa43ff4a1ef2d25b53a9d5acaa72"
+        },
+        {
+          "path": "rock035/Rock035_2K-JPG.mtlx",
+          "bytes": 2242,
+          "sha256": "7010c46a37c2d52947655075a39e91fe70257786395d2c896b0bf4ddd0722098"
+        },
+        {
+          "path": "rock035/Rock035_2K-JPG.tres",
+          "bytes": 1010,
+          "sha256": "bf013728cab40358d5ea3bf84c220106240956c6bfdf13887ed9962086ac30ab"
+        },
+        {
+          "path": "rock035/Rock035.png",
+          "bytes": 370193,
+          "sha256": "52365f46ed4f1b446b59c15525444766e71e179064a61870e3c6290f7ed6ea1c"
+        }
+      ]
+    },
+    {
+      "id": "Rock051",
+      "source": "https://ambientcg.com/a/Rock051",
+      "download": "https://ambientcg.com/get?file=Rock051_2K-JPG.zip",
+      "archive_bytes": 30358532,
+      "archive_sha256": "3494755ee283b120a62e1adf1c46b00aad1436ed21c48882dffb9654e7830d64",
+      "files": [
+        {
+          "path": "rock051/Rock051_2K-JPG.usdc",
+          "bytes": 3093,
+          "sha256": "36067ea0da3e37f3ea71103c04e1819688b7c193176f72e55286694b1455e228"
+        },
+        {
+          "path": "rock051/Rock051_2K-JPG_AmbientOcclusion.jpg",
+          "bytes": 2526746,
+          "sha256": "d066fe2cb00f3e316a7c1e7c559c0f86379e45fa741b13c860ce25258bc468e0"
+        },
+        {
+          "path": "rock051/Rock051_2K-JPG_Color.jpg",
+          "bytes": 6219341,
+          "sha256": "62f0e799649b03a29e627021fc4023dbe86415af98bb89887eba0bd13dd6a431"
+        },
+        {
+          "path": "rock051/Rock051_2K-JPG_Displacement.jpg",
+          "bytes": 1072255,
+          "sha256": "3ce3359274418f814d6cc01782389fbf499f0ab1faab7bcf48bb8411b5f3bb71"
+        },
+        {
+          "path": "rock051/Rock051_2K-JPG_Metalness.jpg",
+          "bytes": 17515,
+          "sha256": "8e7903d8a7e8ab8a09cb0f1b5c32730680238dc1d6053dc51b5c89347817234b"
+        },
+        {
+          "path": "rock051/Rock051_2K-JPG_NormalDX.jpg",
+          "bytes": 8367309,
+          "sha256": "28caa3ca70ce8dd1657c9a12abef777eb9e125d53cc5c5473fa8cc28ff34ca34"
+        },
+        {
+          "path": "rock051/Rock051_2K-JPG_NormalGL.jpg",
+          "bytes": 8365941,
+          "sha256": "3ce30cda8bf3f8652de9df97f61e74cab3d5e23d3e3537cb2faf02e281b118e5"
+        },
+        {
+          "path": "rock051/Rock051_2K-JPG_Roughness.jpg",
+          "bytes": 2197649,
+          "sha256": "aa23e66b4f7a354151a6d728a4ed83842fb1d5e034462ea55ead8ecaa48dad91"
+        },
+        {
+          "path": "rock051/Rock051_2K-JPG.blend",
+          "bytes": 1119812,
+          "sha256": "d7789611a3efc0436541c3614b945808c9963806b074aae335a9e61975a9f5ee"
+        },
+        {
+          "path": "rock051/Rock051_2K-JPG.mtlx",
+          "bytes": 2577,
+          "sha256": "2daee04be8aff6209a951eedaa3c7cc608616a85a580ce353a44827fa039814a"
+        },
+        {
+          "path": "rock051/Rock051_2K-JPG.tres",
+          "bytes": 1208,
+          "sha256": "e56b5c23357121238094b652c15841955f9ff0491bf654aeaa8b279848f099b2"
+        },
+        {
+          "path": "rock051/Rock051.png",
+          "bytes": 462708,
+          "sha256": "c13daf0cf6ed8d91a415738637d6867013258539c610295051efb29276377dc0"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,80 @@
+{
+  "revision": "round-01",
+  "decisions": [
+    {
+      "code": "M12",
+      "decision": "redo",
+      "note": "Too thick in every way; use long leaves that hang down."
+    },
+    {
+      "code": "M15",
+      "decision": "accept",
+      "note": "Spread branches just a little; rounder overall shape."
+    },
+    {
+      "code": "M19",
+      "decision": "redo",
+      "note": "Completely different shape; keep the color."
+    },
+    {
+      "code": "M20",
+      "decision": "accept",
+      "note": ""
+    },
+    {
+      "code": "H10",
+      "decision": "accept",
+      "note": ""
+    },
+    {
+      "code": "H11",
+      "decision": "accept",
+      "note": "More verticality; it works for this plant."
+    },
+    {
+      "code": "H12",
+      "decision": "keep-original",
+      "note": "Keep original overall design and leaf color; change leaf shape."
+    },
+    {
+      "code": "H33",
+      "decision": "redo",
+      "note": "Close, but make it a fern."
+    },
+    {
+      "code": "S04",
+      "decision": "accept",
+      "note": ""
+    },
+    {
+      "code": "S07",
+      "decision": "accept",
+      "note": ""
+    },
+    {
+      "code": "S10",
+      "decision": "redo",
+      "note": "Mix the original and round-01 designs; reach upward more."
+    },
+    {
+      "code": "S18",
+      "decision": "accept",
+      "note": "Make the short leaves longer."
+    },
+    {
+      "code": "S19",
+      "decision": "keep-original",
+      "note": "Keep original overall design; change only leaf shape."
+    },
+    {
+      "code": "S33",
+      "decision": "accept",
+      "note": ""
+    },
+    {
+      "code": "S34",
+      "decision": "accept",
+      "note": ""
+    }
+  ]
+}

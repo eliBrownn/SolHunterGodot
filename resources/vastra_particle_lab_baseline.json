@@ -1,0 +1,41 @@
+{
+  "lab_version": 7,
+  "name": "Owner baseline - 2026-10-29",
+  "recorded_from": "Visible running lab controls, read directly at owner request",
+  "max_members": 128,
+  "trail_samples": 10,
+  "field_radius": 4.0,
+  "appearance": "In-game look · filament particles",
+  "clear_view": false,
+  "preset": "Ambient",
+  "pattern": "Rising vortex",
+  "affinity": "Neutral field optics",
+  "ambient_visible": true,
+  "night": true,
+  "character": true,
+  "walking": true,
+  "values": {
+    "Concentration": 45.0,
+    "Overload": 0.0,
+    "Flow speed": 0.65,
+    "Turbulence": 0.16,
+    "Particle size": 0.2,
+    "Opacity": 0.55,
+    "Glow": 0.0,
+    "Trail seconds": 1.5,
+    "Field height": 3.8,
+    "Filament length": 2.0,
+    "Refraction": 0.01
+  },
+  "plants": {
+    "interaction": "Single transfer",
+    "source": "C · Tree",
+    "target": "B · Flowers",
+    "values": {
+      "Transfer energy": 100.0,
+      "Travel speed": 0.2,
+      "Arc height": 3.0,
+      "Path width": 0.8
+    }
+  }
+}

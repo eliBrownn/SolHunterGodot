@@ -1,0 +1,12 @@
+[gd_scene format=3]
+
+[ext_resource type="ArrayMesh" path="res://resources/plants/new_plant_311335385/v_1793353668_33_425116016/outer_growth.res" id="1_8vull"]
+[ext_resource type="ArrayMesh" path="res://resources/plants/new_plant_311335385/v_1793353668_33_425116016/connected_vastra_anatomy.res" id="2_i7n05"]
+
+[node name="Plant" type="Node3D" unique_id=231470059]
+
+[node name="OuterGrowth" type="MeshInstance3D" parent="." unique_id=1639533093]
+mesh = ExtResource("1_8vull")
+
+[node name="ConnectedVastraAnatomy" type="MeshInstance3D" parent="." unique_id=2076184354]
+mesh = ExtResource("2_i7n05")

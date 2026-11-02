@@ -1,0 +1,15 @@
+{
+  "contract_version": 1,
+  "id": "readability_test_station",
+  "domain": "Readability",
+  "title": "scale and occlusion",
+  "description": "Compare silhouette visibility across distance and foreground occlusion.",
+  "execution": "runtime",
+  "scene": "res://scenes/readability_test_station.tscn",
+  "storage": "user://workstation/editor_bridge.cfg; authoring actions retain their existing destination.",
+  "reason": "Isolated runtime simulation controlled through the editor Lab workspace.",
+  "fixture_key": "readability_test_station",
+  "label": "Readability / scale and occlusion",
+  "order": 17,
+  "host": "workstation"
+}

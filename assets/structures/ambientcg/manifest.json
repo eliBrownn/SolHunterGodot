@@ -1,0 +1,135 @@
+{
+  "provider": "ambientCG / Lennart Demes",
+  "license": "CC0-1.0",
+  "license_source": "https://docs.ambientcg.com/license/",
+  "assets": [
+    {
+      "id": "Bricks075A",
+      "source": "https://ambientcg.com/a/Bricks075A",
+      "download": "https://ambientcg.com/get?file=Bricks075A_2K-JPG.zip",
+      "archive_bytes": 17045875,
+      "archive_sha256": "1d0b1c084cbc81ff10c413e4c406c3cf4f660bdacc21160abfdbb692a16c38af",
+      "files": [
+        {
+          "path": "bricks075a/Bricks075A_2K-JPG.usdc",
+          "bytes": 2972,
+          "sha256": "3687e85d0239f1b7cb54af14fddd411965f47413f9ec69973529e3bfeed84dc3"
+        },
+        {
+          "path": "bricks075a/Bricks075A_2K-JPG_AmbientOcclusion.jpg",
+          "bytes": 1395545,
+          "sha256": "f657da625be40816ab408a5a5a724f387e3d49902f6a2e242935bf45f093fd62"
+        },
+        {
+          "path": "bricks075a/Bricks075A_2K-JPG_Color.jpg",
+          "bytes": 3281302,
+          "sha256": "3f23cb6ff0cdc8d484ed47f051266fda7cfd5694f8361341269b714a43e6e8c6"
+        },
+        {
+          "path": "bricks075a/Bricks075A_2K-JPG_Displacement.jpg",
+          "bytes": 681179,
+          "sha256": "44d8129e72a1b518839d6260abaa5beec4c828c3c0f9c6f30be8787a87b79084"
+        },
+        {
+          "path": "bricks075a/Bricks075A_2K-JPG_NormalDX.jpg",
+          "bytes": 4492551,
+          "sha256": "a98933e1d87db0585974aef70370312fa331c5faeb59c4e744efac18d13c1a75"
+        },
+        {
+          "path": "bricks075a/Bricks075A_2K-JPG_NormalGL.jpg",
+          "bytes": 4487212,
+          "sha256": "526ed26d33944ba6e64aa62755e57c40e7fa2582185586b05d45242c16ff8d36"
+        },
+        {
+          "path": "bricks075a/Bricks075A_2K-JPG_Roughness.jpg",
+          "bytes": 1151254,
+          "sha256": "0cc550b77a8121501f4f4a15e21164336563898200669bdcff19e40d06cba8df"
+        },
+        {
+          "path": "bricks075a/Bricks075A_2K-JPG.blend",
+          "bytes": 1109220,
+          "sha256": "3bd85f3c26e7bc56a7b2089ccd0471444071e891c9834777f9a10ba4da286853"
+        },
+        {
+          "path": "bricks075a/Bricks075A_2K-JPG.mtlx",
+          "bytes": 2287,
+          "sha256": "985963495614e83731c08eecb7e6b5abade7b2c0c817eafdfbaee93896d50c75"
+        },
+        {
+          "path": "bricks075a/Bricks075A_2K-JPG.tres",
+          "bytes": 1025,
+          "sha256": "055df71a4919db4852b30259d211446208a00525bc38e8a699b8cc82f3536645"
+        },
+        {
+          "path": "bricks075a/Bricks075A.png",
+          "bytes": 439088,
+          "sha256": "46b0a90a43f8153e009cdf50946dac65f35b28f69cf1e7142825734b67b0e9b2"
+        }
+      ]
+    },
+    {
+      "id": "Rock034",
+      "source": "https://ambientcg.com/a/Rock034",
+      "download": "https://ambientcg.com/get?file=Rock034_2K-JPG.zip",
+      "archive_bytes": 34536709,
+      "archive_sha256": "907fd145be0770231f1366bbc9fc850bbfd5628d36d0e141d6dca252cbf66a2b",
+      "files": [
+        {
+          "path": "rock034/Rock034_2K-JPG.usdc",
+          "bytes": 2996,
+          "sha256": "9aba62a754d30e52f20f9a712a63bc65eed41863c5f09eea8440c6da5afa7c28"
+        },
+        {
+          "path": "rock034/Rock034_2K-JPG_AmbientOcclusion.jpg",
+          "bytes": 1876221,
+          "sha256": "df74c87c24507241f68a6b1fca0cae27507b59f47f78dbf6e35aa0511400e286"
+        },
+        {
+          "path": "rock034/Rock034_2K-JPG_Color.jpg",
+          "bytes": 6121899,
+          "sha256": "8d7938a57ef52b8d45337fb15decdc771ac5e0bc4a9f54cc8ab06166f2f68692"
+        },
+        {
+          "path": "rock034/Rock034_2K-JPG_Displacement.jpg",
+          "bytes": 1165429,
+          "sha256": "5256635ef32348f1ecfc836914a9746f56c90ef0c9fb3514d3214356d6ff353b"
+        },
+        {
+          "path": "rock034/Rock034_2K-JPG_NormalDX.jpg",
+          "bytes": 10423680,
+          "sha256": "30683489db6f7c69c527ce555be92a38a45ce68534e964fdfa5041c85ff16e04"
+        },
+        {
+          "path": "rock034/Rock034_2K-JPG_NormalGL.jpg",
+          "bytes": 10441114,
+          "sha256": "f3649290568deb9168fa8a5908bf100a02b70af5ba73f2c61308df37d2fe98fc"
+        },
+        {
+          "path": "rock034/Rock034_2K-JPG_Roughness.jpg",
+          "bytes": 2961621,
+          "sha256": "5425de2e01865007a8d53e473844ed5ed2bd3784e0736567bd8b18d81b91d369"
+        },
+        {
+          "path": "rock034/Rock034_2K-JPG.blend",
+          "bytes": 1109428,
+          "sha256": "298c5fb06b33b856c09e5d9e082f4556611ee87d44c30b40750e9f1037af1683"
+        },
+        {
+          "path": "rock034/Rock034_2K-JPG.mtlx",
+          "bytes": 2242,
+          "sha256": "b3f4c0958e677622fcf8faa425f91e78b87dd5505e00e188475ad2844e23e389"
+        },
+        {
+          "path": "rock034/Rock034_2K-JPG.tres",
+          "bytes": 1010,
+          "sha256": "96a33c85097d0d80847ce26f20bb94f55cb759495ff34b1039f2a4b95d6f8865"
+        },
+        {
+          "path": "rock034/Rock034.png",
+          "bytes": 429159,
+          "sha256": "817c7673e27a718461bba5bb13614d189b96c83ceab098ef76967a3e5197f134"
+        }
+      ]
+    }
+  ]
+}

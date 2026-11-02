@@ -1,0 +1,80 @@
+[gd_resource type="Resource" script_class="AuthoredPlantDefinition" format=3]
+
+[ext_resource type="PackedScene" path="res://resources/plants/new_plant_311335385/v_1793355586_648_1057937832/plant.tscn" id="1_oq7rk"]
+[ext_resource type="Script" path="res://scripts/scenery/plant_definition.gd" id="2_kg7ig"]
+
+[resource]
+script = ExtResource("2_kg7ig")
+plant_id = "new_plant_311335385"
+display_name = "New plant"
+scene = ExtResource("1_oq7rk")
+circulation_role = "reservoir"
+world_height = 7.976189876190926
+world_width = 10.999229678169256
+recipe = {
+"anatomy_labels": true,
+"anatomy_thickness": 1.2,
+"branch_count": 8,
+"branch_irregularity": 0.22841331,
+"branch_rise": 0.49930763,
+"branch_twist": 0.69827354,
+"branching_depth": 2,
+"branching_reduction": 0.62,
+"branching_spread": 0.75,
+"color_diversity": 1.0,
+"cutaway": false,
+"droop": 0.23301934,
+"foliage_density": 0.9923227,
+"foliage_fullness": 1.0,
+"frond_pairs": 5,
+"generation_seed": 92,
+"height_diversity": 1.390148,
+"height_ratio": 0.91086185,
+"hue_shift": 148.45932,
+"keep_biome": true,
+"keep_role": true,
+"leaf_architecture": 1,
+"leaf_asymmetry": 0.040807106,
+"leaf_curl": 0.06758338,
+"leaf_lobes": 1,
+"leaf_size": 0.7187017,
+"leaf_width": 1.1134115,
+"lobe_depth": 0.3214451,
+"node_bulk": 2.1692128,
+"node_count": 8,
+"node_elongation": 1.6587207,
+"node_ridges": 4,
+"node_spacing": 1.1977066,
+"organ_height": 0.5284198,
+"organic_softness": 0.78769505,
+"plant_size": 1.0,
+"port_radius": 1.2071719,
+"preserve_proportions": true,
+"preview_animation_duration": 1.6,
+"preview_animation_strength": 1.0,
+"preview_event": 0,
+"preview_world_size": true,
+"radial_symmetry": 0.6588319,
+"randomization_strength": 1.0,
+"receiver_class": 1,
+"root_reach": 1.3492146,
+"selected_biome": 1,
+"selected_role": 2,
+"show_labels": true,
+"silhouette_view": false,
+"spread_ratio": 0.8825149,
+"stem_thickness": 1.8870074,
+"storage_size": 0.86493456,
+"thorn_length": 1.4954824,
+"tip_taper": 0.7406741,
+"wind_strength": 0.15,
+"world_frequency": 12,
+"world_height": 7.976189876190926,
+"world_width": 10.999229678169256
+}
+organ_anchors = {
+"crown": Vector3(0, 1.5711747, 0),
+"ground": Vector3(0, 0.025, 0),
+"receive": Vector3(-0.0132513605, 0.4427946, 0),
+"release": Vector3(0, 1.5711747, 0)
+}

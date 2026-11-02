@@ -1,6 +1,8 @@
 .godot/
 artifacts/
 builds/
+assets/local/emace_grass/
+assets/local/vefects/
 *.tmp
 
 # Local secrets and Godot export credentials
@@ -12,3 +14,18 @@ export_credentials.cfg
 # Local operating system files
 .DS_Store
 Thumbs.db
+assets/local/tropical_plants/
+
+# Generated Python bytecode
+__pycache__/
+*.pyc
+
+# Owner-directed local source holds (November 2, 2026)
+assets/characters/human_low_poly/*
+!assets/characters/human_low_poly/README.md
+assets/characters/rogue/*
+!assets/characters/rogue/PROVENANCE.md
+assets/sky/*
+!assets/sky/PROVENANCE.md
+shaders/daylight_sky.gdshader
+shaders/daylight_sky.gdshader.uid

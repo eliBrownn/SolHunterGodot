@@ -1,0 +1,15 @@
+{
+  "contract_version": 1,
+  "id": "cohesive_world_sample",
+  "domain": "World",
+  "title": "cohesive sample",
+  "description": "Review connected world presentation with expedition saving blocked.",
+  "execution": "runtime",
+  "scene": "res://scenes/cohesive_world_sample.tscn",
+  "storage": "user://workstation/editor_bridge.cfg; authoring actions retain their existing destination.",
+  "reason": "Isolated runtime simulation controlled through the editor Lab workspace.",
+  "fixture_key": "cohesive_world_sample",
+  "label": "World / cohesive sample",
+  "order": 6,
+  "host": "workstation"
+}

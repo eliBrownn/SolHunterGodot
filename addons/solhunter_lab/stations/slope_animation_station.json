@@ -1,0 +1,15 @@
+{
+  "contract_version": 1,
+  "id": "slope_animation_station",
+  "domain": "Animation",
+  "title": "slope and actions",
+  "description": "Inspect Rattlehorn movement and actions on the slope route.",
+  "execution": "runtime",
+  "scene": "res://scenes/slope_animation_station.tscn",
+  "storage": "user://workstation/editor_bridge.cfg; authoring actions retain their existing destination.",
+  "reason": "Isolated runtime simulation controlled through the editor Lab workspace.",
+  "fixture_key": "slope_animation_station",
+  "label": "Animation / slope and actions",
+  "order": 19,
+  "host": "workstation"
+}

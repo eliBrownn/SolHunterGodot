@@ -1,0 +1,15 @@
+{
+  "contract_version": 1,
+  "id": "material_test_station",
+  "domain": "Materials",
+  "title": "response grid",
+  "description": "Compare roughness and metallic response under the same lighting.",
+  "execution": "runtime",
+  "scene": "res://scenes/material_test_station.tscn",
+  "storage": "user://workstation/editor_bridge.cfg; authoring actions retain their existing destination.",
+  "reason": "Isolated runtime simulation controlled through the editor Lab workspace.",
+  "fixture_key": "material_test_station",
+  "label": "Materials / response grid",
+  "order": 15,
+  "host": "workstation"
+}

@@ -1,0 +1,15 @@
+{
+  "contract_version": 1,
+  "id": "water_test_station",
+  "domain": "Water",
+  "title": "depth and foam",
+  "description": "Review ripple, depth and foam on a known depth ramp.",
+  "execution": "runtime",
+  "scene": "res://scenes/water_test_station.tscn",
+  "storage": "user://workstation/editor_bridge.cfg; authoring actions retain their existing destination.",
+  "reason": "Isolated runtime simulation controlled through the editor Lab workspace.",
+  "fixture_key": "water_test_station",
+  "label": "Water / depth and foam",
+  "order": 16,
+  "host": "workstation"
+}

@@ -1,0 +1,15 @@
+{
+  "contract_version": 1,
+  "id": "forest_pixel_preview",
+  "domain": "Forest",
+  "title": "pixels",
+  "description": "Compare the optional forest pixel study; not the default game look.",
+  "execution": "runtime",
+  "scene": "res://scenes/forest_pixel_preview.tscn",
+  "storage": "user://workstation/editor_bridge.cfg; authoring actions retain their existing destination.",
+  "reason": "Isolated runtime simulation controlled through the editor Lab workspace.",
+  "fixture_key": "forest_pixel_preview",
+  "label": "Forest / pixels",
+  "order": 3,
+  "host": "workstation"
+}
