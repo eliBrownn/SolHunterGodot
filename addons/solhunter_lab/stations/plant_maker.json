@@ -1,0 +1,15 @@
+{
+  "contract_version": 1,
+  "id": "plants.maker",
+  "domain": "Plants",
+  "title": "maker & library",
+  "description": "Edit plants across all biomes side by side. Focus a biome and form to save an editable, game-ready plant.",
+  "execution": "runtime",
+  "scene": "res://scenes/plant_maker.tscn",
+  "storage": "user://workstation/editor_bridge.cfg; authoring actions retain their existing destination.",
+  "reason": "Isolated runtime simulation controlled through the editor Lab workspace.",
+  "fixture_key": "plant_maker",
+  "label": "Plants / maker & library",
+  "order": 25,
+  "host": "workstation"
+}

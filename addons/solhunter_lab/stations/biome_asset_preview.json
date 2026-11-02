@@ -1,0 +1,15 @@
+{
+  "contract_version": 1,
+  "id": "biome_asset_preview",
+  "domain": "Biomes",
+  "title": "assets",
+  "description": "Compare environment assets across biome palettes.",
+  "execution": "runtime",
+  "scene": "res://scenes/biome_asset_preview.tscn",
+  "storage": "user://workstation/editor_bridge.cfg; authoring actions retain their existing destination.",
+  "reason": "Isolated runtime simulation controlled through the editor Lab workspace.",
+  "fixture_key": "biome_asset_preview",
+  "label": "Biomes / assets",
+  "order": 4,
+  "host": "workstation"
+}

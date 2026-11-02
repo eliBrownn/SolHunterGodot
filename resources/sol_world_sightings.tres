@@ -1,0 +1,152 @@
+[gd_resource type="Resource" script_class="SightingSettings" format=3 uid="uid://bkn1fjuuvw7ds"]
+
+[ext_resource type="Script" uid="uid://duey04jujuari" path="res://scripts/sols/sighting_settings.gd" id="1"]
+[ext_resource type="Resource" uid="uid://dr2gqvpi0d0ow" path="res://resources/sol_ecology/behavior_library.tres" id="1_c0dfu"]
+[ext_resource type="Script" uid="uid://cmrvo0fa6dyjy" path="res://scripts/sols/sol_catalog_sighting.gd" id="2"]
+[ext_resource type="Script" uid="uid://ojd51y7og636" path="res://scripts/sols/sol_ecology_profile.gd" id="3_bqfbc"]
+[ext_resource type="Resource" path="res://resources/sol_ecology/seedmote.tres" id="4_mb4f6"]
+[ext_resource type="Resource" path="res://resources/sol_ecology/bramblepup.tres" id="5_ht4rs"]
+[ext_resource type="Resource" path="res://resources/sol_ecology/trail_guard.tres" id="6_7b165"]
+[ext_resource type="Script" uid="uid://d1td7ydj0nnwe" path="res://scripts/sols/habitat_encounter_pool.gd" id="habitat"]
+
+[sub_resource type="Resource" id="crown"]
+script = ExtResource("2")
+species_id = "sol_species_0001"
+affinity = "air"
+
+[sub_resource type="Resource" id="reed"]
+script = ExtResource("2")
+species_id = "sol_species_0002"
+trail_x = 18
+placement = "bank"
+affinity = "water"
+
+[sub_resource type="Resource" id="bell"]
+script = ExtResource("2")
+species_id = "sol_species_0003"
+trail_x = 34
+affinity = "fire"
+
+[sub_resource type="Resource" id="ashquill"]
+script = ExtResource("2")
+species_id = "sol_species_0004"
+trail_x = 22
+affinity = "water"
+
+[sub_resource type="Resource" id="rattlehorn"]
+script = ExtResource("2")
+species_id = "sol_species_0005"
+trail_x = 40
+
+[sub_resource type="Resource" id="rimefold"]
+script = ExtResource("2")
+species_id = "sol_species_0006"
+trail_x = 56
+affinity = "air"
+
+[sub_resource type="Resource" id="browguard"]
+script = ExtResource("2")
+species_id = "sol_species_0007"
+trail_x = 16
+affinity = "void"
+
+[sub_resource type="Resource" id="bitterfrill"]
+script = ExtResource("2")
+species_id = "sol_species_0008"
+trail_x = 28
+
+[sub_resource type="Resource" id="knucklemole"]
+script = ExtResource("2")
+species_id = "sol_species_0009"
+trail_x = 30
+affinity = "air"
+
+[sub_resource type="Resource" id="sailcrest"]
+script = ExtResource("2")
+species_id = "sol_species_0010"
+trail_x = 36
+affinity = "water"
+
+[sub_resource type="Resource" id="glass_throat"]
+script = ExtResource("2")
+species_id = "sol_species_0011"
+trail_x = 44
+affinity = "quantum"
+
+[sub_resource type="Resource" id="claspback"]
+script = ExtResource("2")
+species_id = "sol_species_0012"
+trail_x = 50
+affinity = "fire"
+
+[sub_resource type="Resource" id="foldling"]
+script = ExtResource("2")
+species_id = "sol_species_0013"
+trail_x = 60
+affinity = "spectral"
+
+[sub_resource type="Resource" id="mournveil"]
+script = ExtResource("2")
+species_id = "sol_species_0014"
+trail_x = 64
+affinity = "lightning"
+
+[sub_resource type="Resource" id="pebblewyrm"]
+script = ExtResource("2")
+species_id = "sol_species_0015"
+trail_x = 68
+affinity = "void"
+
+[sub_resource type="Resource" id="shadepelt"]
+script = ExtResource("2")
+species_id = "sol_species_0016"
+trail_x = 72
+
+[sub_resource type="Resource" id="kilnling"]
+script = ExtResource("2")
+species_id = "sol_species_0017"
+trail_x = 76
+affinity = "air"
+
+[sub_resource type="Resource" id="thimblehart"]
+script = ExtResource("2")
+species_id = "sol_species_0018"
+trail_x = 6
+affinity = "water"
+
+[sub_resource type="Resource" id="habitat_meadow"]
+script = ExtResource("habitat")
+species_weights = Dictionary[String, int]({
+"sol_species_0003": 1,
+"sol_species_0018": 1
+})
+
+[sub_resource type="Resource" id="habitat_woodland"]
+script = ExtResource("habitat")
+ground = 1
+species_weights = Dictionary[String, int]({
+"sol_species_0001": 1,
+"sol_species_0011": 1
+})
+
+[sub_resource type="Resource" id="habitat_heath"]
+script = ExtResource("habitat")
+ground = 2
+species_weights = Dictionary[String, int]({
+"sol_species_0004": 1,
+"sol_species_0005": 1
+})
+
+[sub_resource type="Resource" id="habitat_marsh"]
+script = ExtResource("habitat")
+ground = 3
+species_weights = Dictionary[String, int]({
+"sol_species_0002": 1,
+"sol_species_0008": 1
+})
+
+[resource]
+script = ExtResource("1")
+species_catalog_path = "res://resources/sol_species/catalog.tres"
+catalog_sightings = Array[Resource]([SubResource("crown"), SubResource("reed"), SubResource("bell"), SubResource("ashquill"), SubResource("rattlehorn"), SubResource("rimefold"), SubResource("browguard"), SubResource("bitterfrill"), SubResource("knucklemole"), SubResource("sailcrest"), SubResource("glass_throat"), SubResource("claspback"), SubResource("foldling"), SubResource("mournveil"), SubResource("pebblewyrm"), SubResource("shadepelt"), SubResource("kilnling"), SubResource("thimblehart")])
+habitat_encounters = Array[ExtResource("habitat")]([SubResource("habitat_meadow"), SubResource("habitat_woodland"), SubResource("habitat_heath"), SubResource("habitat_marsh")])

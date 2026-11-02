@@ -1,0 +1,15 @@
+{
+  "contract_version": 1,
+  "id": "sol_traversal_pilot",
+  "domain": "Sols",
+  "title": "traversal pilot",
+  "description": "Inspect existing traversal pilot controls and presentation in an isolated fixture.",
+  "execution": "runtime",
+  "scene": "res://scenes/sol_traversal_pilot.tscn",
+  "storage": "user://workstation/editor_bridge.cfg; authoring actions retain their existing destination.",
+  "reason": "Isolated runtime simulation controlled through the editor Lab workspace.",
+  "fixture_key": "sol_traversal_pilot",
+  "label": "Sols / traversal pilot",
+  "order": 12,
+  "host": "workstation"
+}

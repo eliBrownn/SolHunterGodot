@@ -1,0 +1,15 @@
+{
+  "contract_version": 1,
+  "id": "realtime_combat_trial",
+  "domain": "Combat",
+  "title": "real-time experiment",
+  "description": "Try direct control and click-to-command combat. Temporary rules; expedition progress is untouched.",
+  "execution": "runtime",
+  "scene": "res://scenes/realtime_combat_trial.tscn",
+  "storage": "user://workstation/editor_bridge.cfg; authoring actions retain their existing destination.",
+  "reason": "Isolated runtime simulation controlled through the editor Lab workspace.",
+  "fixture_key": "realtime_combat_trial",
+  "label": "Combat / real-time experiment",
+  "order": 28,
+  "host": "workstation"
+}

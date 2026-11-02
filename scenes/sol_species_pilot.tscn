@@ -1,0 +1,7 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="PackedScene" path="res://scenes/world_3d.tscn" id="1"]
+[ext_resource type="Resource" path="res://resources/sol_pilot_sightings.tres" id="2"]
+
+[node name="SolSpeciesPilot" instance=ExtResource("1")]
+sighting_settings = ExtResource("2")

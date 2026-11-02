@@ -1,0 +1,15 @@
+{
+  "contract_version": 1,
+  "id": "vastra_particle_lab",
+  "domain": "Vastra",
+  "title": "particles",
+  "description": "Inspect existing particle presentation and finite synthetic energy transfers without expedition writes.",
+  "execution": "runtime",
+  "scene": "res://scenes/vastra_particle_lab.tscn",
+  "storage": "user://workstation/editor_bridge.cfg; authoring actions retain their existing destination.",
+  "reason": "Isolated runtime simulation controlled through the editor Lab workspace.",
+  "fixture_key": "vastra_particle_lab",
+  "label": "Vastra / particles",
+  "order": 0,
+  "host": "workstation"
+}

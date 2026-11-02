@@ -1,0 +1,26 @@
+[gd_resource type="Resource" script_class="SolSpeciesRecord" format=3 uid="uid://ckj1k4au41rva"]
+
+[ext_resource type="Script" uid="uid://6bp0nnp4exqp" path="res://scripts/sols/sol_species_record.gd" id="1"]
+[ext_resource type="Script" uid="uid://ojd51y7og636" path="res://scripts/sols/sol_ecology_profile.gd" id="2"]
+[ext_resource type="PackedScene" path="res://scenes/sols/bellroot.tscn" id="3"]
+
+[sub_resource type="Resource" id="ecology"]
+script = ExtResource("2")
+profile_id = "sol_species_0003_default"
+species_id = "sol_species_0003"
+behaviors = PackedStringArray("patrol", "idle", "approach")
+
+[resource]
+script = ExtResource("1")
+display_name = "Bellroot"
+attack = 12
+special_attack = 22
+special_defense = 24
+speed = 12
+ecology = SubResource("ecology")
+presentation_scene = ExtResource("3")
+species_id = "sol_species_0003"
+lineage_id = "sol_lineage_0003"
+class_id = "verdant"
+learnable_moves = PackedStringArray("vine_whip", "barrier", "mend", "wind", "arc_bolt", "ward", "focus", "seed_dart", "sprout_mend", "stillwater")
+starting_moves = PackedStringArray("vine_whip", "barrier", "mend", "wind", "seed_dart", "sprout_mend", "stillwater")

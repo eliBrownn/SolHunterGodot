@@ -1,0 +1,15 @@
+{
+  "contract_version": 1,
+  "id": "sol_species_pilot",
+  "domain": "Sols",
+  "title": "species pilot",
+  "description": "Inspect existing species pilot controls and presentation in an isolated fixture.",
+  "execution": "runtime",
+  "scene": "res://scenes/sol_species_pilot.tscn",
+  "storage": "user://workstation/editor_bridge.cfg; authoring actions retain their existing destination.",
+  "reason": "Isolated runtime simulation controlled through the editor Lab workspace.",
+  "fixture_key": "sol_species_pilot",
+  "label": "Sols / species pilot",
+  "order": 11,
+  "host": "workstation"
+}

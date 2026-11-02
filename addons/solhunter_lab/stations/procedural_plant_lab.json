@@ -1,0 +1,15 @@
+{
+  "contract_version": 1,
+  "id": "procedural_plant_lab",
+  "domain": "Plants",
+  "title": "procedural forms",
+  "description": "Compare seeded procedural growth forms; isolated art proposals.",
+  "execution": "runtime",
+  "scene": "res://scenes/procedural_plant_lab.tscn",
+  "storage": "user://workstation/editor_bridge.cfg; authoring actions retain their existing destination.",
+  "reason": "Isolated runtime simulation controlled through the editor Lab workspace.",
+  "fixture_key": "procedural_plant_lab",
+  "label": "Plants / procedural forms",
+  "order": 23,
+  "host": "workstation"
+}

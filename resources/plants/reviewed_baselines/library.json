@@ -1,0 +1,80 @@
+{
+  "definitions": {
+    "foliage_2_3_emanator": {
+      "code": "H33",
+      "path": "res://resources/plants/reviewed_baselines/foliage_2_3_emanator.res",
+      "revision": "round-02"
+    },
+    "foliage_3_3_emanator": {
+      "code": "S33",
+      "path": "res://resources/plants/reviewed_baselines/foliage_3_3_emanator.res",
+      "revision": "round-01"
+    },
+    "foliage_3_4_emanator": {
+      "code": "S34",
+      "path": "res://resources/plants/reviewed_baselines/foliage_3_4_emanator.res",
+      "revision": "round-01"
+    },
+    "official_heath_gold_cushion_blooms": {
+      "code": "H10",
+      "path": "res://resources/plants/reviewed_baselines/official_heath_gold_cushion_blooms.res",
+      "revision": "round-01"
+    },
+    "official_heath_scarlet_zigzag": {
+      "code": "H11",
+      "path": "res://resources/plants/reviewed_baselines/official_heath_scarlet_zigzag.res",
+      "revision": "round-02"
+    },
+    "official_marsh_blue_wing_blooms": {
+      "code": "S10",
+      "path": "res://resources/plants/reviewed_baselines/official_marsh_blue_wing_blooms.res",
+      "revision": "round-02"
+    },
+    "official_marsh_overlapping_cups": {
+      "code": "S04",
+      "path": "res://resources/plants/reviewed_baselines/official_marsh_overlapping_cups.res",
+      "revision": "round-01"
+    },
+    "official_marsh_violet_stilt_curtain": {
+      "code": "S07",
+      "path": "res://resources/plants/reviewed_baselines/official_marsh_violet_stilt_curtain.res",
+      "revision": "round-01"
+    },
+    "official_meadow_new_plant": {
+      "code": "M12",
+      "path": "res://resources/plants/reviewed_baselines/official_meadow_new_plant.res",
+      "revision": "round-02"
+    },
+    "procedural_0_1_2": {
+      "code": "M15",
+      "path": "res://resources/plants/reviewed_baselines/procedural_0_1_2.res",
+      "revision": "round-02"
+    },
+    "procedural_0_1_6": {
+      "code": "M19",
+      "path": "res://resources/plants/reviewed_baselines/procedural_0_1_6.res",
+      "revision": "round-02"
+    },
+    "procedural_0_1_7": {
+      "code": "M20",
+      "path": "res://resources/plants/reviewed_baselines/procedural_0_1_7.res",
+      "revision": "round-01"
+    },
+    "procedural_2_1_0": {
+      "code": "H12",
+      "path": "res://resources/plants/reviewed_baselines/procedural_2_1_0.res",
+      "revision": "round-02"
+    },
+    "procedural_3_1_6": {
+      "code": "S18",
+      "path": "res://resources/plants/reviewed_baselines/procedural_3_1_6.res",
+      "revision": "round-02"
+    },
+    "procedural_3_1_7": {
+      "code": "S19",
+      "path": "res://resources/plants/reviewed_baselines/procedural_3_1_7.res",
+      "revision": "round-02"
+    }
+  },
+  "version": 1.0
+}

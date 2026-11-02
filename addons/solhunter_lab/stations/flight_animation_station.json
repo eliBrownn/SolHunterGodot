@@ -1,0 +1,15 @@
+{
+  "contract_version": 1,
+  "id": "flight_animation_station",
+  "domain": "Animation",
+  "title": "flight",
+  "description": "Inspect Sailcrest takeoff, flight and landing.",
+  "execution": "runtime",
+  "scene": "res://scenes/flight_animation_station.tscn",
+  "storage": "user://workstation/editor_bridge.cfg; authoring actions retain their existing destination.",
+  "reason": "Isolated runtime simulation controlled through the editor Lab workspace.",
+  "fixture_key": "flight_animation_station",
+  "label": "Animation / flight",
+  "order": 20,
+  "host": "workstation"
+}

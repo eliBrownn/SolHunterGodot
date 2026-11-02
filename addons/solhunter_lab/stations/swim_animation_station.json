@@ -1,0 +1,15 @@
+{
+  "contract_version": 1,
+  "id": "swim_animation_station",
+  "domain": "Animation",
+  "title": "swimming",
+  "description": "Inspect Rimefold swimming through the existing traversal fixture.",
+  "execution": "runtime",
+  "scene": "res://scenes/swim_animation_station.tscn",
+  "storage": "user://workstation/editor_bridge.cfg; authoring actions retain their existing destination.",
+  "reason": "Isolated runtime simulation controlled through the editor Lab workspace.",
+  "fixture_key": "swim_animation_station",
+  "label": "Animation / swimming",
+  "order": 21,
+  "host": "workstation"
+}

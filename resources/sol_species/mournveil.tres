@@ -1,0 +1,36 @@
+[gd_resource type="Resource" script_class="SolSpeciesRecord" format=3 uid="uid://lt64ks1sep6r"]
+
+[ext_resource type="Script" uid="uid://6bp0nnp4exqp" path="res://scripts/sols/sol_species_record.gd" id="1"]
+[ext_resource type="Script" uid="uid://ojd51y7og636" path="res://scripts/sols/sol_ecology_profile.gd" id="2"]
+[ext_resource type="PackedScene" path="res://scenes/sols/mournveil.tscn" id="3"]
+[ext_resource type="Script" uid="uid://bfsd83en7hxmr" path="res://scripts/sols/sol_traversal_profile.gd" id="4"]
+
+[sub_resource type="Resource" id="ecology"]
+script = ExtResource("2")
+profile_id = "sol_species_0014_default"
+species_id = "sol_species_0014"
+temperament = "avoidant"
+behaviors = PackedStringArray("patrol", "idle", "flee")
+
+[sub_resource type="Resource" id="traversal"]
+script = ExtResource("4")
+radius = 0.65
+height = 0.8
+
+[resource]
+script = ExtResource("1")
+display_name = "Mournveil"
+max_hp = 40
+attack = 10
+defense = 16
+special_attack = 20
+special_defense = 22
+speed = 16
+ecology = SubResource("ecology")
+presentation_scene = ExtResource("3")
+traversal = SubResource("traversal")
+species_id = "sol_species_0014"
+lineage_id = "sol_lineage_0014"
+class_id = "wraithborn"
+learnable_moves = PackedStringArray("strike", "ward", "phase", "focus", "barrier", "mend", "rattle", "ghost_touch", "withering_touch", "stillwater")
+starting_moves = PackedStringArray("strike", "ward", "phase", "focus", "ghost_touch", "withering_touch", "stillwater")

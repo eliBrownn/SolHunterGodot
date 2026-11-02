@@ -1,0 +1,14 @@
+{
+  "contract_version": 1,
+  "id": "sols.authoring",
+  "domain": "Sols",
+  "title": "Appearance authoring",
+  "description": "Edit body studies, visual cores and appearance variations in Sol Lab.",
+  "execution": "runtime",
+  "scene": "res://scenes/sol_lab.tscn",
+  "storage": "user://sol_lab; appearance drafts stay separate from expedition saves.",
+  "reason": "Sol Lab retains its own runtime lifecycle, undo and draft owner.",
+  "host": "sol",
+  "order": 100,
+  "label": "Sols / Appearance authoring"
+}

@@ -1,0 +1,15 @@
+{
+  "contract_version": 1,
+  "id": "plant_biome_role_lab",
+  "domain": "Plants",
+  "title": "biomes & Vastra anatomy",
+  "description": "Inspect proposed plant anatomy by habitat and role; cutaway reveals organs.",
+  "execution": "runtime",
+  "scene": "res://scenes/plant_biome_role_lab.tscn",
+  "storage": "user://workstation/editor_bridge.cfg; authoring actions retain their existing destination.",
+  "reason": "Isolated runtime simulation controlled through the editor Lab workspace.",
+  "fixture_key": "plant_biome_role_lab",
+  "label": "Plants / biomes & Vastra anatomy",
+  "order": 24,
+  "host": "workstation"
+}

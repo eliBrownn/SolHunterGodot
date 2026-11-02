@@ -1,0 +1,17 @@
+[gd_resource type="Resource" load_steps=2 format=3]
+[ext_resource type="Script" path="res://scripts/presentation/world_mood_palette.gd" id="1"]
+[resource]
+script = ExtResource("1")
+key = &"mysterious"
+leaf_shadow = Color(0.43, 0.47, 0.72, 1)
+leaf_light = Color(0.75, 0.84, 0.94, 1)
+leaf_tint = Color(0.6, 0.76, 0.9, 1)
+saturation = 0.7
+sun_tint = Color(0.72, 0.8, 1, 1)
+ambient_tint = Color(0.66, 0.62, 0.9, 1)
+fog_tint = Color(0.6, 0.65, 0.87, 1)
+light_scale = 0.72
+fill_scale = 0.7
+exposure_scale = 0.88
+fog_density = 0.006
+fog_start_scale = 0.65

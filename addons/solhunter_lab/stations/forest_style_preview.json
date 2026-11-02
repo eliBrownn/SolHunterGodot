@@ -1,0 +1,15 @@
+{
+  "contract_version": 1,
+  "id": "forest_style_preview",
+  "domain": "Forest",
+  "title": "style",
+  "description": "Review painterly forest lighting, foliage and wind.",
+  "execution": "runtime",
+  "scene": "res://scenes/forest_style_preview.tscn",
+  "storage": "user://workstation/editor_bridge.cfg; authoring actions retain their existing destination.",
+  "reason": "Isolated runtime simulation controlled through the editor Lab workspace.",
+  "fixture_key": "forest_style_preview",
+  "label": "Forest / style",
+  "order": 2,
+  "host": "workstation"
+}

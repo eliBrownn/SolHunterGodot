@@ -1,0 +1,35 @@
+[gd_resource type="Resource" script_class="SolSpeciesRecord" format=3 uid="uid://ba4lqpngmptd3"]
+
+[ext_resource type="Script" uid="uid://6bp0nnp4exqp" path="res://scripts/sols/sol_species_record.gd" id="1"]
+[ext_resource type="Script" uid="uid://ojd51y7og636" path="res://scripts/sols/sol_ecology_profile.gd" id="2"]
+[ext_resource type="PackedScene" path="res://scenes/sols/glass_throat.tscn" id="3"]
+[ext_resource type="Script" uid="uid://bfsd83en7hxmr" path="res://scripts/sols/sol_traversal_profile.gd" id="4"]
+
+[sub_resource type="Resource" id="ecology"]
+script = ExtResource("2")
+profile_id = "sol_species_0011_default"
+species_id = "sol_species_0011"
+behaviors = PackedStringArray("patrol", "idle", "approach")
+
+[sub_resource type="Resource" id="traversal"]
+script = ExtResource("4")
+radius = 0.65
+height = 0.8
+
+[resource]
+script = ExtResource("1")
+display_name = "Glass-Throat"
+max_hp = 40
+attack = 10
+defense = 14
+special_attack = 24
+special_defense = 22
+speed = 14
+ecology = SubResource("ecology")
+presentation_scene = ExtResource("3")
+traversal = SubResource("traversal")
+species_id = "sol_species_0011"
+lineage_id = "sol_lineage_0011"
+class_id = "mindweaver"
+learnable_moves = PackedStringArray("strike", "focus", "ward", "rattle", "barrier", "superpose", "mend", "thought_pin", "calibrate", "stillwater")
+starting_moves = PackedStringArray("strike", "focus", "ward", "rattle", "thought_pin", "calibrate", "stillwater")

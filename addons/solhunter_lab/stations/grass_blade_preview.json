@@ -1,0 +1,15 @@
+{
+  "contract_version": 1,
+  "id": "grass_blade_preview",
+  "domain": "Grass",
+  "title": "single blades",
+  "description": "Compare the retained single-blade study, wind and coverage with isolated test energy. Current expedition leaf grass remains under its production owner.",
+  "execution": "runtime",
+  "scene": "res://scenes/grass_blade_preview.tscn",
+  "storage": "user://workstation/editor_bridge.cfg; authoring actions retain their existing destination.",
+  "reason": "Isolated runtime simulation controlled through the editor Lab workspace.",
+  "fixture_key": "grass_blade_preview",
+  "label": "Grass / single blades",
+  "order": 22,
+  "host": "workstation"
+}

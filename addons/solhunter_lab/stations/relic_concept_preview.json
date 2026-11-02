@@ -1,0 +1,15 @@
+{
+  "contract_version": 1,
+  "id": "relic_concept_preview",
+  "domain": "Creative additions",
+  "title": "relics",
+  "description": "Compare relic shapes and Vastra reactions using test conditions.",
+  "execution": "runtime",
+  "scene": "res://scenes/relic_concept_preview.tscn",
+  "storage": "user://workstation/editor_bridge.cfg; authoring actions retain their existing destination.",
+  "reason": "Isolated runtime simulation controlled through the editor Lab workspace.",
+  "fixture_key": "relic_concept_preview",
+  "label": "Creative additions / relics",
+  "order": 27,
+  "host": "workstation"
+}

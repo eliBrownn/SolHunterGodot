@@ -1,0 +1,15 @@
+{
+  "contract_version": 1,
+  "id": "rattlehorn_workshop",
+  "domain": "Sols",
+  "title": "Rattlehorn",
+  "description": "Inspect existing Rattlehorn controls and presentation in an isolated fixture.",
+  "execution": "runtime",
+  "scene": "res://scenes/rattlehorn_workshop.tscn",
+  "storage": "user://workstation/editor_bridge.cfg; authoring actions retain their existing destination.",
+  "reason": "Isolated runtime simulation controlled through the editor Lab workspace.",
+  "fixture_key": "rattlehorn_workshop",
+  "label": "Sols / Rattlehorn",
+  "order": 9,
+  "host": "workstation"
+}

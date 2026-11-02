@@ -1,0 +1,15 @@
+{
+  "contract_version": 1,
+  "id": "vessel_preview",
+  "domain": "Vessels",
+  "title": "appearance",
+  "description": "Inspect Vessel appearance and presentation variants.",
+  "execution": "runtime",
+  "scene": "res://scenes/vessel_preview.tscn",
+  "storage": "user://workstation/editor_bridge.cfg; authoring actions retain their existing destination.",
+  "reason": "Isolated runtime simulation controlled through the editor Lab workspace.",
+  "fixture_key": "vessel_preview",
+  "label": "Vessels / appearance",
+  "order": 1,
+  "host": "workstation"
+}

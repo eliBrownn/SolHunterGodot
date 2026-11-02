@@ -1,0 +1,15 @@
+{
+  "contract_version": 1,
+  "id": "ashquill_workshop",
+  "domain": "Sols",
+  "title": "Ashquill",
+  "description": "Inspect existing Ashquill controls and presentation in an isolated fixture.",
+  "execution": "runtime",
+  "scene": "res://scenes/ashquill_workshop.tscn",
+  "storage": "user://workstation/editor_bridge.cfg; authoring actions retain their existing destination.",
+  "reason": "Isolated runtime simulation controlled through the editor Lab workspace.",
+  "fixture_key": "ashquill_workshop",
+  "label": "Sols / Ashquill",
+  "order": 8,
+  "host": "workstation"
+}
