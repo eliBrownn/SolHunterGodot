@@ -1,0 +1,39 @@
+[gd_scene load_steps=5 format=3]
+
+[sub_resource type="StandardMaterial3D" id="bark"]
+albedo_color = Color(0.47, 0.35, 0.25, 1)
+roughness = 1.0
+metallic_specular = 0.0
+
+[sub_resource type="StandardMaterial3D" id="flower"]
+albedo_color = Color(0.88, 0.8, 0.48, 1)
+roughness = 1.0
+metallic_specular = 0.0
+
+[sub_resource type="CylinderMesh" id="base"]
+material = SubResource("bark")
+top_radius = 0.36
+bottom_radius = 0.43
+height = 0.65
+radial_segments = 6
+rings = 1
+
+[sub_resource type="CylinderMesh" id="cut"]
+material = SubResource("flower")
+top_radius = 0.33
+bottom_radius = 0.33
+height = 0.025
+radial_segments = 6
+rings = 1
+
+[node name="StumpPlaceholder" type="Node3D"]
+metadata/placeholder = true
+
+[node name="Part0" type="MeshInstance3D" parent="."]
+position = Vector3(0, 0.325, 0)
+mesh = SubResource("base")
+
+[node name="Part1" type="MeshInstance3D" parent="."]
+position = Vector3(0, 0.66, 0)
+mesh = SubResource("cut")
+

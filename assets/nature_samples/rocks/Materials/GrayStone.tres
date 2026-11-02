@@ -1,0 +1,18 @@
+[gd_resource type="StandardMaterial3D" format=3]
+
+[ext_resource type="Texture2D" path="res://assets/nature_samples/rocks/Textures/Stone Gray Basic.Diffuse.png" id="1_qw56n"]
+[ext_resource type="Texture2D" path="res://assets/nature_samples/rocks/Textures/Stone Gray Basic.AO.png" id="2_4y2de"]
+[ext_resource type="Texture2D" path="res://assets/nature_samples/rocks/Textures/Stone Gray Basic.Normal.png" id="3_03071"]
+[ext_resource type="Texture2D" path="res://assets/nature_samples/rocks/Textures/Stone Gray Basic.Roughness.png" id="4_8mxr1"]
+
+[resource]
+transparency = 4
+cull_mode = 2
+albedo_texture = ExtResource("1_qw56n")
+roughness_texture = ExtResource("4_8mxr1")
+normal_enabled = true
+normal_texture = ExtResource("3_03071")
+ao_enabled = true
+ao_texture = ExtResource("2_4y2de")
+uv1_scale = Vector3(0.3, 0.3, 0.3)
+uv1_triplanar = true

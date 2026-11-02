@@ -1,0 +1,201 @@
+[
+  {
+    "pack": "fantasy-town-kit",
+    "source": "https://kenney.nl/assets/fantasy-town-kit",
+    "sha256": "1a7530c09f4d2fa2cdee259876f089334f8b1f27fa86a0c4f54ef86cdd8676ef",
+    "bytes": 3854691,
+    "files": [
+      {
+        "path": "assets/landmarks/fantasy_town_kit/cart.glb",
+        "archive_path": "Models/GLB format/cart.glb",
+        "sha256": "63503cd0a7398310e01aabc8e3663f711a7517394d23d179d0695157fee99d40",
+        "bytes": 52920,
+        "meshes": 3
+      },
+      {
+        "path": "assets/landmarks/fantasy_town_kit/cart_high.glb",
+        "archive_path": "Models/GLB format/cart-high.glb",
+        "sha256": "4b0bce37e8645f3719a9032bf4d49048b7779ac891758ae6e2693238911c5eec",
+        "bytes": 88560,
+        "meshes": 3
+      },
+      {
+        "path": "assets/landmarks/fantasy_town_kit/stall.glb",
+        "archive_path": "Models/GLB format/stall.glb",
+        "sha256": "f0a636fccb7d57c38f5acd58881c468f4872f1bcda1e9fd9b1118e76110565a1",
+        "bytes": 11500,
+        "meshes": 1
+      },
+      {
+        "path": "assets/landmarks/fantasy_town_kit/stall_green.glb",
+        "archive_path": "Models/GLB format/stall-green.glb",
+        "sha256": "2da2f7b31cde5d943d7c08c457bbb39797ef0a607921fde0b8455f338ce40205",
+        "bytes": 27120,
+        "meshes": 1
+      },
+      {
+        "path": "assets/landmarks/fantasy_town_kit/stall_bench.glb",
+        "archive_path": "Models/GLB format/stall-bench.glb",
+        "sha256": "5a4b379488241394916991c4b482ec4863c05bb548ca8751f5c3935f1f6e5b9c",
+        "bytes": 14168,
+        "meshes": 1
+      },
+      {
+        "path": "assets/landmarks/fantasy_town_kit/lantern.glb",
+        "archive_path": "Models/GLB format/lantern.glb",
+        "sha256": "f270637e3083d6e84a30626ee05df2b09597a642985a7f5c3e4ab5bb1c7a8d55",
+        "bytes": 14984,
+        "meshes": 1
+      },
+      {
+        "path": "assets/landmarks/fantasy_town_kit/fountain_round.glb",
+        "archive_path": "Models/GLB format/fountain-round.glb",
+        "sha256": "8d19741e2cca6cbdce114b950b4aa12af625979bbc17b2910ef2366834af5565",
+        "bytes": 84848,
+        "meshes": 2
+      },
+      {
+        "path": "assets/landmarks/fantasy_town_kit/wall_arch.glb",
+        "archive_path": "Models/GLB format/wall-arch.glb",
+        "sha256": "18076d2770925a570c10708c2726e92f99226a940beb8435b21dfb71e20adcf9",
+        "bytes": 4840,
+        "meshes": 1
+      },
+      {
+        "path": "assets/landmarks/fantasy_town_kit/wall_broken.glb",
+        "archive_path": "Models/GLB format/wall-broken.glb",
+        "sha256": "043f74b83254c32379d0fe60b066c5ded7f3396ccc91df443aea1763d492fa23",
+        "bytes": 16904,
+        "meshes": 1
+      },
+      {
+        "path": "assets/landmarks/fantasy_town_kit/watermill.glb",
+        "archive_path": "Models/GLB format/watermill.glb",
+        "sha256": "177e76c12f43845303638d1375c323675c3937b053b8762042fe19d3d7d27c5d",
+        "bytes": 53856,
+        "meshes": 1
+      },
+      {
+        "path": "assets/landmarks/fantasy_town_kit/windmill.glb",
+        "archive_path": "Models/GLB format/windmill.glb",
+        "sha256": "72562df164f5fd36670521462da8f4161cf2c4c1c889799443f0fb44532ad5db",
+        "bytes": 71160,
+        "meshes": 1
+      }
+    ]
+  },
+  {
+    "pack": "graveyard-kit",
+    "source": "https://kenney.nl/assets/graveyard-kit",
+    "sha256": "1a93613f2e5675f3310acf49ec9ef13ae7adeb756ac3b205bfb6cc9311a81062",
+    "bytes": 3623408,
+    "files": [
+      {
+        "path": "assets/landmarks/graveyard_kit/altar_stone.glb",
+        "archive_path": "Models/GLB format/altar-stone.glb",
+        "sha256": "6cdcdc19c2d979fc0fafa073bc31db9a45ddc76390bfef366f23e92768d7dde9",
+        "bytes": 17164,
+        "meshes": 1
+      },
+      {
+        "path": "assets/landmarks/graveyard_kit/pillar_obelisk.glb",
+        "archive_path": "Models/GLB format/pillar-obelisk.glb",
+        "sha256": "f7a9d985522d8bb1eef765ce2b841588b43c8607b32c87056945696a172b3bf1",
+        "bytes": 8552,
+        "meshes": 1
+      },
+      {
+        "path": "assets/landmarks/graveyard_kit/column_large.glb",
+        "archive_path": "Models/GLB format/column-large.glb",
+        "sha256": "1665820bc039aced692d15cb763dc73ca6c67515044b9d2106134e2951a33fd2",
+        "bytes": 37540,
+        "meshes": 1
+      },
+      {
+        "path": "assets/landmarks/graveyard_kit/crypt.glb",
+        "archive_path": "Models/GLB format/crypt.glb",
+        "sha256": "61ff55e95648a28872cedba61c9c48fac723852adad49a3a2d92e26e0c0d2909",
+        "bytes": 25048,
+        "meshes": 1
+      },
+      {
+        "path": "assets/landmarks/graveyard_kit/crypt_door.glb",
+        "archive_path": "Models/GLB format/crypt-door.glb",
+        "sha256": "41a62fcf6fdf3e1b45ffb03df6bfe6613ca9299c29295c6fdde907e9394c23bf",
+        "bytes": 16168,
+        "meshes": 1
+      },
+      {
+        "path": "assets/landmarks/graveyard_kit/rocks_tall.glb",
+        "archive_path": "Models/GLB format/rocks-tall.glb",
+        "sha256": "c6769af9562a9f47d8ae96cad506e4ff900c66299f5ec4494903a40642c12a6d",
+        "bytes": 36924,
+        "meshes": 1
+      },
+      {
+        "path": "assets/landmarks/graveyard_kit/stone_wall_damaged.glb",
+        "archive_path": "Models/GLB format/stone-wall-damaged.glb",
+        "sha256": "2e0357e73f5fc0bc95f12469474c39191c93a67d586b5d3ad749edf2ec021c88",
+        "bytes": 14168,
+        "meshes": 1
+      },
+      {
+        "path": "assets/landmarks/graveyard_kit/bench_damaged.glb",
+        "archive_path": "Models/GLB format/bench-damaged.glb",
+        "sha256": "48007ab37acaf512dc131f57984424d1897fe2f94446c096e9f3574e06c5b8af",
+        "bytes": 23548,
+        "meshes": 1
+      }
+    ]
+  },
+  {
+    "pack": "castle-kit",
+    "source": "https://kenney.nl/assets/castle-kit",
+    "sha256": "921f3f73927bb23106cae34bc21d5ab4b033a9fc120475e96f714a406e3169df",
+    "bytes": 2232589,
+    "files": [
+      {
+        "path": "assets/landmarks/castle_kit/tower_square.glb",
+        "archive_path": "Models/GLB format/tower-square.glb",
+        "sha256": "ae2e4f11247fef4e8e550011c20bc1862839cd4cfd21590aec9781ae0fbbbc7f",
+        "bytes": 16564,
+        "meshes": 1
+      },
+      {
+        "path": "assets/landmarks/castle_kit/tower_square_top.glb",
+        "archive_path": "Models/GLB format/tower-square-top.glb",
+        "sha256": "5e98cdf2bf4d885edc3fa514719f80d63872e11c54ee629c11859223dad8489c",
+        "bytes": 13276,
+        "meshes": 1
+      },
+      {
+        "path": "assets/landmarks/castle_kit/tower_square_arch.glb",
+        "archive_path": "Models/GLB format/tower-square-arch.glb",
+        "sha256": "90ccb41a792ea3c5b8c98a3f18b710b52ebfdcd1e389024168c5ac6e591dd564",
+        "bytes": 29724,
+        "meshes": 1
+      },
+      {
+        "path": "assets/landmarks/castle_kit/wall_doorway.glb",
+        "archive_path": "Models/GLB format/wall-doorway.glb",
+        "sha256": "8daf5cccceace888d51d74b0e0254e192004faf926e07f1b28e94191879af3a6",
+        "bytes": 37560,
+        "meshes": 1
+      },
+      {
+        "path": "assets/landmarks/castle_kit/bridge_straight.glb",
+        "archive_path": "Models/GLB format/bridge-straight.glb",
+        "sha256": "ef15989c3d5c7392563888bbedda86de3c1ec4b3013c71c61e25b5257a6f9180",
+        "bytes": 16832,
+        "meshes": 1
+      },
+      {
+        "path": "assets/landmarks/castle_kit/bridge_straight_pillar.glb",
+        "archive_path": "Models/GLB format/bridge-straight-pillar.glb",
+        "sha256": "c85521e13dcf55ba8d015a04bbdbd0f063c31d01befb69a7c9fb097d128f195b",
+        "bytes": 14344,
+        "meshes": 1
+      }
+    ]
+  }
+]
