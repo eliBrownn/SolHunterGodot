@@ -16,6 +16,13 @@ func _run() -> void:
 		return
 	await scene_changed
 	var world = current_scene
+	var environment := (world.get_node("WorldEnvironment") as WorldEnvironment).environment
+	var sky_material := environment.sky.sky_material as ShaderMaterial if environment.sky != null else null
+	_check(environment.background_mode == Environment.BG_SKY and is_zero_approx(environment.fog_sky_affect)
+		and sky_material != null
+		and sky_material.get_shader_parameter("cloud_tex_01") != null
+		and sky_material.get_shader_parameter("cloud_tex_02") != null,
+		"The normal launch shows the daylight sky with both cloud layers")
 	var terrain := world.get_node("Terrain") as Node3D
 	var player := world.get_node("Player") as Node3D
 	var avatar := player.get_node("UniversalMannequin") as Node3D
@@ -274,20 +281,24 @@ func _check_terrain(terrain, cell: Vector2i) -> void:
 
 
 func _check_horizon_forest(terrain) -> void:
-	const TreeLod := preload("res://scripts/presentation/map_tree_lod.gd")
 	var forest: Node3D = terrain._horizon_forest
 	_check(forest != null and forest.get_parent() == terrain._horizon,
 		"Distant forest publishes with its terrain")
 	if forest == null:
 		return
+	var vegetation = terrain._vegetation
 	var outermost := -1
-	for strip in forest.get_children():
-		var surface: int = strip.get_meta("terrain_surface")
+	var has_intermediate := false
+	for patch in forest.get_children():
+		var surface: int = patch.get_meta("terrain_surface")
+		var level: int = patch.get_meta("tree_lod")
 		outermost = maxi(outermost, surface / 4)
-		var batch := strip.get_child(0) as MultiMeshInstance3D
-		var material := batch.multimesh.mesh.surface_get_material(0) as ShaderMaterial
-		_check(batch.multimesh.instance_count > 0 and material.shader == TreeLod.VECTOR_SHADER,
-			"Horizon strips render solid tree silhouettes in populated biomes")
+		has_intermediate = has_intermediate or (level > 0 and level < 6)
+		var batch := patch.get_child(0) as MultiMeshInstance3D
+		var kind: int = batch.get_meta("tree_kind")
+		_check(batch.multimesh.instance_count > 0 and batch.multimesh.mesh == vegetation._models[kind].levels[level],
+			"A horizon patch renders the selected tree model")
+	_check(has_intermediate, "Horizon groves use the intermediate tiers before reaching the outer rings")
 	_check(outermost == terrain.HORIZON_RINGS.size() - 1,
 		"The seeded forest reaches the outermost terrain ring")
 
@@ -327,10 +338,12 @@ func _check_shared_vegetation(terrain) -> void:
 	fixture.free()
 	_check(MapPlants.tree_hue(Plan.Biome.DESERT) != MapPlants.tree_hue(Plan.Biome.TAIGA),
 		"The same species receives a different hue in desert and taiga")
-	_check(TreeLod.tier(127.0) == 0 and TreeLod.tier(128.0) == 1 and TreeLod.tier(448.0) == 6
-		and TreeLod.tier(129.0, 0) == 0 and TreeLod.tier(130.0, 0) == 1
-		and TreeLod.tier(126.0, 1) == 1 and TreeLod.tier(125.0, 1) == 0,
-		"The authored model extends to 128 cells with stable transitions at the boundary")
+	_check(TreeLod.DISTANCES == [512.0, 704.0, 896.0, 1152.0, 1408.0, 1792.0],
+		"Every tree transition distance is four times the previous distance")
+	_check(TreeLod.tier(511.0) == 0 and TreeLod.tier(512.0) == 1 and TreeLod.tier(1792.0) == 6
+		and TreeLod.tier(513.0, 0) == 0 and TreeLod.tier(514.0, 0) == 1
+		and TreeLod.tier(510.0, 1) == 1 and TreeLod.tier(509.0, 1) == 0,
+		"The authored model extends to 512 cells with stable transitions at the boundary")
 	var patch_key := Vector3i(-2048, 2048, 1)
 	var patch_origin := Vector2i(patch_key.x, patch_key.y) * int(terrain.CHUNK_SIZE)
 	var kind := MapPlants.Plant.TREE_BASE
@@ -342,9 +355,9 @@ func _check_shared_vegetation(terrain) -> void:
 	var instances := batch.multimesh
 	vegetation._set_tree_lod(patch, Vector2(patch_origin))
 	var near_mesh := instances.mesh
-	vegetation._set_tree_lod(patch, Vector2(patch_origin) - Vector2(120.0, 0.0))
-	_check(instances.mesh == near_mesh, "A streamed tree patch keeps its authored mesh at 120 cells")
-	vegetation._set_tree_lod(patch, Vector2(patch_origin) - Vector2(460.0, 0.0))
+	vegetation._set_tree_lod(patch, Vector2(patch_origin) - Vector2(500.0, 0.0))
+	_check(instances.mesh == near_mesh, "A streamed tree patch keeps its authored mesh at 500 cells")
+	vegetation._set_tree_lod(patch, Vector2(patch_origin) - Vector2(1800.0, 0.0))
 	_check(instances.mesh != near_mesh and instances.instance_count == 1 and batch.multimesh == instances,
 		"A streamed tree batch swaps to a vector mesh with the same instance buffer")
 	vegetation._set_tree_lod(patch, Vector2(patch_origin))

@@ -40,7 +40,7 @@ void fragment() {
 	float irrigated = smoothstep(0.34, 0.68, ground_masks.r);
 	float ground_detail = (1.0 - wet_surface)
 		* smoothstep(0.28, 0.63, upness)
-		* (1.0 - smoothstep(85.0, 250.0, distance_to_view));
+		* (1.0 - smoothstep(170.0, 500.0, distance_to_view));
 	vec2 ground_uv = world_cells * vec2(1.0, -1.0);
 	vec2 ground_dx = dFdx(ground_uv);
 	vec2 ground_dy = dFdy(ground_uv);

@@ -122,6 +122,7 @@ var _species: Array[TreeSpecies]
 var _biome_species := {}
 var _biome_weights := {}
 var _lod_camera := Vector2.INF
+var _horizon_lod_root: Node3D
 var _wanted := {}
 var _pending: Array[Vector3i] = []
 var _patches: Dictionary[Vector3i, Node3D] = {}
@@ -331,11 +332,22 @@ func _update_tree_lods(camera: Vector2) -> void:
 	for key: Vector3i in _patches:
 		if key.z == 1:
 			_set_tree_lod(_patches[key], camera)
+	if is_instance_valid(_horizon_lod_root):
+		for patch: Node3D in _horizon_lod_root.get_children():
+			_set_tree_lod(patch, camera)
+
+
+func activate_horizon_lods(root: Node3D) -> void:
+	_horizon_lod_root = root
+	if _lod_camera.is_finite():
+		for patch: Node3D in root.get_children():
+			_set_tree_lod(patch, _lod_camera)
 
 
 func _set_tree_lod(root: Node3D, camera: Vector2) -> void:
-	var origin := Vector2(root.position.x, root.position.z)
-	var distance := camera.distance_to(camera.clamp(origin, origin + Vector2.ONE * _chunk_size))
+	var bounds: Rect2 = root.get_meta("tree_bounds", Rect2(Vector2.ZERO, Vector2.ONE * _chunk_size))
+	bounds.position += Vector2(root.global_position.x, root.global_position.z)
+	var distance := camera.distance_to(camera.clamp(bounds.position, bounds.end))
 	var previous: int = root.get_meta("tree_lod", -1)
 	var level := TreeLod.tier(distance, previous)
 	if previous == level:
@@ -407,13 +419,12 @@ func prepare_horizon_models(groups: Dictionary) -> bool:
 	return true
 
 
-func publish_horizon_strip(parent: Node3D, groups: Dictionary, surface_index: int) -> void:
-	if groups.is_empty():
-		return
-	var strip := Node3D.new()
-	strip.set_meta("terrain_surface", surface_index)
-	_add_batches(strip, groups, true, true)
-	parent.add_child(strip)
+func publish_horizon_patch(parent: Node3D, data: Dictionary, surface_index: int) -> void:
+	var patch := Node3D.new()
+	patch.set_meta("terrain_surface", surface_index)
+	patch.set_meta("tree_bounds", data.bounds)
+	_add_batches(patch, data.groups, true, true)
+	parent.add_child(patch)
 
 
 func _publish(key: Vector3i, origin: Vector2i, groups: Dictionary) -> void:
@@ -450,9 +461,9 @@ func _add_batches(root: Node3D, groups: Dictionary, tree: bool, far: bool = fals
 			view.name = model.name
 			view.multimesh = instances
 			view.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
-			if tree and not far:
+			if tree:
 				view.set_meta("tree_kind", kind)
-			elif not tree:
+			else:
 				view.visibility_range_end = 96.0
 				view.visibility_range_end_margin = 10.0
 			root.add_child(view)

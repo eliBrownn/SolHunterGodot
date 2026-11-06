@@ -1,6 +1,6 @@
 # Lighting, day/night and basic weather
 
-The saved day/night and weather controls below apply to the inherited expedition. The map-first scene uses its own fixed environment and sun. See the [map-first game](../README.md#play-the-map-first-build).
+The saved day/night and weather controls below apply to the inherited expedition. The map-first scene uses the shared SolHunter sky and cloud layers in a fixed daylight environment. See the [map-first game](../README.md#play-the-map-first-build).
 
 Implemented October 27, 2026 under the owner's lighting/skybox and subsequent
 day/night/weather direction. This is a presentation feature over the existing

@@ -80,6 +80,7 @@ var _staged_horizon: ArrayMesh
 var _horizon_forest: Node3D
 var _staged_forest: Node3D
 var _next_surface := 0
+var _next_forest_patch := 0
 var world_seed: int
 
 
@@ -182,6 +183,7 @@ func _process(_delta: float) -> void:
 		_staged_forest = Node3D.new()
 		_staged_forest.name = "HorizonForest"
 		_next_surface = 0
+		_next_forest_patch = 0
 	if not _prepared.is_empty():
 		_publish_prepared()
 		return
@@ -236,12 +238,18 @@ func _publish_prepared() -> void:
 	var surfaces: Array = _prepared.horizon
 	var forest: Array = _prepared.forest
 	for index in range(_next_surface, mini(_next_surface + CHUNK_UPLOADS_PER_FRAME, surfaces.size())):
-		var groups: Dictionary = forest[index] if index < forest.size() else {}
-		if not _vegetation.prepare_horizon_models(groups):
-			break
+		var patches: Array = forest[index] if index < forest.size() else []
+		if _next_forest_patch < patches.size():
+			var patch: Dictionary = patches[_next_forest_patch]
+			if not _vegetation.prepare_horizon_models(patch.groups):
+				break
+			_vegetation.publish_horizon_patch(_staged_forest, patch, index)
+			_next_forest_patch += 1
+			if _next_forest_patch < patches.size():
+				break
 		_staged_horizon.add_surface_from_arrays(Mesh.PRIMITIVE_TRIANGLES, surfaces[index])
-		_vegetation.publish_horizon_strip(_staged_forest, groups, index)
 		_next_surface += 1
+		_next_forest_patch = 0
 	if _next_surface < surfaces.size():
 		return
 	_center = prepared_center
@@ -254,6 +262,7 @@ func _publish_prepared() -> void:
 	_horizon_forest = _staged_forest
 	_staged_forest = null
 	_horizon.add_child(_horizon_forest)
+	_vegetation.activate_horizon_lods(_horizon_forest)
 	_finish_prepared()
 
 

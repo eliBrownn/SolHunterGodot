@@ -6,11 +6,14 @@ const Surface := preload("res://scripts/world/world_map_surface.gd")
 const Plants := preload("res://scripts/presentation/map_vegetation.gd")
 const Community := preload("res://scripts/world/plant_community.gd")
 const SPACING := [16, 16, 24, 32, 48, 64, 96, 128]
+const PATCH_SIZE := 256
+# The final two rings begin beyond the last LOD threshold near a settled camera.
+const WHOLE_STRIP_START := 6
 
 
 static func sample_strip(plan: Plan, surface: Surface, canopy: Community, settings: Dictionary,
-		anchor: Vector2i, strip: Rect2i, step: int, ring: int, vertices: PackedVector3Array) -> Dictionary:
-	var groups := {}
+		anchor: Vector2i, strip: Rect2i, step: int, ring: int, vertices: PackedVector3Array) -> Array:
+	var patches := {}
 	var spacing: int = SPACING[ring]
 	var bounds := Rect2i(anchor + strip.position, strip.size)
 	var first := Vector2i((Vector2(bounds.position) / spacing).floor()) * spacing
@@ -44,11 +47,17 @@ static func sample_strip(plan: Plan, surface: Surface, canopy: Community, settin
 			var size: float = settings.scale * lerpf(0.78, 1.16, canopy.roll(cell, 79))
 			var basis := Basis(Vector3.UP, canopy.roll(cell, 85) * TAU).scaled(Vector3(breadth, 1.0, breadth) * size)
 			var local := point - Vector2(anchor)
-			var records: Array = groups.get(kind, [])
-			records.append({"transform": Transform3D(basis, Vector3(local.x, height, local.y)),
+			var key := Vector2i((point / PATCH_SIZE).floor()) if ring < WHOLE_STRIP_START else Vector2i.ZERO
+			if not patches.has(key):
+				patches[key] = {"bounds": Rect2(local, Vector2.ZERO), "groups": {}}
+			var patch: Dictionary = patches[key]
+			patch.bounds = patch.bounds.expand(local)
+			var groups: Dictionary = patch.groups
+			if not groups.has(kind):
+				groups[kind] = []
+			groups[kind].append({"transform": Transform3D(basis, Vector3(local.x, height, local.y)),
 				"color": Color.WHITE, "hue": Plants.tree_hue(ground.biome)})
-			groups[kind] = records
-	return groups
+	return patches.values()
 
 
 static func _choose_species(weights: PackedFloat32Array, fraction: float) -> int:

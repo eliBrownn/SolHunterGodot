@@ -51,7 +51,9 @@ sample. Alpine retains priority above 0.62. Meadow uses the existing Plains ID
 and forms open fields with shallow folds.
 The terrain worker samples the plan's broad elevation and adds local relief.
 The ground material reads the same world coordinates for biomes, rivers,
-water surfaces, and irrigated ground. The current exploration controls allow
+water surfaces, and irrigated ground. Detail color and normal textures fade
+from 170 to 500 world cells from the camera. The daylight sky uses the shared
+SolHunter cloud layers and matches the terrain fog at the horizon. The current exploration controls allow
 travel over land and water. Visual vegetation now streams as part of the
 main gameplay scene.
 
@@ -127,12 +129,12 @@ hue shift to its foliage. The shift travels with each instance through all
 detail levels.
 
 Camera distance from the tree patch edge selects one of seven levels. The
-authored mesh stays active out to 128 world cells. The six solid polygon tiers follow
+authored mesh stays active out to 512 world cells. The six solid polygon tiers follow
 each model's authored trunk joints and branch forks. Nearby tiers use more
 separate clusters fitted to the source foliage, preserving gaps and forked
 crowns. Farther tiers merge nearby clusters and shed small branches while
 retaining the overall crown spread and lean. The silhouettes use vertex colors
-and flat shading. Levels change at 128, 176, 224, 288, 352, and 448 world cells,
+and flat shading. Levels change at 512, 704, 896, 1,152, 1,408, and 1,792 world cells,
 with a two-cell buffer for reversals. A level change swaps the mesh on the
 existing instance batch.
 
@@ -141,6 +143,8 @@ terrain worker samples sparse groves through all eight terrain rings, using
 the same seed, species eligibility, and biome hues. Grove footprints widen
 as sample spacing increases from 16 to 128 cells. Their roots follow the
 triangles of the rendered terrain, including the stitched outer edges.
+Nearer horizon rings group their groves into 256-cell patches. The horizon
+groves follow the same camera-distance schedule as the detailed trees.
 The terrain and forest swap together as the horizon recenters. The outer
 ring extends to 8,192 world cells along its axes, subject to the camera view.
 
