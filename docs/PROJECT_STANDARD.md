@@ -43,6 +43,8 @@ The defaults allow all seventeen in every land biome. Local density, slope,
 and water clearance guide seeded placement. Biome hue shifts tint foliage at
 all seven tree detail levels. Distant vector tiers follow authored branches
 and crown clusters. Sparse groves extend through all eight terrain rings.
+Grass and ground plants share the tree distance bands in proportion to their
+height, with sparse cover retained through the detailed terrain window.
 The map-first daylight sky uses 1024×1024 cloud textures. Ground detail
 textures fade between 238 and 700 world cells. Plant scale defaults to 1.5×. See
 [the canopy hierarchy and tiers](world-map-proposal.md#tree-species-and-vector-lods).

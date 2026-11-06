@@ -2,6 +2,7 @@ shader_type spatial;
 render_mode cull_disabled;
 
 #include "res://shaders/map_tree_hue.gdshaderinc"
+#include "res://shaders/map_ground_asset_fade.gdshaderinc"
 uniform sampler2D painted_atlas : source_color, filter_linear_mipmap_anisotropic;
 uniform float wind_time = 0.0;
 uniform float wind_strength = 0.5;
@@ -15,6 +16,7 @@ uniform bool bark_surface = false;
 uniform sampler2D authored_normal : hint_normal, filter_linear_mipmap_anisotropic;
 void vertex() {
 	map_tree_hue = INSTANCE_CUSTOM.ra;
+	VERTEX *= map_ground_asset_retention(INSTANCE_CUSTOM, MODEL_MATRIX[3].xz, INV_VIEW_MATRIX[3].xz);
 	vec3 world = (MODEL_MATRIX * vec4(VERTEX, 1.0)).xyz;
 	world.xz += world_origin;
 	float bend = bark_surface ? 0.0 : pow(clamp(VERTEX.y / 2.5, 0.0, 1.0), 1.5);

@@ -153,6 +153,23 @@ The seven inner ring boundaries retain each terrain sampling density at
 least 30% farther, rounded up to the next coarser grid for stitching. The
 four-cell geometry extends to 688 cells, up from 528.
 
+### Ground asset LOD and coverage
+
+Grass and ground plants use the seven tree geometry bands scaled by their
+fitted height relative to a six-cell tree. Grass drops blades in successive
+tiers. Other ground plants use the mesh simplifier's available index levels
+and retain their authored materials. Levels share the same placement and
+instance batch. A sparse, fixed subset of ground-cover sites remains in the
+detailed terrain window. Additional foreground sites fade from 56 to 96
+camera cells. The sparse sites fade after their size-scaled last tier.
+
+The earlier mismatch came from separate selectors. Trees use camera distance
+to a batch edge, terrain rings move with the published player chunk, and
+ground and water materials use per-pixel distance fades. The old ground-asset
+window also retired whole chunks independently of its 96-cell visibility
+setting. The tree-to-horizon handoff still changes population sampling from
+individual sites to sparse groves, and geometry batches switch whole meshes.
+
 ### Earlier visual plant rollout — November 5, 2026
 
 Ground cover pairs the shared grass blade with Open fan, Divided frond,

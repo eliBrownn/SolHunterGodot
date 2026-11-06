@@ -316,6 +316,8 @@ func _check_shared_vegetation(terrain) -> void:
 		var model: Dictionary = vegetation._model(kind)
 		_check(not model.pieces.is_empty(), "Every plant and tree species has a batched model")
 		if kind < MapPlants.Plant.TREE_BASE:
+			_check(model.levels.size() == TreeLod.DISTANCES.size() + 1 and model.lod_scale < 1.0,
+				"Ground assets share the tree tiers at their visible size")
 			continue
 		_check(model.levels.size() == 7, "Each tree species has seven geometry tiers")
 		var previous_vertices := 2147483647
@@ -365,6 +367,21 @@ func _check_shared_vegetation(terrain) -> void:
 		"A streamed tree batch swaps to a vector mesh with the same instance buffer")
 	vegetation._set_tree_lod(patch, Vector2(patch_origin))
 	_check(instances.mesh == near_mesh, "Returning to a tree patch restores its authored model")
+	var asset_key := Vector3i(patch_key.x, patch_key.y, 2)
+	var grass := MapPlants.Plant.GRASS
+	vegetation._publish(asset_key, patch_origin, {grass: [{
+		"transform": Transform3D.IDENTITY, "color": Color.WHITE,
+	}]})
+	var grass_patch: Node3D = vegetation._patches[asset_key]
+	var grass_batch := grass_patch.get_child(0) as MultiMeshInstance3D
+	var grass_model: Dictionary = vegetation._models[grass]
+	vegetation._set_ground_lods(grass_patch, Vector2(patch_origin))
+	_check(grass_batch.multimesh.mesh == grass_model.levels[0], "Near grass keeps all blades")
+	vegetation._set_ground_lods(grass_patch, Vector2(patch_origin) - Vector2(1800.0 * grass_model.lod_scale, 0.0))
+	_check(grass_batch.multimesh.mesh == grass_model.levels.back(),
+		"Grass follows the tree transition distances in proportion to its size")
+	vegetation._patches.erase(asset_key)
+	grass_patch.free()
 	vegetation._patches.erase(patch_key)
 	patch.free()
 	for biome in Plan.Biome.size():
@@ -419,7 +436,7 @@ func _check_plant_revisit(terrain, cell: Vector2i) -> void:
 	var returned := await _wait_for_plant_patch(vegetation, key)
 	_check(returned != null and returned.get_meta("placement_signature") == signature,
 		"A regenerated patch has identical positions, sizes, kinds and colors")
-	_check(vegetation._patches.size() <= pow(2 * MapPlants.CANOPY_RADIUS + 1, 2)
+	_check(vegetation._patches.size() <= 2 * pow(2 * MapPlants.CANOPY_RADIUS + 1, 2)
 		+ pow(2 * MapPlants.GROUND_RADIUS + 1, 2), "Plant residency stays within the bounded patch window")
 
 

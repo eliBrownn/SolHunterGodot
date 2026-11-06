@@ -1,5 +1,6 @@
 shader_type spatial;
 render_mode cull_disabled, alpha_to_coverage;
+#include "res://shaders/map_ground_asset_fade.gdshaderinc"
 uniform sampler2D albedo_texture : source_color, filter_linear_mipmap_anisotropic;
 uniform bool textured = false;
 uniform vec4 ground_base_color : source_color = vec4(0.48,0.57,0.34,1.0);
@@ -30,7 +31,8 @@ void vertex() {
  float distance_to_camera=distance(root_position,INV_VIEW_MATRIX[3].xz);
  float density=mix(1.0,distant_density,smoothstep(density_start,density_end,distance_to_camera));
  float rank=COLOR.a;
- float retained=smoothstep(rank*0.94,rank*0.94+0.06,density);
+ float retained=INSTANCE_CUSTOM.b>0.5 ? map_ground_asset_retention(INSTANCE_CUSTOM, MODEL_MATRIX[3].xz, INV_VIEW_MATRIX[3].xz)
+  : smoothstep(rank*0.94,rank*0.94+0.06,density);
  VERTEX=mix(vec3(0.0,base_height,0.0),VERTEX,retained);
  blade_height=clamp((VERTEX.y-base_height)/max(blade_length,0.001),0.0,1.0);
  grass_world=(MODEL_MATRIX*vec4(VERTEX,1.0)).xyz;

@@ -10,8 +10,12 @@ const Meadow := preload("res://scripts/scenery/meadow_art.gd")
 const Library := preload("res://scripts/scenery/plant_library.gd")
 const TreeSpecies := preload("res://scripts/scenery/map_tree_species.gd")
 const TreeLod := preload("res://scripts/presentation/map_tree_lod.gd")
+const GroundLod := preload("res://scripts/presentation/map_ground_asset_lod.gd")
 const PlantMesh := preload("res://scripts/scenery/plant_vastra_anatomy_mesh.gd")
-const GROUND_RADIUS := 1
+const GROUND_RADIUS := 2
+const GROUND_PROXY_STEP := 8
+const TREE_REFERENCE_HEIGHT := 6.0
+const MAX_GROUND_LOD_SCALE := 0.24
 const CANOPY_RADIUS := 8
 const GROUND_STEP := 2
 const TREE_STEP := 8
@@ -175,6 +179,7 @@ func cover(cell: Vector2i) -> void:
 		for x in range(-CANOPY_RADIUS, CANOPY_RADIUS + 1):
 			var chunk := center + Vector2i(x, z)
 			_wanted[Vector3i(chunk.x, chunk.y, 1)] = true
+			_wanted[Vector3i(chunk.x, chunk.y, 2)] = true
 			if maxi(absi(x), absi(z)) <= GROUND_RADIUS:
 				_wanted[Vector3i(chunk.x, chunk.y, 0)] = true
 	for key: Vector3i in _patches.keys():
@@ -201,7 +206,7 @@ func _process(_delta: float) -> void:
 		var position := Vector2(camera.global_position.x, camera.global_position.z)
 		if _lod_camera.distance_squared_to(position) >= 4.0:
 			_lod_camera = position
-			_update_tree_lods(position)
+			_update_asset_lods(position)
 	if _job.is_empty():
 		for index in range(_pending.size()):
 			var key := _pending[index]
@@ -214,21 +219,24 @@ func _process(_delta: float) -> void:
 			return
 	var key: Vector3i = _job.key
 	var origin := Vector2i(key.x, key.y) * _chunk_size
-	var step := GROUND_STEP if key.z == 0 else TREE_STEP
+	var step: int = [GROUND_STEP, TREE_STEP, GROUND_PROXY_STEP][key.z]
 	var width := _chunk_size / step
 	var deadline := Time.get_ticks_usec() + WORK_USEC
 	var stop := mini(width * width, int(_job.next) + MAX_CANDIDATES_PER_FRAME)
 	while int(_job.next) < stop and Time.get_ticks_usec() < deadline:
 		var index: int = _job.next
 		var cell := origin + Vector2i(index % width, index / width) * step
-		var plant := _placement(cell, key.z != 0, origin)
+		_job.next += 1
+		# Sparse sites are a stable subset of the dense lattice, with one owner.
+		if key.z == 0 and posmod(cell.x, GROUND_PROXY_STEP) == 0 and posmod(cell.y, GROUND_PROXY_STEP) == 0:
+			continue
+		var plant := _placement(cell, key.z == 1, origin)
 		if not plant.is_empty():
 			var groups: Dictionary = _job.groups
 			var kind: int = plant.kind
 			if not groups.has(kind):
 				groups[kind] = []
 			groups[kind].append(plant)
-		_job.next += 1
 	if int(_job.next) == width * width:
 		_publish(key, origin, _job.groups)
 		_job.clear()
@@ -328,10 +336,12 @@ static func tree_hue(biome: int) -> float:
 	return fposmod(float(BIOME_HUE_DEGREES.get(biome, 0.0)) / 360.0, 1.0)
 
 
-func _update_tree_lods(camera: Vector2) -> void:
+func _update_asset_lods(camera: Vector2) -> void:
 	for key: Vector3i in _patches:
 		if key.z == 1:
 			_set_tree_lod(_patches[key], camera)
+		else:
+			_set_ground_lods(_patches[key], camera)
 	if is_instance_valid(_horizon_lod_root):
 		for patch: Node3D in _horizon_lod_root.get_children():
 			_set_tree_lod(patch, camera)
@@ -344,10 +354,26 @@ func activate_horizon_lods(root: Node3D) -> void:
 			_set_tree_lod(patch, _lod_camera)
 
 
-func _set_tree_lod(root: Node3D, camera: Vector2) -> void:
+func _patch_distance(root: Node3D, camera: Vector2) -> float:
 	var bounds: Rect2 = root.get_meta("tree_bounds", Rect2(Vector2.ZERO, Vector2.ONE * _chunk_size))
 	bounds.position += Vector2(root.global_position.x, root.global_position.z)
-	var distance := camera.distance_to(camera.clamp(bounds.position, bounds.end))
+	return camera.distance_to(camera.clamp(bounds.position, bounds.end))
+
+
+func _set_ground_lods(root: Node3D, camera: Vector2) -> void:
+	var distance := _patch_distance(root, camera)
+	for view: MultiMeshInstance3D in root.get_children():
+		var kind: int = view.get_meta("ground_kind")
+		var model: Dictionary = _models[kind]
+		var previous: int = view.get_meta("asset_lod", -1)
+		var level := TreeLod.tier(distance / float(model.lod_scale), previous)
+		if level != previous:
+			view.multimesh.mesh = model.levels[level]
+			view.set_meta("asset_lod", level)
+
+
+func _set_tree_lod(root: Node3D, camera: Vector2) -> void:
+	var distance := _patch_distance(root, camera)
 	var previous: int = root.get_meta("tree_lod", -1)
 	var level := TreeLod.tier(distance, previous)
 	if previous == level:
@@ -430,16 +456,19 @@ func publish_horizon_patch(parent: Node3D, data: Dictionary, surface_index: int)
 func _publish(key: Vector3i, origin: Vector2i, groups: Dictionary) -> void:
 	var root := Node3D.new()
 	root.position = Vector3(origin.x, 0.0, origin.y)
-	var count := _add_batches(root, groups, key.z == 1)
+	var count := _add_batches(root, groups, key.z == 1, false, key.z == 0)
 	root.set_meta("plant_count", count)
 	root.set_meta("placement_signature", hash(groups))
 	add_child(root)
 	_patches[key] = root
-	if key.z == 1 and _lod_camera.is_finite():
-		_set_tree_lod(root, _lod_camera)
+	if _lod_camera.is_finite():
+		if key.z == 1:
+			_set_tree_lod(root, _lod_camera)
+		else:
+			_set_ground_lods(root, _lod_camera)
 
 
-func _add_batches(root: Node3D, groups: Dictionary, tree: bool, far: bool = false) -> int:
+func _add_batches(root: Node3D, groups: Dictionary, tree: bool, far: bool = false, dense: bool = false) -> int:
 	var count := 0
 	for kind: int in groups:
 		var model := _model(kind)
@@ -448,7 +477,7 @@ func _add_batches(root: Node3D, groups: Dictionary, tree: bool, far: bool = fals
 			var instances := MultiMesh.new()
 			instances.transform_format = MultiMesh.TRANSFORM_3D
 			instances.use_colors = true
-			instances.use_custom_data = tree
+			instances.use_custom_data = true
 			instances.mesh = model.levels.back() if far else piece.mesh
 			instances.instance_count = rows.size()
 			for index in range(rows.size()):
@@ -457,6 +486,8 @@ func _add_batches(root: Node3D, groups: Dictionary, tree: bool, far: bool = fals
 				instances.set_instance_color(index, record.color)
 				if tree:
 					instances.set_instance_custom_data(index, Color(record.hue, 0, 0, 1))
+				else:
+					instances.set_instance_custom_data(index, Color(model.lod_scale, float(dense), 1, 0))
 			var view := MultiMeshInstance3D.new()
 			view.name = model.name
 			view.multimesh = instances
@@ -464,8 +495,9 @@ func _add_batches(root: Node3D, groups: Dictionary, tree: bool, far: bool = fals
 			if tree:
 				view.set_meta("tree_kind", kind)
 			else:
-				view.visibility_range_end = 96.0
-				view.visibility_range_end_margin = 10.0
+				view.set_meta("ground_kind", kind)
+				# The shader fades individual plants. Allow for a whole patch's bounds.
+				view.visibility_range_end = (96.0 if dense else GroundLod.fade_band().y * model.lod_scale) + _chunk_size
 			root.add_child(view)
 		if not model.pieces.is_empty():
 			count += rows.size()
@@ -477,15 +509,19 @@ func _model(kind: int) -> Dictionary:
 		return _models[kind]
 	if kind == Plant.GRASS:
 		var blade := Meadow.mesh(1)
-		var clump := SurfaceTool.new()
-		clump.begin(Mesh.PRIMITIVE_TRIANGLES)
-		clump.set_material(blade.surface_get_material(0))
-		for index in range(7):
-			var angle := float(index) * 2.39996
-			var offset := Vector2.from_angle(angle) * lerpf(0.04, 0.19, float(index) / 6.0)
-			var basis := Basis(Vector3.UP, angle).scaled(Vector3(1.2, 0.28 + 0.02 * index, 1.25))
-			clump.append_from(blade, 0, Transform3D(basis, Vector3(offset.x, 0.0, offset.y)))
-		_models[kind] = {"name": "Grass", "pieces": [{"mesh": clump.commit(), "transform": Transform3D.IDENTITY}], "fit": Transform3D.IDENTITY}
+		var material := GroundLod.material_for_map(blade.surface_get_material(0))
+		var levels: Array[Mesh] = []
+		for count in range(TreeLod.DISTANCES.size() + 1, 0, -1):
+			var clump := SurfaceTool.new()
+			clump.begin(Mesh.PRIMITIVE_TRIANGLES)
+			clump.set_material(material)
+			for index in count:
+				var angle := float(index) * 2.39996
+				var offset := Vector2.from_angle(angle) * lerpf(0.04, 0.19, float(index) / 6.0)
+				var basis := Basis(Vector3.UP, angle).scaled(Vector3(1.2, 0.28 + 0.02 * index, 1.25))
+				clump.append_from(blade, 0, Transform3D(basis, Vector3(offset.x, 0.0, offset.y)))
+			levels.append(clump.commit())
+		_models[kind] = _ground_model("Grass", levels, Transform3D.IDENTITY, levels[0].get_aabb().size.y)
 		return _models[kind]
 	var is_tree := kind >= Plant.TREE_BASE
 	var definition: Resource
@@ -522,8 +558,15 @@ func _model(kind: int) -> Dictionary:
 		_models[kind] = {"name": name, "pieces": [{"mesh": levels[0], "transform": Transform3D.IDENTITY}],
 			"fit": fit, "levels": levels}
 	else:
-		_models[kind] = {"name": name, "pieces": model.pieces, "fit": fit}
+		var levels := GroundLod.build(model.pieces, bounds)
+		_models[kind] = _ground_model(name, levels, fit, (bounds.end.y - base.y) * scale)
 	return _models[kind]
+
+
+func _ground_model(name: String, levels: Array[Mesh], fit: Transform3D, height: float) -> Dictionary:
+	var lod_scale := clampf(height * _plant_scale / TREE_REFERENCE_HEIGHT, 0.01, MAX_GROUND_LOD_SCALE)
+	return {"name": name, "pieces": [{"mesh": levels[0], "transform": Transform3D.IDENTITY}],
+		"fit": fit, "levels": levels, "lod_scale": lod_scale}
 
 
 func _draft_scene(draft: Dictionary) -> PackedScene:
