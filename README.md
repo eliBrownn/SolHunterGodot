@@ -17,7 +17,8 @@ Each launch generates a fresh map. To replay a seed, run
 Detailed terrain streams in 64×64-cell chunks, with eight coarser rings fading
 into the horizon. Visual plant communities follow the streamed biomes. A worker prepares new coverage while the current terrain stays
 visible. Nearby water uses [EmacEArt Cool Water](docs/water-appearance.md#cool-water-in-the-map-first-build)
-when the local pack is installed. The knight holds a fixed pose. Vastra storms
+when the local pack is installed. The Quaternius mannequin plays the included
+idle, walk, and sprint loops. Vastra storms
 use the Particle Lab's all-affinity vortex. Their locations are fixed for each
 world seed. Nearby storms render as you approach. These field-test
 storms cause no damage and run independently of ecology. The FPS counter is in

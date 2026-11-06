@@ -9,7 +9,7 @@ const DIRECTIONS := {
 const MOVE_SPEED := 48.0
 const SPRINT_SPEED := 144.0
 const CENTER_SPEED := 24.0
-const KNIGHT_HEIGHT := 0.85
+const PLAYER_HEIGHT := 0.85
 const CAMERA_FOLLOW_RATE := 48.0
 const CAMERA_HEIGHT_FOLLOW_RATE := 14.0
 const CAMERA_ZOOM_RATE := 14.0
@@ -23,10 +23,11 @@ var _camera_center: Vector3
 var _camera_zoom := 1.0
 var _camera_zoom_target := 1.0
 var _fps_refresh := 0.0
+var _player_animator := AnimationPlayer.new()
 
 @onready var _terrain := $Terrain
 @onready var _player: Node3D = $Player
-@onready var _knight := $Player/GraveKnight
+@onready var _avatar := $Player/UniversalMannequin
 @onready var _camera: Camera3D = $Camera3D
 @onready var _storms := $VastraStorms
 @onready var _fps: Label = $HUD/FPS
@@ -36,14 +37,18 @@ var _fps_refresh := 0.0
 
 
 func _ready() -> void:
-	_knight.prepare_static(KNIGHT_HEIGHT)
+	_avatar.prepare(PLAYER_HEIGHT)
+	var library: AnimationLibrary = _avatar.animation_library()
+	_avatar.add_child(_player_animator)
+	_player_animator.add_animation_library(&"", library)
+	_player_animator.play(&"Idle_A")
 	_storms.layout_seed = _terrain.world_seed
 	var spawn: Dictionary = _terrain.beach_spawn()
 	cell = spawn.cell
 	var heading: Vector2i = spawn.heading
 	_camera_start_rotation.y = atan2(-heading.x, -heading.y)
 	_camera.rotation = _camera_start_rotation
-	_knight.rotation.y = _camera.rotation.y
+	_avatar.rotation.y = _camera.rotation.y
 	var center := Vector2(cell) + Vector2(0.5, 0.5)
 	_player.position = Vector3(center.x, _terrain.height_at(center), center.y)
 	_terrain.cover(cell)
@@ -111,14 +116,19 @@ func _unhandled_key_input(event: InputEvent) -> void:
 
 func _physics_process(delta: float) -> void:
 	var input := _movement_input()
+	var animation := &"Idle_A"
 	if input != Vector2.ZERO:
 		var direction := Vector3(input.x, 0.0, input.y).rotated(Vector3.UP, _camera.rotation.y)
-		var speed := SPRINT_SPEED if Input.is_physical_key_pressed(KEY_SHIFT) else MOVE_SPEED
+		var sprinting := Input.is_physical_key_pressed(KEY_SHIFT)
+		var speed := SPRINT_SPEED if sprinting else MOVE_SPEED
+		animation = &"Running_A" if sprinting else &"Walking_A"
 		_player.position += direction * speed * delta
-		_knight.rotation.y = atan2(direction.x, direction.z)
+		_avatar.rotation.y = atan2(direction.x, direction.z)
 	else:
 		var center := Vector3(cell.x + 0.5, _player.position.y, cell.y + 0.5)
 		_player.position = _player.position.move_toward(center, CENTER_SPEED * delta)
+	if _player_animator.current_animation != animation:
+		_player_animator.play(animation, 0.12)
 	_player.position.y = _terrain.height_at(Vector2(_player.position.x, _player.position.z))
 	var next_cell := Vector2i(floori(_player.position.x), floori(_player.position.z))
 	if next_cell != cell:

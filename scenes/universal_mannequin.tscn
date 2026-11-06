@@ -1,0 +1,7 @@
+[gd_scene format=3]
+
+[ext_resource type="PackedScene" path="res://assets/characters/universal_mannequin/AnimationLibrary_Godot_Standard.glb" id="1"]
+[ext_resource type="Script" path="res://scripts/presentation/universal_mannequin.gd" id="2"]
+
+[node name="UniversalMannequin" instance=ExtResource("1")]
+script = ExtResource("2")

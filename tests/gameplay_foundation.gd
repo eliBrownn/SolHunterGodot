@@ -18,14 +18,11 @@ func _run() -> void:
 	var world = current_scene
 	var terrain := world.get_node("Terrain") as Node3D
 	var player := world.get_node("Player") as Node3D
-	var knight = player.get_node("GraveKnight")
-	var animator := knight.imported.get_node("AnimationPlayer") as AnimationPlayer
-	var skeleton: Skeleton3D = knight.skeleton
-	var pose: Array[Transform3D] = []
-	for bone in skeleton.get_bone_count():
-		pose.append(skeleton.get_bone_pose(bone))
+	var avatar := player.get_node("UniversalMannequin") as Node3D
+	var animator: AnimationPlayer = world._player_animator
+	var skeleton: Skeleton3D = avatar.skeleton
 	_check(OS.get_user_data_dir().get_file() == "SolHunter-Gameplay", "User data is isolated")
-	_check(not animator.active and not animator.is_playing(), "Knight animation is inactive")
+	_check(animator.is_playing() and animator.current_animation == &"Idle_A", "Mannequin idles at spawn")
 	var storms = world.get_node("VastraStorms")
 	_check(world.get_child_count() == 7, "Only the foundation systems, storms and FPS display are active")
 	var spawn: Vector2i = world.cell
@@ -52,6 +49,13 @@ func _run() -> void:
 	_send_key(KEY_UP, true)
 	for frame in 18:
 		await physics_frame
+	_check(animator.current_animation == &"Walking_A", "Moving selects the authored walk loop")
+	var calf := skeleton.find_bone("DEF-shin.L")
+	_check(calf >= 0, "The mannequin has its animated calf bone")
+	if calf >= 0:
+		var pose := skeleton.get_bone_pose(calf)
+		animator.advance(0.15)
+		_check(not skeleton.get_bone_pose(calf).is_equal_approx(pose), "The walk clip poses the mannequin rig")
 	var diagonal_cell: Vector2i = world.cell
 	var diagonal := Vector2(diagonal_cell - spawn)
 	_check(diagonal.dot(Vector2(forward)) > 0.0 and diagonal.dot(Vector2(right)) < 0.0,
@@ -64,6 +68,7 @@ func _run() -> void:
 	for frame in 12:
 		await physics_frame
 	_check(_centered(player, terrain, diagonal_cell), "Release settles at the nearest center")
+	_check(animator.current_animation == &"Idle_A", "Releasing movement returns to idle")
 	await _wait_for_terrain(terrain)
 	_check_terrain(terrain, world.cell)
 	_send_key(KEY_RIGHT, true)
@@ -90,7 +95,7 @@ func _run() -> void:
 	var reversal := Vector2(player.position.x - before.x, player.position.z - before.z)
 	_check(reversal.dot(Vector2(right)) < 0.0, "Reversal moves in the new direction")
 	_send_key(KEY_LEFT, false)
-	_check(absf(angle_difference(knight.rotation.y, yaw - PI / 2.0)) < 0.001, "Knight faces the new direction")
+	_check(absf(angle_difference(avatar.rotation.y, yaw - PI / 2.0)) < 0.001, "Mannequin faces the new direction")
 	for frame in 18:
 		await physics_frame
 	_check(_centered(player, terrain, world.cell), "Movement ends centered on the atlas terrain")
@@ -110,12 +115,11 @@ func _run() -> void:
 		_send_key(KEY_RIGHT, true)
 		for frame in 18:
 			await physics_frame
+		_check(animator.current_animation == &"Running_A", "Shift movement selects the authored sprint loop")
 		_send_key(KEY_RIGHT, false)
 		_send_key(KEY_SHIFT, false)
 		var sprint := Vector2(player.position.x - sprint_start.x, player.position.z - sprint_start.z)
 		_check(sprint.dot(Vector2(right)) > 24.0, "Sprinting keeps moving through planted terrain")
-	for bone in pose.size():
-		_check(skeleton.get_bone_pose(bone).is_equal_approx(pose[bone]), "Knight bone pose stays fixed")
 	var site: Vector2i = storms.site_for(Vector2i.ZERO)
 	storms.advance(0.0, Vector2i.ZERO, terrain.height_at)
 	var storm: GPUParticles3D = storms._emitters[site]

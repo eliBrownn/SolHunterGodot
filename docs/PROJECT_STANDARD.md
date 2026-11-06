@@ -6,8 +6,12 @@ The owner selected the current map-first gameplay build as the main game on
 November 5, 2026. Its publication target is the `main` branch of
 `eliBrownn/SolHunterGodot`.
 Its default entry is `scenes/gameplay_foundation.tscn`. It uses a
-map-driven terrain, free movement that settles at tile centers, and the Grave Knight in a
-fixed pose. Seeded, persistent Vastra vortices are a field test independent of
+map-driven terrain and free movement that settles at tile centers. The default
+player is the Quaternius mannequin from the supplied Universal Animation Library
+Standard archive. The Godot model and CC0 dedication are in
+`assets/characters/universal_mannequin/`. The map-first scene plays the authored
+in-place idle, walk, and sprint loops using the current movement state.
+Seeded, persistent Vastra vortices are a field test independent of
 the inherited ecology and storm admission rules.
 The inherited expedition scenes remain available as direct editor fixtures. The
 main game uses the `SolHunter-Gameplay` user-data directory. GitHub validation

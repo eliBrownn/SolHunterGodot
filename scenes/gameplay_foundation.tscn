@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" path="res://scripts/application/gameplay_foundation.gd" id="1"]
 [ext_resource type="Script" path="res://scripts/world/map_terrain.gd" id="2"]
-[ext_resource type="PackedScene" path="res://scenes/grave_knight.tscn" id="3"]
+[ext_resource type="PackedScene" path="res://scenes/universal_mannequin.tscn" id="3"]
 [ext_resource type="Script" path="res://scripts/world/field_storms.gd" id="4"]
 
 [sub_resource type="Environment" id="FieldEnvironment"]
@@ -29,7 +29,7 @@ script = ExtResource("4")
 
 [node name="Player" type="Node3D" parent="."]
 
-[node name="GraveKnight" parent="Player" instance=ExtResource("3")]
+[node name="UniversalMannequin" parent="Player" instance=ExtResource("3")]
 
 [node name="Camera3D" type="Camera3D" parent="."]
 position = Vector3(0, 6, 8.4)
