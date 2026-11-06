@@ -275,16 +275,58 @@ func _check_shared_vegetation(terrain) -> void:
 	const MapPlants := preload("res://scripts/presentation/map_vegetation.gd")
 	const Plan := preload("res://scripts/world/world_map_plan.gd")
 	var vegetation = terrain._vegetation
-	var tree_limit := MapPlants.ECOSYSTEM_TREE_BASE + MapPlants.PROCEDURAL_TREE_COUNT
+	const TreeLod := preload("res://scripts/presentation/map_tree_lod.gd")
+	var tree_limit: int = MapPlants.Plant.TREE_BASE + vegetation._species.size()
 	for kind in tree_limit:
 		var model: Dictionary = vegetation._model(kind)
-		_check(not model.pieces.is_empty(), "Every shared plant and tree kind has a batched model")
+		_check(not model.pieces.is_empty(), "Every plant and tree species has a batched model")
+		if kind < MapPlants.Plant.TREE_BASE:
+			continue
+		_check(model.levels.size() == 7, "Each tree species has seven geometry tiers")
+		var previous_vertices := 2147483647
+		for level in range(1, model.levels.size()):
+			var mesh: ArrayMesh = model.levels[level]
+			var count := mesh.surface_get_array_len(0)
+			_check(count < previous_vertices and mesh.surface_get_material(0).shader == TreeLod.VECTOR_SHADER,
+				"Each distant tree tier reduces solid geometry")
+			previous_vertices = count
 	var trees := {}
 	for sample in 1024:
 		var cell := Vector2i(-42 + sample * MapPlants.TREE_STEP, 117)
-		trees[vegetation._tree_kind(cell)] = true
-	_check(trees.size() == tree_limit - MapPlants.Plant.TREE_BASE,
-		"The shared selector reaches every old expedition tree form")
+		trees[vegetation._tree_kind(cell, Plan.Biome.WOODLAND)] = true
+	_check(trees.size() == vegetation._species.size(), "The default woodland list can reach all tree species")
+	var coast_only: MapPlants.TreeSpecies = vegetation._species[0].duplicate()
+	coast_only.biomes.assign([Plan.Biome.COAST])
+	var fixture := MapPlants.new()
+	fixture.configure(terrain._plan, terrain._surface, terrain.world_seed, terrain.CHUNK_SIZE,
+		terrain.plant_coverage, terrain.plant_scale, [coast_only], terrain.height_at, terrain._planting_chunk_ready)
+	_check(fixture._tree_kind(Vector2i.ZERO, Plan.Biome.COAST) == MapPlants.Plant.TREE_BASE
+		and not fixture._biome_species.has(Plan.Biome.WOODLAND),
+		"Species resources allow spawning only in their listed biomes")
+	fixture.free()
+	_check(MapPlants.tree_hue(Plan.Biome.DESERT) != MapPlants.tree_hue(Plan.Biome.TAIGA),
+		"The same species receives a different hue in desert and taiga")
+	_check(TreeLod.tier(0.0) == 0 and TreeLod.tier(400.0) == 6 and TreeLod.tier(32.0, 0) == 0
+		and TreeLod.tier(35.0, 0) == 1 and TreeLod.tier(29.0, 1) == 0,
+		"Camera distance selects and stabilizes the vector tiers")
+	var patch_key := Vector3i(-2048, 2048, 1)
+	var patch_origin := Vector2i(patch_key.x, patch_key.y) * int(terrain.CHUNK_SIZE)
+	var kind := MapPlants.Plant.TREE_BASE
+	vegetation._publish(patch_key, patch_origin, {kind: [{
+		"transform": Transform3D.IDENTITY, "color": Color.WHITE, "hue": MapPlants.tree_hue(Plan.Biome.TAIGA),
+	}]})
+	var patch: Node3D = vegetation._patches[patch_key]
+	var batch := patch.get_child(0) as MultiMeshInstance3D
+	var instances := batch.multimesh
+	vegetation._set_tree_lod(patch, Vector2(patch_origin))
+	var near_mesh := instances.mesh
+	vegetation._set_tree_lod(patch, Vector2(patch_origin) - Vector2.ONE * 400.0)
+	_check(instances.mesh != near_mesh and instances.instance_count == 1 and batch.multimesh == instances,
+		"A streamed tree batch swaps to a vector mesh with the same instance buffer")
+	vegetation._set_tree_lod(patch, Vector2(patch_origin))
+	_check(instances.mesh == near_mesh, "Returning to a tree patch restores its authored model")
+	vegetation._patches.erase(patch_key)
+	patch.free()
 	for biome in Plan.Biome.size():
 		if biome == Plan.Biome.OCEAN or biome == Plan.Biome.LAKE:
 			_check(not MapPlants.HABITATS.has(biome), "Water biomes have no terrestrial planting profile")
@@ -337,7 +379,8 @@ func _check_plant_revisit(terrain, cell: Vector2i) -> void:
 	var returned := await _wait_for_plant_patch(vegetation, key)
 	_check(returned != null and returned.get_meta("placement_signature") == signature,
 		"A regenerated patch has identical positions, sizes, kinds and colors")
-	_check(vegetation._patches.size() <= 58, "Plant residency stays within the bounded patch window")
+	_check(vegetation._patches.size() <= pow(2 * MapPlants.CANOPY_RADIUS + 1, 2)
+		+ pow(2 * MapPlants.GROUND_RADIUS + 1, 2), "Plant residency stays within the bounded patch window")
 
 
 func _wait_for_plant_patch(vegetation, key: Vector3i) -> Node3D:

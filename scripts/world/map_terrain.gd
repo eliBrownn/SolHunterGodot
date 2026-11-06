@@ -10,6 +10,7 @@ const Plan := preload("res://scripts/world/world_map_plan.gd")
 const Surface := preload("res://scripts/world/world_map_surface.gd")
 const HORIZON_RINGS := [528, 560, 640, 768, 1024, 2048, 4096, 8192]
 const GRID_SHADER := preload("res://shaders/map_terrain.gdshader")
+const TreeSpecies := preload("res://scripts/scenery/map_tree_species.gd")
 const Vegetation := preload("res://scripts/presentation/map_vegetation.gd")
 const COOL_WATER_PATH := "res://assets/local/emace_cool_water/Materials/EA_Water_DeepBlue.tres"
 const WATER_DETAIL_END := 260.0
@@ -20,6 +21,8 @@ const CHUNK_UPLOADS_PER_FRAME := 2
 @export_range(0.0, 1.0, 0.05) var plant_coverage := 0.72
 ## Uniform size of grass, ground plants and trees. Captured at startup.
 @export_range(0.5, 2.5, 0.05) var plant_scale := 1.5
+## Custom tree species, with spawn biomes and per-species size settings.
+@export var tree_species: Array[TreeSpecies] = Vegetation.DEFAULT_TREE_SPECIES.duplicate()
 
 class TerrainSamples:
 	var _surface: Surface
@@ -98,7 +101,7 @@ func _ready() -> void:
 	add_child(_horizon)
 	_vegetation = Vegetation.new()
 	_vegetation.name = "Vegetation"
-	_vegetation.configure(_plan, _surface, world_seed, CHUNK_SIZE, plant_coverage, plant_scale,
+	_vegetation.configure(_plan, _surface, world_seed, CHUNK_SIZE, plant_coverage, plant_scale, tree_species,
 		height_at, _planting_chunk_ready)
 	add_child(_vegetation)
 

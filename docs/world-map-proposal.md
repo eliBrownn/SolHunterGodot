@@ -116,6 +116,27 @@ Grass, ground plants, and trees are 1.5× taller and wider by default.
 around the plant's root. Tree site checks account for the larger root footprint.
 The seeded gameplay test covers the shared palette, size, and plant patch revisit.
 
+### Tree species and vector LODs
+
+Each of the seventeen custom tree forms has its own resource under
+`resources/plants/map_tree_species/`. The resource references its baked
+model settings, sets a maximum canopy width and relative spawn weight, and
+lists eligible biomes. The defaults list all eleven land biomes. At a viable
+site, the map selects a species from that biome's list and applies the biome's
+hue shift to its foliage. The shift travels with each instance through all
+detail levels.
+
+Camera distance from the tree patch edge selects one of seven levels. The
+authored mesh covers the closest level. Six solid polygon silhouettes use
+progressively fewer rings and sides to retain the trunk and crown profiles
+at a distance. They use vertex colors and flat shading. Levels change at
+32, 64, 112, 176, 256, and 384 world cells, with a two-cell buffer for
+reversals. A level change swaps the mesh on the existing instance batch.
+
+Canopy coverage extends through the nearby detailed terrain window, with up
+to 225 tree patches and nine ground-cover patches. The distant terrain rings
+beyond the canopy window show the landscape without additional tree coverage.
+
 ### Earlier visual plant rollout — November 5, 2026
 
 Ground cover pairs the shared grass blade with Open fan, Divided frond,

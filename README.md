@@ -34,9 +34,11 @@ biomes, and irrigation. Local terrain adds relief within that plan and uses
 the same height samples for movement, water banks, and chunk boundaries.
 Nearby terrain streams in 64×64-cell chunks with eight coarser horizon rings.
 
-Every land biome shares the full ground plant and custom expedition tree
-palette. Local conditions still shape density. Plants and trees are 50% larger
-by default. Use [Plant Coverage and Plant Scale](docs/inspector-tuning.md#map-first-vegetation)
+Every land biome can use the full ground plant and custom expedition tree
+palette by default. Each tree species has its own allowed biomes. Local
+conditions shape density, and the biome shifts foliage hue. Distant trees use
+[solid polygon silhouettes](docs/world-map-proposal.md#tree-species-and-vector-lods).
+Plants and trees are 50% larger by default. Use [Plant Coverage and Plant Scale](docs/inspector-tuning.md#map-first-vegetation)
 to adjust density and size.
 The bundled atlas shader renders water. The optional
 [EmacEArt Cool Water pack](docs/water-appearance.md#cool-water-in-the-map-first-build)

@@ -1,0 +1,11 @@
+[gd_resource type="Resource" format=3]
+
+[ext_resource type="Script" path="res://scripts/scenery/map_tree_species.gd" id="1_species"]
+[ext_resource type="Resource" path="res://resources/plants/ecosystem_trees/official_marsh_violet_stilt_curtain.res" id="2_model"]
+
+[resource]
+script = ExtResource("1_species")
+species_id = &"marsh_violet_stilt_curtain"
+model = ExtResource("2_model")
+spawn_weight = 0.6
+canopy_width = 5.2

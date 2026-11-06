@@ -1,5 +1,7 @@
 shader_type spatial;
 render_mode cull_disabled;
+
+#include "res://shaders/map_tree_hue.gdshaderinc"
 uniform sampler2D painted_atlas : source_color, filter_linear_mipmap_anisotropic;
 uniform float wind_time = 0.0;
 uniform float wind_strength = 0.5;
@@ -12,6 +14,7 @@ uniform float palette_gain : hint_range(0.8,1.5) = 1.4;
 uniform bool bark_surface = false;
 uniform sampler2D authored_normal : hint_normal, filter_linear_mipmap_anisotropic;
 void vertex() {
+	map_tree_hue = INSTANCE_CUSTOM.ra;
 	vec3 world = (MODEL_MATRIX * vec4(VERTEX, 1.0)).xyz;
 	world.xz += world_origin;
 	float bend = bark_surface ? 0.0 : pow(clamp(VERTEX.y / 2.5, 0.0, 1.0), 1.5);
@@ -25,7 +28,7 @@ void fragment() {
 	vec4 pigment = texture(painted_atlas, uv);
 	if (vastra_surface) pigment.rgb = mix(vec3(dot(pigment.rgb,vec3(0.333))), vec3(0.62,0.76,0.74),0.8);
 	vec3 paint = mix(pigment.rgb,vec3(dot(pigment.rgb,vec3(0.21,0.72,0.07))*palette_gain),palette_recolor);
-	ALBEDO = paint * COLOR.rgb;
+	ALBEDO = paint * (bark_surface ? COLOR.rgb : shift_map_tree_hue(COLOR.rgb));
 	ALPHA = pigment.a;
 	ALPHA_SCISSOR_THRESHOLD = 0.5;
 	ROUGHNESS = 0.9;

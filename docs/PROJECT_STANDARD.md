@@ -37,9 +37,12 @@ heights use the same curve as the terrain. The atlas records both the natural
 and irrigation-adjusted biome. The ground material and biome HUD use the
 adjusted value. The main scene streams visual plant communities from these
 biomes and the canonical terrain surface. The canopy uses the inherited
-expedition's twelve procedural tree forms and five named designs. Every land
-biome shares the full plant and tree palette. Local density, slope, and water
-clearance guide seeded placement. Plant scale defaults to 1.5×.
+expedition's twelve procedural tree forms and five named designs. Each tree
+form is a species resource with its own allowed biomes and spawn weight.
+The defaults allow all seventeen in every land biome. Local density, slope,
+and water clearance guide seeded placement. Biome hue shifts tint foliage at
+all seven tree detail levels. Plant scale defaults to 1.5×. See
+[the canopy hierarchy and tiers](world-map-proposal.md#tree-species-and-vector-lods).
 
 The optional local EmacEArt Cool Water material reads the opaque terrain beds
 on Forward+ and Mobile. The full effect fades from 150 to 260 cells from the

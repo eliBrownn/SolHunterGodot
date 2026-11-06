@@ -1,0 +1,11 @@
+[gd_resource type="Resource" format=3]
+
+[ext_resource type="Script" path="res://scripts/scenery/map_tree_species.gd" id="1_species"]
+[ext_resource type="Resource" path="res://resources/plants/ecosystem_trees/procedural_1_1_2.res" id="2_model"]
+
+[resource]
+script = ExtResource("1_species")
+species_id = &"woodland_canopy_3"
+model = ExtResource("2_model")
+spawn_weight = 1.0
+canopy_width = 7.2

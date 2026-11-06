@@ -15,6 +15,14 @@ apply a change. The map seed
 comes from `--world-seed=<integer>` or is chosen on launch. Earlier expedition
 relief, climate, view-distance, and save resources apply to `scenes/world_3d.tscn`.
 
+On **Terrain**, **Tree Species** lists the individual species resources.
+Open a species to edit its **Biomes**, **Spawn Weight**, or **Canopy Width**.
+Each species references its baked form. A biome entry makes that species
+eligible on suitable terrain, and an empty list removes it from all sites.
+Restart after editing species. See the
+[map canopy details](world-map-proposal.md#tree-species-and-vector-lods)
+for biome hue and distance bands.
+
 ## Connected water, mountains and grass — October 30, 2026
 
 `resources/terrain_exploration.tres` / `TerrainReliefSettings` expose channel
