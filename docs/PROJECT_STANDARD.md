@@ -41,11 +41,13 @@ expedition's twelve procedural tree forms and five named designs. Each tree
 form is a species resource with its own allowed biomes and spawn weight.
 The defaults allow all seventeen in every land biome. Local density, slope,
 and water clearance guide seeded placement. Biome hue shifts tint foliage at
-all eight tree detail levels. Distant vector tiers follow authored branches
-and crown clusters. Sparse groves extend through all eight terrain rings.
+all eight tree detail levels. Five progressively simplified authored meshes
+follow full detail, then two vector billboard tiers carry the tree shapes
+into the distance. Sparse groves extend through all eight terrain rings.
 Grass and ground plants share the tree distance bands in proportion to their
 height, with sparse cover retained through the detailed terrain window.
-The map-first daylight sky uses 1024×1024 cloud textures. Land uses atlas
+The project caps rendering at 90 FPS. The map-first daylight sky uses
+1024×1024 cloud textures. Land uses atlas
 biome colors and slope shading. Plant scale defaults to 1.5×. See
 [the canopy hierarchy and tiers](world-map-proposal.md#tree-species-and-vector-lods).
 

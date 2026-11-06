@@ -37,9 +37,10 @@ Nearby terrain streams in 64×64-cell chunks with eight coarser horizon rings.
 Terrain uses plain biome colors and mesh lighting. Every land biome can use
 the full ground plant and custom expedition tree
 palette by default. Each tree species has its own allowed biomes. Local
-conditions shape density, and the biome shifts foliage hue. Authored branches
-and crowns guide the [solid polygon tiers](docs/world-map-proposal.md#tree-species-and-vector-lods),
-with sparse groves continuing through the terrain horizon rings.
+conditions shape density, and the biome shifts foliage hue. Trees use
+[progressively simplified authored meshes and distant vector billboards](docs/world-map-proposal.md#tree-species-and-vector-lods),
+with sparse groves continuing through the terrain horizon rings. The project
+caps rendering at 90 FPS.
 Plants and trees are 50% larger by default. Use [Plant Coverage and Plant Scale](docs/inspector-tuning.md#map-first-vegetation)
 to adjust density and size.
 The bundled atlas shader renders water. The optional

@@ -131,16 +131,14 @@ hue shift to its foliage. The shift travels with each instance through all
 detail levels.
 
 Camera distance from the tree patch edge selects one of eight levels. The
-full authored mesh stays active out to 512 world cells. The 512–608 cell band
-uses the original surfaces with fewer triangles and the same materials.
-The six solid polygon tiers follow
-each model's authored trunk joints and branch forks. Nearby tiers use more
-separate clusters fitted to the source foliage, preserving gaps and forked
-crowns. Farther tiers merge nearby clusters and shed small branches while
-retaining the overall crown spread and lean. The silhouettes use vertex colors
-and flat shading. Levels change at 512, 608, 704, 896, 1,152, 1,408, and 1,792 world cells,
-with a two-cell buffer for reversals. A level change swaps the mesh on the
-existing instance batch.
+full authored mesh stays active out to 512 world cells. The next five levels
+simplify the original surfaces while retaining their materials. Leaf cards
+are thinned as complete leaves. From 1,408 cells, the last two levels use
+camera-facing vector polygons derived from the original branch joints and
+foliage outlines. The billboards select a front or side outline and retain
+the biome hue. Levels change at 512, 608, 704, 896, 1,152, 1,408, and 1,792
+world cells, with a two-cell buffer for reversals. A level change swaps
+the mesh on the existing instance batch.
 
 Individual tree patches cover the detailed terrain window. Beyond it, the
 terrain worker samples sparse groves through all eight terrain rings, using

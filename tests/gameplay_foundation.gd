@@ -16,6 +16,7 @@ func _run() -> void:
 		return
 	await scene_changed
 	var world = current_scene
+	_check(Engine.max_fps == 90, "The project caps rendering at 90 FPS")
 	var environment := (world.get_node("WorldEnvironment") as WorldEnvironment).environment
 	var sky_material := environment.sky.sky_material as ShaderMaterial if environment.sky != null else null
 	var primary := sky_material.get_shader_parameter("cloud_tex_01") as NoiseTexture2D if sky_material != null else null
@@ -321,23 +322,24 @@ func _check_shared_vegetation(terrain) -> void:
 			continue
 		_check(model.levels.size() == 8, "Each tree species has eight geometry tiers")
 		var authored: ArrayMesh = model.levels[0]
-		var simplified: ArrayMesh = model.levels[1]
-		var authored_indices := 0
-		var simplified_indices := 0
-		for surface in authored.get_surface_count():
-			authored_indices += authored.surface_get_array_index_len(surface)
-			simplified_indices += simplified.surface_get_array_index_len(surface)
-			_check(authored.surface_get_material(surface) == simplified.surface_get_material(surface),
-				"The simplified authored tree keeps the original material")
-		_check(simplified_indices < authored_indices and simplified.custom_aabb == authored.custom_aabb,
-			"The added tier simplifies the original tree without changing its bounds")
-		var previous_vertices := 2147483647
-		for level in range(2, model.levels.size()):
+		var previous_triangles := 2147483647
+		for level in TreeLod.AUTHORED_FRACTIONS.size():
 			var mesh: ArrayMesh = model.levels[level]
-			var count := mesh.surface_get_array_len(0)
-			_check(count < previous_vertices and mesh.surface_get_material(0).shader == TreeLod.VECTOR_SHADER,
-				"Each distant tree tier reduces solid geometry")
-			previous_vertices = count
+			var triangles := 0
+			for surface in mesh.get_surface_count():
+				var indices := mesh.surface_get_array_index_len(surface)
+				triangles += (indices if indices > 0 else mesh.surface_get_array_len(surface)) / 3
+				_check(authored.surface_get_material(surface) == mesh.surface_get_material(surface),
+					"Simplified authored trees keep their source materials")
+			_check(triangles < previous_triangles and mesh.custom_aabb == authored.custom_aabb,
+				"Each authored tree tier reduces triangles and preserves source bounds")
+			previous_triangles = triangles
+		for level in range(TreeLod.AUTHORED_FRACTIONS.size(), model.levels.size()):
+			var mesh: ArrayMesh = model.levels[level]
+			var triangles := mesh.surface_get_array_len(0) / 3
+			_check(triangles < previous_triangles and mesh.surface_get_material(0).shader == TreeLod.BILLBOARD_SHADER,
+				"Each far tier reduces geometry using vector billboard shapes")
+			previous_triangles = triangles
 	var trees := {}
 	for sample in 1024:
 		var cell := Vector2i(-42 + sample * MapPlants.TREE_STEP, 117)
@@ -376,10 +378,13 @@ func _check_shared_vegetation(terrain) -> void:
 	_check(instances.mesh == near_mesh, "A streamed tree patch keeps its authored mesh at 500 cells")
 	vegetation._set_tree_lod(patch, Vector2(patch_origin) - Vector2(560.0, 0.0))
 	_check(instances.mesh == vegetation._models[kind].levels[1],
-		"A streamed tree patch selects the simplified authored model before vector geometry")
+		"A streamed tree patch selects the first simplified authored model")
+	vegetation._set_tree_lod(patch, Vector2(patch_origin) - Vector2(1200.0, 0.0))
+	_check(instances.mesh == vegetation._models[kind].levels[5],
+		"The midrange keeps progressively simplified authored geometry")
 	vegetation._set_tree_lod(patch, Vector2(patch_origin) - Vector2(1800.0, 0.0))
-	_check(instances.mesh != near_mesh and instances.instance_count == 1 and batch.multimesh == instances,
-		"A streamed tree batch swaps to a vector mesh with the same instance buffer")
+	_check(instances.mesh == vegetation._models[kind].levels.back() and instances.instance_count == 1
+		and batch.multimesh == instances, "The farthest tier swaps to a vector billboard in the same batch")
 	vegetation._set_tree_lod(patch, Vector2(patch_origin))
 	_check(instances.mesh == near_mesh, "Returning to a tree patch restores its authored model")
 	var asset_key := Vector3i(patch_key.x, patch_key.y, 2)
