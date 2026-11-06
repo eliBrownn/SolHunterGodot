@@ -8,9 +8,10 @@ scenes explicitly with F6 to review their controls.
 ## Map-first vegetation
 
 In `scenes/gameplay_foundation.tscn`, select **Terrain** and edit
-**Plant Coverage**. The range is 0–1 and the starting value is 0.72.
-It scales the density of visual ground cover and the custom expedition trees. Zero selects
-a view without visual plants. Restart the scene to apply a change. The map seed
+**Plant Coverage** or **Plant Scale**. Coverage controls density from 0–1
+(default 0.72). Zero hides plants. Scale controls the height and width of grass,
+ground plants, and trees from 0.5×–2.5× (default 1.5×). Restart the scene to
+apply a change. The map seed
 comes from `--world-seed=<integer>` or is chosen on launch. Earlier expedition
 relief, climate, view-distance, and save resources apply to `scenes/world_3d.tscn`.
 

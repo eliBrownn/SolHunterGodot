@@ -40,7 +40,7 @@ func _run() -> void:
 			_check(terrain.is_land_at(neighbor), "Spawn has dry ground around it")
 	await _wait_for_terrain(terrain)
 	_check_terrain(terrain, spawn)
-	_check_expedition_canopy(terrain._vegetation)
+	_check_shared_vegetation(terrain)
 	var original_horizon := _far_samples(terrain)
 	_check_horizon_reversal(terrain)
 	_check_atlas(terrain)
@@ -271,31 +271,38 @@ func _check_terrain(terrain, cell: Vector2i) -> void:
 	_check(expected.is_empty(), "All chunks in the far view are present")
 
 
-func _check_expedition_canopy(vegetation) -> void:
+func _check_shared_vegetation(terrain) -> void:
 	const MapPlants := preload("res://scripts/presentation/map_vegetation.gd")
 	const Plan := preload("res://scripts/world/world_map_plan.gd")
-	for habitat: int in MapPlants.ECOSYSTEM_TREE_HABITAT:
-		var palette: int = MapPlants.ECOSYSTEM_TREE_HABITAT[habitat]
-		for size_class in MapPlants.SIZE_CLASSES:
-			var model: Dictionary = vegetation._model(
-				MapPlants.ECOSYSTEM_TREE_BASE + palette * MapPlants.SIZE_CLASSES + size_class)
-			_check(not model.pieces.is_empty() and model.get("name") == "procedural_%d_1_%d" % [palette, size_class],
-				"The old expedition tree form produces a batched canopy model")
-	for design: int in MapPlants.TREE_DESIGNS:
-		var named: Dictionary = vegetation._model(MapPlants.Plant.TREE_BASE + design)
-		_check(not named.pieces.is_empty(), "The named expedition tree produces a batched canopy model")
-	var site := Vector2i(-42, 117)
-	var woodland: int = vegetation._tree_kind(Plan.Biome.WOODLAND, false, site, 0.65)
-	_check(vegetation._tree_kind(Plan.Biome.JUNGLE, false, site, 0.65) == woodland
-		and vegetation._tree_kind(Plan.Biome.TAIGA, false, site, 0.65) == woodland,
-		"Jungle and taiga use the old woodland tree shapes at equivalent sites")
-	var heath: int = vegetation._tree_kind(Plan.Biome.HEATH, false, site, 0.65)
-	_check(vegetation._tree_kind(Plan.Biome.SAVANNA, false, site, 0.65) == heath
-		and vegetation._tree_kind(Plan.Biome.PLAINS, true, site, 0.65) == heath,
-		"Savanna and irrigated dry meadow use the old heath tree shapes")
+	var vegetation = terrain._vegetation
+	var tree_limit := MapPlants.ECOSYSTEM_TREE_BASE + MapPlants.PROCEDURAL_TREE_COUNT
+	for kind in tree_limit:
+		var model: Dictionary = vegetation._model(kind)
+		_check(not model.pieces.is_empty(), "Every shared plant and tree kind has a batched model")
+	var trees := {}
+	for sample in 1024:
+		var cell := Vector2i(-42 + sample * MapPlants.TREE_STEP, 117)
+		trees[vegetation._tree_kind(cell)] = true
+	_check(trees.size() == tree_limit - MapPlants.Plant.TREE_BASE,
+		"The shared selector reaches every old expedition tree form")
+	for biome in Plan.Biome.size():
+		if biome == Plan.Biome.OCEAN or biome == Plan.Biome.LAKE:
+			_check(not MapPlants.HABITATS.has(biome), "Water biomes have no terrestrial planting profile")
+			continue
+		var profile: Vector3 = MapPlants.HABITATS.get(biome, Vector3.ZERO)
+		_check(profile.z > 0.0, "Every land biome admits trees")
+		var ground_kinds := {}
+		for sample in 1024:
+			var cell := Vector2i(-42 + sample * MapPlants.GROUND_STEP, 117)
+			ground_kinds[vegetation._ground_kind(cell, profile.y)] = true
+		_check(ground_kinds.size() == MapPlants.Plant.TREE_BASE,
+			"Every land biome can select all ground plants and grass")
+	_check(is_equal_approx(terrain.plant_scale, 1.5) and is_equal_approx(vegetation._plant_scale, 1.5),
+		"The startup scene applies the larger shared plant scale")
 
 
 func _check_plant_revisit(terrain, cell: Vector2i) -> void:
+	const MapPlants := preload("res://scripts/presentation/map_vegetation.gd")
 	var vegetation = terrain._vegetation
 	var chunk := Vector2i((Vector2(cell) / float(terrain.CHUNK_SIZE)).floor())
 	var key := Vector3i(chunk.x, chunk.y, 0)
@@ -304,6 +311,24 @@ func _check_plant_revisit(terrain, cell: Vector2i) -> void:
 	if first == null:
 		return
 	var signature: int = first.get_meta("placement_signature")
+	var origin := chunk * int(terrain.CHUNK_SIZE)
+	var patch_width := int(terrain.CHUNK_SIZE) / MapPlants.GROUND_STEP
+	var scale_checked := false
+	for index in patch_width * patch_width:
+		var site := origin + Vector2i(index % patch_width, index / patch_width) * MapPlants.GROUND_STEP
+		var grown: Dictionary = vegetation._placement(site, false, origin)
+		if grown.is_empty():
+			continue
+		var scale: float = vegetation._plant_scale
+		vegetation._plant_scale = 1.0
+		var baseline: Dictionary = vegetation._placement(site, false, origin)
+		vegetation._plant_scale = scale
+		var grown_pose: Transform3D = grown.transform
+		var baseline_pose: Transform3D = baseline.transform
+		scale_checked = grown_pose.origin.is_equal_approx(baseline_pose.origin) and (
+			grown_pose.basis.get_scale().is_equal_approx(baseline_pose.basis.get_scale() * 1.5))
+		break
+	_check(scale_checked, "The larger default scales a planted site's width and height around its root")
 	for batch in first.get_children():
 		_check(batch is MultiMeshInstance3D and batch.multimesh.instance_count > 0, "Plants publish in shared instance batches")
 	vegetation.cover(cell + Vector2i(640, 0))

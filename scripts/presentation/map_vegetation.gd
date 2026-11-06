@@ -27,26 +27,7 @@ enum TreeDesign { CRIMSON_UMBRELLA, BLUE_TWIN_ARCH, BONE_JOINTED_CAUDEX, VIOLET_
 const ECOSYSTEM_TREE_BASE := Plant.TREE_BASE + TreeDesign.ECOSYSTEM_START
 const ECOSYSTEM_TREE_PATH := "res://resources/plants/ecosystem_trees/"
 const SIZE_CLASSES := 3
-const ECOSYSTEM_TREE_HABITAT := {
-	Plan.Biome.PLAINS: 0,
-	Plan.Biome.WOODLAND: 1,
-	Plan.Biome.HEATH: 2,
-	Plan.Biome.MARSH: 3,
-}
-
-const GROUND_BY_BIOME := {
-	Plan.Biome.PLAINS: Plant.OPEN_FAN,
-	Plan.Biome.WOODLAND: Plant.DIVIDED_FROND,
-	Plan.Biome.HEATH: Plant.OXIDE_THORN_CROWN,
-	Plan.Biome.MARSH: Plant.RIBBON_LEAVES,
-	Plan.Biome.COAST: Plant.SALT_RIBBON,
-	Plan.Biome.DESERT: Plant.DUNE_PADDLE,
-	Plan.Biome.JUNGLE: Plant.DIVIDED_FROND,
-	Plan.Biome.SAVANNA: Plant.OXIDE_THORN_CROWN,
-	Plan.Biome.ALPINE: Plant.SCREE_CUSHION,
-	Plan.Biome.TUNDRA: Plant.FROST_MAT,
-	Plan.Biome.TAIGA: Plant.DIVIDED_FROND,
-}
+const PROCEDURAL_TREE_COUNT := 4 * SIZE_CLASSES
 const GROUND_DESIGNS := {
 	Plant.OPEN_FAN: "meadow_open_fan",
 	Plant.DIVIDED_FROND: "woodland_divided_frond",
@@ -83,30 +64,18 @@ const TREE_DESIGNS := {
 	TreeDesign.VIOLET_STILT_CURTAIN: "marsh_violet_stilt_curtain",
 	TreeDesign.NEW_PLANT: "meadow_new_plant",
 }
-const TREE_BY_BIOME := {
-	Plan.Biome.PLAINS: TreeDesign.CRIMSON_UMBRELLA,
-	Plan.Biome.WOODLAND: TreeDesign.BLUE_TWIN_ARCH,
-	Plan.Biome.HEATH: TreeDesign.BONE_JOINTED_CAUDEX,
-	Plan.Biome.MARSH: TreeDesign.VIOLET_STILT_CURTAIN,
-}
-const TREE_HABITAT_FALLBACK := {
-	Plan.Biome.JUNGLE: Plan.Biome.WOODLAND,
-	Plan.Biome.SAVANNA: Plan.Biome.HEATH,
-	Plan.Biome.TAIGA: Plan.Biome.WOODLAND,
-}
-
 # Ground cover, fraction of cover that is foliage or scrub, and tree density.
 const HABITATS := {
-	Plan.Biome.COAST: Vector3(0.20, 0.14, 0.0),
+	Plan.Biome.COAST: Vector3(0.20, 0.14, 0.035),
 	Plan.Biome.PLAINS: Vector3(0.82, 0.16, 0.045),
 	Plan.Biome.WOODLAND: Vector3(0.58, 0.38, 0.64),
 	Plan.Biome.HEATH: Vector3(0.27, 0.55, 0.05),
 	Plan.Biome.MARSH: Vector3(0.65, 0.19, 0.08),
-	Plan.Biome.DESERT: Vector3(0.10, 0.83, 0.0),
+	Plan.Biome.DESERT: Vector3(0.10, 0.83, 0.025),
 	Plan.Biome.JUNGLE: Vector3(0.78, 0.58, 0.78),
 	Plan.Biome.SAVANNA: Vector3(0.46, 0.32, 0.15),
-	Plan.Biome.ALPINE: Vector3(0.12, 0.68, 0.0),
-	Plan.Biome.TUNDRA: Vector3(0.16, 0.60, 0.0),
+	Plan.Biome.ALPINE: Vector3(0.12, 0.68, 0.035),
+	Plan.Biome.TUNDRA: Vector3(0.16, 0.60, 0.03),
 	Plan.Biome.TAIGA: Vector3(0.38, 0.35, 0.48),
 }
 const TINTS := {
@@ -128,6 +97,7 @@ var _surface: Surface
 var _height: Callable
 var _terrain_ready: Callable
 var _coverage := 0.0
+var _plant_scale := 1.0
 var _chunk_size := 64
 var _spawn := Vector2i.ZERO
 var _has_spawn := false
@@ -142,11 +112,12 @@ var _job: Dictionary = {}
 
 
 func configure(plan: Plan, surface: Surface, seed_value: int, chunk_size: int,
-		coverage: float, height_at: Callable, terrain_ready: Callable) -> void:
+		coverage: float, plant_scale: float, height_at: Callable, terrain_ready: Callable) -> void:
 	_plan = plan
 	_surface = surface
 	_chunk_size = chunk_size
 	_coverage = clampf(coverage, 0.0, 1.0)
+	_plant_scale = clampf(plant_scale, 0.5, 2.5)
 	_height = height_at
 	_terrain_ready = terrain_ready
 	_ground.configure(seed_value ^ 0x5739b, 16.0, 1.0, 2.0, 0.0, 0)
@@ -242,8 +213,6 @@ func _placement(cell: Vector2i, tree: bool, origin: Vector2i) -> Dictionary:
 	var density: float
 	var grove := 0.0
 	if tree:
-		if profile.z <= 0.0:
-			return {}
 		grove = smoothstep(0.34, 0.72, _canopy.patch_at(cell))
 		density = _tree_density(ground, point, grove, profile.z, irrigated_dry)
 	else:
@@ -255,7 +224,7 @@ func _placement(cell: Vector2i, tree: bool, origin: Vector2i) -> Dictionary:
 	var roll := patch.roll(cell, 52)
 	if roll >= density * _coverage or not _surface.planting_ground(point):
 		return {}
-	var reach := 1.2 if tree else 0.38
+	var reach := 1.2 * _plant_scale if tree else 0.38
 	var height: float = _height.call(point)
 	var dx: float = _height.call(point + Vector2(reach, 0.0)) - _height.call(point - Vector2(reach, 0.0))
 	var dz: float = _height.call(point + Vector2(0.0, reach)) - _height.call(point - Vector2(0.0, reach))
@@ -273,14 +242,7 @@ func _placement(cell: Vector2i, tree: bool, origin: Vector2i) -> Dictionary:
 		for direction: Vector2 in CARDINALS:
 			if not _surface.planting_ground(point + direction * reach):
 				return {}
-	var kind: int = Plant.GRASS
-	var maturity := 0.0
-	if tree:
-		# The same continuous grove field governs admission and mature size.
-		maturity = grove * (1.0 - smoothstep(0.12, 0.425, grade) * 0.45)
-		kind = _tree_kind(ground.biome, irrigated_dry, cell, maturity)
-	elif patch.roll(cell, 68) < profile.y:
-		kind = GROUND_BY_BIOME[ground.natural_biome if irrigated_dry else ground.biome]
+	var kind := _tree_kind(cell) if tree else _ground_kind(cell, profile.y)
 	var tint: Color = TINTS[ground.natural_biome] if irrigated_dry else TINTS[ground.biome]
 	if irrigated_dry:
 		tint = tint.lerp(TINTS[Plan.Biome.PLAINS], 0.53)
@@ -292,33 +254,37 @@ func _placement(cell: Vector2i, tree: bool, origin: Vector2i) -> Dictionary:
 	var size_roll := patch.roll(cell, 79)
 	var height_scale := lerpf(0.70, 1.28, size_roll)
 	if tree:
+		# The same continuous grove field governs admission and mature size.
+		var maturity := grove * (1.0 - smoothstep(0.12, 0.425, grade) * 0.45)
 		height_scale = lerpf(0.72, 1.16, maturity) * lerpf(0.93, 1.07, size_roll)
 	if kind == Plant.GRASS and ground.biome == Plan.Biome.MARSH:
 		height_scale *= 1.35
-	var basis := Basis(Vector3.UP, patch.roll(cell, 85) * TAU).scaled(Vector3.ONE * height_scale)
+	var basis := Basis(Vector3.UP, patch.roll(cell, 85) * TAU).scaled(Vector3.ONE * height_scale * _plant_scale)
 	var at := Vector3(point.x - origin.x, height, point.y - origin.y)
 	return {"kind": kind, "transform": Transform3D(basis, at), "color": tint}
 
 
-func _tree_kind(biome: int, irrigated_dry: bool, cell: Vector2i, maturity: float) -> int:
-	var habitat: int = Plan.Biome.HEATH if irrigated_dry else TREE_HABITAT_FALLBACK.get(biome, biome)
-	var named: int = TREE_BY_BIOME[habitat]
+func _ground_kind(cell: Vector2i, foliage_fraction: float) -> int:
+	if _ground.roll(cell, 68) >= foliage_fraction:
+		return Plant.GRASS
+	return Plant.OPEN_FAN + mini(int(_ground.roll(cell, 101) * (Plant.TREE_BASE - Plant.OPEN_FAN)),
+		Plant.TREE_BASE - Plant.OPEN_FAN - 1)
+
+
+func _tree_kind(cell: Vector2i) -> int:
+	var form := _canopy.roll(cell, 101)
 	if _canopy.roll(cell, 105) < 0.20:
-		if named == TreeDesign.CRIMSON_UMBRELLA and _canopy.roll(cell, 101) < 0.50:
-			named = TreeDesign.NEW_PLANT
-		return Plant.TREE_BASE + named
-	var palette: int = ECOSYSTEM_TREE_HABITAT[habitat]
-	var size_weight := lerpf(_canopy.roll(cell, 117), maturity, 0.65)
-	var size_class := mini(int(size_weight * SIZE_CLASSES), SIZE_CLASSES - 1)
-	# The expedition rendered procedural variants through the first three
-	# baked forms in each habitat, one for each size class.
-	return ECOSYSTEM_TREE_BASE + palette * SIZE_CLASSES + size_class
+		return Plant.TREE_BASE + mini(int(form * TREE_DESIGNS.size()), TREE_DESIGNS.size() - 1)
+	return ECOSYSTEM_TREE_BASE + mini(int(form * PROCEDURAL_TREE_COUNT), PROCEDURAL_TREE_COUNT - 1)
 
 
 func _tree_density(ground: Dictionary, point: Vector2, grove: float, base: float, irrigated_dry: bool) -> float:
 	var wet: float = ground.soil_moisture
 	var warmth: float = ground.temperature
 	match ground.biome:
+		Plan.Biome.COAST, Plan.Biome.DESERT, Plan.Biome.ALPINE, Plan.Biome.TUNDRA:
+			# Sparse sites in exposed biomes can still use the full canopy palette.
+			return base * lerpf(0.35, 1.0, grove)
 		Plan.Biome.WOODLAND, Plan.Biome.JUNGLE:
 			# Dense interiors open up where the grove field is low.
 			return base * lerpf(0.0, 1.75, grove) * smoothstep(0.29, 0.62, wet)

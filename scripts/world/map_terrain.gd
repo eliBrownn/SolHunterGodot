@@ -18,6 +18,8 @@ const CHUNK_UPLOADS_PER_FRAME := 2
 
 ## Visual plant density, captured when the scene starts. Zero shows terrain alone.
 @export_range(0.0, 1.0, 0.05) var plant_coverage := 0.72
+## Uniform size of grass, ground plants and trees. Captured at startup.
+@export_range(0.5, 2.5, 0.05) var plant_scale := 1.5
 
 class TerrainSamples:
 	var _surface: Surface
@@ -96,7 +98,8 @@ func _ready() -> void:
 	add_child(_horizon)
 	_vegetation = Vegetation.new()
 	_vegetation.name = "Vegetation"
-	_vegetation.configure(_plan, _surface, world_seed, CHUNK_SIZE, plant_coverage, height_at, _planting_chunk_ready)
+	_vegetation.configure(_plan, _surface, world_seed, CHUNK_SIZE, plant_coverage, plant_scale,
+		height_at, _planting_chunk_ready)
 	add_child(_vegetation)
 
 

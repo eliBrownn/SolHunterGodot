@@ -34,10 +34,10 @@ biomes, and irrigation. Local terrain adds relief within that plan and uses
 the same height samples for movement, water banks, and chunk boundaries.
 Nearby terrain streams in 64×64-cell chunks with eight coarser horizon rings.
 
-Visual vegetation follows the streamed biomes. The canopy uses the older
-expedition's custom procedural tree models and five named tree designs.
-To adjust density or preview
-terrain alone, use [Plant Coverage](docs/inspector-tuning.md#map-first-vegetation).
+Every land biome shares the full ground plant and custom expedition tree
+palette. Local conditions still shape density. Plants and trees are 50% larger
+by default. Use [Plant Coverage and Plant Scale](docs/inspector-tuning.md#map-first-vegetation)
+to adjust density and size.
 The bundled atlas shader renders water. The optional
 [EmacEArt Cool Water pack](docs/water-appearance.md#cool-water-in-the-map-first-build)
 adds close water effects when installed locally. Seeded Vastra vortices appear

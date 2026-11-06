@@ -37,8 +37,9 @@ heights use the same curve as the terrain. The atlas records both the natural
 and irrigation-adjusted biome. The ground material and biome HUD use the
 adjusted value. The main scene streams visual plant communities from these
 biomes and the canonical terrain surface. The canopy uses the inherited
-expedition's twelve procedural tree forms and five named designs, with
-placement owned by the map's seeded vegetation pass.
+expedition's twelve procedural tree forms and five named designs. Every land
+biome shares the full plant and tree palette. Local density, slope, and water
+clearance guide seeded placement. Plant scale defaults to 1.5×.
 
 The optional local EmacEArt Cool Water material reads the opaque terrain beds
 on Forward+ and Mobile. The full effect fades from 150 to 260 cells from the

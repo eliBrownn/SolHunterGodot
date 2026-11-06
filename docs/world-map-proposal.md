@@ -102,18 +102,19 @@ At seed 2601026, the sampled 384-cell meadow's RMS grade fell from 3.9% to
 1.5%. The same-size desert sample rose from 8.0% to 32.5%. The normal scene
 smoke test passed with the new terrain.
 
-### Current canopy palette — November 5, 2026
+### Shared plant and tree palette — November 5, 2026
 
-The map-first build uses the custom procedural trees from the earlier
-expedition. Each of the four expedition habitats contributes three baked
-procedural forms, and five named tree designs remain available for Meadow,
-Woodland, Heath, and Marsh. Jungle and Taiga borrow Woodland forms. Savanna
-and irrigated dry meadow borrow Heath forms. The map still sets habitat,
-moisture, grove size, site eligibility, and the sampled root height. Imported
-Quaternius trees remain part of the older art fixtures.
+Every land biome can draw from the same grass, eight ground plant forms, and
+seventeen custom expedition tree forms. The canopy includes twelve baked
+procedural forms and five named designs. The seeded map still controls local
+density, the mix of grass and ground plants, slopes, moisture, and root
+clearance. Coast, desert, alpine, and tundra have sparse tree sites. Ocean and
+lake beds are excluded from terrestrial planting.
 
-The seeded gameplay test checks that all seventeen tree forms produce
-batched models, and verifies the habitat mappings and plant patch revisit.
+Grass, ground plants, and trees are 1.5× taller and wider by default.
+[Plant Scale](inspector-tuning.md#map-first-vegetation) adjusts both dimensions
+around the plant's root. Tree site checks account for the larger root footprint.
+The seeded gameplay test covers the shared palette, size, and plant patch revisit.
 
 ### Earlier visual plant rollout — November 5, 2026
 
