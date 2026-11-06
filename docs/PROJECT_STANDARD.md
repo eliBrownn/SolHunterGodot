@@ -41,7 +41,9 @@ expedition's twelve procedural tree forms and five named designs. Each tree
 form is a species resource with its own allowed biomes and spawn weight.
 The defaults allow all seventeen in every land biome. Local density, slope,
 and water clearance guide seeded placement. Biome hue shifts tint foliage at
-all seven tree detail levels. Plant scale defaults to 1.5×. See
+all seven tree detail levels. Distant vector tiers follow authored branches
+and crown clusters. Sparse groves extend through all eight terrain rings.
+Plant scale defaults to 1.5×. See
 [the canopy hierarchy and tiers](world-map-proposal.md#tree-species-and-vector-lods).
 
 The optional local EmacEArt Cool Water material reads the opaque terrain beds

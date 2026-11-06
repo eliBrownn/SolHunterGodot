@@ -12,7 +12,7 @@ const TreeSpecies := preload("res://scripts/scenery/map_tree_species.gd")
 const TreeLod := preload("res://scripts/presentation/map_tree_lod.gd")
 const PlantMesh := preload("res://scripts/scenery/plant_vastra_anatomy_mesh.gd")
 const GROUND_RADIUS := 1
-const CANOPY_RADIUS := 7
+const CANOPY_RADIUS := 8
 const GROUND_STEP := 2
 const TREE_STEP := 8
 const BANK_SEARCH := 12.0
@@ -379,9 +379,56 @@ func _tree_density(ground: Dictionary, point: Vector2, grove: float, base: float
 	return base * grove * smoothstep(0.18, 0.55, wet) * (1.8 if near_bank else 0.55)
 
 
+func horizon_settings() -> Dictionary:
+	if _coverage <= 0.0 or _biome_species.is_empty():
+		return {}
+	var weights := {}
+	for biome: int in _biome_species:
+		var cumulative := PackedFloat32Array()
+		var sum := 0.0
+		for index: int in _biome_species[biome]:
+			sum += _species[index].spawn_weight
+			cumulative.append(float(index))
+			cumulative.append(sum)
+		weights[biome] = cumulative
+	return {"weights": weights, "coverage": _coverage, "scale": _plant_scale}
+
+
+func sync_terrain_coverage() -> void:
+	for key: Vector3i in _patches:
+		_patches[key].visible = _terrain_ready.call(Vector2i(key.x, key.y))
+
+
+func prepare_horizon_models(groups: Dictionary) -> bool:
+	for kind: int in groups:
+		if not _models.has(kind):
+			_model(kind)
+			return false
+	return true
+
+
+func publish_horizon_strip(parent: Node3D, groups: Dictionary, surface_index: int) -> void:
+	if groups.is_empty():
+		return
+	var strip := Node3D.new()
+	strip.set_meta("terrain_surface", surface_index)
+	_add_batches(strip, groups, true, true)
+	parent.add_child(strip)
+
+
 func _publish(key: Vector3i, origin: Vector2i, groups: Dictionary) -> void:
 	var root := Node3D.new()
 	root.position = Vector3(origin.x, 0.0, origin.y)
+	var count := _add_batches(root, groups, key.z == 1)
+	root.set_meta("plant_count", count)
+	root.set_meta("placement_signature", hash(groups))
+	add_child(root)
+	_patches[key] = root
+	if key.z == 1 and _lod_camera.is_finite():
+		_set_tree_lod(root, _lod_camera)
+
+
+func _add_batches(root: Node3D, groups: Dictionary, tree: bool, far: bool = false) -> int:
 	var count := 0
 	for kind: int in groups:
 		var model := _model(kind)
@@ -390,33 +437,28 @@ func _publish(key: Vector3i, origin: Vector2i, groups: Dictionary) -> void:
 			var instances := MultiMesh.new()
 			instances.transform_format = MultiMesh.TRANSFORM_3D
 			instances.use_colors = true
-			instances.use_custom_data = key.z == 1
-			instances.mesh = piece.mesh
+			instances.use_custom_data = tree
+			instances.mesh = model.levels.back() if far else piece.mesh
 			instances.instance_count = rows.size()
 			for index in range(rows.size()):
 				var record: Dictionary = rows[index]
 				instances.set_instance_transform(index, record.transform * model.fit * piece.transform)
 				instances.set_instance_color(index, record.color)
-				if key.z == 1:
+				if tree:
 					instances.set_instance_custom_data(index, Color(record.hue, 0, 0, 1))
 			var view := MultiMeshInstance3D.new()
 			view.name = model.name
 			view.multimesh = instances
 			view.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
-			if key.z == 1:
+			if tree and not far:
 				view.set_meta("tree_kind", kind)
-			else:
+			elif not tree:
 				view.visibility_range_end = 96.0
 				view.visibility_range_end_margin = 10.0
 			root.add_child(view)
 		if not model.pieces.is_empty():
 			count += rows.size()
-	root.set_meta("plant_count", count)
-	root.set_meta("placement_signature", hash(groups))
-	add_child(root)
-	_patches[key] = root
-	if key.z == 1 and _lod_camera.is_finite():
-		_set_tree_lod(root, _lod_camera)
+	return count
 
 
 func _model(kind: int) -> Dictionary:
@@ -465,7 +507,7 @@ func _model(kind: int) -> Dictionary:
 	scale = minf(scale, width_limit / maxf(width, 0.01))
 	var fit := Transform3D(Basis.IDENTITY.scaled(Vector3.ONE * scale), -base * scale)
 	if is_tree:
-		var levels := TreeLod.build(model.pieces, bounds)
+		var levels := TreeLod.build(model.pieces, bounds, definition.organ_graph)
 		_models[kind] = {"name": name, "pieces": [{"mesh": levels[0], "transform": Transform3D.IDENTITY}],
 			"fit": fit, "levels": levels}
 	else:

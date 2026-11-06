@@ -3,9 +3,13 @@ extends RefCounted
 
 const DISTANCES := [32.0, 64.0, 112.0, 176.0, 256.0, 384.0]
 const HYSTERESIS := 2.0
-const RINGS := [8, 7, 6, 5, 4, 3]
-const SIDES := [12, 10, 8, 7, 6, 5]
-const PROFILE_BANDS := 12
+const CROWN_GROUPS := [96, 64, 40, 24, 14, 8]
+const CROWN_SIDES := [6, 6, 5, 5, 4, 4]
+const BRANCH_LEVEL := {
+	"Ground contact": 5, "Root exchange": 1, "Root collar": 5,
+	"Storage tissue": 5, "Trunk junction": 5, "Crown conductor": 5,
+	"Crown socket": 5, "Crown exchange": 5, "Branch fork": 2,
+}
 const VECTOR_SHADER := preload("res://shaders/map_tree_vector.gdshader")
 
 static var _vector_material: ShaderMaterial
@@ -21,13 +25,13 @@ static func tier(distance: float, previous: int = -1) -> int:
 	return level
 
 
-static func build(pieces: Array, bounds: AABB) -> Array[Mesh]:
+static func build(pieces: Array, bounds: AABB, organs: Array) -> Array[Mesh]:
 	var authored := ArrayMesh.new()
 	var foliage := PackedVector3Array()
 	var pigment := Vector3.ZERO
 	var color_samples := 0
 	# Low ornamental leaves shouldn't fill in the trunk in distant silhouettes.
-	var crown_floor := bounds.position.y + bounds.size.y * 0.28
+	var crown_floor := bounds.position.y + bounds.size.y * 0.25
 	for piece: Dictionary in pieces:
 		var mesh: Mesh = piece.mesh
 		for surface in mesh.get_surface_count():
@@ -51,38 +55,51 @@ static func build(pieces: Array, bounds: AABB) -> Array[Mesh]:
 					color_samples += 1
 	authored.custom_aabb = bounds
 	var levels: Array[Mesh] = [authored]
-	var crown := AABB(bounds.position + Vector3.UP * bounds.size.y * 0.32,
-		bounds.size * Vector3(1, 0.68, 1))
-	if not foliage.is_empty():
-		crown = AABB(foliage[0], Vector3.ZERO)
-		for vertex in foliage:
-			crown = crown.expand(vertex)
-	var profile := _crown_profile(foliage, crown)
 	var color := Color("65843f")
 	if color_samples > 0:
 		pigment /= float(color_samples)
 		color = Color(pigment.x, pigment.y, pigment.z)
-	for index in RINGS.size():
-		levels.append(_silhouette(bounds, crown, profile, color, RINGS[index], SIDES[index]))
+	var groups: Array = []
+	if not foliage.is_empty():
+		groups.append(_crown_group(foliage))
+	for index in range(CROWN_GROUPS.size() - 1, -1, -1):
+		_split_crowns(groups, CROWN_GROUPS[index])
+		levels.insert(1, _silhouette(bounds, groups, organs, color, index))
 	return levels
 
 
-static func _crown_profile(vertices: PackedVector3Array, crown: AABB) -> Array:
-	var bands: Array = []
-	bands.resize(PROFILE_BANDS)
-	for vertex in vertices:
-		var fraction := (vertex.y - crown.position.y) / maxf(crown.size.y, 0.001)
-		var index := clampi(int(fraction * PROFILE_BANDS), 0, PROFILE_BANDS - 1)
-		var point := Vector2(vertex.x, vertex.z)
-		bands[index] = Rect2(point, Vector2.ZERO) if bands[index] == null else bands[index].expand(point)
-	var fallback := Rect2(Vector2(crown.position.x, crown.position.z), Vector2(crown.size.x, crown.size.z))
-	for index in bands.size():
-		if bands[index] == null:
-			bands[index] = fallback if index == 0 else bands[index - 1]
-	return bands
+static func _crown_group(points: PackedVector3Array) -> Dictionary:
+	var bounds := AABB(points[0], Vector3.ZERO)
+	for point in points:
+		bounds = bounds.expand(point)
+	return {"points": points, "bounds": bounds}
 
 
-static func _silhouette(bounds: AABB, crown: AABB, profile: Array, color: Color, rings: int, sides: int) -> ArrayMesh:
+static func _split_crowns(groups: Array, target: int) -> void:
+	while groups.size() < target:
+		var choice := -1
+		var spread := 0.0
+		for index in groups.size():
+			var group: Dictionary = groups[index]
+			var extent: Vector3 = group.bounds.size
+			var score := extent[extent.max_axis_index()] * sqrt(group.points.size())
+			if group.points.size() >= 8 and score > spread:
+				spread = score
+				choice = index
+		if choice < 0:
+			break
+		var group: Dictionary = groups[choice]
+		var extent: Vector3 = group.bounds.size
+		var axis := extent.max_axis_index()
+		var sorted: Array[Vector3] = []
+		sorted.assign(Array(group.points))
+		sorted.sort_custom(func(a: Vector3, b: Vector3) -> bool: return a[axis] < b[axis])
+		var split := sorted.size() / 2
+		groups[choice] = _crown_group(PackedVector3Array(sorted.slice(0, split)))
+		groups.append(_crown_group(PackedVector3Array(sorted.slice(split))))
+
+
+static func _silhouette(bounds: AABB, groups: Array, organs: Array, color: Color, level: int) -> ArrayMesh:
 	if _vector_material == null:
 		_vector_material = ShaderMaterial.new()
 		_vector_material.shader = VECTOR_SHADER
@@ -90,31 +107,63 @@ static func _silhouette(bounds: AABB, crown: AABB, profile: Array, color: Color,
 	tool.begin(Mesh.PRIMITIVE_TRIANGLES)
 	tool.set_material(_vector_material)
 	tool.set_smooth_group(-1)
+	_add_branches(tool, bounds, organs, level)
 
-	var trunk_width := maxf(0.015, minf(bounds.size.x, bounds.size.z) * 0.055)
-	var trunk := Rect2(-Vector2.ONE * trunk_width, Vector2.ONE * trunk_width * 2.0)
-	var crown_center := Vector2(crown.get_center().x, crown.get_center().z)
-	var trunk_top := Rect2(crown_center - Vector2.ONE * trunk_width * 0.45, Vector2.ONE * trunk_width * 0.9)
-	_join(tool, _ring(trunk, bounds.position.y, 1.0, 5),
-		_ring(trunk_top, crown.position.y + crown.size.y * 0.40, 1.0, 5),
-		Color("65503b"), Color("806449"), false)
-
-	var previous := PackedVector3Array()
-	var previous_color := color
-	for row in rings:
-		var fraction := float(row) / float(rings - 1)
-		var band: Rect2 = profile[mini(int(fraction * PROFILE_BANDS), PROFILE_BANDS - 1)]
-		var radius := 0.025 if row == 0 or row == rings - 1 else 1.0
-		var current := _ring(band, crown.position.y + crown.size.y * fraction, radius, sides)
-		var tint := color * lerpf(0.78, 1.15, fraction)
-		if row > 0:
-			_join(tool, previous, current, previous_color, tint, true)
-		previous = current
-		previous_color = tint
+	for group: Dictionary in groups:
+		var crown: AABB = group.bounds
+		var center := crown.get_center()
+		var width := Vector2(crown.size.x, crown.size.z).max(Vector2.ONE * bounds.size.y * 0.025)
+		var footprint := Rect2(Vector2(center.x, center.z) - width * 0.5, width)
+		var sides: int = CROWN_SIDES[level]
+		var height := maxf(crown.size.y, bounds.size.y * 0.025)
+		var waist := _ring(footprint, center.y, 0.92, sides)
+		var bottom := _ring(footprint, center.y - height * 0.5, 0.12, sides)
+		var top := _ring(footprint, center.y + height * 0.5, 0.12, sides)
+		# The authored foliage's paint darkens its vertex pigment. Approximate that
+		# value in the solid tiers so the tree doesn't brighten as it recedes.
+		var tint := color * lerpf(0.40, 0.59, clampf((center.y - bounds.position.y) / bounds.size.y, 0.0, 1.0))
+		_join(tool, bottom, waist, tint * 0.88, tint, true)
+		_join(tool, waist, top, tint, tint * 1.08, true)
 	tool.generate_normals()
 	var mesh := tool.commit()
 	mesh.custom_aabb = bounds
 	return mesh
+
+
+static func _add_branches(tool: SurfaceTool, bounds: AABB, organs: Array, level: int) -> void:
+	var joints := {}
+	var base_radius := minf(bounds.size.x, bounds.size.z) * 0.042
+	for organ: Dictionary in organs:
+		if BRANCH_LEVEL.has(organ.kind):
+			joints[organ.id] = organ
+	for organ: Dictionary in joints.values():
+		var last_level: int = BRANCH_LEVEL[organ.kind]
+		if level > last_level or not joints.has(organ.parent):
+			continue
+		var parent: Dictionary = joints[organ.parent]
+		var from: Vector3 = parent.position
+		var to: Vector3 = organ.position
+		if from.distance_squared_to(to) < 0.00001:
+			continue
+		var base := base_radius
+		match organ.kind:
+			"Crown socket", "Crown exchange": base *= 0.48
+			"Branch fork": base *= 0.25
+			"Root exchange": base *= 0.64
+			"Trunk junction", "Crown conductor":
+				base *= lerpf(1.0, 0.44, clampf((to.y - bounds.position.y) / bounds.size.y, 0.0, 1.0))
+		var axis := (to - from).normalized()
+		var right := axis.cross(Vector3.FORWARD if absf(axis.z) < 0.9 else Vector3.RIGHT).normalized()
+		var forward := right.cross(axis)
+		var lower := PackedVector3Array()
+		var upper := PackedVector3Array()
+		var sides := 5 if level < 2 else 3
+		for side in sides:
+			var polar := Vector2.from_angle(TAU * float(side) / sides)
+			var radial := right * polar.x + forward * polar.y
+			lower.append(from + radial * base)
+			upper.append(to + radial * base * 0.76)
+		_join(tool, lower, upper, Color("382b21"), Color("4a3829"), false)
 
 
 static func _ring(bounds: Rect2, height: float, taper: float, sides: int) -> PackedVector3Array:

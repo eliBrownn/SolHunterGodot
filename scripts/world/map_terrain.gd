@@ -12,6 +12,8 @@ const HORIZON_RINGS := [528, 560, 640, 768, 1024, 2048, 4096, 8192]
 const GRID_SHADER := preload("res://shaders/map_terrain.gdshader")
 const TreeSpecies := preload("res://scripts/scenery/map_tree_species.gd")
 const Vegetation := preload("res://scripts/presentation/map_vegetation.gd")
+const HorizonForest := preload("res://scripts/presentation/map_horizon_forest.gd")
+const Community := preload("res://scripts/world/plant_community.gd")
 const COOL_WATER_PATH := "res://assets/local/emace_cool_water/Materials/EA_Water_DeepBlue.tres"
 const WATER_DETAIL_END := 260.0
 
@@ -75,6 +77,8 @@ var _vegetation: Vegetation
 var _worker: Thread
 var _prepared: Dictionary = {}
 var _staged_horizon: ArrayMesh
+var _horizon_forest: Node3D
+var _staged_forest: Node3D
 var _next_surface := 0
 var world_seed: int
 
@@ -119,6 +123,9 @@ func _choose_seed() -> int:
 
 
 func _exit_tree() -> void:
+	if _staged_forest != null:
+		_staged_forest.free()
+		_staged_forest = null
 	if _worker != null:
 		_worker.wait_to_finish()
 
@@ -172,6 +179,8 @@ func _process(_delta: float) -> void:
 		_prepared = _worker.wait_to_finish()
 		_worker = null
 		_staged_horizon = ArrayMesh.new()
+		_staged_forest = Node3D.new()
+		_staged_forest.name = "HorizonForest"
 		_next_surface = 0
 	if not _prepared.is_empty():
 		_publish_prepared()
@@ -180,7 +189,7 @@ func _process(_delta: float) -> void:
 		return
 	var worker := Thread.new()
 	var result := worker.start(_prepare_terrain.bind(_requested_center, _missing_chunks(_requested_center), _surface,
-		_water_material != null, world_seed), Thread.PRIORITY_LOW)
+		_water_material != null, world_seed, _plan, _vegetation.horizon_settings()), Thread.PRIORITY_LOW)
 	if result == OK:
 		_worker = worker
 	else:
@@ -198,13 +207,16 @@ func _missing_chunks(center: Vector2i) -> Array[Vector2i]:
 	return missing
 
 
-func _prepare_terrain(center: Vector2i, missing: Array[Vector2i], surface: Surface, cool_water: bool, seed_value: int) -> Dictionary:
+func _prepare_terrain(center: Vector2i, missing: Array[Vector2i], surface: Surface, cool_water: bool,
+		seed_value: int, plan: Plan, forest_settings: Dictionary) -> Dictionary:
 	# The worker owns its sample caches and only returns packed mesh arrays.
 	var samples := TerrainSamples.new(surface, cool_water, seed_value)
 	var chunks: Dictionary[Vector2i, Array] = {}
 	for key in missing:
 		chunks[key] = _build_chunk_arrays(key * CHUNK_SIZE, samples)
-	return {"center": center, "chunks": chunks, "horizon": _build_horizon(center * CHUNK_SIZE, samples)}
+	var forest: Array = []
+	var horizon := _build_horizon(center * CHUNK_SIZE, samples, plan, seed_value, forest_settings, forest)
+	return {"center": center, "chunks": chunks, "horizon": horizon, "forest": forest}
 
 
 func _publish_prepared() -> void:
@@ -222,8 +234,13 @@ func _publish_prepared() -> void:
 	if not keys.is_empty():
 		return
 	var surfaces: Array = _prepared.horizon
+	var forest: Array = _prepared.forest
 	for index in range(_next_surface, mini(_next_surface + CHUNK_UPLOADS_PER_FRAME, surfaces.size())):
+		var groups: Dictionary = forest[index] if index < forest.size() else {}
+		if not _vegetation.prepare_horizon_models(groups):
+			break
 		_staged_horizon.add_surface_from_arrays(Mesh.PRIMITIVE_TRIANGLES, surfaces[index])
+		_vegetation.publish_horizon_strip(_staged_forest, groups, index)
 		_next_surface += 1
 	if _next_surface < surfaces.size():
 		return
@@ -231,11 +248,20 @@ func _publish_prepared() -> void:
 	var anchor := _center * CHUNK_SIZE
 	_horizon.position = Vector3(anchor.x, 0.0, anchor.y)
 	_horizon.mesh = _staged_horizon
+	if _horizon_forest != null:
+		_horizon.remove_child(_horizon_forest)
+		_horizon_forest.queue_free()
+	_horizon_forest = _staged_forest
+	_staged_forest = null
+	_horizon.add_child(_horizon_forest)
 	_finish_prepared()
 
 
 func _finish_prepared() -> void:
 	_staged_horizon = null
+	if _staged_forest != null:
+		_staged_forest.free()
+		_staged_forest = null
 	_prepared.clear()
 	for key: Vector2i in _chunks.keys():
 		var offset := key - _center
@@ -246,6 +272,7 @@ func _finish_prepared() -> void:
 			_chunks.erase(key)
 		else:
 			_chunks[key].show()
+	_vegetation.sync_terrain_coverage()
 
 
 func _publish_chunk(key: Vector2i, arrays: Array, show_now: bool = true) -> void:
@@ -267,8 +294,13 @@ func _publish_chunk(key: Vector2i, arrays: Array, show_now: bool = true) -> void
 	add_child(chunk)
 	_chunks[key] = chunk
 
-func _build_horizon(anchor: Vector2i, samples: TerrainSamples) -> Array:
+func _build_horizon(anchor: Vector2i, samples: TerrainSamples, plan: Plan = null,
+		seed_value: int = 0, forest_settings: Dictionary = {}, forest: Array = []) -> Array:
 	var surfaces: Array = []
+	var canopy: Community
+	if not forest_settings.is_empty():
+		canopy = Community.new()
+		canopy.configure(seed_value ^ 0x712d3, 24.0, 1.0, 4.0, 0.0, 1)
 	var radius := CHUNK_RADIUS * CHUNK_SIZE
 	var inner := Rect2i(-radius, -radius, radius * 2, radius * 2)
 	var step := SAMPLE_STEP
@@ -292,6 +324,9 @@ func _build_horizon(anchor: Vector2i, samples: TerrainSamples) -> Array:
 			_append_strip(samples, anchor, strip, step, outer if stitch else Rect2i(),
 				vertices, normals, indices)
 			surfaces.append(_mesh_arrays(vertices, normals, indices))
+			if canopy != null:
+				forest.append(HorizonForest.sample_strip(plan, samples._surface, canopy, forest_settings,
+					anchor, strip, step, ring, vertices))
 		inner = outer
 		step *= 2
 	return surfaces

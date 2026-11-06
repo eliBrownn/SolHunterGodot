@@ -41,6 +41,8 @@ func _run() -> void:
 	await _wait_for_terrain(terrain)
 	_check_terrain(terrain, spawn)
 	_check_shared_vegetation(terrain)
+	if "--world-seed=2601026" in OS.get_cmdline_user_args():
+		_check_horizon_forest(terrain)
 	var original_horizon := _far_samples(terrain)
 	_check_horizon_reversal(terrain)
 	_check_atlas(terrain)
@@ -269,6 +271,25 @@ func _check_terrain(terrain, cell: Vector2i) -> void:
 		_check(is_equal_approx(corner.y, terrain._samples.bed(Vector2i(int(corner.x), int(corner.z)))),
 			"Mesh and terrain bed agree at chunk edges")
 	_check(expected.is_empty(), "All chunks in the far view are present")
+
+
+func _check_horizon_forest(terrain) -> void:
+	const TreeLod := preload("res://scripts/presentation/map_tree_lod.gd")
+	var forest: Node3D = terrain._horizon_forest
+	_check(forest != null and forest.get_parent() == terrain._horizon,
+		"Distant forest publishes with its terrain")
+	if forest == null:
+		return
+	var outermost := -1
+	for strip in forest.get_children():
+		var surface: int = strip.get_meta("terrain_surface")
+		outermost = maxi(outermost, surface / 4)
+		var batch := strip.get_child(0) as MultiMeshInstance3D
+		var material := batch.multimesh.mesh.surface_get_material(0) as ShaderMaterial
+		_check(batch.multimesh.instance_count > 0 and material.shader == TreeLod.VECTOR_SHADER,
+			"Horizon strips render solid tree silhouettes in populated biomes")
+	_check(outermost == terrain.HORIZON_RINGS.size() - 1,
+		"The seeded forest reaches the outermost terrain ring")
 
 
 func _check_shared_vegetation(terrain) -> void:

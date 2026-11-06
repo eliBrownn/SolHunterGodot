@@ -127,15 +127,22 @@ hue shift to its foliage. The shift travels with each instance through all
 detail levels.
 
 Camera distance from the tree patch edge selects one of seven levels. The
-authored mesh covers the closest level. Six solid polygon silhouettes use
-progressively fewer rings and sides to retain the trunk and crown profiles
-at a distance. They use vertex colors and flat shading. Levels change at
-32, 64, 112, 176, 256, and 384 world cells, with a two-cell buffer for
-reversals. A level change swaps the mesh on the existing instance batch.
+authored mesh covers the closest level. The six solid polygon tiers follow
+each model's authored trunk joints and branch forks. Nearby tiers use more
+separate clusters fitted to the source foliage, preserving gaps and forked
+crowns. Farther tiers merge nearby clusters and shed small branches while
+retaining the overall crown spread and lean. The silhouettes use vertex colors
+and flat shading. Levels change at 32, 64, 112, 176, 256, and 384 world cells,
+with a two-cell buffer for reversals. A level change swaps the mesh on the
+existing instance batch.
 
-Canopy coverage extends through the nearby detailed terrain window, with up
-to 225 tree patches and nine ground-cover patches. The distant terrain rings
-beyond the canopy window show the landscape without additional tree coverage.
+Individual tree patches cover the detailed terrain window. Beyond it, the
+terrain worker samples sparse groves through all eight terrain rings, using
+the same seed, species eligibility, and biome hues. Grove footprints widen
+as sample spacing increases from 16 to 128 cells. Their roots follow the
+triangles of the rendered terrain, including the stitched outer edges.
+The terrain and forest swap together as the horizon recenters. The outer
+ring extends to 8,192 world cells along its axes, subject to the camera view.
 
 ### Earlier visual plant rollout — November 5, 2026
 
