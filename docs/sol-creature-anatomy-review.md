@@ -1,5 +1,7 @@
 # Sol anatomy review — Ashquill, Rattlehorn and Rimefold
 
+The runtime rollout described here is available in the inherited expedition. See the [map-first game](../README.md#play-the-map-first-build).
+
 October 28, 2026. First design deliverable from the
 [creature handoff](sol-creature-design-handoff.md). The owner requested that work
 start; the alternatives below record the proposals and subsequent owner selection.
@@ -186,7 +188,7 @@ unstaged; no commit or push is included in this model-review slice.
 ## Applied to the normal game
 
 Owner instruction: apply the creatures. The selected small/cute B first forms now
-have runtime records in the shared catalog and sightings in the actual F5 scene.
+have runtime records in the shared catalog and sightings in the inherited expedition scene.
 They are additional species, preserving the existing creatures and starter/story
 choices. All three reuse existing rules, moves and class passives. Their ground
 policies grant neither bird flight nor amphibian swimming.
@@ -224,16 +226,16 @@ The local HEAD/ref was read directly because Git could not enter that checkout;
 its worktree cleanliness was not independently verified. No private source was copied.
 
 Focused integration checks pass: **111 headless** and **117 rendered D3D12**.
-They exercise the actual main scene for Observe/Engage, tactical combat, capture,
+They exercise the inherited expedition scene for Observe/Engage, tactical combat, capture,
 party selection, active follower/gesture, menu preview and real save/new/load for
 each new species. Reload may admit extra nearby ambient wildlife; every previously
 saved record and trait is checked for exact preservation. Main-game rollout now
 passes 111 checks across the default seed and seed 17; catalog checks pass 135;
 new anatomy/scale checks pass 423, and the original pilot ground suite passes 222.
 The catalog pilot journey intentionally keeps its original three sightings while
-the main scene contains all six species. The new tests are in the shared validator.
+the inherited expedition scene contains all six species. The new tests are in the shared validator.
 
-Logs and six actual main-scene captures are under ignored
+Logs and six expedition fixture captures are under ignored
 `artifacts/sol_anatomy_integration/`; three owned-menu previews and one wild view
 were visually inspected. The rendered integration flag is `--capture-sol-anatomy`,
 which avoids triggering the world's separate generic screenshot tour.

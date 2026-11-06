@@ -1,5 +1,9 @@
 # Repository management roadmap
 
+The canonical `main` branch ships the [map-first game](README.md).
+Default-launch validation runs the seeded gameplay foundation test. Older
+expedition validation records refer to the inherited fixtures.
+
 Scope: Git health, organization, contribution workflow, and repeatable validation for SolHunter Godot. This is the execution plan for [the project standard](docs/PROJECT_STANDARD.md), which remains the workflow authority. Gameplay priorities and design decisions belong to the Bible and development planning.
 
 Work in milestone order. Check an item only when its completion evidence exists; record remaining blockers in [maintenance status](docs/maintenance-status.md). Dates are intentionally dependency-based rather than promises about unavailable remote access or owner decisions.

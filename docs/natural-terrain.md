@@ -1,7 +1,9 @@
 # Natural terrain in the live game
 
+This guide describes the inherited expedition generator. Open `scenes/world_3d.tscn` with F6 to review its relief settings, routes, and ponds. See the [map-first game](../README.md#play-the-map-first-build).
+
 Implemented October 27, 2026 after the owner requested continuation from the
-[terrain study](terrain-preview.md). The default F5 scene now uses Exploration
+[terrain study](terrain-preview.md). The expedition fixture uses Exploration
 relief (`resources/terrain_exploration.tres`), including district landforms and
 flow-informed ponds. Rolling remains the conservative fallback/comparison preset.
 This is the initial live slice of the [terrain roadmap](terrain-roadmap.md),

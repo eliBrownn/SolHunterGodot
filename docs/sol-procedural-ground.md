@@ -1,5 +1,7 @@
 # Procedural ground locomotion
 
+The creature posing controls below apply to the species pilots and inherited expedition. See the [map-first game](../README.md#play-the-map-first-build).
+
 October 28, 2026. First slice of step four in the [Sol Bible](reference/sol_bible.md).
 This adds movement-driven posing and support contact solving to Crown-Ear,
 Reedback and Bellroot. The subsequent [flight and swimming pass](sol-flight-and-swimming.md)

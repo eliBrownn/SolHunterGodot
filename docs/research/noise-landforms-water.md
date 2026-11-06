@@ -1,5 +1,9 @@
 # Research report 02: noise, landforms and water in a modular world
 
+This research informed the inherited expedition terrain. See the
+[map-first world generator](../world-map-proposal.md) for the active
+continental atlas, drainage solver, and local height handoff.
+
 October 29, 2026. Owner-requested research during
 [phase 2](../biome-encounters-geography.md). Primary-source desk research plus an
 executable Godot comparison. Engineering recommendations below are interpretations

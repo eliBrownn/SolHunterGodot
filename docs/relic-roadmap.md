@@ -1,5 +1,7 @@
 # Relic structures: gameplay and delivery plan
 
+This is the standalone relic study and its design roadmap. The map-first build starts on a generated coast. See the [map-first game](../README.md#play-the-map-first-build).
+
 Prepared October 30, 2026. Status: isolated lab prototype and feature roadmap;
 no expedition integration or owner playtest acceptance is claimed. This document
 owns relic feature delivery and acceptance.

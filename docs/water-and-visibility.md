@@ -1,5 +1,7 @@
 # Pixel-art water, banks, and player visibility
 
+The tile water and bank treatment below belongs to the inherited expedition. The map-first atlas owns current water and shoreline continuity. See the [map-first game](../README.md#play-the-map-first-build).
+
 October 26, 2026. Continues the selected pixel-art-in-3D direction without changing
 terrain generation, water collision, building footprints or the save format.
 

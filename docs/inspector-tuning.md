@@ -1,11 +1,18 @@
 # Adjusting the game in Godot
 
+**Scope.** The first section covers the current
+[map-first game](world-map-proposal.md). The dated tuning sections that follow
+describe inherited expedition resources and standalone art fixtures. Open those
+scenes explicitly with F6 to review their controls.
+
 ## Map-first vegetation
 
 In `scenes/gameplay_foundation.tscn`, select **Terrain** and edit
 **Plant Coverage**. The range is 0–1 and the starting value is 0.72.
-It scales the density of visual ground cover and trees. Zero selects
-the terrain-only view. Restart the scene to apply a change.
+It scales the density of visual ground cover and the custom expedition trees. Zero selects
+a view without visual plants. Restart the scene to apply a change. The map seed
+comes from `--world-seed=<integer>` or is chosen on launch. Earlier expedition
+relief, climate, view-distance, and save resources apply to `scenes/world_3d.tscn`.
 
 ## Connected water, mountains and grass — October 30, 2026
 
@@ -521,7 +528,7 @@ the existing companion settings. All three are ground-only in this slice.
 
 ## Existing game controls
 
-Normal F5 play now explicitly uses `resources/sol_world_sightings.tres` for
+The expedition fixture uses `resources/sol_world_sightings.tres` for
 **Expedition Tuning > Sighting Settings**, plus the enabled companion settings.
 This adds Crown-Ear, legal-bank Reedback and Bellroot while retaining wilderness
 and the existing behavior defaults. Tune the new world preset for the normal
@@ -593,7 +600,7 @@ contains orbit/tilt/sensitivity, **Player** contains model height, and **3D View
 contains View Settings, Nature Settings and Atmosphere Settings. Expand a resource to edit its values.
 **Interface** contains Menu Settings for the field menu's authored defaults.
 The comparison scene `scenes/world.tscn` retains an orthographic terrain reference;
-the default game view is perspective.
+the inherited expedition view is perspective.
 
 You can also select the `.tres` files below in Godot's FileSystem dock. Save edits,
 stop the game, and run again to apply them reliably. Editor changes are not
@@ -604,7 +611,7 @@ or use Make Unique and save the result. Defaults preserve the current behavior.
 
 | Resource / field | Default and range | Effect and save behavior |
 | --- | --- | --- |
-| Terrain study root / Presets | `scenes/terrain_preview.tscn`; Very gentle / Rolling / Upper relief | F6 shape study only; does not change F5 terrain or expedition saves. See [terrain preview](terrain-preview.md). |
+| Terrain study root / Presets | `scenes/terrain_preview.tscn`; Very gentle / Rolling / Upper relief | F6 shape study only; does not change atlas terrain or expedition saves. See [terrain preview](terrain-preview.md). |
 | Terrain study / Study Seed | 2601026; 0â€“2147483646 | Restart the preview to apply. Same seed across all comparison presets. |
 | Root Terrain Settings | `resources/terrain_rolling.tres` | New expeditions use copied relief parameters; current saves restore theirs. See [natural terrain](natural-terrain.md). |
 | Terrain relief / Broad Scale, Broad Amplitude | 144 cells (64â€“256); Rolling 3.2 cells (0â€“8) | Broad independently seeded landforms; amplitude is not measured peak-to-trough relief. New expedition applies edits; preview rebuild applies them to the study. |
@@ -1227,7 +1234,7 @@ normal game has no automatically enabled campaign events.
 
 ## Phase 2 biome and geography controls
 
-See [biome encounters and geography](biome-encounters-geography.md). Normal F5 uses
+See [biome encounters and geography](biome-encounters-geography.md). The expedition uses
 `terrain_exploration.tres`. Elevation Noise chooses smooth simplex or Perlin;
 Landform Strength controls district landforms; Drainage Influence controls local
 catchment influence on pond candidates. These are captured generation inputs;
@@ -1275,7 +1282,7 @@ remain intact; render LODs are built once during shared palette preparation.
   `View3DSettings.detail_distance` defaults to 48 cells for small plants, with
   the existing 12-cell fade band; 0 follows trees to the horizon. Grass retains
   its separate draw distance and density controls.
-Main F5 enables it in `resources/nature_biomes.tres`.
+The expedition enables it in `resources/nature_biomes.tres`.
 `NatureSettings.ground_base_color` and `ground_texture_strength` tune turf color
 and retained texture contrast on detailed and temporary streamed ground. Grass
 inherits the same base color and habitat tint. Rebuild/restart applies to loaded

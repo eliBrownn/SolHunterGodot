@@ -1,5 +1,7 @@
 # Story event tools
 
+Use the standalone story workshop for the preview workflow below. Campaign events are outside the current map-first slice. See the [map-first game](../README.md#play-the-map-first-build).
+
 October 28, 2026. First implementation slice, authorized alongside exploration,
 companions, combat, performance/controller polish and connected validation.
 The owner continues authoring [the story](story.md); preview text is a development
@@ -15,7 +17,7 @@ choose or leave; controller focus starts on Leave.
 
 The workshop routes its field-menu and F5/F9 saves to
 `artifacts/story-preview/expedition.json`, separate from the normal expedition.
-Start a new expedition to reset preview decisions. The normal F5 game creates no
+Start a new expedition to reset preview decisions. The expedition fixture creates no
 campaign conversation or automatic story triggers.
 
 ## Author an interaction

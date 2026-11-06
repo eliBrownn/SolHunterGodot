@@ -1,5 +1,17 @@
 # Natural terrain roadmap
 
+## Active terrain generator — November 5, 2026
+
+The [map-first Plan v7 atlas](world-map-proposal.md) is the active terrain
+baseline. `WorldMapPlan` sets geography, climate, biomes, drainage, and water
+before `world_map_surface.gd` refines the height field. `map_terrain.gd` streams
+64-cell chunks and eight coarser horizon rings. Height, shoreline, and biome
+checks use the same world-space inputs as traversal. Review the
+[atlas proof](world-map-proposal.md#reproduce-the-proof) and
+[playable smoke test](../README.md#validate-the-map-first-build).
+The T0–T6 records below document the inherited expedition terrain and its
+validation history.
+
 ## Connected water and mountain ranges — October 30, 2026
 
 Owner selected connected streams/ponds and added mountain ranges, with live grass
@@ -75,7 +87,7 @@ establish a new passing game build or owner acceptance.
 Owner clarification October 27, 2026: current development saves are disposable;
 retain the save framework without implementing backward compatibility.
 
-Execution evidence, October 28: the [current playable baseline](current-playable-baseline.md)
+Execution evidence, October 28: the [inherited expedition benchmark](current-playable-baseline.md)
 records six fresh rendered journeys with normal AI, a focused guard encounter,
 current save/load checks, performance measurements and validation blockers.
 Concurrent source changes limit matched-run comparisons; this does not close
@@ -758,7 +770,7 @@ scene with bounded woodland, heath and pond-side palettes, typed surface/size/st
 asset contracts and reconstruction checks. Existing blockers and generation remain
 authoritative. Its review/cost evidence and unresolved visibility/validation gates
 are tracked there. Owner instruction to apply the changes, October 28, promotes
-these three bounded treatments and the pond cue into normal F5 play. Other areas
+these three bounded treatments and the pond cue into the inherited expedition. Other areas
 and seeds retain existing dressing; worldwide palette expansion remains gated.
 
 October 29 owner follow-up: advance geographic diversity through hierarchical

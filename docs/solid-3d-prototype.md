@@ -1,10 +1,12 @@
 # Solid 3D exploration prototype
 
+This is the original solid 3D expedition comparison. The map-first build is now the project launch. See the [map-first game](../README.md#play-the-map-first-build).
+
 October 26, 2026. The owner selected this 3D direction with a clarification to preserve the 2D pixel-art look. This is not a replacement of world-generation or gameplay rules. See [the visual direction decision](decisions/2026-10-26-pixel-art-3d.md).
 
 ## Try and compare
 
-Open `project.godot` with Godot 4.7.2 and press **F5**. The default entry is now `scenes/world_3d.tscn`. Use the existing movement, zoom, Examine, journal, pause, and save/load controls.
+Open `scenes/world_3d.tscn` in Godot 4.7.2 and press **F6**. Use the existing movement, zoom, Examine, journal, pause, and save/load controls.
 
 For the previous presentation, open `scenes/world.tscn` and press **F6**. Switching the project entry back to that scene restores the earlier sprite-ground view. Both scenes use the same generated world and expedition save format; start a separate expedition if you want to compare the same seed rather than loading an existing save.
 

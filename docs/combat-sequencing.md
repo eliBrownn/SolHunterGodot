@@ -1,5 +1,7 @@
 # Sequenced combat resolution
 
+The combat timeline and timing resources below apply to the inherited expedition. See the [map-first game](../README.md#play-the-map-first-build).
+
 Phase 1 implementation, extended by phase 2 on October 28, 2026, following the
 [combat roadmap](combat-roadmap.md). Owner readability acceptance remains open.
 

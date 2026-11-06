@@ -1,8 +1,17 @@
 # Repository maintenance status
 
-Last inspected: 2026-10-26 (America/Los_Angeles).
+Last inspected November 5, 2026 (America/Los_Angeles).
 
-## Verified Git and ownership state
+## Active main branch
+
+The [map-first foundation](https://github.com/eliBrownn/SolHunterGodot/commit/059e42ed59026705518e50d4cf45a1068f7b1497)
+replaced the default expedition entry on `main`. The
+[Quaternius player update](https://github.com/eliBrownn/SolHunterGodot/commit/9f31d6fc566a253a0004d31a92de25be6deea3c5)
+then added authored movement animations. The map-first validation entry is
+`tools/validate.ps1 -GameplayOnly`. The October bootstrap snapshot below retains
+its original branch, CI, and protection findings.
+
+## October 26 bootstrap state
 
 - Checkout: `C:\Users\elija\Documents\GitHub\SolHunterGodot`; current maintenance branch: `codex/git-validation`.
 - Origin: `https://github.com/eliBrownn/SolHunterGodot.git`; public repository, default branch `main`, authenticated push/admin access reported by the GitHub connector.
@@ -27,7 +36,7 @@ Last inspected: 2026-10-26 (America/Los_Angeles).
 - In the disposable clone, an intentional smoke assertion produced one failure and validator exit code 1. The original test was restored byte-for-byte; that clone remained clean. No failure probe was committed or pushed.
 - GitHub returned an empty repository ruleset list. The connector could not create the PR or read traditional protections (integration-permission 403). Configured Git authentication created PR #1 and the protection read returned 404: main has no traditional protection configured. No settings were changed.
 
-## Next actions and blockers
+## Bootstrap follow-up recorded October 26
 
 1. M0 and M1 are complete. CI and failure propagation are verified. Owner review and merge of PR #1 remain pending.
 2. Public source redistribution rights for the Cainos pack were confirmed by the owner in this chat on October 26, 2026, and recorded in its provenance. The supplied archive did not include a standalone license; the confirmation does not amend its original terms.

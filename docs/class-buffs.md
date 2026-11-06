@@ -1,5 +1,7 @@
 # Class buffs and individual variation
 
+The implemented stat and class behavior below is available in the inherited expedition. See the [map-first game](../README.md#play-the-map-first-build).
+
 Design baseline and runtime implementation: October 27, 2026. The owner requested
 applying the agreed class and individual-stat rules to the game. Numerical ranges
 remain editable initial balance tuning.

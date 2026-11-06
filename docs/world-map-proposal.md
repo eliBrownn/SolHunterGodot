@@ -1,8 +1,9 @@
-# World map before terrain
+# Map-first world generator
 
-The owner approved Plan v2 on November 5, 2026 as the
-map-first generation baseline. The proof runs the Godot generator without
-launching the playable scene or requesting any terrain chunks.
+The owner adopted the map-first build as the main game on November 5, 2026.
+`scenes/gameplay_foundation.tscn` launches the current Plan v7 implementation.
+Plan v2 established the atlas layout. The standalone proof runs the same Godot
+generator before the playable terrain and vegetation are streamed.
 
 1. **Geography.** Seeded continental arrangements, coastal noise, islands and
    mountain belts establish the land mask and broad elevation.
@@ -38,9 +39,13 @@ progression constraints are outside this stage.
 
 ## Playable handoff
 
-The default gameplay scene chooses a new seed on launch and builds the atlas
-before streaming terrain. Plan v7 retains the continental layout and refines
-the local height and water samples. Tundra requires a temperature below 0.24 and an atlas
+F5 and `godot --path .` run the default gameplay scene. It chooses a fresh
+seed on launch and builds the atlas before streaming terrain. Pass
+`-- --world-seed=2601026` to replay a world. Use the
+[gameplay validator](../README.md#validate-the-map-first-build) for the
+startup scene and this page's proof exporter for atlas-level checks.
+
+Plan v7 retains the continental layout and refines the local height and water samples. Tundra requires a temperature below 0.24 and an atlas
 elevation of at least 0.30, about 66 world cells above the ocean at the parent
 sample. Alpine retains priority above 0.62. Meadow uses the existing Plains ID
 and forms open fields with shallow folds.
@@ -97,7 +102,20 @@ At seed 2601026, the sampled 384-cell meadow's RMS grade fell from 3.9% to
 1.5%. The same-size desert sample rose from 8.0% to 32.5%. The normal scene
 smoke test passed with the new terrain.
 
-### Visual plant rollout — November 5, 2026
+### Current canopy palette — November 5, 2026
+
+The map-first build uses the custom procedural trees from the earlier
+expedition. Each of the four expedition habitats contributes three baked
+procedural forms, and five named tree designs remain available for Meadow,
+Woodland, Heath, and Marsh. Jungle and Taiga borrow Woodland forms. Savanna
+and irrigated dry meadow borrow Heath forms. The map still sets habitat,
+moisture, grove size, site eligibility, and the sampled root height. Imported
+Quaternius trees remain part of the older art fixtures.
+
+The seeded gameplay test checks that all seventeen tree forms produce
+batched models, and verifies the habitat mappings and plant patch revisit.
+
+### Earlier visual plant rollout — November 5, 2026
 
 Ground cover pairs the shared grass blade with Open fan, Divided frond,
 Oxide thorn crown and Ribbon leaves from the

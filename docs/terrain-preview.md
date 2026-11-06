@@ -1,8 +1,9 @@
 # T0 natural-terrain preview
 
+This is the original expedition landform study. Use the atlas proof and gameplay scene to review the map-first terrain. See the [map-first game](../README.md#play-the-map-first-build).
+
 October 27, 2026. Implementation of the first checkpoint in the
-[terrain roadmap](terrain-roadmap.md). This is a shape study, separate from F5's
-production expedition. Subsequent owner direction to continue adopted Rolling
+[terrain roadmap](terrain-roadmap.md). This is a shape study, separate from the map-first scene. Subsequent owner direction to continue adopted Rolling
 for [production integration](natural-terrain.md). This page records the T0 study.
 
 ## Inspect the terrain
@@ -34,7 +35,7 @@ Presets references three Resources under `resources/`: `terrain_very_gentle.tres
 sampling scales and amplitudes, small variation, and broad-channel warp strength,
 with cell units and validation. Resource edits apply at restart, or on reselecting
 a preset when testing through a live script/debugger. Invalid settings fall back
-to the default Rolling settings. The same Rolling resource now supplies NEW F5
+to the default Rolling settings. The same Rolling resource also supplied new inherited
 expeditions; existing loaded worlds retain their saved parameters.
 
 ## Shared surface contract

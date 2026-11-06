@@ -1,5 +1,7 @@
 # Game audio framework
 
+The cue routing and audio settings below apply to the inherited expedition. See the [map-first game](../README.md#play-the-map-first-build).
+
 The scene's `audio_settings` selects `resources/audio/game_audio.tres`. Approved
 Kenney one-shots and environmental recordings are assigned to its cue slots;
 see [asset provenance](../assets/audio/PROVENANCE.md). Assign replacement

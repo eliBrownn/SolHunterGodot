@@ -1,5 +1,7 @@
 # Shared combat action budget
 
+The combat controls and action costs below apply to the inherited expedition and battle fixtures. See the [map-first game](../README.md#play-the-map-first-build).
+
 Owner-approved direction, October 28, 2026. This supersedes the earlier
 one-move-ends-the-turn behavior and the roadmap's prohibition on new action costs
 for this specific slice. Numerical costs and Speed conversion are initial tuning,

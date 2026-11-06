@@ -1,11 +1,13 @@
 # Sol world behavior roadmap
 
+The delivered Sol behavior below runs in inherited expedition scenes and species pilots. See the [map-first game](../README.md#play-the-map-first-build).
+
 Status: prototype phases 1–4, natural movement, and the activity correction are implemented;
 owner movement-feel, connected encounter/combat, and device acceptance remain open.
 Last audited: October 28, 2026.
 Owner direction: October 27, 2026. This chat focuses on Sol AI in the world.
 
-October 28 normal-game rollout: the F5 scene now explicitly selects the live
+October 28 normal-game rollout: the expedition scene selected the live
 world sighting preset containing Crown-Ear, bank-placed Reedback and Bellroot,
 with normal wilderness and species behavior still enabled. Owned following,
 flight/swimming and idle moments are enabled in that same scene. Existing

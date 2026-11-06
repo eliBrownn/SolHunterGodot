@@ -1,5 +1,7 @@
 # Species behavior and individual variation
 
+The species behavior and individual ecology profiles below run in the inherited expedition. See the [map-first game](../README.md#play-the-map-first-build).
+
 October 27, 2026 — phase 4 of the [Sol behavior roadmap](sol-behavior-roadmap.md).
 These are provisional profiles for the existing prototype species, not final
 species canon or a new roster. Godot terrain/traversal remains authoritative.

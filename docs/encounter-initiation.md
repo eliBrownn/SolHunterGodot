@@ -1,5 +1,7 @@
 # Encounter initiation and withdrawal prototype
 
+Observe, Engage, and Withdraw instructions below apply to the inherited expedition. See the [map-first game](../README.md#play-the-map-first-build).
+
 This document records the original entry slice. The subsequent
 [first playable battle](first-playable-battle.md) adds a Battle button, explicit
 starter selection/deployment, tactical actions, and durable results. Its domain-6

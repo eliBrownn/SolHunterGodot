@@ -1,6 +1,7 @@
 # Sol Lab
 
-Sol appearance authoring inside the running game. Open **Sol Lab [F9]** beside
+Sol appearance authoring runs standalone in the map-first project. In the
+inherited expedition, open **Sol Lab [F9]** beside
 **Development Lab [F8]**. F9 returns to the same suspended expedition; F8 switches
 to Development Lab. Each workspace retains its in-memory edits between visits.
 Standalone use remains available through `scenes/sol_lab.tscn` (F6) or

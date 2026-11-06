@@ -1,5 +1,7 @@
 # Owned exploration companion
 
+The following, storage, and traversal instructions below apply to the inherited expedition and companion fixtures. See the [map-first game](../README.md#play-the-map-first-build).
+
 Latest content: all eighteen current classes now have a playable first form.
 The twelve new class representatives use the same selected-owned follower and
 their own `<species>_moment` idle branch, signature rig controls and caption.
@@ -10,7 +12,7 @@ Current status: the initial ground slice below is extended by
 [owned flight and swimming](#owned-flight-and-swimming-integration). Current
 validation evidence for that integration appears in the same section; the earlier
 shared-project failures below describe the original delivery, not a current audit.
-The [normal F5 game](sol-species-data.md#normal-game-rollout) now admits Crown-Ear,
+The [inherited expedition](sol-species-data.md#normal-game-rollout) now admits Crown-Ear,
 Reedback, Bellroot, Ashquill, Rattlehorn and Rimefold. Use the existing capture/party workflow, then **Set active**
 to see that individual follow with its species movement and idle behavior.
 

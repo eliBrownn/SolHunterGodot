@@ -1,5 +1,7 @@
 # Woodland Vessel visual study
 
+This is an isolated study of Vessel appearance. Its visuals are separate from the map-first storm field test. See the [map-first game](../README.md#play-the-map-first-build).
+
 Owner-directed art test, October 29, 2026. Latest direction replaces the insect
 concept with small glowing orbs and fading trails, entirely through particles.
 Retain fluid three-axis flight and the anger-dependent light distortion test.

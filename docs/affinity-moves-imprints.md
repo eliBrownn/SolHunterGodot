@@ -1,5 +1,7 @@
 # Affinities, moves, and lasting battle imprints
 
+Move imprint controls, save instructions, and verification below apply to the inherited expedition. See the [map-first game](../README.md#play-the-map-first-build).
+
 The [Bible](reference/SolHunter_Worldbuilding_Bible.md#owner-approved-affinity-move-and-battle-imprint-rules--october-27-2026)
 records the owner's October 27 decisions. It supersedes the old provisional
 ten-affinity roster and neutral-basic assumptions. Working names remain Fire,

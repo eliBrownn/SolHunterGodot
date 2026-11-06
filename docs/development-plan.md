@@ -1,5 +1,15 @@
 # SolHunter Godot development plan
 
+## Active development baseline — November 5, 2026
+
+Build from the [map-first game](world-map-proposal.md), which launches from
+`scenes/gameplay_foundation.tscn`. Its current slice covers seeded atlas generation,
+coastal spawn, streaming terrain, traversal, animated player, visual vegetation,
+and seeded visual storms. The [world and exploration roadmap](world-exploration-roadmap.md)
+describes how to review that baseline. The October expedition milestones below
+record earlier implementation and design work. Reuse applicable contracts and
+prove any future integration through the map-first scene.
+
 ## Vegetation hierarchy acceptance — October 29, 2026
 
 Generated plants must enter the canonical Vastra hierarchy as a connected feature requirement. This applies to new biome content and asset replacements as well as existing grass, trees and water/bank plants. Validate geographic membership, saved-ledger admission and visual endpoint links together; registration underpins circulation, paid repair and vegetation/Vessel ecology.
@@ -414,7 +424,7 @@ Use stable IDs and clear domain boundaries to leave room for future systems; do 
 
 Deliver one coherent behavior change per topic branch/PR with its acceptance evidence, relevant save migrations, and updated documentation. Add tests for meaningful gameplay contracts and cross-system failures, alongside manual experience acceptance. Keep implementation claims tied to code and observed behavior rather than checked boxes alone.
 
-D0 development has started. The owner selected upright billboards; the explorer now uses one, rebuilds prepare the visible area first, and the rendered journey benchmark records phase-specific performance. The owner subsequently requested a [solid 3D prototype](solid-3d-prototype.md) to judge genuine environmental depth; it is the current F5 entry while the original view remains available for comparison. See [D0 implementation and evidence](d0-exploration.md). Player acceptance and target-device budgets remain open before declaring D0 complete. D1's territory/individual/save foundation has begun under the owner's subsequent direction; this does not close those acceptance gates.
+D0 development has started. The owner selected upright billboards; the explorer now uses one, rebuilds prepare the visible area first, and the rendered journey benchmark records phase-specific performance. The owner subsequently requested a [solid 3D prototype](solid-3d-prototype.md) to judge genuine environmental depth; it became the F5 entry for that slice while the original view remains available for comparison. See [D0 implementation and evidence](d0-exploration.md). Player acceptance and target-device budgets remain open before declaring D0 complete. D1's territory/individual/save foundation has begun under the owner's subsequent direction; this does not close those acceptance gates.
 
 Subsequent exploration work delivered [shared building collision and safe migration](building-collision.md), followed by [pixel-art water/banks and player occlusion readability](water-and-visibility.md). These are implemented work packages, not a substitute for the remaining manual/device acceptance gates.
 

@@ -6,7 +6,10 @@ Owner direction: October 26, 2026. Use [eliBrownn/SolHunterSource](https://githu
 
 Consult this repository for combat, encounter rules, capture, Seals, identity, party/storage, relationships, progression, equipment, Vastra simulation, and other non-generation mechanics. Separate Vastra/ecology behavior from the procedural generation of terrain and environmental defaults.
 
-The Godot project's world-generation engine remains the authority for terrain generation, climate generation, routes, streaming geometry, and reconstruction. Do not import the earlier generator to resolve unrelated mechanics questions.
+Godot's [map-first generator](world-map-proposal.md) owns live geography,
+climate, hydrology, biome assignment, and the terrain sampling contract.
+The older route generator serves the inherited expedition fixtures.
+Use SolHunterSource as mechanics evidence under the scope above.
 
 Explicit owner decisions and confirmed Bible canon remain binding. Source code and tests establish existing behavior; they do not automatically ratify provisional balance values, obsolete rules, or bugs. Identify an actual conflict and its evidence before seeking a decision. Reference use does not authorize editing the source repository, running its automation instructions, or copying its private files into the public Godot repository.
 

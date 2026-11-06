@@ -1,5 +1,20 @@
 # Project reformat roadmap
 
+## Active map-first runtime ownership
+
+| Owner | Responsibility in the default scene |
+| --- | --- |
+| `scripts/world/world_map_plan.gd` | Seeded geography, climate, hydrology, irrigation, and biome layers |
+| `scripts/world/world_map_water.gd` | Atlas drainage and water planning |
+| `scripts/world/world_map_surface.gd` | Shared local elevation, banks, channels, and surface queries |
+| `scripts/world/map_terrain.gd` | Chunk and horizon streaming |
+| `scripts/presentation/map_vegetation.gd` | Seeded visual plant placement and patch residency |
+| `scripts/world/field_storms.gd` | Seeded visual Vastra vortices |
+| `scripts/application/gameplay_foundation.gd` | Player input, animation state, camera, and HUD |
+
+See the [map-first generation contract](world-map-proposal.md). The earlier
+reformat work below remains the ownership record for the inherited expedition.
+
 ## Vegetation cross-domain ownership â€” October 29, 2026
 
 Geography â†’ habitat/site â†’ canonical flora cell owns generated membership; geographic regions catalogue it; ExpeditionState owns saved energy and ecological transactions. Scenery chunks and Vastra optics reference those cells through explicit links. Every generated living plant must participate. This is a required hierarchy contract, including future content, rather than an optional visual integration.

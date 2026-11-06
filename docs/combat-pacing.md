@@ -1,5 +1,7 @@
 # Encounter pacing measurements
 
+These encounters and their measurements belong to the combat fixtures. See the [map-first game](../README.md#play-the-map-first-build).
+
 Phase 3 development slice, revised fixture set v2, October 28, 2026.
 **Owner acceptance is open.**
 

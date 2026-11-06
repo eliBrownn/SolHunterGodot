@@ -1,5 +1,7 @@
 # Combat phase 3 owner session
 
+This prepared owner session uses the inherited expedition's combat fixtures. See the [map-first game](../README.md#play-the-map-first-build).
+
 Status: prepared, **not yet played or accepted by the owner**. October 28, 2026.
 This uses the [v2 development fixtures](combat-pacing.md), not production boss
 content. Keep duration/action-count targets open until this first measured session.

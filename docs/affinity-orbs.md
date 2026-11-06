@@ -1,5 +1,7 @@
 # Affinity orb presentation
 
+This is an expedition presentation record. See the map-first guide for the current player and world visuals. See the [map-first game](../README.md#play-the-map-first-build).
+
 Superseded presentation, October 28, 2026: the owner has removed orb bodies from
 gameplay. Species now use articulated models, including provisional creature
 fallbacks for legacy/unknown identities. Catalog admission rejects orb-only scenes.

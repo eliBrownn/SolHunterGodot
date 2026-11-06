@@ -1,4 +1,8 @@
-# Current playable expedition baseline
+# Inherited expedition benchmark
+
+This is the October expedition benchmark for `scenes/world_3d.tscn`.
+The [map-first world](world-map-proposal.md) is the current playable baseline.
+Its seeded validation and atlas proof have separate coverage.
 
 Measured October 28, 2026 for [D0–D1](development-plan.md) and
 [terrain T5 preparation](terrain-roadmap.md). Status: a fresh rendered baseline

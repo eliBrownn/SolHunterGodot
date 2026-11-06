@@ -1,5 +1,7 @@
 # First authored Sol sightings
 
+The trail sightings below belong to the inherited expedition and its comparison scenes. See the [map-first game](../README.md#play-the-map-first-build).
+
 The main and comparison scenes show three provisional individuals on clear cells
 along the eastern trail: Seedmote near x=8, Bramblepup near x=26, and another
 Seedmote near x=48. Walk east to approach the first one. Upright nearest-filtered

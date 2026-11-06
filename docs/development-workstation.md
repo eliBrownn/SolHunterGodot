@@ -1,5 +1,8 @@
 # Development workstation
 
+Open `scenes/development_workstation.tscn` with F6 from the
+[map-first project](../README.md#play-the-map-first-build). The lab toggle below
+is part of the inherited expedition.
 
 ## Review workspace rollout — October 30, 2026
 
@@ -260,10 +263,10 @@ suspended. Both workspaces retain their in-memory edits between visits. See
 [Sol Lab](sol-lab.md) for its appearance-authoring workflow.
 
 Press **F8** or click **Development lab [F8]** in the lower-right corner of
-normal play. The existing standalone development workstation opens as a separate
+the inherited expedition. The standalone development workstation opens as a separate
 world. Press F8 or **Return to expedition [F8]** to return to the same expedition.
-The main scene remains `scenes/world_3d.tscn`; F6 on the standalone workstation
-still works. This is a temporary development convenience, not a gameplay location.
+The shortcut is hosted by the inherited expedition, `scenes/world_3d.tscn`.
+Use F6 on the standalone workstation from the map-first project. This is a temporary development convenience, not a gameplay location.
 
 The expedition stays in memory with its clock, movement, input, GPU particles,
 audio and HUD suspended while the lab is open. Returning restores its previous
@@ -413,7 +416,7 @@ source/target identity, root/crown endpoint selection, real root-return packets,
 visibility independence and conserved state through arrivals and repeated sends.
 
 Live rollout, October 30, 2026: the approved blade mesh and four-biome styling now
-ship in the normal game through `MeadowArt`. Production and lab share
+shipped in the inherited expedition through `MeadowArt`. Production and lab share
 `grass_blade_mesh.gd`; lab controls and seeded reserves remain isolated. This
 supersedes the earlier note that production rollout was unfinished. Old grass
 clumps are retired from live palettes/rendering. See

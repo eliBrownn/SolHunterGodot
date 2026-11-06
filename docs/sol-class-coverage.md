@@ -1,5 +1,7 @@
 # One playable first form per class
 
+The class rollout below refers to the species catalog and inherited expedition. See the [map-first game](../README.md#play-the-map-first-build).
+
 Owner direction, October 28, 2026: fill each class with one playable first-form
 creature. The [Sol Bible](reference/sol_bible.md#class-coverage) remains the roster
 index and approval authority. Six concepts keep their explicit approvals; twelve

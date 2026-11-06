@@ -1,5 +1,9 @@
 ## Change
 
+For changes to the main game, report validation against the
+[map-first launch and seeded test](../README.md#validate-the-map-first-build).
+Identify any inherited expedition fixtures exercised separately.
+
 Describe the problem and resulting behavior. Link the relevant issue or decision.
 
 ## Validation

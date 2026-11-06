@@ -1,5 +1,7 @@
 # Combat consequences and outside command positions
 
+The combat outcome and outside command-position contracts below belong to the expedition fixtures. See the [map-first game](../README.md#play-the-map-first-build).
+
 Phase 2 implementation, October 28, 2026. Follows the
 [combat roadmap](combat-roadmap.md) and [sequenced resolution](combat-sequencing.md).
 The owner's follow-up requires the trainer to run to the side farthest from the

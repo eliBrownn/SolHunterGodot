@@ -1,5 +1,7 @@
 # Vastra integration
 
+The map-first scene uses seeded visual storms and visual plant placement, including the custom expedition tree art. The integration records below cover the inherited expedition and the contracts for future living ecology. See the [map-first game](../README.md#play-the-map-first-build).
+
 ## Generic foliage on existing emanator cells — October 30, 2026
 
 The generic-foliage rollout uses the existing grass/emanator cell owner. Grass

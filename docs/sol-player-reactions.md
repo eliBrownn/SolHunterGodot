@@ -1,5 +1,7 @@
 # Readable wild Sol reactions
 
+The Sol reactions below apply to the expedition encounter fixtures. See the [map-first game](../README.md#play-the-map-first-build).
+
 October 27, 2026 — phase 3 of the [Sol behavior roadmap](sol-behavior-roadmap.md).
 This implements the Wary, Watching, and Guarding prototypes. Subsequent
 [phase-4 ecology profiles](sol-ecology.md) now select these responses and supply

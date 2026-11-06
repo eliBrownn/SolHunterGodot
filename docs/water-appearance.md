@@ -2,8 +2,9 @@
 
 ## Cool Water in the map-first build
 
-The playable atlas scene uses the supplied **EmacEArt Cool Water** Deep Blue
-preset on nearby oceans, lakes, and rivers. The atlas masks the effect to
+The playable atlas scene ships with bundled water shading for oceans, lakes,
+and rivers. Install the optional local **EmacEArt Cool Water** pack to use its
+Deep Blue preset near the camera. The atlas masks the effect to
 planned water. An opaque bed supplies scene depth for color bands, foam,
 refraction, and caustics. Waves use world coordinates so adjoining meshes
 stay in phase. The full effect fades from 150 to 260 cells from the camera.

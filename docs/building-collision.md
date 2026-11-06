@@ -1,5 +1,7 @@
 # Shared building footprint and safe migration
 
+The reserved refuge cabin and footprint checks belong to the inherited expedition. See the [map-first game](../README.md#play-the-map-first-build).
+
 October 26, 2026. The refuge cabin now blocks movement instead of being decorative.
 
 ## One footprint authority

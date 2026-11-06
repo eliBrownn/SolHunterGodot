@@ -1,5 +1,18 @@
 # World and exploration delivery roadmap
 
+## Active world baseline — November 5, 2026
+
+Normal play starts on the coast in the [map-first generator](world-map-proposal.md).
+Plan v7 supplies the geography, climate, drainage, water levels, natural biomes,
+and irrigation-adjusted biomes before local terrain streams. Movement, visual
+vegetation, and seeded Vastra vortices are connected to this world.
+
+Review the atlas at fixed seeds and use the normal launch for shoreline, channel,
+and biome transitions. The [seeded smoke test](../README.md#validate-the-map-first-build)
+covers movement, chunk streaming, plant patch reconstruction, and storm persistence.
+The October route, refuge, Sol, and combat milestones below refer to the inherited
+expedition. Their implementation and acceptance records apply to that fixture.
+
 October 30 generation follow-up: owner selected connected water, added mountain
 ranges and approved WorldGen's layout-first principle. Generation 13 now has
 optional pond/channel/satellite-pool connections and cross-district ridgelines;
@@ -329,7 +342,7 @@ Step 0's conceptual sheets are authored; owner acceptance remains open. During s
 1–4 with small feature-owned changes, then the bounded activity/Vessel slice in
 step 5. Step 6 prepares a later event; it does not require building an event engine
 to review the environment. Step 7 closes whatever actually shipped.
-After each step, retain a playable F5 world and report delivered versus open work.
+The October sequence required a playable expedition after each step and report delivered versus open work.
 If visual review rejects the current Vastra treatment, keep weather/biome work
 moving using the existing effect toggle rather than blocking all work on art.
 
@@ -509,7 +522,7 @@ become canon; no automatic save-to-lore or multiplayer history system is approve
 ## Validation and execution
 
 Deliver bounded changes under the project standard on `codex/` branches, preserve
-owner files, inspect diffs and stage explicit paths. Keep normal F5 play connected.
+owner files, inspect diffs and stage explicit paths. Use the inherited expedition for these historical integration checks.
 Expose connected authoring/tuning in Godot; distinguish presentation changes from
 saved generation and identity changes.
 

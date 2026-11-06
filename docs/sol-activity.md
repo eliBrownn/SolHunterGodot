@@ -1,5 +1,7 @@
 # Sol activity and approach consequences
 
+The activity, approach, and encounter integration below applies to inherited expedition wildlife. See the [map-first game](../README.md#play-the-map-first-build).
+
 October 28, 2026. Owner feedback: Sols still mostly stand still and behavior does
 not meaningfully change exploration. Owner selected approach/avoidance as the
 priority. This is a correction to phases 1–4, not the social-behavior phase.

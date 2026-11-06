@@ -1,5 +1,8 @@
 # Vastra particle lab
 
+The [map-first game](world-map-proposal.md) reuses this lab's all-affinity vortex
+for its seeded visual storm sites. Open the lab itself with F6 to edit effects.
+
 Isolated visual experiment requested October 29, 2026. Open
 `scenes/vastra_particle_lab.tscn` in Godot 4.7.2 and press **F6** (Run Current Scene).
 The main game does not load this scene. No expedition, ecology, weather, save or

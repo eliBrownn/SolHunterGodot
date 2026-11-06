@@ -1,5 +1,9 @@
 # World optimization evidence
 
+The workload and architecture described here predate the
+[map-first build](../world-map-proposal.md#playable-handoff). Use the current
+chunk worker, horizon rings, and vegetation patches when comparing evidence.
+
 Owner-requested optimization of streaming, Vastra rebuilds, vegetation rendering
 and flora bookkeeping. This changes derived preparation/presentation only; Godot
 generation, source-reconciled ecology, saved energy and membership stay authoritative.

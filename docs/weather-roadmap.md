@@ -1,5 +1,7 @@
 # Weather and wind roadmap
 
+The weather runtime described below belongs to the inherited expedition. The map-first storm field test uses its own seeded visual sites. See the [map-first game](../README.md#play-the-map-first-build).
+
 October 29, 2026. Owner-approved direction: wind belongs within a shared weather
 system. This roadmap records that direction; phases, component boundaries and
 review samples below are engineering proposals. No runtime implementation is

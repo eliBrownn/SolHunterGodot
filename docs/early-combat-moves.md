@@ -1,5 +1,7 @@
 # Early combat moves and limited uses
 
+The move library and limited-use rules below apply to the inherited expedition combat fixtures. See the [map-first game](../README.md#play-the-map-first-build).
+
 Owner direction, October 28, 2026: limit moves according to their strength and
 effectiveness, broaden the early pool across classes and affinities, include
 healing, tactical hybrids and passives, and retain principles for later study.

@@ -1,5 +1,7 @@
 # Cohesive world sample
 
+Open the bounded study or the inherited expedition to review this authored pond and vegetation integration. See the [map-first game](../README.md#play-the-map-first-build).
+
 ## Vegetation hierarchy requirement — October 29, 2026
 
 The bounded study is connected to the required Vastra hierarchy when used in normal play: every generated living plant, including its pond lilies and bank plants, references a canonical flora cell. Explicit nonliving entries exclude rocks, fallen logs and dead wood. The fixed pond placement definition supplies camera-independent membership; graphic clumps share one saved reserve.
@@ -13,7 +15,7 @@ The owner authorized applying the bounded composition to normal play on October
 Open `scenes/cohesive_world_sample.tscn` in Godot 4.7.2 and press F6.
 The usual movement, camera, Observe/Engage, companion, combat, save and load
 controls remain connected. Seed **2601026** uses these samples; other seeds and
-areas outside their rectangles retain current scenery. Normal **F5** now includes
+areas outside their rectangles retain current scenery. The inherited expedition includes
 the same three bounded treatments; F6 on the review scene remains available.
 Restart an already-running game to load the changed scene settings. Current
 generation-7 seed-2601026 saves use the current geography. The subsequent
@@ -21,7 +23,7 @@ generation-7 seed-2601026 saves use the current geography. The subsequent
 generation-6 development saves. Original counts/costs below are historical
 generation-6 evidence; they do not certify the changed geography.
 
-October 29 follow-up: normal F5 now uses [generated biome scenery](biome-scenery.md)
+October 29 follow-up: the expedition adopted [generated biome scenery](biome-scenery.md)
 across seeds. These bounded treatments remain local overrides through the shared
 `resources/scenery/bounded_composition.tres`; the separate sample scene retains
 its original study settings. Earlier statements about unchanged dressing outside
@@ -175,7 +177,7 @@ Evidence is under ignored `artifacts/cohesive_sample/`, with focused checks in
 Final evidence:
 
 - Promotion check, October 28: `artifacts/cohesive_promotion_checks.log` passed
-  **2,069 checks**, including the normal F5 entry, one pond sign, unchanged live
+  **2,069 checks**, including the then-default expedition entry, one pond sign, unchanged live
   state on rebuild and the existing placement/reconstruction checks. Promotion
   changes presentation only; winding routes and varied water geography are the
   next implementation slice in the terrain roadmap, not part of this art change.

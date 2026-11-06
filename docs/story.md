@@ -1,6 +1,7 @@
 # SolHunter story development
 
-Updated October 28, 2026.
+Updated October 28, 2026. This is the story design record. The current
+[map-first build](world-map-proposal.md) is an exploration foundation.
 
 ## Authority and status
 

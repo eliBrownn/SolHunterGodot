@@ -1,5 +1,7 @@
 # Repeatable authored wildlife homes
 
+The home and population recovery rules below apply to the inherited expedition. See the [map-first game](../README.md#play-the-map-first-build).
+
 Historical feature-slice record: controls, schema versions and validation below
 refer to its original delivery. Current save admission uses format 4, generation
 9 and world state 17; incompatible development saves require a new expedition.

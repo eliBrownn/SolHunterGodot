@@ -1,5 +1,7 @@
 # Vastra visual implementation roadmap
 
+The map-first build uses the particle lab's visual vortex at seeded sites. The other runtime visual records below refer to inherited expedition systems. See the [map-first game](../README.md#play-the-map-first-build).
+
 ## Plant membership is a presentation prerequisite — October 29, 2026
 
 All generated living plants must reference canonical Vastra cells. Explicit living metadata and endpoint flora_id links survive arbitrary model names; particle count, visibility, render chunk lifetime and clump density cannot own reserves. Missing links disconnect visible plants from real circulation and repair. The bounded pond's existing living water/bank placements are included.

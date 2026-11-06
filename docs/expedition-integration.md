@@ -1,5 +1,7 @@
 # Complete expedition integration review
 
+This review covers the inherited expedition. Open `scenes/world_3d.tscn` with F6 to reproduce the integrated fixture. See the [map-first game](../README.md#play-the-map-first-build).
+
 October 28, 2026. Owner: Fine Detail, through the owner-authorized Bible RoadMap
 handoff. Status: the five implementation dependencies have delivered; combined
 rendered verification is in progress. This is an evidence/checklist map under
@@ -25,7 +27,7 @@ acceptance claim even if every assertion passes.
 | Optimize | Six hot-path changes and bounded temporary-ground caching are delivered | Retain caching/resumable publication; verify fresh frame/resource evidence without inventing a historical speedup or device budget |
 | Sol Behavior | Selected owned ground presence, following, rest/personality moments and 40 focused checks are delivered | Verify actual selected identity and legal following with normal AI, encounters and save/load; do not create a second follower or claim owned air/water support |
 | Combat | Revised v2 pacing fixtures, terrain interaction policies and an owner session are delivered | Exercise controlled fixtures separately from production battles. Phase 3 feel/duration acceptance remains an owner gate |
-| World Generation | Generation 7 winding routes and varied ponds are normal F5 behavior | Derive travel from current terrain, preserve generation/version policy and inspect actual pond/route transitions |
+| World Generation | Generation 7 winding routes and varied ponds were expedition behavior at review time | Derive travel from current terrain, preserve generation/version policy and inspect actual pond/route transitions |
 
 Compact thread snapshots and the process inventory confirmed all five owners idle
 before the resumed review. The existing Godot editor remains open; no competing
@@ -45,7 +47,7 @@ audit ran no engine workload; the resumed rendered evidence is recorded below.
 | `tests/fog_horizon.gd`, `tests/view_3d.gd` | Current shared run passes 131 fog and 664 view checks, including steady fog and temporary coverage while chunk preparation is incomplete | Repeat rendered camera turns/zoom and inspect boundaries after new terrain/caching work. Earlier 130-check fog evidence predates resumable publication |
 | `tests/ui_playtest_blockers.gd`, inspection/Sol/field-menu suites | Shared baseline reports 59 / 22 / 41 / 30 checks respectively | Need current rendered readability, actual model fitting and input transitions with normal movement and the delivered companion |
 
-The default F5 scene uses the bounded nature composition and now explicitly
+The expedition fixture uses the bounded nature composition and now explicitly
 selects the [normal-world species rollout](sol-species-data.md#normal-game-rollout).
 It retains wilderness and existing individuals while adding Crown-Ear, Reedback
 at a legal bank, and Bellroot. This rollout was explicitly requested by the owner.
@@ -72,7 +74,7 @@ results in separate report sections with the exact scene/settings and method.
 | I7 | Begin a real encounter, inspect/observe, and withdraw before battle; then deploy and act in a supported battle | Same target ID, explicit decisions, presented action/HP/status consequences in order, no action while playback/modal gates are active, clean return to exploration |
 | I8 | Exercise movement, a direct move and an available field/terrain interaction using the current legal action authorities | Actual command/receipt trace and before/after HP, positions, fields and budget. If the normal loadout lacks a field move, use a separately labelled authored scenario rather than silently editing that loadout |
 | I9 | Exercise supported Seal success/failure, confirmed battle retreat and exhaustion/recovery | Prefer an unchanged-rule normal scenario; retain controlled deterministic outcome cases as separately labelled supplemental evidence. Record actual capture seed/attempts instead of replacing probability, enemy HP or saves to force a result. Verify one completion receipt, the same acquired ID, no duplicate rewards/XP and correct return/recovery location |
-| I10 | Review new ground following, flight/swimming and revised pacing through their delivered scenarios | Following on the normal selected companion; species pilot clearly distinguished from F5 roster. Ground legality and water/air transitions remain the owning navigation authority; record any unsupported combat traversal. Pacing measurements and player feedback remain different evidence |
+| I10 | Review new ground following, flight/swimming and revised pacing through their delivered scenarios | Following on the normal selected companion; species pilot clearly distinguished from the expedition roster. Ground legality and water/air transitions remain the owning navigation authority; record any unsupported combat traversal. Pacing measurements and player feedback remain different evidence |
 | I11 | At refuge save, create another expedition and load; compare the complete persistent state while time is held by the existing pause layer | Position/objectives plus clock, territories, individual IDs/affinities/traits/moves, ownership, outcomes, imprints and observations compare exactly; incompatible input leaves the current world intact; test saves do not touch the normal player's expedition |
 | I12 | Repeat current GPU/picking/layout regressions and run the shared validator after workstreams settle | Current rendered presentation/fog/view/terrain/model/menu/controller evidence, useful screenshots, one fresh shared-validator log and source drift classification. Do not replace failing silhouette/identity checks with weaker assertions |
 | I13 | Review performance separately on the same unchanged workload and settings | Travel/menu/encounter frame p95/p99 and worst frames, memory, startup/rebuild and preparation costs; identify route planning, capture waits and screenshot stalls. No acceptance budget, historical speedup or physical Thor claim without the corresponding evidence |

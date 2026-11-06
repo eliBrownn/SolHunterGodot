@@ -26,7 +26,7 @@ applying the creatures; this first form now has a connected gameplay record.
 
 The [runtime record](../../../resources/sol_species/rattlehorn.tres) and shared catalog
 use stable species ID `sol_species_0005` and lineage ID `sol_lineage_0005`, ordinary form 1,
-footprint 1. Normal F5 play admits one authored sighting near trail x=40, with
+footprint 1. The inherited expedition admits one authored sighting near trail x=40, with
 Earth affinity on that individual. Affinity does not come from its class.
 The species uses its small 0.65-scale B model for exploration, battle, following
 and party-menu previews. It has ground movement only; no inferred air/water mode.
@@ -118,7 +118,7 @@ The current blockout supplies those controls and poses. Final scale, finished ar
 and target-device performance remain unaccepted.
 
 Status: approved concept and B selection; small first-form blockout integrated
-through the shared catalog and normal game. Finished-art/model acceptance remains
+through the shared catalog and inherited expedition. Finished-art/model acceptance remains
 open. See the [integration evidence](../../sol-creature-anatomy-review.md#applied-to-the-normal-game).
 
 ## Early combat alternatives — October 28, 2026

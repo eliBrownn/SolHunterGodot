@@ -1,5 +1,7 @@
 # Painterly forest study
 
+This standalone forest study records the October visual direction. The map-first game batches custom expedition tree forms through its biome palette. See the [map-first game](../README.md#play-the-map-first-build).
+
 Owner direction, October 29, 2026: stylized, painterly fantasy. Use authored
 nature models with procedural placement and restrained variation; keep rich biome
 palettes, readable silhouettes, warm light, colored shadows and selective magic.

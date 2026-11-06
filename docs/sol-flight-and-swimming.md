@@ -1,5 +1,7 @@
 # Sol flight and swimming
 
+The wildlife and companion traversal below runs in the inherited expedition and dedicated pilot. See the [map-first game](../README.md#play-the-map-first-build).
+
 October 28, 2026. Connected wild-expedition traversal for the pilot trio.
 Crown-Ear has bounded low flight; Reedback walks, wades and surface-swims;
 Bellroot retains ground movement. Capabilities come from species content,

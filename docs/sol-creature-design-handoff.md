@@ -1,5 +1,7 @@
 # Handoff: design and build more Sol creatures
 
+The models and authoring workflow below serve the inherited expedition, Sol Lab, and species pilots. See the [map-first game](../README.md#play-the-map-first-build).
+
 Current creative direction after that implementation: retain the existing models
 for development, while designing original SolHunter lore creatures with folklore
 inspiration. Most future designs move away from literal real-world animals;
@@ -72,9 +74,9 @@ Do not identify species by recoloring a common body. Bloom requires plant anatom
 and Abyssal should read as biologically aquatic; reeds alone do not make Bloom.
 Eldritch is a different design direction, not a renamed legacy Stonebound.
 
-## Current game and provisional art
+## Expedition fixture and provisional art
 
-F5 runs `scenes/world_3d.tscn`. Normal sightings use
+Open `scenes/world_3d.tscn` and press F6. Its sightings use
 `resources/sol_world_sightings.tres`, with wilderness enabled and the pilot trio
 present. Reedback's home uses a real generated bank. The isolated species and
 traversal pilot scenes remain available for focused review.

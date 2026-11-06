@@ -1,5 +1,7 @@
 # Procedural plant proof of concept
 
+The live plant behavior below refers to the inherited expedition. The map-first scene streams visual ground cover and the expedition's custom tree palette. See the [map-first game](../README.md#play-the-map-first-build).
+
 ## Generic foliage world rollout — October 30, 2026
 
 Plan steps 4–6 connect all twenty reviewed forms to normal terrestrial play.
@@ -341,7 +343,7 @@ keeps classes separate. No source-repository mechanics are replaced or invented.
 
 ### Original growth-form study
 
-Press **F8** in normal play, then choose **Plants / procedural forms**. Or run
+Press **F8** in the inherited expedition, then choose **Plants / procedural forms**. Or run
 `scenes/development_workstation.tscn` with `-- --plant-prototype` to select it on
 startup. The separate `scenes/procedural_plant_lab.tscn` is also runnable with F6.
 

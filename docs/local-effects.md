@@ -1,5 +1,7 @@
 # Supplied effect integration
 
+These supplied effects and tuning instructions describe the inherited expedition and standalone reviews. See the [map-first game](../README.md#play-the-map-first-build).
+
 October 29, 2026: selected art from the owner-supplied Vefects Wind and
 Distortion 1.0.3 Godot archives in Downloads. Both included licenses permit
 integration into games but prohibit uploading source assets or derivatives to

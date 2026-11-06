@@ -1,5 +1,7 @@
 # SolHunter living-world concept report
 
+This concept report predates the map-first launch. Its proposed habitats and ecology remain design input. See the [map-first game](../README.md#play-the-map-first-build).
+
 October 29, 2026. Consolidated from the owner's vision discussion and questionnaires.
 Status: conceptual report, not an implementation specification or completion claim.
 

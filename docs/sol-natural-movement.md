@@ -1,5 +1,7 @@
 # Natural movement pass
 
+The wildlife locomotion and contact tuning below applies to the expedition and its review fixtures. See the [map-first game](../README.md#play-the-map-first-build).
+
 October 28, 2026. Owner request: address rigid Sol behavior in the next pass.
 This extends phases 1–4 of the [behavior roadmap](sol-behavior-roadmap.md).
 Subsequent owner playtesting found that indefinite attention could still park

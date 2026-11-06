@@ -13,8 +13,11 @@ Standard archive. The Godot model and CC0 dedication are in
 in-place idle, walk, and sprint loops using the current movement state.
 Seeded, persistent Vastra vortices are a field test independent of
 the inherited ecology and storm admission rules.
-The inherited expedition scenes remain available as direct editor fixtures. The
-main game uses the `SolHunter-Gameplay` user-data directory. GitHub validation
+Open `scenes/world_3d.tscn` with F6 for the inherited expedition. Its
+routes, encounter/combat loop, saved ecology, and save formats are fixture
+contracts. The map-first game currently exposes exploration, visual vegetation,
+and seeded visual storms. The dated rollout and design records below retain
+their original scope. The main game uses the `SolHunter-Gameplay` user-data directory. GitHub validation
 imports the project and runs the seeded gameplay foundation test. The
 full validator also runs the inherited fixture suites.
 
@@ -33,7 +36,9 @@ keeps foothills low and gives the upper ranges more vertical relief. Lake spill
 heights use the same curve as the terrain. The atlas records both the natural
 and irrigation-adjusted biome. The ground material and biome HUD use the
 adjusted value. The main scene streams visual plant communities from these
-biomes and the canonical terrain surface.
+biomes and the canonical terrain surface. The canopy uses the inherited
+expedition's twelve procedural tree forms and five named designs, with
+placement owned by the map's seeded vegetation pass.
 
 The optional local EmacEArt Cool Water material reads the opaque terrain beds
 on Forward+ and Mobile. The full effect fades from 150 to 260 cells from the
@@ -212,9 +217,9 @@ the asset provides authored surface data.
 
 ## Repository layout
 
-Owner direction, October 27, 2026 supersedes the October 26 sprite presentation:
-use a full 3D player and world
-scenery, with the supplied rogue/animation rigs and Stylized Nature MegaKit.
+The inherited expedition moved from the October 26 sprite presentation to
+full 3D on October 27, 2026. That build used the supplied rogue and animation
+rigs and Stylized Nature MegaKit scenery.
 Owner follow-up, October 29, 2026: replace the default player with the supplied
 female undead grave knight. Preserve player controls and height; retain the
 optional mannequin traversal fixture. Asset attribution lives beside the model.
@@ -234,7 +239,8 @@ and restrained magical accents. Establish foliage wind/backlighting and lighting
 in a standalone forest study before broad rollout. The study is an art fixture;
 Godot world generation remains authoritative. See [forest style](forest-style.md).
 Owner approval, October 29, 2026: apply the reviewed nature samples and expansive
-stylized grass to the main game, with a live Options pixel adjustor for testing.
+stylized grass to the inherited expedition. Its Options menu included a live
+pixel adjustor for testing.
 The owner's later October 29 direction removes pixelation from the default view.
 Keep UI/picking at native coordinates and proprietary grass
 source local-only; use the original grass fallback when it is absent. See

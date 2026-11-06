@@ -1,5 +1,9 @@
 # Repository instructions
 
+Treat `scenes/gameplay_foundation.tscn` and the
+[map-first generator](docs/world-map-proposal.md) as the active game. Verify changes
+through that entry point. The inherited expedition scenes are explicit fixtures.
+
 Read `docs/PROJECT_STANDARD.md` before editing. It is the authoritative organization and Git workflow standard. Update that file when a verified workflow or layout change would otherwise make it inaccurate; do not create competing standards.
 
 For game-mechanics questions outside world generation, consult `eliBrownn/SolHunterSource` before inventing rules or asking the owner. Follow the source-selection and evidence rules in `docs/mechanics-reference.md`; keep Godot's world-generation engine as the generation authority.

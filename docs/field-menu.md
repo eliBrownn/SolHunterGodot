@@ -1,5 +1,7 @@
 # Field menu
 
+These menu controls belong to the inherited expedition. The map-first HUD shows biome and FPS. See the [map-first game](../README.md#play-the-map-first-build).
+
 The exploration interface uses one forest/gold window with seven sections,
 inspired by Pokémon's familiar menu organization and using original styling.
 

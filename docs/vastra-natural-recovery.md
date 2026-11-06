@@ -1,5 +1,7 @@
 # Natural Vastra replenishment and recovery
 
+The reserve, recovery, and circulation implementation below runs in the inherited expedition. See the [map-first game](../README.md#play-the-map-first-build).
+
 ## Vegetation hierarchy requirement — October 29, 2026
 
 Every generated living plant must be registered through its canonical geographic cell for plant-funded repair and circulation. The flora ledger remains separate from ambient concentration and signed ecological overload. Registration does not create energy or replace the independent baseline recovery rules below.

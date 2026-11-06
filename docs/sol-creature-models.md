@@ -1,5 +1,7 @@
 # Pilot creature models and articulation
 
+These creature pilots and presentation contracts are standalone or expedition-backed scenes. See the [map-first game](../README.md#play-the-map-first-build).
+
 October 28, 2026. Step three of the [Sol Bible production plan](reference/sol_bible.md#production-integration-plan).
 Status: original primitive 3D blockouts with articulated control hierarchies and
 essential cosmetic poses. Shapes, proportions and colors remain art proposals.

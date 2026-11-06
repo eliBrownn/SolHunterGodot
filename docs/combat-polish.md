@@ -1,5 +1,7 @@
 # Combat presentation and controls
 
+These interface and input instructions apply to inherited expedition combat. See the [map-first game](../README.md#play-the-map-first-build).
+
 The [shared action budget](combat-action-budget.md) now shows AP/free movement
 and per-move costs. Moves retain the current turn; End turn explicitly hands off.
 Route previews show free movement and AP separately. This supersedes earlier

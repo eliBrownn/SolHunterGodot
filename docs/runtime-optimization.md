@@ -1,5 +1,14 @@
 # Runtime optimization
 
+## Map-first runtime evidence
+
+Use the [map generator record](world-map-proposal.md#playable-handoff) for the
+active terrain worker, horizon rings, and visual plant publication. The
+[visual plant rollout](world-map-proposal.md#earlier-visual-plant-rollout--november-5-2026)
+records its measured seed and workload. The expedition timings below apply to
+their recorded routes, scenes, and settings. A map-first performance claim
+requires measurements from that build.
+
 ## Live plant palette and Vastra consumers — October 30, 2026
 
 The live procedural fallback palette now loads 68 compressed, prebuilt art

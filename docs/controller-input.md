@@ -1,5 +1,7 @@
 # Current expedition controller input
 
+The expedition router below covers its field menu, interactions, and battles. Current map-first controller input uses the left stick for movement. See the [map-first game](../README.md#play-the-map-first-build).
+
 Implemented October 28, 2026. Desktop controls and game rules are preserved.
 The router adapts controller input to existing world/menu/battle commands.
 

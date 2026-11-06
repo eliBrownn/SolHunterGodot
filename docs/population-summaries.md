@@ -1,5 +1,7 @@
 # Runtime territory population summaries
 
+The population read model below belongs to the inherited expedition's persistent world. See the [map-first game](../README.md#play-the-map-first-build).
+
 This slice adds a bounded read API over complete, explicitly published home
 definitions and existing persistent Sol records. It does not generate wildlife,
 choose habitats, activate births, simulate migration, or enable population-assisted

@@ -1,249 +1,84 @@
 # SolHunter Gameplay
 
-This is the main SolHunter game. Development starts from the map-first build.
+SolHunter starts in the **map-first world**. Open `project.godot` in Godot 4.7.2
+and press **F5**, or run `godot --path .` from the project folder. The default
+scene is `scenes/gameplay_foundation.tscn`.
 
-Open `project.godot` in Godot 4.7.2 and press **F5** to start on a beach near the edge of the map.
-Use **WASD**, the **arrow keys**, or the **left stick** to move relative to the camera.
-Combine keys for diagonals. When you stop, the knight settles at the nearest tile center.
-Hold **Shift** to sprint across the map.
-Drag with the **middle mouse button** to orbit and tilt, use the **scroll wheel**
-to zoom, or press **Home** to reset the camera.
-
-The playable world uses the approved map-first atlas for mountains, biomes,
-rivers, lakes, coastlines and irrigated ground. The biome name appears in the
-top left. Exploration movement can cross rivers, lakes and oceans.
-Each launch generates a fresh map. To replay a seed, run
-`godot --path . -- --world-seed=2601026`.
-Detailed terrain streams in 64×64-cell chunks, with eight coarser rings fading
-into the horizon. Visual plant communities follow the streamed biomes. A worker prepares new coverage while the current terrain stays
-visible. Nearby water uses [EmacEArt Cool Water](docs/water-appearance.md#cool-water-in-the-map-first-build)
-when the local pack is installed. The Quaternius mannequin plays the included
-idle, walk, and sprint loops. Vastra storms
-use the Particle Lab's all-affinity vortex. Their locations are fixed for each
-world seed. Nearby storms render as you approach. These field-test
-storms cause no damage and run independently of ecology. The FPS counter is in
-the top right. The project has its own Godot user-data directory.
-
-Run the foundation smoke test after editor import with
-`godot --headless --path . --script res://tests/gameplay_foundation.gd`.
-
-The [map-first generation baseline](docs/world-map-proposal.md) includes the
-standalone atlas export and the playable terrain handoff.
-
-## Inherited SolHunter project
-
-The original exploration scenes and project structure are retained in this copy.
-The controls and systems below describe those scenes.
-
-**Development lab:** press **F8** (or its lower-right button) to toggle from the
-game to the standalone lab world and back. Your expedition is held in memory
-while you test; lab settings and notes remain between visits. See the
-[workstation guide](docs/development-workstation.md).
-
-Generated living plants must participate in the Vastra hierarchy through their
-canonical geographic cells. This links vegetation to circulation, repair and
-vegetation/Vessel ecology while keeping graphical clumps separate from saved
-reserves. See the [vegetation registration contract](docs/vastra-integration.md#generated-vegetation-registration-and-system-hierarchy)
-for system owners and plant-content acceptance.
-
-A fresh Godot exploration foundation. The design authority is the
-[worldbuilding bible](docs/reference/SolHunter_Worldbuilding_Bible.md), which keeps
-confirmed canon, provisional design, and unresolved questions distinct.
-
-Populate species, evolutionary lineages, and the roster in the
-[Sol Bible](docs/reference/sol_bible.md), the species authoring companion to that design authority.
-
-The [species data pilot](docs/sol-species-data.md) connects Crown-Ear, Reedback,
-and Bellroot through shared resources. Open `scenes/sol_species_pilot.tscn` with F6
-to review their [articulated creature blockouts](docs/sol-creature-models.md).
-To make another model, follow [the model-authoring guide](docs/creating-sol-models.md)
-and open `scenes/sol_model_workshop.tscn` with F6 for independent movement review.
-The [flight/swimming pilot](docs/sol-flight-and-swimming.md) adds live wild
-traversal; `scenes/sol_traversal_pilot.tscn` starts beside the generated pond bank.
-
-Current development follows the [world and exploration roadmap](docs/world-exploration-roadmap.md):
-world generation, self-directed discovery and generated local interactions first;
-authored campaign delivery and AYN Thor optimization are deferred. Its first
-[research report studies Cobblemon](docs/research/cobblemon-world-exploration.md).
-
-Repository organization and Git workflow follow [the project standard](docs/PROJECT_STANDARD.md).
-The [project reformat roadmap](docs/reformat-roadmap.md) sequences the approved
-hierarchical restructuring, with shared ownership and validation evidence reuse.
-See the [repository management roadmap](ROADMAP.md) for milestones and completion gates.
-
-Continue creature design with the [design handoff](docs/sol-creature-design-handoff.md).
-Gameplay uses creature bodies throughout, including provisional models for legacy species.
-
-To run the inherited expedition fixture, open `scenes/world_3d.tscn` in the
-editor and press **F6**. **F5** and `godot --path .` launch the map-first game.
-
-Walk east along the old stone trail, reach the waystone, and
-return to the refuge. Names and artwork for these places are temporary.
+## Play the map-first build
 
 | Control | Action |
 | --- | --- |
-| WASD / arrows | Walk relative to the camera heading, including diagonals |
-| Hold Shift | Run while moving |
-| Mouse wheel | Dolly the perspective camera closer/farther |
-| Middle-mouse drag / Home | Rotate and tilt the camera / restore starting angles and zoom |
-| Right-click | Choose interactions for the pointed target: Engage / Observe on Sols; Observe on scenery; party / guide on your trainer |
-| E | Toggle tile examination under the pointer |
-| C / 1–3 | Open Sols; choose a starter with 1–3, then manage party, storage and moves |
-| H | Recover party health at the refuge |
-| Battle controls | Click blue tiles to deploy/move; click a move card then its target; use the End turn / Seal / Retreat buttons. Escape cancels targeting or opens the battle menu; retreat requires confirmation |
-| J | Open the Field Guide; Journal holds the session log |
-| F5 / F9 | Save / load expedition |
-| R / Escape | Open/close the live field menu / pause or resume exploration. Save/load and new expedition are under Save |
-| F3 | Frame-time percentiles and streaming diagnostics |
+| WASD, arrows, or left stick | Move relative to the camera, including diagonals |
+| Hold Shift | Sprint while moving |
+| Middle-mouse drag | Orbit and tilt the camera |
+| Mouse wheel | Zoom |
+| Home | Reset the camera |
 
-The [field menu](docs/field-menu.md) groups Field Guide, Sols, Bag, Trainer,
-Journal, Save and Options in one window. Drag its header to move it or its bottom
-right corner to resize it. Options adjusts menu scale/opacity and the live camera
-and view. Layout preferences stay on this device, separate from expedition saves.
+You start on a dry coast near the edge of the map. The Quaternius mannequin
+plays authored idle, walk, and sprint animations. Releasing movement settles
+the player at the nearest cell center. The HUD shows the local biome and FPS.
+You can travel across land, rivers, lakes, and oceans.
 
-The normal Godot user-data directory contains `expedition.json`. Saves store the
-seed, generation version, settled player cell, and journey progress. The previous
-save is copied to `.bak`; malformed or incompatible saves leave the live world
-intact. Backups are preserved but are not automatically restored. Starting a new
-expedition does not overwrite the saved expedition until you save again. New
-expeditions use generation version 6 with gentle Rolling terrain, level ponds,
-blended place foundations and a reserved blocking cabin footprint. Save format 3
-retains relief/climate parameters, territory observations, activity time, sparse
-world changes and stable Sol records. Older development saves require a fresh
-expedition; incompatible loads leave the current world intact.
-
-Adjust **Expedition Tuning -> Terrain Settings** on the world root for new
-expeditions. Loaded saves keep their settings. See [natural terrain](docs/natural-terrain.md)
-for implementation, validation and remaining polish work.
-
-## Climate parameters
-
-Open `resources/climate_settings.tres` in Godot's Inspector to set the Perlin
-moisture frequency and the dry and wet thresholds for **new** expeditions. Lower
-frequencies produce broader moisture regions. Raising the dry threshold expands
-dry heath; lowering the wet threshold expands marsh. Both thresholds range from
-0 to 1, and the dry threshold must stay below the wet threshold. Invalid settings
-fall back to defaults and produce a warning in Godot's output.
-
-Each save records its climate parameters, so later changes to the resource do
-not alter that saved world's generation. The Examine view shows local wetness.
-Moisture influences habitat and ground tint; water basins and Vastra use separate
-generation inputs.
-
-Plant Vastra now has its own saved reserve: plants refill from the local ambient
-field, send a packet at 100 to a nearby tree without favoring need, and trees relay
-energy onward. Reserves can pay for local ecological repair. The existing visual
-strands display actual finite transfers. See [Vastra integration](docs/vastra-integration.md#plant-energy-circulation-and-natural-repair--october-29-2026)
-for provisional tuning and development-save compatibility.
-
-## Individual stats and class buffs
-
-Combat now uses dedicated health cards and an action tray, exact damage/path/area
-previews, a battle log, and brief hit/heal reactions. Mouse controls deployment,
-movement and targeting. Escape cancels targeting or opens the battle menu; retreat
-requires mouse confirmation. See [combat polish](docs/combat-polish.md) and the
-[UI/UX roadmap](docs/ui-ux-roadmap.md).
-
-Sols now retain six independent lifelong 90–110% IV rolls, automatic natural
-level growth, and an individually rolled class passive. Physical and special
-attacks use separate stats. Battle contributions earn player-assigned training,
-with stage-based caps and a maximum 10% bonus in three fully invested stats.
-
-Open **Sols** or press **C** to inspect exact IVs, allocate training, or reset it
-using a limited retraining item. Bag shows remaining items. Saves preserve
-potential, class potency, allocations and supply; older saves migrate once.
-See [individual stats](docs/sol-stats.md) and [class buffs](docs/class-buffs.md)
-for rules, tuning, migration and current content boundaries.
-
-## 3D world
-
-The default `scenes/world_3d.tscn` renders streamed 3D tile geometry, an animated
-skinned rogue, imported nature meshes, geometric refuge props, and affinity
-spheres. Existing grass/pavement textures remain on tile surfaces. The
-perspective camera supports live orbit, tilt, dolly and reset. A north indicator
-keeps world directions readable as WASD follows the view. The simulation
-still owns terrain, collision and saves; one world cell is one 3D unit.
-
-`scenes/world.tscn` retains the flat terrain comparison view. Both scenes share
-the player model and input routing. HUD controls stay in screen space.
-
-`resources/view_3d_settings.tres` controls perspective, orbit distance, terrain
-render distance, scenery detail distance, shadows, and the supplied procedural
-sky/clouds. Terrain streaming follows the 3D view and viewport aspect ratio;
-prefetch and a per-frame chunk budget bound the work. Distant horizon fog hides
-the far clip at a steady distance. Temporary ground covers queued chunks during
-camera turns while detailed terrain/scenery loads, avoiding a foreground fog flash. The
-solid view avoids constructing duplicate hidden sprite scenery.
-
-## Assets
-
-The supplied **Cainos / Pixel Art Top Down - Basic v1.2.3** pack provides retained
-terrain textures and reference artwork. `assets/basic-pack/sprites.json`
-contains 337 named sprite slices converted from the Unity package, preserving
-rectangles, pivots, pixel scale, borders, and IDs. Original texture importer
-metadata is retained in `assets/basic-pack/metadata`. The pack's Unity code and
-project settings are not used. See [asset provenance](assets/basic-pack/PROVENANCE.md).
-
-The player uses the supplied [rogue and animation rigs](assets/characters/rogue/PROVENANCE.md).
-The [Quaternius nature subset](assets/nature/PROVENANCE.md) supplies 28 imported
-models and textures for biome scenery. Edit `resources/nature_settings.tres` for
-visual palettes, sizes and decoration density. See the [current visual decision](docs/decisions/2026-10-27-full-3d-and-controls.md).
-The [supplied cloud presets](assets/sky/PROVENANCE.md) feed a daylight/night sky
-with a matching sun, moon, stars, dawn/dusk gradients and moving clouds. A full
-day takes 20 minutes of active exploration by default. Clear, cloudy and rainy
-weather blend on a deterministic five-minute schedule; pause and reload preserve
-the saved-clock appearance. Rain adds nearby streaks, dimmer sun and closer fog.
-Terrain, water and props receive the changing lighting and shadows.
-
-Edit `resources/atmosphere_settings.tres` for cycle length, starting time, lighting
-and weather. Disable Cycle Enabled and choose a phase to preview a fixed time;
-force clear/cloudy/rain for authoring. See [atmosphere controls and behavior](docs/atmosphere.md).
-
-To regenerate the metadata from the original ZIP, install Pillow and PyYAML, then:
+Every launch generates a fresh world. To replay a map and its storm layout, pass
+a fixed seed.
 
 ```powershell
-python tools/import_basic_pack.py 'path/to/Pixel Art Top Down - Basic v1.2.3.zip'
+godot --path . -- --world-seed=2601026
 ```
 
-## Validation
+## How the world is built
 
-The Godot validation workflow imports the project and runs the seeded gameplay
-foundation test on pull requests to `main` and pushes to `main` or `codex/` branches. It pins the
-engine archive checksum and uploads no source assets or build artifacts.
+Godot generates a Plan v7 atlas before terrain streams. The atlas sets
+continental geography, mountains, climate, drainage, water levels, natural
+biomes, and irrigation. Local terrain adds relief within that plan and uses
+the same height samples for movement, water banks, and chunk boundaries.
+Nearby terrain streams in 64×64-cell chunks with eight coarser horizon rings.
 
-Run the existing import and test suites together (requires Godot 4.7.2 stable):
+Visual vegetation follows the streamed biomes. The canopy uses the older
+expedition's custom procedural tree models and five named tree designs.
+To adjust density or preview
+terrain alone, use [Plant Coverage](docs/inspector-tuning.md#map-first-vegetation).
+The bundled atlas shader renders water. The optional
+[EmacEArt Cool Water pack](docs/water-appearance.md#cool-water-in-the-map-first-build)
+adds close water effects when installed locally. Seeded Vastra vortices appear
+near the player as a visual field test. Plant ecology, Sol encounters, combat,
+campaign events, and expedition save/load belong to separate fixtures and design
+records. The project uses the `SolHunter-Gameplay` Godot user-data directory.
+
+See the [map generator and atlas proof](docs/world-map-proposal.md), the
+[active exploration roadmap](docs/world-exploration-roadmap.md), and the
+[project standard](docs/PROJECT_STANDARD.md).
+
+## Validate the map-first build
+
+GitHub Actions uses the pinned Godot 4.7.2 release to import the project and
+run the seeded gameplay test. Run the same checks locally from PowerShell.
 
 ```powershell
-powershell -NoProfile -ExecutionPolicy Bypass -File tools/validate.ps1 -Godot 'C:\path\to\Godot_console.exe'
+./tools/validate.ps1 -Godot 'C:\path\to\Godot_console.exe' -GameplayOnly
 ```
 
-This invocation permits the local script in that process without changing the
-machine's execution policy. Omit `-Godot` when `godot` is on PATH. The script returns a nonzero exit code
-if the engine version, import, or any suite fails. Add -GameplayOnly to run the same checks as GitHub. These checks do not replace
-manual playtesting or performance acceptance. Individual commands follow:
+Omit `-Godot` when `godot` is on PATH. The test exercises the configured startup
+scene, seed replay, coastal spawn, terrain streaming, movement and animation,
+the expedition tree palette, plant patch reconstruction, and persistent storm sites. See
+[Reproduce the proof](docs/world-map-proposal.md#reproduce-the-proof) for atlas
+exports across several seeds.
 
-```powershell
-godot --headless --path . --editor --import --quit
-godot --headless --path . --script tests/smoke.gd
-godot --headless --path . --script tests/world_generation.gd
-godot --path . -- --capture
-```
+## Expedition fixtures and authoring tools
 
-The last command writes camp, shore, landmark, and pause PNGs to ignored
-`artifacts/`. The smoke test uses its own save filename and removes its test saves.
-It validates multiple seeds, large footprints, negative chunk coordinates,
-determinism, actual outbound/return movement, bounded streaming, reconstruction,
-save replacement and rejection, input routing, and projection round trips. The
-world-generation suite additionally checks dry route reservations, water collision,
-network junctions, 3×3 routes, and save migration over ten seeds.
+Open `scenes/world_3d.tscn` and press **F6** to run the inherited expedition
+fixture. Its refuge and waystone route, field menu, Sol interactions, tactical
+combat, and saves are documented in the
+[expedition integration review](docs/expedition-integration.md) and the
+[older terrain guide](docs/natural-terrain.md). See the
+[field menu guide](docs/field-menu.md) for expedition controls and
+[Inspector tuning](docs/inspector-tuning.md) for fixture settings.
+Omit `-GameplayOnly` to run the full validator, including the inherited suites.
 
-See [implementation and validation notes](docs/development.md) for measured
-results and current limits. The [first playable battle](docs/first-playable-battle.md)
-adds a saved starter, deployment, tactical actions, and safe outcomes.
-[Enemy AI, Seals and progression](docs/ai-seals-progression.md) add visible capture
-odds, captured companion selection/storage with C, and victory XP/move unlocks.
-Quests, caves, economy and production wildlife simulation remain future work.
-
-The game automatically opens maximized to the available screen and adapts its
-view/UI to the current aspect ratio. It remains resizable; there is no fixed
-physical startup-window size. Restart the game after display-setting updates.
+Open the [development workstation](docs/development-workstation.md),
+[Sol Lab](docs/sol-lab.md), or [Vastra Particle Lab](docs/vastra-particle-lab.md)
+as a standalone scene with **F6**. Use the
+[Sol authoring guide](docs/creating-sol-models.md) and the
+[Sol Bible](docs/reference/sol_bible.md) for creature work. The
+[Worldbuilding Bible](docs/reference/SolHunter_Worldbuilding_Bible.md)
+governs design. See the [repository roadmap](ROADMAP.md) for repository work.

@@ -1,5 +1,7 @@
 # Combat roadmap
 
+The implementation phases and acceptance records below refer to the expedition combat fixtures. Map-first combat integration is outside the current playable slice. See the [map-first game](../README.md#play-the-map-first-build).
+
 Prepared October 28, 2026 from the owner's combat questionnaire.
 Status: phases 1–2 implemented; phase 3 measurement tools, revised v2 fixtures,
 timing comparisons and owner playtest session delivered. Owner readability/pacing

@@ -1,5 +1,7 @@
 # Reviewed world visuals and pixel testing
 
+The October rollout below belongs to the inherited expedition. The map-first build has its own terrain materials and vegetation palette. See the [map-first game](../README.md#play-the-map-first-build).
+
 ## Required plant registration — October 29, 2026
 
 Art replacement must preserve every living plant's canonical Vastra cell link. Dense grass shares one reserve per cell; authored plant entries declare living membership explicitly, with rocks/logs/dead wood excluded. Model filenames and local art installation cannot determine saved energy. Review vegetation/Vessel and circulation links alongside visual admission.
@@ -8,7 +10,7 @@ See the [authoritative registration contract](vastra-integration.md#generated-ve
 Owner approval, October 29, 2026: apply the reviewed nature visuals, retain a
 stylized painterly treatment, make grass expansive, and keep an in-game pixel
 adjustor for testing. The earlier standalone asset study remains a comparison
-fixture; normal F5 now uses the reviewed main-game palette.
+fixture; the inherited expedition received the reviewed palette.
 
 ## What is connected
 

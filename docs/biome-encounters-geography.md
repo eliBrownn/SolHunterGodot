@@ -1,5 +1,7 @@
 # Biome encounters and exploration geography
 
+The encounter tables, authored route geography, and live ecology below apply to the inherited expedition. Plan v7 supplies the current map biomes. See the [map-first game](../README.md#play-the-map-first-build).
+
 ## Vegetation hierarchy requirement — October 29, 2026
 
 Generated vegetation across all habitats must participate in the Vastra hierarchy. Geographic regions and absolute cells own plant definitions; the expedition owns reserves and ecological transactions; biome art references those cells. Missing plant membership would disconnect circulation, repair and vegetation/Vessel activity. This requirement does not derive individual affinity from habitat or alter encounter weights.

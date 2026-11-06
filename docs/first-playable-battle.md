@@ -1,5 +1,7 @@
 # First playable battle
 
+The starter, battle, and save instructions below belong to the inherited expedition. See the [map-first game](../README.md#play-the-map-first-build).
+
 ## Continuing world during combat — October 29, 2026
 
 Owner direction: combat must not stop the surrounding world. Beginning tactical

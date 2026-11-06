@@ -1,5 +1,7 @@
 # Sol companion menu: phase 4 first slice
 
+The companion menu below belongs to the inherited expedition. See the [map-first game](../README.md#play-the-map-first-build).
+
 Owner direction: October 27, 2026. Use Pokémon as an interaction reference while
 keeping original SolHunter styling, terms, models and gameplay. The reference is
 Nintendo's [Scarlet/Violet tips](https://www.nintendo.com/au/news-and-articles/12-spoiler-free-tips-to-kickstart-your-pokemon-scarlet-and-pokemon-violet/),

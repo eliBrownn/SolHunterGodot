@@ -1,7 +1,9 @@
 # Biome scenery and exploration review
 
+This is the October expedition scenery review. The current map streams its own biome vegetation. See the [map-first game](../README.md#play-the-map-first-build).
+
 October 29, 2026. First world-facing slice of the
-[world/exploration roadmap](world-exploration-roadmap.md). Normal F5 play now uses
+[world/exploration roadmap](world-exploration-roadmap.md). The inherited expedition uses
 generated-habitat scenery across seeds, with the existing bounded sample retained
 as an authored local override. Owner visual acceptance remains open.
 

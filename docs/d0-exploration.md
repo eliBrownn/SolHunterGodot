@@ -1,5 +1,7 @@
 # D0 exploration foundation: implementation and evidence
 
+This is the October expedition foundation and its validation history. See the [map-first game](../README.md#play-the-map-first-build).
+
 October 26, 2026. Status: implementation validated; final player acceptance and device budgets remain open.
 
 ## Changes

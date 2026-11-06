@@ -1,5 +1,7 @@
 # Sol species data integration
 
+The roster and sightings rollout below applies to the inherited expedition. The map-first build currently covers traversal and visual world systems. See the [map-first game](../README.md#play-the-map-first-build).
+
 October 28, 2026 — step two of the [Sol Bible production plan](reference/sol_bible.md#production-integration-plan).
 Status: pilot data connected; final validation evidence is recorded in the Bible.
 Names and numerical balance remain editable pilot tuning. Step two introduced
@@ -24,13 +26,12 @@ body plans with small/cute first-form proportions, stable IDs 0004–0006 and gr
 movement. Normal trail placements are x=22/40/56, with Water/Earth/Air on those
 individuals respectively. Existing species, starter choices and encounters remain.
 The original three-species pilot scenes stay focused on their original slice;
-normal F5 play includes all six. See the [applied anatomy review](sol-creature-anatomy-review.md#applied-to-the-normal-game)
+the expedition rollout included all six. See the [applied anatomy review](sol-creature-anatomy-review.md#applied-to-the-normal-game)
 and the three linked species sheets for provisional profiles, move pools and
 family-count limitations. No world generation, capture or progression rule changes.
 
 Owner direction, October 28, 2026: apply the implemented species/behavior work to
-the actual game. `project.godot` still starts `scenes/world_3d.tscn`; that scene now
-explicitly selects `resources/sol_world_sightings.tres` and the enabled owned
+the actual game. `scenes/world_3d.tscn` explicitly selects `resources/sol_world_sightings.tres` and the enabled owned
 companion settings. Normal wilderness, species profiles, wandering and reactions
 stay enabled. The new sighting preset retains the existing movement/rest/response
 defaults and adds the three delivered catalog species; it does not use the
@@ -59,9 +60,9 @@ rebuilds do not duplicate individuals. Incompatible saves still follow the
 project's normal new-expedition policy. The original
 `resources/sighting_settings.tres` remains the legacy comparison/fixture preset;
 edit **SolHunter3D > Expedition Tuning > Sighting Settings** or the new world
-preset to tune normal F5 play. Pilot scenes remain separate controlled scenarios.
+preset to tune the expedition fixture. Pilot scenes remain separate controlled scenarios.
 
-`tests/sol_game_rollout.gd` loads the actual configured main entry with no AI,
+`tests/sol_game_rollout.gd` loads the inherited expedition scene directly with no AI,
 wilderness or ecology switch disabled. It verifies the default seed and seed 17,
 legal identities/models/banks, profile/traversal resolution, normal save/load,
 pre-rollout save admission and preserved original starter choices. Its initial

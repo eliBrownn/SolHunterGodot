@@ -1,10 +1,12 @@
 # Route and pond diversity
 
+The winding routes, reserved locations, and bounded ponds below come from the inherited expedition generator. See the [map-first game](../README.md#play-the-map-first-build).
+
 Follow-up: [water appearance and shoreline continuity](water-appearance.md) fixes
 the visible triangular bank-mask seams and updates the water treatment without
 changing generation 7 geography or its save contract.
 
-Implemented October 28, 2026, under the owner's bounded T6 priority. Normal F5
+Implemented October 28, 2026, under the owner's bounded T6 priority. The inherited expedition
 play uses generation 7. Start a new expedition: generation 6 and older development
 saves reject with the existing new-expedition message and preserve the running
 expedition. No old generator or conversion path is shipped. Save format remains 3.

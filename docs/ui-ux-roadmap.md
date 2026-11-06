@@ -1,5 +1,7 @@
 # SolHunter UI/UX roadmap
 
+The interaction and menu rollout below applies to the inherited expedition. The map-first build uses direct traversal and camera controls. See the [map-first game](../README.md#play-the-map-first-build).
+
 Desktop direction: October 27, 2026. Mouse acts on the world, combat and NPCs;
 keyboard controls the player and personal systems. Personal menus remain clickable.
 This is a feature plan; [PROJECT_STANDARD.md](PROJECT_STANDARD.md) remains the

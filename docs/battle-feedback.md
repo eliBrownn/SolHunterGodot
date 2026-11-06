@@ -1,5 +1,7 @@
 # Battle feedback and result recap
 
+Battle feedback and recap controls below apply to the inherited expedition. See the [map-first game](../README.md#play-the-map-first-build).
+
 The battle loop now reports actual damage and healing as floating numbers, with
 short affinity-colored pulses and named cues for terrain/status moves. Damage
 from heat and charged ground also produces feedback. Separate events preserve
