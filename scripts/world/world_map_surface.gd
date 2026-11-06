@@ -11,25 +11,6 @@ const RIVER_DETAIL := 12
 const RIVER_SIZE := Plan.SIZE * RIVER_DETAIL
 const RIVER_CURVE_STEPS := 4
 const CARDINAL := [Vector2i.LEFT, Vector2i.RIGHT, Vector2i.UP, Vector2i.DOWN]
-# Match the material's layer order. The first four weights fit one RGBA atlas.
-const GROUND_LAYERS := {
-	Plan.Biome.COAST: 0, Plan.Biome.PLAINS: 1, Plan.Biome.HEATH: 2,
-	Plan.Biome.JUNGLE: 3, Plan.Biome.DESERT: 4,
-}
-const GROUND_ALBEDOS := [
-	preload("res://assets/terrain/lynocs/coast_albedo.png"),
-	preload("res://assets/terrain/lynocs/plains_albedo.png"),
-	preload("res://assets/terrain/lynocs/heath_albedo.png"),
-	preload("res://assets/terrain/lynocs/jungle_albedo.png"),
-	preload("res://assets/terrain/lynocs/desert_albedo.png"),
-]
-const GROUND_NORMALS := [
-	preload("res://assets/terrain/lynocs/coast_normal.png"),
-	preload("res://assets/terrain/lynocs/plains_normal.png"),
-	preload("res://assets/terrain/lynocs/heath_normal.png"),
-	preload("res://assets/terrain/lynocs/jungle_normal.png"),
-	preload("res://assets/terrain/lynocs/desert_normal.png"),
-]
 const PALETTE := [
 	Color("b5bc7c"), Color("527c5e"), Color("c7aa81"), Color("79ac9d"), Color("395f77"),
 	Color("dfc894"), Color("d6a15e"), Color("286b49"), Color("b2a35a"), Color("b8b2a9"),
@@ -62,13 +43,9 @@ func _init(plan: Plan, world_seed: int) -> void:
 	_build_landforms(world_seed, layers.irrigation)
 
 
-func make_material(shader: Shader, irrigation: PackedInt32Array) -> ShaderMaterial:
+func make_material(shader: Shader) -> ShaderMaterial:
 	var colors := PackedByteArray()
 	colors.resize(_biomes.size() * 4)
-	var ground_masks := PackedByteArray()
-	ground_masks.resize(_biomes.size() * 2)
-	var ground_weights := PackedByteArray()
-	ground_weights.resize(_biomes.size() * 4)
 	for index in _biomes.size():
 		var biome := int(_biomes[index])
 		var color: Color = PALETTE[biome]
@@ -77,50 +54,17 @@ func make_material(shader: Shader, irrigation: PackedInt32Array) -> ShaderMateri
 		colors[offset + 1] = color.g8
 		colors[offset + 2] = color.b8
 		colors[offset + 3] = 255 if _is_water(index) else 0
-		ground_masks[index * 2] = 255 if irrigation[index] > 0 else 0
-		var layer: int = GROUND_LAYERS.get(biome, -1)
-		if layer == 4:
-			ground_masks[index * 2 + 1] = 255
-		elif layer >= 0:
-			ground_weights[offset + layer] = 255
 	var atlas := Image.create_from_data(Plan.SIZE.x, Plan.SIZE.y, false, Image.FORMAT_RGBA8, colors)
-	var ground_atlas := Image.create_from_data(Plan.SIZE.x, Plan.SIZE.y, false, Image.FORMAT_RG8, ground_masks)
-	var weight_atlas := Image.create_from_data(Plan.SIZE.x, Plan.SIZE.y, false, Image.FORMAT_RGBA8, ground_weights)
 	var rivers := Image.create_from_data(RIVER_SIZE.x, RIVER_SIZE.y, false, Image.FORMAT_R8, _river_bytes)
 	rivers.generate_mipmaps()
 	var material := ShaderMaterial.new()
 	material.shader = shader
 	var atlas_texture := ImageTexture.create_from_image(atlas)
-	material.set_shader_parameter("atlas_colors", atlas_texture)
 	material.set_shader_parameter("atlas_flags", atlas_texture)
 	material.set_shader_parameter("atlas_rivers", ImageTexture.create_from_image(rivers))
-	material.set_shader_parameter("atlas_ground_masks", ImageTexture.create_from_image(ground_atlas))
-	var ground_albedos := _make_ground_array(GROUND_ALBEDOS)
-	var ground_normals := _make_ground_array(GROUND_NORMALS)
-	if ground_albedos != null and ground_normals != null:
-		material.set_shader_parameter("atlas_ground_weights", ImageTexture.create_from_image(weight_atlas))
-		material.set_shader_parameter("ground_albedos", ground_albedos)
-		material.set_shader_parameter("ground_normals", ground_normals)
-		material.set_shader_parameter("ground_detail_enabled", true)
 	material.set_shader_parameter("atlas_origin", Vector2(Plan.WORLD_ORIGIN))
 	material.set_shader_parameter("atlas_extent", Vector2(Plan.SIZE * SCALE))
 	return material
-
-
-func _make_ground_array(textures: Array) -> Texture2DArray:
-	var images: Array[Image] = []
-	for texture: Texture2D in textures:
-		var image := texture.get_image()
-		if image == null or image.is_empty():
-			return null
-		if image.is_compressed() and image.decompress() != OK:
-			return null
-		image.convert(Image.FORMAT_RGBA8)
-		if not image.has_mipmaps():
-			image.generate_mipmaps()
-		images.append(image)
-	var layers := Texture2DArray.new()
-	return layers if layers.create_from_images(images) == OK else null
 
 
 func _southern_crest() -> Vector2i:

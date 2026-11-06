@@ -1,7 +1,7 @@
 extends RefCounted
-## One authored mesh and six texture-free, faceted silhouettes per tree species.
+## Full and simplified authored meshes, followed by six vector silhouettes.
 
-const DISTANCES := [512.0, 704.0, 896.0, 1152.0, 1408.0, 1792.0]
+const DISTANCES := [512.0, 608.0, 704.0, 896.0, 1152.0, 1408.0, 1792.0]
 const HYSTERESIS := 2.0
 const CROWN_GROUPS := [96, 64, 40, 24, 14, 8]
 const CROWN_SIDES := [6, 6, 5, 5, 4, 4]
@@ -27,6 +27,7 @@ static func tier(distance: float, previous: int = -1) -> int:
 
 static func build(pieces: Array, bounds: AABB, organs: Array) -> Array[Mesh]:
 	var authored := ArrayMesh.new()
+	var simplified := ArrayMesh.new()
 	var foliage := PackedVector3Array()
 	var pigment := Vector3.ZERO
 	var color_samples := 0
@@ -39,6 +40,10 @@ static func build(pieces: Array, bounds: AABB, organs: Array) -> Array[Mesh]:
 			var arrays := mesh.surface_get_arrays(surface)
 			authored.add_surface_from_arrays(Mesh.PRIMITIVE_TRIANGLES, arrays)
 			authored.surface_set_material(authored.get_surface_count() - 1, material)
+			var reduced := arrays.duplicate()
+			reduced[Mesh.ARRAY_INDEX] = _authored_indices(arrays, piece.lod_indices)
+			simplified.add_surface_from_arrays(Mesh.PRIMITIVE_TRIANGLES, reduced)
+			simplified.surface_set_material(simplified.get_surface_count() - 1, material)
 			if not material is ShaderMaterial or material.get_shader_parameter("bark_surface") == true:
 				continue
 			var vertices: PackedVector3Array = arrays[Mesh.ARRAY_VERTEX]
@@ -54,7 +59,8 @@ static func build(pieces: Array, bounds: AABB, organs: Array) -> Array[Mesh]:
 					pigment += Vector3(color.r, color.g, color.b)
 					color_samples += 1
 	authored.custom_aabb = bounds
-	var levels: Array[Mesh] = [authored]
+	simplified.custom_aabb = bounds
+	var levels: Array[Mesh] = [authored, simplified]
 	var color := Color("65843f")
 	if color_samples > 0:
 		pigment /= float(color_samples)
@@ -64,8 +70,25 @@ static func build(pieces: Array, bounds: AABB, organs: Array) -> Array[Mesh]:
 		groups.append(_crown_group(foliage))
 	for index in range(CROWN_GROUPS.size() - 1, -1, -1):
 		_split_crowns(groups, CROWN_GROUPS[index])
-		levels.insert(1, _silhouette(bounds, groups, organs, color, index))
+		levels.insert(2, _silhouette(bounds, groups, organs, color, index))
 	return levels
+
+
+static func _authored_indices(arrays: Array, lods: Array[PackedInt32Array]) -> Variant:
+	var original: Variant = arrays[Mesh.ARRAY_INDEX]
+	var count: int = original.size() if original != null and not original.is_empty() else arrays[Mesh.ARRAY_VERTEX].size()
+	# Keep small or disconnected surfaces intact when simplification would cut too much.
+	var best: Variant = original
+	var target := count * 0.75
+	var error := count - target
+	for indices in lods:
+		if indices.size() < count * 0.5 or indices.size() >= count:
+			continue
+		var candidate := absf(indices.size() - target)
+		if candidate <= error:
+			best = indices
+			error = candidate
+	return best
 
 
 static func _crown_group(points: PackedVector3Array) -> Dictionary:

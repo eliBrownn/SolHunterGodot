@@ -509,9 +509,12 @@ func _model(kind: int) -> Dictionary:
 		return _models[kind]
 	if kind == Plant.GRASS:
 		var blade := Meadow.mesh(1)
+		var simple_blade := Meadow.mesh(1, null, 3)
 		var material := GroundLod.material_for_map(blade.surface_get_material(0))
 		var levels: Array[Mesh] = []
-		for count in range(TreeLod.DISTANCES.size() + 1, 0, -1):
+		for level in TreeLod.DISTANCES.size() + 1:
+			var count := TreeLod.DISTANCES.size() - maxi(0, level - 1)
+			var shape := blade if level == 0 else simple_blade
 			var clump := SurfaceTool.new()
 			clump.begin(Mesh.PRIMITIVE_TRIANGLES)
 			clump.set_material(material)
@@ -519,7 +522,7 @@ func _model(kind: int) -> Dictionary:
 				var angle := float(index) * 2.39996
 				var offset := Vector2.from_angle(angle) * lerpf(0.04, 0.19, float(index) / 6.0)
 				var basis := Basis(Vector3.UP, angle).scaled(Vector3(1.2, 0.28 + 0.02 * index, 1.25))
-				clump.append_from(blade, 0, Transform3D(basis, Vector3(offset.x, 0.0, offset.y)))
+				clump.append_from(shape, 0, Transform3D(basis, Vector3(offset.x, 0.0, offset.y)))
 			levels.append(clump.commit())
 		_models[kind] = _ground_model("Grass", levels, Transform3D.IDENTITY, levels[0].get_aabb().size.y)
 		return _models[kind]

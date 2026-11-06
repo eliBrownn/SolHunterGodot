@@ -34,7 +34,8 @@ biomes, and irrigation. Local terrain adds relief within that plan and uses
 the same height samples for movement, water banks, and chunk boundaries.
 Nearby terrain streams in 64×64-cell chunks with eight coarser horizon rings.
 
-Every land biome can use the full ground plant and custom expedition tree
+Terrain uses plain biome colors and mesh lighting. Every land biome can use
+the full ground plant and custom expedition tree
 palette by default. Each tree species has its own allowed biomes. Local
 conditions shape density, and the biome shifts foliage hue. Authored branches
 and crowns guide the [solid polygon tiers](docs/world-map-proposal.md#tree-species-and-vector-lods),

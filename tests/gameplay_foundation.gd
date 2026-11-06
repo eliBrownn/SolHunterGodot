@@ -296,9 +296,9 @@ func _check_horizon_forest(terrain) -> void:
 		var surface: int = patch.get_meta("terrain_surface")
 		var level: int = patch.get_meta("tree_lod")
 		outermost = maxi(outermost, surface / 4)
-		has_intermediate = has_intermediate or (level > 0 and level < 6)
 		var batch := patch.get_child(0) as MultiMeshInstance3D
 		var kind: int = batch.get_meta("tree_kind")
+		has_intermediate = has_intermediate or (level > 0 and level < vegetation._models[kind].levels.size() - 1)
 		_check(batch.multimesh.instance_count > 0 and batch.multimesh.mesh == vegetation._models[kind].levels[level],
 			"A horizon patch renders the selected tree model")
 	_check(has_intermediate, "Horizon groves use the intermediate tiers before reaching the outer rings")
@@ -319,9 +319,20 @@ func _check_shared_vegetation(terrain) -> void:
 			_check(model.levels.size() == TreeLod.DISTANCES.size() + 1 and model.lod_scale < 1.0,
 				"Ground assets share the tree tiers at their visible size")
 			continue
-		_check(model.levels.size() == 7, "Each tree species has seven geometry tiers")
+		_check(model.levels.size() == 8, "Each tree species has eight geometry tiers")
+		var authored: ArrayMesh = model.levels[0]
+		var simplified: ArrayMesh = model.levels[1]
+		var authored_indices := 0
+		var simplified_indices := 0
+		for surface in authored.get_surface_count():
+			authored_indices += authored.surface_get_array_index_len(surface)
+			simplified_indices += simplified.surface_get_array_index_len(surface)
+			_check(authored.surface_get_material(surface) == simplified.surface_get_material(surface),
+				"The simplified authored tree keeps the original material")
+		_check(simplified_indices < authored_indices and simplified.custom_aabb == authored.custom_aabb,
+			"The added tier simplifies the original tree without changing its bounds")
 		var previous_vertices := 2147483647
-		for level in range(1, model.levels.size()):
+		for level in range(2, model.levels.size()):
 			var mesh: ArrayMesh = model.levels[level]
 			var count := mesh.surface_get_array_len(0)
 			_check(count < previous_vertices and mesh.surface_get_material(0).shader == TreeLod.VECTOR_SHADER,
@@ -343,9 +354,10 @@ func _check_shared_vegetation(terrain) -> void:
 	fixture.free()
 	_check(MapPlants.tree_hue(Plan.Biome.DESERT) != MapPlants.tree_hue(Plan.Biome.TAIGA),
 		"The same species receives a different hue in desert and taiga")
-	_check(TreeLod.DISTANCES == [512.0, 704.0, 896.0, 1152.0, 1408.0, 1792.0],
-		"Every tree transition distance is four times the previous distance")
-	_check(TreeLod.tier(511.0) == 0 and TreeLod.tier(512.0) == 1 and TreeLod.tier(1792.0) == 6
+	_check(TreeLod.DISTANCES == [512.0, 608.0, 704.0, 896.0, 1152.0, 1408.0, 1792.0],
+		"The new band divides the former first vector range")
+	_check(TreeLod.tier(511.0) == 0 and TreeLod.tier(512.0) == 1 and TreeLod.tier(608.0) == 2
+		and TreeLod.tier(1792.0) == 7
 		and TreeLod.tier(513.0, 0) == 0 and TreeLod.tier(514.0, 0) == 1
 		and TreeLod.tier(510.0, 1) == 1 and TreeLod.tier(509.0, 1) == 0,
 		"The authored model extends to 512 cells with stable transitions at the boundary")
@@ -362,6 +374,9 @@ func _check_shared_vegetation(terrain) -> void:
 	var near_mesh := instances.mesh
 	vegetation._set_tree_lod(patch, Vector2(patch_origin) - Vector2(500.0, 0.0))
 	_check(instances.mesh == near_mesh, "A streamed tree patch keeps its authored mesh at 500 cells")
+	vegetation._set_tree_lod(patch, Vector2(patch_origin) - Vector2(560.0, 0.0))
+	_check(instances.mesh == vegetation._models[kind].levels[1],
+		"A streamed tree patch selects the simplified authored model before vector geometry")
 	vegetation._set_tree_lod(patch, Vector2(patch_origin) - Vector2(1800.0, 0.0))
 	_check(instances.mesh != near_mesh and instances.instance_count == 1 and batch.multimesh == instances,
 		"A streamed tree batch swaps to a vector mesh with the same instance buffer")

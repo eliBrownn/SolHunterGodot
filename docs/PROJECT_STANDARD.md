@@ -41,12 +41,12 @@ expedition's twelve procedural tree forms and five named designs. Each tree
 form is a species resource with its own allowed biomes and spawn weight.
 The defaults allow all seventeen in every land biome. Local density, slope,
 and water clearance guide seeded placement. Biome hue shifts tint foliage at
-all seven tree detail levels. Distant vector tiers follow authored branches
+all eight tree detail levels. Distant vector tiers follow authored branches
 and crown clusters. Sparse groves extend through all eight terrain rings.
 Grass and ground plants share the tree distance bands in proportion to their
 height, with sparse cover retained through the detailed terrain window.
-The map-first daylight sky uses 1024×1024 cloud textures. Ground detail
-textures fade between 238 and 700 world cells. Plant scale defaults to 1.5×. See
+The map-first daylight sky uses 1024×1024 cloud textures. Land uses atlas
+biome colors and slope shading. Plant scale defaults to 1.5×. See
 [the canopy hierarchy and tiers](world-map-proposal.md#tree-species-and-vector-lods).
 
 The optional local EmacEArt Cool Water material reads the opaque terrain beds
@@ -98,9 +98,8 @@ and on foot. Record future habitat ideas separately from active mechanics. The
 gameplay foundation uses terrain, water, and streamed visual plants to
 establish biome identity. Plant ecology is a separate milestone.
 
-**Biome features.** The gameplay foundation uses
-[Lynocs ground materials](../assets/terrain/lynocs/README.md) for Coast, Meadow,
-Heath, Desert and Jungle. The other habitats use their atlas colors.
+**Biome features.** The gameplay foundation uses atlas colors and mesh lighting
+for all land biomes.
 
 | Biome | Landform in the gameplay foundation |
 | --- | --- |

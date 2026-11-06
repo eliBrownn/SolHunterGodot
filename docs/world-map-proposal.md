@@ -51,9 +51,9 @@ sample. Alpine retains priority above 0.62. Meadow uses the existing Plains ID
 and forms open fields with shallow folds.
 The terrain worker samples the plan's broad elevation and adds local relief.
 The ground material reads the same world coordinates for biomes, rivers,
-water surfaces, and irrigated ground. Detail color and normal textures fade
-from 238 to 700 world cells from the camera. Distant biome color boundaries
-use a narrower filtered blend. The daylight sky uses two 1024×1024 cloud
+water surfaces, and irrigated ground. Land uses plain biome colors, slope
+shading, and mesh lighting. Distant biome color boundaries use a narrower
+filtered blend. The daylight sky uses two 1024×1024 cloud
 textures and a 512-pixel radiance cubemap. Terrain fog fades from 2,600 to
 7,800 cells and matches the sky at the horizon. The current exploration controls allow
 travel over land and water. Visual vegetation now streams as part of the
@@ -130,13 +130,15 @@ site, the map selects a species from that biome's list and applies the biome's
 hue shift to its foliage. The shift travels with each instance through all
 detail levels.
 
-Camera distance from the tree patch edge selects one of seven levels. The
-authored mesh stays active out to 512 world cells. The six solid polygon tiers follow
+Camera distance from the tree patch edge selects one of eight levels. The
+full authored mesh stays active out to 512 world cells. The 512–608 cell band
+uses the original surfaces with fewer triangles and the same materials.
+The six solid polygon tiers follow
 each model's authored trunk joints and branch forks. Nearby tiers use more
 separate clusters fitted to the source foliage, preserving gaps and forked
 crowns. Farther tiers merge nearby clusters and shed small branches while
 retaining the overall crown spread and lean. The silhouettes use vertex colors
-and flat shading. Levels change at 512, 704, 896, 1,152, 1,408, and 1,792 world cells,
+and flat shading. Levels change at 512, 608, 704, 896, 1,152, 1,408, and 1,792 world cells,
 with a two-cell buffer for reversals. A level change swaps the mesh on the
 existing instance batch.
 
@@ -155,9 +157,9 @@ four-cell geometry extends to 688 cells, up from 528.
 
 ### Ground asset LOD and coverage
 
-Grass and ground plants use the seven tree geometry bands scaled by their
-fitted height relative to a six-cell tree. Grass drops blades in successive
-tiers. Other ground plants use the mesh simplifier's available index levels
+Grass and ground plants use the eight tree geometry bands scaled by their
+fitted height relative to a six-cell tree. Grass first simplifies the
+original blade shapes, then drops blades in successive tiers. Other ground plants use the mesh simplifier's available index levels
 and retain their authored materials. Levels share the same placement and
 instance batch. A sparse, fixed subset of ground-cover sites remains in the
 detailed terrain window. Additional foreground sites fade from 56 to 96

@@ -78,9 +78,12 @@ static func compact_parts(scene: PackedScene) -> Dictionary:
 		importer.add_surface(Mesh.PRIMITIVE_TRIANGLES, mesh.surface_get_arrays(0), [], {}, material)
 		importer.generate_lods(60.0, 25.0, [])
 		mesh = importer.get_mesh()
-		mesh.set_meta("generated_lod_count", importer.get_surface_lod_count(0))
+		var lod_indices: Array[PackedInt32Array] = []
+		for level in importer.get_surface_lod_count(0):
+			lod_indices.append(importer.get_surface_lod_indices(0, level))
+		mesh.set_meta("generated_lod_count", lod_indices.size())
 		preload("res://scripts/presentation/mesh_picking.gd").prepare(mesh)
-		pieces.append({"mesh":mesh,"transform":Transform3D.IDENTITY})
+		pieces.append({"mesh":mesh,"transform":Transform3D.IDENTITY,"lod_indices":lod_indices})
 	var result: Dictionary = source.duplicate()
 	result.pieces = pieces
 	compact_cache[key] = result

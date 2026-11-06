@@ -7,7 +7,7 @@ static var material: ShaderMaterial
 static var style_identity := 0
 static var weather: Dictionary = {}
 
-static func mesh(ground: int = 0, style: MeadowAppearance = null) -> ArrayMesh:
+static func mesh(ground: int = 0, style: MeadowAppearance = null, segments: int = 4) -> ArrayMesh:
 	if material == null:
 		material = ShaderMaterial.new()
 		material.shader = preload("res://shaders/meadow.gdshader")
@@ -15,9 +15,9 @@ static func mesh(ground: int = 0, style: MeadowAppearance = null) -> ArrayMesh:
 		if not weather.is_empty(): set_weather(weather.direction,weather.rain,weather.seconds,weather.origin)
 	var width := (style.blade_width if style != null else 0.028) * (style.biome_width[ground] if style != null else Vector4(1.0,1.5,0.65,0.65)[ground])
 	var curve := (style.blade_curve if style != null else 0.06) * (style.biome_curve[ground] if style != null else Vector4(1.0,1.4,0.9,0.3)[ground])
-	var key := Vector2(width,curve)
+	var key := Vector3(width, curve, segments)
 	if not meshes.has(key):
-		var shape := preload("res://scripts/scenery/grass_blade_mesh.gd").create(width,curve)
+		var shape := preload("res://scripts/scenery/grass_blade_mesh.gd").create(width, curve, segments)
 		shape.surface_set_material(0,material)
 		meshes[key] = shape
 	return meshes[key]

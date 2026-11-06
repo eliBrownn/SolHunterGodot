@@ -1,16 +1,16 @@
 extends RefCounted
 ## Shared approved single-blade geometry for the lab and streamed world.
-static func create(width: float, curve: float) -> ArrayMesh:
+static func create(width: float, curve: float, segments: int = 4) -> ArrayMesh:
 	var builder := SurfaceTool.new()
 	builder.begin(Mesh.PRIMITIVE_TRIANGLES)
-	for segment in range(4):
-		var t0 := float(segment) / 4.0
-		var t1 := float(segment + 1) / 4.0
+	for segment in segments:
+		var t0 := float(segment) / segments
+		var t1 := float(segment + 1) / segments
 		var w0 := width * 0.5 * (1.0 - t0)
 		var w1 := width * 0.5 * (1.0 - t1)
 		var vertices := [Vector3(-w0,t0,curve*t0*t0), Vector3(w0,t0,curve*t0*t0), Vector3(-w1,t1,curve*t1*t1), Vector3(w1,t1,curve*t1*t1)]
 		# Final segment ends in a single tip; omit the degenerate second triangle.
-		var corners := [0,2,1] if segment == 3 else [0,2,1,1,2,3]
+		var corners := [0,2,1] if segment == segments - 1 else [0,2,1,1,2,3]
 		for corner in corners:
 			var t := t0 if corner < 2 else t1
 			builder.set_normal(Vector3(0,-2.0*curve*t,1).normalized())

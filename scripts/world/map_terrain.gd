@@ -91,7 +91,7 @@ func _ready() -> void:
 	print("SolHunter world seed: ", world_seed)
 	_plan = Plan.new(world_seed)
 	_surface = Surface.new(_plan, world_seed)
-	_material = _surface.make_material(GRID_SHADER, _plan.terrain_layers().irrigation)
+	_material = _surface.make_material(GRID_SHADER)
 	if RenderingServer.get_current_rendering_method() != "gl_compatibility" and ResourceLoader.exists(COOL_WATER_PATH):
 		var preset := load(COOL_WATER_PATH) as ShaderMaterial
 		if preset != null:
