@@ -1,7 +1,7 @@
 extends RefCounted
 ## One authored mesh and six texture-free, faceted silhouettes per tree species.
 
-const DISTANCES := [32.0, 64.0, 112.0, 176.0, 256.0, 384.0]
+const DISTANCES := [128.0, 176.0, 224.0, 288.0, 352.0, 448.0]
 const HYSTERESIS := 2.0
 const CROWN_GROUPS := [96, 64, 40, 24, 14, 8]
 const CROWN_SIDES := [6, 6, 5, 5, 4, 4]

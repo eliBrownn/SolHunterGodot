@@ -127,12 +127,12 @@ hue shift to its foliage. The shift travels with each instance through all
 detail levels.
 
 Camera distance from the tree patch edge selects one of seven levels. The
-authored mesh covers the closest level. The six solid polygon tiers follow
+authored mesh stays active out to 128 world cells. The six solid polygon tiers follow
 each model's authored trunk joints and branch forks. Nearby tiers use more
 separate clusters fitted to the source foliage, preserving gaps and forked
 crowns. Farther tiers merge nearby clusters and shed small branches while
 retaining the overall crown spread and lean. The silhouettes use vertex colors
-and flat shading. Levels change at 32, 64, 112, 176, 256, and 384 world cells,
+and flat shading. Levels change at 128, 176, 224, 288, 352, and 448 world cells,
 with a two-cell buffer for reversals. A level change swaps the mesh on the
 existing instance batch.
 

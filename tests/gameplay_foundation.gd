@@ -327,9 +327,10 @@ func _check_shared_vegetation(terrain) -> void:
 	fixture.free()
 	_check(MapPlants.tree_hue(Plan.Biome.DESERT) != MapPlants.tree_hue(Plan.Biome.TAIGA),
 		"The same species receives a different hue in desert and taiga")
-	_check(TreeLod.tier(0.0) == 0 and TreeLod.tier(400.0) == 6 and TreeLod.tier(32.0, 0) == 0
-		and TreeLod.tier(35.0, 0) == 1 and TreeLod.tier(29.0, 1) == 0,
-		"Camera distance selects and stabilizes the vector tiers")
+	_check(TreeLod.tier(127.0) == 0 and TreeLod.tier(128.0) == 1 and TreeLod.tier(448.0) == 6
+		and TreeLod.tier(129.0, 0) == 0 and TreeLod.tier(130.0, 0) == 1
+		and TreeLod.tier(126.0, 1) == 1 and TreeLod.tier(125.0, 1) == 0,
+		"The authored model extends to 128 cells with stable transitions at the boundary")
 	var patch_key := Vector3i(-2048, 2048, 1)
 	var patch_origin := Vector2i(patch_key.x, patch_key.y) * int(terrain.CHUNK_SIZE)
 	var kind := MapPlants.Plant.TREE_BASE
@@ -341,7 +342,9 @@ func _check_shared_vegetation(terrain) -> void:
 	var instances := batch.multimesh
 	vegetation._set_tree_lod(patch, Vector2(patch_origin))
 	var near_mesh := instances.mesh
-	vegetation._set_tree_lod(patch, Vector2(patch_origin) - Vector2.ONE * 400.0)
+	vegetation._set_tree_lod(patch, Vector2(patch_origin) - Vector2(120.0, 0.0))
+	_check(instances.mesh == near_mesh, "A streamed tree patch keeps its authored mesh at 120 cells")
+	vegetation._set_tree_lod(patch, Vector2(patch_origin) - Vector2(460.0, 0.0))
 	_check(instances.mesh != near_mesh and instances.instance_count == 1 and batch.multimesh == instances,
 		"A streamed tree batch swaps to a vector mesh with the same instance buffer")
 	vegetation._set_tree_lod(patch, Vector2(patch_origin))
