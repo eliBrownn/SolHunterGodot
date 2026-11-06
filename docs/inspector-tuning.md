@@ -23,10 +23,6 @@ Restart after editing species. See the
 [map canopy details](world-map-proposal.md#tree-species-and-lods)
 for biome hue and distance bands.
 
-On **GameplayFoundation**, **Pixel Effect Level** selects Off through Deep.
-The default is Medium (1.75×). Restart the scene to apply a change. The filter
-samples the world before the HUD is drawn.
-
 ## Connected water, mountains and grass — October 30, 2026
 
 `resources/terrain_exploration.tres` / `TerrainReliefSettings` expose channel

@@ -40,8 +40,7 @@ palette by default. Each tree species has its own allowed biomes. Local
 conditions shape density, and the biome shifts foliage hue. Trees use
 [progressively simplified authored meshes](docs/world-map-proposal.md#tree-species-and-lods),
 with sparse groves continuing through the terrain horizon rings. Vegetation
-detail levels and horizon updates blend during travel. The world uses the
-Medium pixel filter beneath the full-resolution HUD. The project caps rendering
+detail levels and horizon updates blend during travel. The project caps rendering
 at 90 FPS.
 Plants and trees are 50% larger by default. Use [Plant Coverage and Plant Scale](docs/inspector-tuning.md#map-first-vegetation)
 to adjust density and size.

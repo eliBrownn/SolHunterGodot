@@ -46,8 +46,8 @@ follow full detail, with more aggressive face reductions in the final two
 levels. Sparse groves extend through all eight terrain rings.
 Grass and ground plants share the tree distance bands in proportion to their
 height, with sparse cover retained through the detailed terrain window.
-The project caps rendering at 90 FPS. The map-first scene defaults to the
-Medium pixel filter beneath the full-resolution HUD. The daylight sky uses
+The project caps rendering at 90 FPS. The map-first scene renders at native
+resolution. The daylight sky uses
 1024×1024 cloud textures. Land uses atlas
 biome colors and slope shading. Plant scale defaults to 1.5×. See
 [the canopy hierarchy and tiers](world-map-proposal.md#tree-species-and-lods).

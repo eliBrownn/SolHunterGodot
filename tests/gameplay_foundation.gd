@@ -34,9 +34,7 @@ func _run() -> void:
 	_check(OS.get_user_data_dir().get_file() == "SolHunter-Gameplay", "User data is isolated")
 	_check(animator.is_playing() and animator.current_animation == &"Idle_A", "Mannequin idles at spawn")
 	var storms = world.get_node("VastraStorms")
-	var pixels = world.get_node("PixelEffect")
-	_check(pixels.level == 3 and pixels.surface.visible and pixels.layer < world.get_node("HUD").layer,
-		"The world opens with the medium pixel filter under the native-resolution HUD")
+	_check(not world.has_node("PixelEffect"), "The map-first game opens without the pixel filter")
 	var spawn: Vector2i = world.cell
 	var yaw: float = world.get_node("Camera3D").rotation.y
 	var right := Vector2i(Vector2.RIGHT.rotated(-yaw).round())
