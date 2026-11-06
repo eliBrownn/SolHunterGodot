@@ -40,6 +40,7 @@ func _run() -> void:
 			_check(terrain.is_land_at(neighbor), "Spawn has dry ground around it")
 	await _wait_for_terrain(terrain)
 	_check_terrain(terrain, spawn)
+	_check_expedition_canopy(terrain._vegetation)
 	var original_horizon := _far_samples(terrain)
 	_check_horizon_reversal(terrain)
 	_check_atlas(terrain)
@@ -268,6 +269,30 @@ func _check_terrain(terrain, cell: Vector2i) -> void:
 		_check(is_equal_approx(corner.y, terrain._samples.bed(Vector2i(int(corner.x), int(corner.z)))),
 			"Mesh and terrain bed agree at chunk edges")
 	_check(expected.is_empty(), "All chunks in the far view are present")
+
+
+func _check_expedition_canopy(vegetation) -> void:
+	const MapPlants := preload("res://scripts/presentation/map_vegetation.gd")
+	const Plan := preload("res://scripts/world/world_map_plan.gd")
+	for habitat: int in MapPlants.ECOSYSTEM_TREE_HABITAT:
+		var palette: int = MapPlants.ECOSYSTEM_TREE_HABITAT[habitat]
+		for size_class in MapPlants.SIZE_CLASSES:
+			var model: Dictionary = vegetation._model(
+				MapPlants.ECOSYSTEM_TREE_BASE + palette * MapPlants.SIZE_CLASSES + size_class)
+			_check(not model.pieces.is_empty() and model.get("name") == "procedural_%d_1_%d" % [palette, size_class],
+				"The old expedition tree form produces a batched canopy model")
+	for design: int in MapPlants.TREE_DESIGNS:
+		var named: Dictionary = vegetation._model(MapPlants.Plant.TREE_BASE + design)
+		_check(not named.pieces.is_empty(), "The named expedition tree produces a batched canopy model")
+	var site := Vector2i(-42, 117)
+	var woodland: int = vegetation._tree_kind(Plan.Biome.WOODLAND, false, site, 0.65)
+	_check(vegetation._tree_kind(Plan.Biome.JUNGLE, false, site, 0.65) == woodland
+		and vegetation._tree_kind(Plan.Biome.TAIGA, false, site, 0.65) == woodland,
+		"Jungle and taiga use the old woodland tree shapes at equivalent sites")
+	var heath: int = vegetation._tree_kind(Plan.Biome.HEATH, false, site, 0.65)
+	_check(vegetation._tree_kind(Plan.Biome.SAVANNA, false, site, 0.65) == heath
+		and vegetation._tree_kind(Plan.Biome.PLAINS, true, site, 0.65) == heath,
+		"Savanna and irrigated dry meadow use the old heath tree shapes")
 
 
 func _check_plant_revisit(terrain, cell: Vector2i) -> void:

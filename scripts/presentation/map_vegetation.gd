@@ -22,13 +22,11 @@ const SPAWN_CLEARANCE := 5.0
 enum Plant { GRASS, OPEN_FAN, DIVIDED_FROND, OXIDE_THORN_CROWN, RIBBON_LEAVES,
 	SALT_RIBBON, DUNE_PADDLE, SCREE_CUSHION, FROST_MAT, TREE_BASE }
 enum TreeDesign { CRIMSON_UMBRELLA, BLUE_TWIN_ARCH, BONE_JOINTED_CAUDEX, VIOLET_STILT_CURTAIN,
-	NEW_PLANT, RAIN_VAULT, COPPER_FLATCROWN, RIME_SPIRE, ECOSYSTEM_START }
+	NEW_PLANT, ECOSYSTEM_START }
 
 const ECOSYSTEM_TREE_BASE := Plant.TREE_BASE + TreeDesign.ECOSYSTEM_START
 const ECOSYSTEM_TREE_PATH := "res://resources/plants/ecosystem_trees/"
-const CROWN_FAMILIES := 3
 const SIZE_CLASSES := 3
-const FORMS_PER_HABITAT := CROWN_FAMILIES * SIZE_CLASSES
 const ECOSYSTEM_TREE_HABITAT := {
 	Plan.Biome.PLAINS: 0,
 	Plan.Biome.WOODLAND: 1,
@@ -58,24 +56,6 @@ const GROUND_DESIGNS := {
 # New visual drafts reuse the Bible plants' growth vocabulary and mesh builder.
 # These recipes stay local to map presentation until design review.
 const NEW_DESIGNS := {
-	Plant.TREE_BASE + TreeDesign.RAIN_VAULT: {
-		"name": "Rain vault", "base": 1, "height": 7.8, "seed": 891,
-		"settings": {"height_ratio": 1.7, "spread_ratio": 1.5, "branch_reach": 1.5,
-			"foliage": 1.2, "foliage_fullness": 1.35, "leaf_architecture": 2,
-			"biome_palette_variant": 1, "tree_fork_depth": 1},
-	},
-	Plant.TREE_BASE + TreeDesign.COPPER_FLATCROWN: {
-		"name": "Copper flatcrown", "base": 0, "height": 3.6, "seed": 263,
-		"settings": {"height_ratio": 0.72, "spread_ratio": 1.4, "branch_reach": 1.85,
-			"branch_rise": -0.9, "foliage": 0.72, "biome_palette_variant": 2,
-			"bark_palette": 3, "tree_fork_depth": 1},
-	},
-	Plant.TREE_BASE + TreeDesign.RIME_SPIRE: {
-		"name": "Rime spire", "base": 0, "height": 6.6, "seed": 664,
-		"settings": {"height_ratio": 1.85, "spread_ratio": 0.54, "branch_reach": 0.85,
-			"branch_rise": 1.0, "leaf_architecture": 4, "foliage_palette": 3,
-			"hue_shift": 28.0, "tree_fork_depth": 1},
-	},
 	Plant.SALT_RIBBON: {
 		"name": "Salt ribbon", "base": 3, "height": 0.44, "seed": 237,
 		"settings": {"height_ratio": 0.62, "leaf_architecture": 4, "biome_palette_variant": 1},
@@ -108,9 +88,11 @@ const TREE_BY_BIOME := {
 	Plan.Biome.WOODLAND: TreeDesign.BLUE_TWIN_ARCH,
 	Plan.Biome.HEATH: TreeDesign.BONE_JOINTED_CAUDEX,
 	Plan.Biome.MARSH: TreeDesign.VIOLET_STILT_CURTAIN,
-	Plan.Biome.JUNGLE: TreeDesign.RAIN_VAULT,
-	Plan.Biome.SAVANNA: TreeDesign.COPPER_FLATCROWN,
-	Plan.Biome.TAIGA: TreeDesign.RIME_SPIRE,
+}
+const TREE_HABITAT_FALLBACK := {
+	Plan.Biome.JUNGLE: Plan.Biome.WOODLAND,
+	Plan.Biome.SAVANNA: Plan.Biome.HEATH,
+	Plan.Biome.TAIGA: Plan.Biome.WOODLAND,
 }
 
 # Ground cover, fraction of cover that is foliage or scrub, and tree density.
@@ -319,17 +301,18 @@ func _placement(cell: Vector2i, tree: bool, origin: Vector2i) -> Dictionary:
 
 
 func _tree_kind(biome: int, irrigated_dry: bool, cell: Vector2i, maturity: float) -> int:
-	var habitat := Plan.Biome.HEATH if irrigated_dry else biome
+	var habitat: int = Plan.Biome.HEATH if irrigated_dry else TREE_HABITAT_FALLBACK.get(biome, biome)
 	var named: int = TREE_BY_BIOME[habitat]
-	if not ECOSYSTEM_TREE_HABITAT.has(habitat) or _canopy.roll(cell, 105) < 0.20:
+	if _canopy.roll(cell, 105) < 0.20:
 		if named == TreeDesign.CRIMSON_UMBRELLA and _canopy.roll(cell, 101) < 0.50:
 			named = TreeDesign.NEW_PLANT
 		return Plant.TREE_BASE + named
 	var palette: int = ECOSYSTEM_TREE_HABITAT[habitat]
-	var family := mini(int(_canopy.roll(cell, 101) * CROWN_FAMILIES), CROWN_FAMILIES - 1)
 	var size_weight := lerpf(_canopy.roll(cell, 117), maturity, 0.65)
 	var size_class := mini(int(size_weight * SIZE_CLASSES), SIZE_CLASSES - 1)
-	return ECOSYSTEM_TREE_BASE + palette * FORMS_PER_HABITAT + family * SIZE_CLASSES + size_class
+	# The expedition rendered procedural variants through the first three
+	# baked forms in each habitat, one for each size class.
+	return ECOSYSTEM_TREE_BASE + palette * SIZE_CLASSES + size_class
 
 
 func _tree_density(ground: Dictionary, point: Vector2, grove: float, base: float, irrigated_dry: bool) -> float:
@@ -419,11 +402,11 @@ func _model(kind: int) -> Dictionary:
 		var draft: Dictionary = NEW_DESIGNS[kind]
 		name = draft.name
 		target = draft.height
-		scene = _draft_scene(draft, is_tree)
+		scene = _draft_scene(draft)
 	else:
 		if kind >= ECOSYSTEM_TREE_BASE:
 			var index := kind - ECOSYSTEM_TREE_BASE
-			var key := "procedural_%d_1_%d" % [index / FORMS_PER_HABITAT, index % FORMS_PER_HABITAT]
+			var key := "procedural_%d_1_%d" % [index / SIZE_CLASSES, index % SIZE_CLASSES]
 			definition = load(ECOSYSTEM_TREE_PATH + key + ".res")
 		elif is_tree:
 			definition = load(ECOSYSTEM_TREE_PATH + "official_" + TREE_DESIGNS[kind - Plant.TREE_BASE] + ".res")
@@ -450,12 +433,12 @@ func _model(kind: int) -> Dictionary:
 	return _models[kind]
 
 
-func _draft_scene(draft: Dictionary, is_tree: bool) -> PackedScene:
+func _draft_scene(draft: Dictionary) -> PackedScene:
 	var builder := PlantMesh.new()
 	builder.tube_sides = 4
-	var settings := {"branches": 6, "node_count": 7, "tree_leaf_cards": is_tree}
+	var settings := {"branches": 6, "node_count": 7}
 	settings.merge(draft.settings, true)
-	var sample := builder.create_sample(draft.base, 1 if is_tree else 0, draft.seed, settings, PlantMesh.make_anatomy_materials())
+	var sample := builder.create_sample(draft.base, 0, draft.seed, settings, PlantMesh.make_anatomy_materials())
 	var body := MeshInstance3D.new()
 	body.mesh = sample.body
 	var scene := PackedScene.new()
