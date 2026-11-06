@@ -34,7 +34,9 @@ func _run() -> void:
 	_check(OS.get_user_data_dir().get_file() == "SolHunter-Gameplay", "User data is isolated")
 	_check(animator.is_playing() and animator.current_animation == &"Idle_A", "Mannequin idles at spawn")
 	var storms = world.get_node("VastraStorms")
-	_check(world.get_child_count() == 7, "Only the foundation systems, storms and FPS display are active")
+	var pixels = world.get_node("PixelEffect")
+	_check(pixels.level == 3 and pixels.surface.visible and pixels.layer < world.get_node("HUD").layer,
+		"The world opens with the medium pixel filter under the native-resolution HUD")
 	var spawn: Vector2i = world.cell
 	var yaw: float = world.get_node("Camera3D").rotation.y
 	var right := Vector2i(Vector2.RIGHT.rotated(-yaw).round())
@@ -84,14 +86,21 @@ func _run() -> void:
 	_check(animator.current_animation == &"Idle_A", "Releasing movement returns to idle")
 	await _wait_for_terrain(terrain)
 	_check_terrain(terrain, world.cell)
+	var horizon_before: int = terrain._horizon.get_instance_id()
+	var crossed_with_blend := false
 	_send_key(KEY_RIGHT, true)
 	for frame in 90:
 		await physics_frame
+		if terrain._horizon.get_instance_id() != horizon_before and terrain._retiring_coverage != null:
+			crossed_with_blend = true
 	var walked := Vector2(world.cell - diagonal_cell)
 	_check(walked.dot(Vector2(right)) >= 64 and is_zero_approx(walked.dot(Vector2(forward))),
 		"A held key crosses a chunk boundary")
 	_send_key(KEY_RIGHT, false)
 	await _wait_for_terrain(terrain)
+	_check(crossed_with_blend or (terrain._retiring_coverage != null
+		and terrain._retiring_coverage.get_child_count() > 0),
+		"A chunk crossing retains the outgoing horizon during the coverage blend")
 	_check_terrain(terrain, world.cell)
 	var shared_samples := 0
 	var shifted_horizon := _far_samples(terrain)
@@ -246,7 +255,7 @@ func _check_terrain(terrain, cell: Vector2i) -> void:
 		for x in range(center.x - 8, center.x + 8):
 			expected.append(Vector3(x, 0.0, z) * 64)
 	for node in terrain.get_children():
-		if node == terrain._vegetation:
+		if node == terrain._vegetation or node == terrain._retiring_coverage:
 			continue
 		var chunk := node as MeshInstance3D
 		if chunk == null:
@@ -334,12 +343,6 @@ func _check_shared_vegetation(terrain) -> void:
 			_check(triangles < previous_triangles and mesh.custom_aabb == authored.custom_aabb,
 				"Each authored tree tier reduces triangles and preserves source bounds")
 			previous_triangles = triangles
-		for level in range(TreeLod.AUTHORED_FRACTIONS.size(), model.levels.size()):
-			var mesh: ArrayMesh = model.levels[level]
-			var triangles := mesh.surface_get_array_len(0) / 3
-			_check(triangles < previous_triangles and mesh.surface_get_material(0).shader == TreeLod.BILLBOARD_SHADER,
-				"Each far tier reduces geometry using vector billboard shapes")
-			previous_triangles = triangles
 	var trees := {}
 	for sample in 1024:
 		var cell := Vector2i(-42 + sample * MapPlants.TREE_STEP, 117)
@@ -357,12 +360,11 @@ func _check_shared_vegetation(terrain) -> void:
 	_check(MapPlants.tree_hue(Plan.Biome.DESERT) != MapPlants.tree_hue(Plan.Biome.TAIGA),
 		"The same species receives a different hue in desert and taiga")
 	_check(TreeLod.DISTANCES == [512.0, 608.0, 704.0, 896.0, 1152.0, 1408.0, 1792.0],
-		"The new band divides the former first vector range")
+		"The eight levels keep their established distance bands")
 	_check(TreeLod.tier(511.0) == 0 and TreeLod.tier(512.0) == 1 and TreeLod.tier(608.0) == 2
-		and TreeLod.tier(1792.0) == 7
-		and TreeLod.tier(513.0, 0) == 0 and TreeLod.tier(514.0, 0) == 1
-		and TreeLod.tier(510.0, 1) == 1 and TreeLod.tier(509.0, 1) == 0,
-		"The authored model extends to 512 cells with stable transitions at the boundary")
+		and TreeLod.tier(1792.0) == 7 and TreeLod.blend(512.0, 1) == 0.0
+		and is_equal_approx(TreeLod.blend(528.0, 1), 0.5) and TreeLod.blend(544.0, 1) == 1.0,
+		"The authored model extends to 512 cells before smoothly blending to the next tier")
 	var patch_key := Vector3i(-2048, 2048, 1)
 	var patch_origin := Vector2i(patch_key.x, patch_key.y) * int(terrain.CHUNK_SIZE)
 	var kind := MapPlants.Plant.TREE_BASE
@@ -376,6 +378,13 @@ func _check_shared_vegetation(terrain) -> void:
 	var near_mesh := instances.mesh
 	vegetation._set_tree_lod(patch, Vector2(patch_origin) - Vector2(500.0, 0.0))
 	_check(instances.mesh == near_mesh, "A streamed tree patch keeps its authored mesh at 500 cells")
+	vegetation._set_tree_lod(patch, Vector2(patch_origin) - Vector2(528.0, 0.0))
+	var outgoing := batch.get_node_or_null("PreviousDetail") as MultiMeshInstance3D
+	_check(outgoing != null and outgoing.multimesh.mesh == near_mesh and outgoing.multimesh.instance_count == 1
+		and outgoing.multimesh.get_instance_transform(0) == instances.get_instance_transform(0),
+		"Both detail meshes use the same planted instance during the blend")
+	vegetation._set_tree_lod(patch, Vector2(patch_origin) - Vector2(500.0, 0.0))
+	_check(batch.get_child_count() == 0 and instances.mesh == near_mesh, "Reversing through the band restores one authored batch")
 	vegetation._set_tree_lod(patch, Vector2(patch_origin) - Vector2(560.0, 0.0))
 	_check(instances.mesh == vegetation._models[kind].levels[1],
 		"A streamed tree patch selects the first simplified authored model")
@@ -384,7 +393,7 @@ func _check_shared_vegetation(terrain) -> void:
 		"The midrange keeps progressively simplified authored geometry")
 	vegetation._set_tree_lod(patch, Vector2(patch_origin) - Vector2(1800.0, 0.0))
 	_check(instances.mesh == vegetation._models[kind].levels.back() and instances.instance_count == 1
-		and batch.multimesh == instances, "The farthest tier swaps to a vector billboard in the same batch")
+		and batch.multimesh == instances, "The farthest tier uses the most reduced mesh in the same batch")
 	vegetation._set_tree_lod(patch, Vector2(patch_origin))
 	_check(instances.mesh == near_mesh, "Returning to a tree patch restores its authored model")
 	var asset_key := Vector3i(patch_key.x, patch_key.y, 2)

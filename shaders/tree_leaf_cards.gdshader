@@ -2,6 +2,7 @@ shader_type spatial;
 render_mode cull_disabled;
 
 #include "res://shaders/map_tree_hue.gdshaderinc"
+#include "res://shaders/map_scenery_dither.gdshaderinc"
 
 uniform sampler2D painted_atlas : source_color, filter_linear_mipmap_anisotropic;
 uniform float wind_time = 0.0;
@@ -22,6 +23,9 @@ void vertex() {
 }
 
 void fragment() {
+	if (!map_coverage_visible(FRAGCOORD.xy) || !map_lod_visible(FRAGCOORD.xy)) {
+		discard;
+	}
 	// Per-card habitat is carried in vertex alpha; materials stay shared.
 	float habitat = floor(COLOR.a * 4.0);
 	vec4 region = habitat == 1.0 ? vec4(0.005, 0.45, 0.29, 0.545) : vec4(0.035, 0.035, 0.17, 0.405);

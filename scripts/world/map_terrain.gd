@@ -20,6 +20,7 @@ const COOL_WATER_PATH := "res://assets/local/emace_cool_water/Materials/EA_Water
 const WATER_DETAIL_END := 260.0
 
 const CHUNK_UPLOADS_PER_FRAME := 2
+const COVERAGE_BLEND_SECONDS := 0.4
 
 ## Visual plant density, captured when the scene starts. Zero shows terrain alone.
 @export_range(0.0, 1.0, 0.05) var plant_coverage := 0.72
@@ -83,6 +84,9 @@ var _horizon_forest: Node3D
 var _staged_forest: Node3D
 var _next_surface := 0
 var _next_forest_patch := 0
+var _retiring_coverage: Node3D
+var _entering_chunks: Array[MeshInstance3D] = []
+var _coverage_elapsed := COVERAGE_BLEND_SECONDS
 var world_seed: int
 
 
@@ -102,15 +106,20 @@ func _ready() -> void:
 			_material.set_shader_parameter("water_detail_end", WATER_DETAIL_END)
 			_material.set_shader_parameter("cool_water_enabled", true)
 	_samples = TerrainSamples.new(_surface, _water_material != null, world_seed)
-	_horizon = MeshInstance3D.new()
-	_horizon.material_override = _material
-	_horizon.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
-	add_child(_horizon)
+	_horizon = _new_horizon()
 	_vegetation = Vegetation.new()
 	_vegetation.name = "Vegetation"
 	_vegetation.configure(_plan, _surface, world_seed, CHUNK_SIZE, plant_coverage, plant_scale, tree_species,
 		height_at, _planting_chunk_ready)
 	add_child(_vegetation)
+
+
+func _new_horizon() -> MeshInstance3D:
+	var horizon := MeshInstance3D.new()
+	horizon.material_override = _material
+	horizon.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+	add_child(horizon)
+	return horizon
 
 
 func _choose_seed() -> int:
@@ -175,7 +184,10 @@ func _planting_chunk_ready(key: Vector2i) -> bool:
 	return _chunks.has(key) and _chunks[key].visible
 
 
-func _process(_delta: float) -> void:
+func _process(delta: float) -> void:
+	if _coverage_elapsed < COVERAGE_BLEND_SECONDS:
+		_advance_coverage_blend(delta)
+		return
 	if _worker != null:
 		if _worker.is_alive():
 			return
@@ -256,19 +268,49 @@ func _publish_prepared() -> void:
 		return
 	_center = prepared_center
 	var anchor := _center * CHUNK_SIZE
+	_coverage_elapsed = 0.0
+	RenderingServer.global_shader_parameter_set(&"map_coverage_mix", 0.0)
+	_retiring_coverage = Node3D.new()
+	_retiring_coverage.name = "RetiringCoverage"
+	add_child(_retiring_coverage)
+	if _horizon.mesh != null:
+		_set_horizon_coverage_role(-1.0)
+		_horizon.reparent(_retiring_coverage)
+		_horizon = _new_horizon()
 	_horizon.position = Vector3(anchor.x, 0.0, anchor.y)
 	_horizon.mesh = _staged_horizon
-	if _horizon_forest != null:
-		_horizon.remove_child(_horizon_forest)
-		_horizon_forest.queue_free()
 	_horizon_forest = _staged_forest
 	_staged_forest = null
 	_horizon.add_child(_horizon_forest)
 	_vegetation.activate_horizon_lods(_horizon_forest)
-	_finish_prepared()
+	_set_horizon_coverage_role(1.0)
+	_finish_prepared(true)
 
 
-func _finish_prepared() -> void:
+func _set_horizon_coverage_role(role: float) -> void:
+	_horizon.set_instance_shader_parameter(&"map_coverage_role", role)
+	for patch: Node3D in _horizon_forest.get_children():
+		Vegetation.set_patch_shader_parameter(patch, &"map_coverage_role", role)
+
+
+func _advance_coverage_blend(delta: float) -> void:
+	_coverage_elapsed = minf(_coverage_elapsed + delta, COVERAGE_BLEND_SECONDS)
+	var weight := smoothstep(0.0, COVERAGE_BLEND_SECONDS, _coverage_elapsed)
+	RenderingServer.global_shader_parameter_set(&"map_coverage_mix", weight)
+	if _coverage_elapsed < COVERAGE_BLEND_SECONDS:
+		return
+	if _retiring_coverage != null:
+		remove_child(_retiring_coverage)
+		_retiring_coverage.queue_free()
+		_retiring_coverage = null
+	for chunk in _entering_chunks:
+		chunk.set_instance_shader_parameter(&"map_coverage_role", 0.0)
+	_entering_chunks.clear()
+	_set_horizon_coverage_role(0.0)
+	_vegetation.sync_terrain_coverage()
+
+
+func _finish_prepared(blend_coverage: bool = false) -> void:
 	_staged_horizon = null
 	if _staged_forest != null:
 		_staged_forest.free()
@@ -276,14 +318,21 @@ func _finish_prepared() -> void:
 	_prepared.clear()
 	for key: Vector2i in _chunks.keys():
 		var offset := key - _center
+		var chunk := _chunks[key]
 		if offset.x < -CHUNK_RADIUS or offset.x >= CHUNK_RADIUS or offset.y < -CHUNK_RADIUS or offset.y >= CHUNK_RADIUS:
-			var old_chunk := _chunks[key]
-			remove_child(old_chunk)
-			old_chunk.queue_free()
+			if blend_coverage and chunk.visible:
+				chunk.set_instance_shader_parameter(&"map_coverage_role", -1.0)
+				chunk.reparent(_retiring_coverage)
+			else:
+				remove_child(chunk)
+				chunk.queue_free()
 			_chunks.erase(key)
 		else:
-			_chunks[key].show()
-	_vegetation.sync_terrain_coverage()
+			if blend_coverage and not chunk.visible:
+				chunk.set_instance_shader_parameter(&"map_coverage_role", 1.0)
+				_entering_chunks.append(chunk)
+			chunk.show()
+	_vegetation.sync_terrain_coverage(blend_coverage)
 
 
 func _publish_chunk(key: Vector2i, arrays: Array, show_now: bool = true) -> void:

@@ -41,15 +41,16 @@ expedition's twelve procedural tree forms and five named designs. Each tree
 form is a species resource with its own allowed biomes and spawn weight.
 The defaults allow all seventeen in every land biome. Local density, slope,
 and water clearance guide seeded placement. Biome hue shifts tint foliage at
-all eight tree detail levels. Five progressively simplified authored meshes
-follow full detail, then two vector billboard tiers carry the tree shapes
-into the distance. Sparse groves extend through all eight terrain rings.
+all eight tree detail levels. Seven progressively simplified authored meshes
+follow full detail, with more aggressive face reductions in the final two
+levels. Sparse groves extend through all eight terrain rings.
 Grass and ground plants share the tree distance bands in proportion to their
 height, with sparse cover retained through the detailed terrain window.
-The project caps rendering at 90 FPS. The map-first daylight sky uses
+The project caps rendering at 90 FPS. The map-first scene defaults to the
+Medium pixel filter beneath the full-resolution HUD. The daylight sky uses
 1024×1024 cloud textures. Land uses atlas
 biome colors and slope shading. Plant scale defaults to 1.5×. See
-[the canopy hierarchy and tiers](world-map-proposal.md#tree-species-and-vector-lods).
+[the canopy hierarchy and tiers](world-map-proposal.md#tree-species-and-lods).
 
 The optional local EmacEArt Cool Water material reads the opaque terrain beds
 on Forward+ and Mobile. The full effect fades from 150 to 260 cells from the
@@ -62,7 +63,8 @@ terrain rendering share height samples. The nearby 64-cell chunks join eight
 coarser horizon rings. The four-cell terrain sample grid extends through
 the first ring, to 688 cells. A dedicated worker prepares distant terrain and travel
 updates from read-only atlas data. The main thread uploads geometry in batches
-and replaces the horizon after the new coverage is ready. Distant rings use
+and blends the outgoing and incoming horizon once the new coverage is ready.
+Distant rings use
 fixed world-space sample grids. An eight-cell margin absorbs small reversals
 at chunk boundaries, and a finished build is discarded if it would take
 coverage away from the latest request.

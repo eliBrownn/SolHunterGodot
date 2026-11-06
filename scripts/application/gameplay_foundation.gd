@@ -14,6 +14,11 @@ const CAMERA_FOLLOW_RATE := 48.0
 const CAMERA_HEIGHT_FOLLOW_RATE := 14.0
 const CAMERA_ZOOM_RATE := 14.0
 const ORBIT_SENSITIVITY := PI / 720.0
+const PixelEffect := preload("res://scripts/presentation/pixel_effect.gd")
+
+## World-only pixel enlargement. The HUD stays at native resolution.
+@export_enum("Off", "Very light 1.25x", "Light 1.5x", "Medium 1.75x", "Strong 2x", "Deep 3x")
+var pixel_effect_level := 3
 
 var cell := Vector2i.ZERO
 var _held_keys: Dictionary[Key, bool] = {}
@@ -37,6 +42,11 @@ var _player_animator := AnimationPlayer.new()
 
 
 func _ready() -> void:
+	var pixels := PixelEffect.new()
+	pixels.name = "PixelEffect"
+	pixels.level = pixel_effect_level
+	pixels.native_msaa = get_viewport().msaa_3d
+	add_child(pixels)
 	_avatar.prepare(PLAYER_HEIGHT)
 	var library: AnimationLibrary = _avatar.animation_library()
 	_avatar.add_child(_player_animator)

@@ -183,11 +183,8 @@ func cover(cell: Vector2i) -> void:
 			if maxi(absi(x), absi(z)) <= GROUND_RADIUS:
 				_wanted[Vector3i(chunk.x, chunk.y, 0)] = true
 	for key: Vector3i in _patches.keys():
-		if not _wanted.has(key):
-			var patch := _patches[key]
-			remove_child(patch)
-			patch.queue_free()
-			_patches.erase(key)
+		if not _wanted.has(key) and (key.z != 1 or not _patches[key].visible):
+			_retire_patch(key)
 	if not _job.is_empty() and not _wanted.has(_job.key):
 		_job.clear()
 	for key: Vector3i in _wanted:
@@ -365,23 +362,49 @@ func _set_ground_lods(root: Node3D, camera: Vector2) -> void:
 	for view: MultiMeshInstance3D in root.get_children():
 		var kind: int = view.get_meta("ground_kind")
 		var model: Dictionary = _models[kind]
-		var previous: int = view.get_meta("asset_lod", -1)
-		var level := TreeLod.tier(distance / float(model.lod_scale), previous)
-		if level != previous:
-			view.multimesh.mesh = model.levels[level]
-			view.set_meta("asset_lod", level)
+		var scaled_distance := distance / float(model.lod_scale)
+		var level := TreeLod.tier(scaled_distance)
+		_set_batch_lod(view, model.levels, level, TreeLod.blend(scaled_distance, level))
 
 
 func _set_tree_lod(root: Node3D, camera: Vector2) -> void:
 	var distance := _patch_distance(root, camera)
-	var previous: int = root.get_meta("tree_lod", -1)
-	var level := TreeLod.tier(distance, previous)
-	if previous == level:
+	var level := TreeLod.tier(distance)
+	var weight := TreeLod.blend(distance, level)
+	if level == root.get_meta("tree_lod", -1) and weight == root.get_meta("tree_lod_weight", -1.0):
 		return
 	root.set_meta("tree_lod", level)
+	root.set_meta("tree_lod_weight", weight)
 	for view: MultiMeshInstance3D in root.get_children():
 		var kind: int = view.get_meta("tree_kind")
-		view.multimesh.mesh = _models[kind].levels[level]
+		_set_batch_lod(view, _models[kind].levels, level, weight)
+
+
+func _set_batch_lod(view: MultiMeshInstance3D, levels: Array[Mesh], level: int, weight: float) -> void:
+	var mesh := levels[level]
+	var blending := weight < 1.0 and mesh != levels[level - 1]
+	var previous := view.get_child(0) as MultiMeshInstance3D if view.get_child_count() > 0 else null
+	if view.multimesh.mesh != mesh:
+		view.multimesh.mesh = mesh
+	if not blending:
+		if previous != null:
+			previous.queue_free()
+			view.remove_child(previous)
+			view.set_instance_shader_parameter("map_lod_dither", Vector2(1.0, 0.0))
+		return
+	if previous == null:
+		previous = MultiMeshInstance3D.new()
+		previous.name = "PreviousDetail"
+		previous.multimesh = _make_instances(levels[level - 1], view.get_meta("instance_buffer"))
+		previous.cast_shadow = view.cast_shadow
+		previous.visibility_range_end = view.visibility_range_end
+		view.add_child(previous)
+		for parameter in [&"map_coverage_role", &"map_plant_visibility"]:
+			previous.set_instance_shader_parameter(parameter, view.get_instance_shader_parameter(parameter))
+	if previous.multimesh.mesh != levels[level - 1]:
+		previous.multimesh.mesh = levels[level - 1]
+	view.set_instance_shader_parameter("map_lod_dither", Vector2(weight, 1.0))
+	previous.set_instance_shader_parameter("map_lod_dither", Vector2(weight, -1.0))
 
 
 func _tree_density(ground: Dictionary, point: Vector2, grove: float, base: float, irrigated_dry: bool) -> float:
@@ -432,9 +455,36 @@ func horizon_settings() -> Dictionary:
 	return {"weights": weights, "coverage": _coverage, "scale": _plant_scale}
 
 
-func sync_terrain_coverage() -> void:
-	for key: Vector3i in _patches:
-		_patches[key].visible = _terrain_ready.call(Vector2i(key.x, key.y))
+func sync_terrain_coverage(fade_departures: bool = false) -> void:
+	for key: Vector3i in _patches.keys():
+		var patch := _patches[key]
+		var ready: bool = _terrain_ready.call(Vector2i(key.x, key.y))
+		if not ready and fade_departures and patch.visible:
+			set_patch_shader_parameter(patch, &"map_coverage_role", -1.0)
+			patch.set_meta("fading_coverage", true)
+			continue
+		if not ready and not _wanted.has(key):
+			_retire_patch(key)
+		else:
+			patch.visible = ready
+			if patch.has_meta("fading_coverage"):
+				set_patch_shader_parameter(patch, &"map_coverage_role", 0.0)
+				patch.remove_meta("fading_coverage")
+
+
+func _retire_patch(key: Vector3i) -> void:
+	var patch := _patches[key]
+	remove_child(patch)
+	patch.queue_free()
+	_patches.erase(key)
+
+
+static func set_patch_shader_parameter(patch: Node3D, parameter: StringName, value: float) -> void:
+	for view: MultiMeshInstance3D in patch.get_children():
+		view.set_instance_shader_parameter(parameter, value)
+		var previous := view.get_node_or_null("PreviousDetail") as MultiMeshInstance3D
+		if previous != null:
+			previous.set_instance_shader_parameter(parameter, value)
 
 
 func prepare_horizon_models(groups: Dictionary) -> bool:
@@ -459,8 +509,14 @@ func _publish(key: Vector3i, origin: Vector2i, groups: Dictionary) -> void:
 	var count := _add_batches(root, groups, key.z == 1, false, key.z == 0)
 	root.set_meta("plant_count", count)
 	root.set_meta("placement_signature", hash(groups))
+	root.visible = _terrain_ready.call(Vector2i(key.x, key.y))
 	add_child(root)
 	_patches[key] = root
+	if count > 0:
+		set_patch_shader_parameter(root, &"map_plant_visibility", 0.0)
+		root.create_tween().tween_method(
+			func(weight: float) -> void: set_patch_shader_parameter(root, &"map_plant_visibility", weight),
+			0.0, 1.0, 0.25)
 	if _lod_camera.is_finite():
 		if key.z == 1:
 			_set_tree_lod(root, _lod_camera)
@@ -474,23 +530,24 @@ func _add_batches(root: Node3D, groups: Dictionary, tree: bool, far: bool = fals
 		var model := _model(kind)
 		var rows: Array = groups[kind]
 		for piece: Dictionary in model.pieces:
-			var instances := MultiMesh.new()
-			instances.transform_format = MultiMesh.TRANSFORM_3D
-			instances.use_colors = true
-			instances.use_custom_data = true
-			instances.mesh = model.levels.back() if far else piece.mesh
-			instances.instance_count = rows.size()
-			for index in range(rows.size()):
-				var record: Dictionary = rows[index]
-				instances.set_instance_transform(index, record.transform * model.fit * piece.transform)
-				instances.set_instance_color(index, record.color)
-				if tree:
-					instances.set_instance_custom_data(index, Color(record.hue, 0, 0, 1))
-				else:
-					instances.set_instance_custom_data(index, Color(model.lod_scale, float(dense), 1, 0))
+			var buffer := PackedFloat32Array()
+			var fit: Transform3D = model.fit * piece.transform
+			for record: Dictionary in rows:
+				var pose: Transform3D = record.transform * fit
+				var tint: Color = record.color
+				var custom := Color(record.hue, 0, 0, 1) if tree else Color(model.lod_scale, float(dense), 1, 0)
+				# Row-major transform, then color and shader data. Retain the CPU
+				# buffer so a neighboring tier can reuse it without a GPU readback.
+				buffer.append_array(PackedFloat32Array([
+					pose.basis.x.x, pose.basis.y.x, pose.basis.z.x, pose.origin.x,
+					pose.basis.x.y, pose.basis.y.y, pose.basis.z.y, pose.origin.y,
+					pose.basis.x.z, pose.basis.y.z, pose.basis.z.z, pose.origin.z,
+					tint.r, tint.g, tint.b, tint.a, custom.r, custom.g, custom.b, custom.a,
+				]))
 			var view := MultiMeshInstance3D.new()
 			view.name = model.name
-			view.multimesh = instances
+			view.multimesh = _make_instances(model.levels.back() if far else piece.mesh, buffer)
+			view.set_meta("instance_buffer", buffer)
 			view.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 			if tree:
 				view.set_meta("tree_kind", kind)
@@ -502,6 +559,17 @@ func _add_batches(root: Node3D, groups: Dictionary, tree: bool, far: bool = fals
 		if not model.pieces.is_empty():
 			count += rows.size()
 	return count
+
+
+static func _make_instances(mesh: Mesh, buffer: PackedFloat32Array) -> MultiMesh:
+	var instances := MultiMesh.new()
+	instances.transform_format = MultiMesh.TRANSFORM_3D
+	instances.use_colors = true
+	instances.use_custom_data = true
+	instances.mesh = mesh
+	instances.instance_count = buffer.size() / 20
+	instances.buffer = buffer
+	return instances
 
 
 func _model(kind: int) -> Dictionary:
@@ -557,7 +625,7 @@ func _model(kind: int) -> Dictionary:
 	scale = minf(scale, width_limit / maxf(width, 0.01))
 	var fit := Transform3D(Basis.IDENTITY.scaled(Vector3.ONE * scale), -base * scale)
 	if is_tree:
-		var levels := TreeLod.build(model.pieces, bounds, definition.organ_graph)
+		var levels := TreeLod.build(model.pieces, bounds)
 		_models[kind] = {"name": name, "pieces": [{"mesh": levels[0], "transform": Transform3D.IDENTITY}],
 			"fit": fit, "levels": levels}
 	else:

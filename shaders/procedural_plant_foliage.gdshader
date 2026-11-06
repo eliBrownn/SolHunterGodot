@@ -3,6 +3,7 @@ render_mode cull_disabled;
 
 #include "res://shaders/map_tree_hue.gdshaderinc"
 #include "res://shaders/map_ground_asset_fade.gdshaderinc"
+#include "res://shaders/map_scenery_dither.gdshaderinc"
 uniform sampler2D painted_atlas : source_color, filter_linear_mipmap_anisotropic;
 uniform float wind_time = 0.0;
 uniform float wind_strength = 0.5;
@@ -24,6 +25,9 @@ void vertex() {
 	VERTEX.z += cos(wind_time + world.z * 1.2) * wind_strength * 0.06 * bend * wind_direction.y;
 }
 void fragment() {
+	if (!map_coverage_visible(FRAGCOORD.xy) || !map_lod_visible(FRAGCOORD.xy)) {
+		discard;
+	}
 	vec2 uv = UV;
 	// Reuse the painted pink petal's interior, with geometry owning its outline.
 	if (flower_surface) uv = vec2(0.51 + (UV.x - 0.119) * 0.7, 0.40 + (UV.y - 0.23) * 0.24);

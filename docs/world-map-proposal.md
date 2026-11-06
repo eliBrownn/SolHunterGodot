@@ -120,7 +120,7 @@ Grass, ground plants, and trees are 1.5× taller and wider by default.
 around the plant's root. Tree site checks account for the larger root footprint.
 The seeded gameplay test covers the shared palette, size, and plant patch revisit.
 
-### Tree species and vector LODs
+### Tree species and LODs
 
 Each of the seventeen custom tree forms has its own resource under
 `resources/plants/map_tree_species/`. The resource references its baked
@@ -131,14 +131,12 @@ hue shift to its foliage. The shift travels with each instance through all
 detail levels.
 
 Camera distance from the tree patch edge selects one of eight levels. The
-full authored mesh stays active out to 512 world cells. The next five levels
-simplify the original surfaces while retaining their materials. Leaf cards
-are thinned as complete leaves. From 1,408 cells, the last two levels use
-camera-facing vector polygons derived from the original branch joints and
-foliage outlines. The billboards select a front or side outline and retain
-the biome hue. Levels change at 512, 608, 704, 896, 1,152, 1,408, and 1,792
-world cells, with a two-cell buffer for reversals. A level change swaps
-the mesh on the existing instance batch.
+full authored mesh stays active out to 512 world cells. Each subsequent
+level reduces faces while keeping the original materials. The final two
+levels drop additional faces when the mesh simplifier runs out of reductions.
+Leaf cards are thinned as complete leaves. Levels begin at 512, 608, 704, 896,
+1,152, 1,408, and 1,792 world cells. Neighboring levels share the same planted
+transforms and blend over the next 32 cells in either direction.
 
 Individual tree patches cover the detailed terrain window. Beyond it, the
 terrain worker samples sparse groves through all eight terrain rings, using
@@ -147,7 +145,8 @@ as sample spacing increases from 16 to 128 cells. Their roots follow the
 triangles of the rendered terrain, including the stitched outer edges.
 Nearer horizon rings group their groves into 256-cell patches. The horizon
 groves follow the same camera-distance schedule as the detailed trees.
-The terrain and forest swap together as the horizon recenters. The outer
+The terrain and forest blend together over 0.4 seconds as the horizon recenters.
+New local vegetation patches fade in over 0.25 seconds. The outer
 ring extends to 8,192 world cells along its axes, subject to the camera view.
 The seven inner ring boundaries retain each terrain sampling density at
 least 30% farther, rounded up to the next coarser grid for stitching. The
@@ -159,16 +158,13 @@ Grass and ground plants use the eight tree geometry bands scaled by their
 fitted height relative to a six-cell tree. Grass first simplifies the
 original blade shapes, then drops blades in successive tiers. Other ground plants use the mesh simplifier's available index levels
 and retain their authored materials. Levels share the same placement and
-instance batch. A sparse, fixed subset of ground-cover sites remains in the
+blend over the same height-scaled bands. A sparse, fixed subset of ground-cover sites remains in the
 detailed terrain window. Additional foreground sites fade from 56 to 96
 camera cells. The sparse sites fade after their size-scaled last tier.
 
-The earlier mismatch came from separate selectors. Trees use camera distance
-to a batch edge, terrain rings move with the published player chunk, and
-ground and water materials use per-pixel distance fades. The old ground-asset
-window also retired whole chunks independently of its 96-cell visibility
-setting. The tree-to-horizon handoff still changes population sampling from
-individual sites to sparse groves, and geometry batches switch whole meshes.
+Trees and ground plants measure camera distance to a batch edge. Terrain
+rings recenter with the published player chunk. The tree-to-horizon handoff
+blends from individually placed trees to sparse groves.
 
 ### Earlier visual plant rollout — November 5, 2026
 

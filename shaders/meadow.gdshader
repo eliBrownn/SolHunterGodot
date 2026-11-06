@@ -1,6 +1,7 @@
 shader_type spatial;
 render_mode cull_disabled, alpha_to_coverage;
 #include "res://shaders/map_ground_asset_fade.gdshaderinc"
+#include "res://shaders/map_scenery_dither.gdshaderinc"
 uniform sampler2D albedo_texture : source_color, filter_linear_mipmap_anisotropic;
 uniform bool textured = false;
 uniform vec4 ground_base_color : source_color = vec4(0.48,0.57,0.34,1.0);
@@ -46,6 +47,7 @@ void vertex() {
  VERTEX+=inverse(mat3(MODEL_MATRIX))*push;
 }
 void fragment() {
+ if (!map_coverage_visible(FRAGCOORD.xy) || !map_lod_visible(FRAGCOORD.xy)) { discard; }
  vec4 sample_color=textured ? texture(albedo_texture,UV) : vec4(1.0);
  if(textured && sample_color.a<alpha_cutoff-0.08) { discard; }
  float detail=dot(sample_color.rgb,vec3(0.2126,0.7152,0.0722));

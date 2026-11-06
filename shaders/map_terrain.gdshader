@@ -2,6 +2,7 @@ shader_type spatial;
 
 uniform bool cool_water_enabled = false;
 #include "res://shaders/map_water_mask.gdshaderinc"
+#include "res://shaders/map_scenery_dither.gdshaderinc"
 varying vec2 world_cells;
 varying float elevation;
 varying float upness;
@@ -14,6 +15,9 @@ void vertex() {
 }
 
 void fragment() {
+	if (!map_coverage_visible(FRAGCOORD.xy)) {
+		discard;
+	}
 	vec2 uv = (world_cells - atlas_origin) / atlas_extent;
 	bool in_atlas = all(greaterThanEqual(uv, vec2(0.0))) && all(lessThan(uv, vec2(1.0)));
 	vec4 flags = texture(atlas_flags, uv);
