@@ -29,7 +29,17 @@ void fragment() {
 	float wet_surface = max(still_water, smoothstep(0.40, 0.68, river));
 	float distance_to_view = length(VERTEX);
 
-	vec3 terrain = texture(atlas_colors, uv).rgb;
+	// Narrow distant biome color transitions without switching to nearest
+	// sampling. Subpixel atlas cells keep their regular filtered blend.
+	vec2 atlas_size = vec2(textureSize(atlas_colors, 0));
+	vec2 atlas_texel = uv * atlas_size - 0.5;
+	vec2 footprint = fwidth(atlas_texel);
+	vec2 blend_width = clamp(footprint * 0.5, vec2(0.20), vec2(0.50));
+	vec2 blend_weight = smoothstep(vec2(0.5) - blend_width, vec2(0.5) + blend_width, fract(atlas_texel));
+	vec2 sharp_uv = (floor(atlas_texel) + 0.5 + blend_weight) / atlas_size;
+	float edge_detail = smoothstep(500.0, 850.0, distance_to_view)
+		* (1.0 - smoothstep(0.65, 1.0, max(footprint.x, footprint.y)));
+	vec3 terrain = texture(atlas_colors, mix(uv, sharp_uv, edge_detail)).rgb;
 	float mottling = sin(world_cells.x * 0.19 + sin(world_cells.y * 0.15)) * cos(world_cells.y * 0.23);
 	terrain *= 1.0 + mottling * 0.12 * (1.0 - smoothstep(30.0, 160.0, distance_to_view));
 	float exposed = smoothstep(45.0, 125.0, elevation) * (1.0 - smoothstep(0.67, 0.98, upness));
@@ -40,7 +50,7 @@ void fragment() {
 	float irrigated = smoothstep(0.34, 0.68, ground_masks.r);
 	float ground_detail = (1.0 - wet_surface)
 		* smoothstep(0.28, 0.63, upness)
-		* (1.0 - smoothstep(170.0, 500.0, distance_to_view));
+		* (1.0 - smoothstep(238.0, 700.0, distance_to_view));
 	vec2 ground_uv = world_cells * vec2(1.0, -1.0);
 	vec2 ground_dx = dFdx(ground_uv);
 	vec2 ground_dy = dFdy(ground_uv);

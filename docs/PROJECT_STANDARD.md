@@ -43,8 +43,8 @@ The defaults allow all seventeen in every land biome. Local density, slope,
 and water clearance guide seeded placement. Biome hue shifts tint foliage at
 all seven tree detail levels. Distant vector tiers follow authored branches
 and crown clusters. Sparse groves extend through all eight terrain rings.
-The map-first launch uses the shared daylight sky. Ground detail textures
-fade between 170 and 500 world cells. Plant scale defaults to 1.5×. See
+The map-first daylight sky uses 1024×1024 cloud textures. Ground detail
+textures fade between 238 and 700 world cells. Plant scale defaults to 1.5×. See
 [the canopy hierarchy and tiers](world-map-proposal.md#tree-species-and-vector-lods).
 
 The optional local EmacEArt Cool Water material reads the opaque terrain beds
@@ -55,7 +55,8 @@ walkability remain owned by the plan. See [local water setup](water-appearance.m
 Spawn favors a dry ocean beach near the outer edge of the map with higher
 terrain in the opening inland view. Movement and
 terrain rendering share height samples. The nearby 64-cell chunks join eight
-coarser horizon rings. A dedicated worker prepares distant terrain and travel
+coarser horizon rings. The four-cell terrain sample grid extends through
+the first ring, to 688 cells. A dedicated worker prepares distant terrain and travel
 updates from read-only atlas data. The main thread uploads geometry in batches
 and replaces the horizon after the new coverage is ready. Distant rings use
 fixed world-space sample grids. An eight-cell margin absorbs small reversals

@@ -8,7 +8,9 @@ const SAMPLE_STEP := 4
 const SEED_ARGUMENT := "--world-seed="
 const Plan := preload("res://scripts/world/world_map_plan.gd")
 const Surface := preload("res://scripts/world/world_map_surface.gd")
-const HORIZON_RINGS := [528, 560, 640, 768, 1024, 2048, 4096, 8192]
+# Extend the existing sampling bands by at least 30%, aligned to the
+# following ring's grid so the shared edges can still stitch.
+const HORIZON_RINGS := [688, 736, 832, 1024, 1408, 2816, 5632, 8192]
 const GRID_SHADER := preload("res://shaders/map_terrain.gdshader")
 const TreeSpecies := preload("res://scripts/scenery/map_tree_species.gd")
 const Vegetation := preload("res://scripts/presentation/map_vegetation.gd")

@@ -18,11 +18,13 @@ func _run() -> void:
 	var world = current_scene
 	var environment := (world.get_node("WorldEnvironment") as WorldEnvironment).environment
 	var sky_material := environment.sky.sky_material as ShaderMaterial if environment.sky != null else null
+	var primary := sky_material.get_shader_parameter("cloud_tex_01") as NoiseTexture2D if sky_material != null else null
+	var secondary := sky_material.get_shader_parameter("cloud_tex_02") as NoiseTexture2D if sky_material != null else null
 	_check(environment.background_mode == Environment.BG_SKY and is_zero_approx(environment.fog_sky_affect)
-		and sky_material != null
-		and sky_material.get_shader_parameter("cloud_tex_01") != null
-		and sky_material.get_shader_parameter("cloud_tex_02") != null,
-		"The normal launch shows the daylight sky with both cloud layers")
+		and environment.sky != null and environment.sky.radiance_size == Sky.RADIANCE_SIZE_512
+		and primary != null and primary.width == 1024 and primary.height == 1024
+		and secondary != null and secondary.width == 1024 and secondary.height == 1024,
+		"The normal launch uses the higher-resolution daylight sky")
 	var terrain := world.get_node("Terrain") as Node3D
 	var player := world.get_node("Player") as Node3D
 	var avatar := player.get_node("UniversalMannequin") as Node3D
@@ -256,7 +258,8 @@ func _check_terrain(terrain, cell: Vector2i) -> void:
 			_check(horizon_bounds.size.x == 16384.0 and horizon_bounds.size.z == 16384.0,
 				"Coarse terrain covers the horizon in all directions")
 			var horizon_vertices: PackedVector3Array = chunk.mesh.surface_get_arrays(3)[Mesh.ARRAY_VERTEX]
-			var edge := Vector3(528, 0, 4)
+			_check(terrain.HORIZON_RINGS[0] == 688, "Four-cell terrain samples extend at least 30 percent farther")
+			var edge := Vector3(terrain.HORIZON_RINGS[0], 0, terrain.SAMPLE_STEP)
 			var seam_found := false
 			for vertex in horizon_vertices:
 				if vertex.x == edge.x and vertex.z == edge.z:

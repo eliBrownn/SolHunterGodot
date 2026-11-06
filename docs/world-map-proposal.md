@@ -52,8 +52,10 @@ and forms open fields with shallow folds.
 The terrain worker samples the plan's broad elevation and adds local relief.
 The ground material reads the same world coordinates for biomes, rivers,
 water surfaces, and irrigated ground. Detail color and normal textures fade
-from 170 to 500 world cells from the camera. The daylight sky uses the shared
-SolHunter cloud layers and matches the terrain fog at the horizon. The current exploration controls allow
+from 238 to 700 world cells from the camera. Distant biome color boundaries
+use a narrower filtered blend. The daylight sky uses two 1024×1024 cloud
+textures and a 512-pixel radiance cubemap. Terrain fog fades from 2,600 to
+7,800 cells and matches the sky at the horizon. The current exploration controls allow
 travel over land and water. Visual vegetation now streams as part of the
 main gameplay scene.
 
@@ -147,6 +149,9 @@ Nearer horizon rings group their groves into 256-cell patches. The horizon
 groves follow the same camera-distance schedule as the detailed trees.
 The terrain and forest swap together as the horizon recenters. The outer
 ring extends to 8,192 world cells along its axes, subject to the camera view.
+The seven inner ring boundaries retain each terrain sampling density at
+least 30% farther, rounded up to the next coarser grid for stitching. The
+four-cell geometry extends to 688 cells, up from 528.
 
 ### Earlier visual plant rollout — November 5, 2026
 
