@@ -1,0 +1,30 @@
+[gd_scene format=4]
+
+[ext_resource type="Texture2D" path="res://assets/nature_samples/foliage/Textures/Clover Mouse Ears.png" id="1_13x0j"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_km7wi"]
+transparency = 2
+alpha_scissor_threshold = 0.4
+alpha_antialiasing_mode = 0
+cull_mode = 2
+albedo_texture = ExtResource("1_13x0j")
+texture_filter = 5
+
+[sub_resource type="ArrayMesh" id="ArrayMesh_nqawb"]
+_surfaces = [{
+"aabb": AABB(-0.17607412, -0.046485525, -0.19638874, 0.3650836, 0.66867733, 0.35996276),
+"attribute_data": PackedByteArray("AAAAAAAAAAAAAAAAKmsKPyLBqj4qawo/IsGqPgAAAAAiwao+AAAAAAAAAAAAAAAAAAAAACprCj8iwao+KmsKPwAAAAAAAAAAAAAAACprCj8iwao+KmsKPyLBqj4AAAAAAAAAAAAAAAAAAAAAKmsKPyLBqj4qawo/IsGqPgAAAAAAAAAAAAAAAAAAAAAqawo/IsGqPiprCj8iwao+AAAAAAAAAAAAAAAAAAAAACprCj8iwao+KmsKPyLBqj4AAAAA"),
+"format": 34359742487,
+"index_count": 36,
+"index_data": PackedByteArray("AAABAAIAAwAAAAIABAAFAAYABwAEAAYACAAJAAoACwAIAAoADAANAA4ADwAMAA4AEAARABIAEwAQABIAFAAVABYAFwAUABYA"),
+"material": SubResource("StandardMaterial3D_km7wi"),
+"primitive": 3,
+"uv_scale": Vector4(0, 0, 0, 0),
+"vertex_count": 24,
+"vertex_data": PackedByteArray("xkw0vpDeAj8y27Izxkw0vkOT8bzmE6WxfjUhPkOT8bzmE6WxtEAJPvZHHz9e9Pw70FMVvpr15j5Jkqu96LwMPpDeAj+wIqI97bwMPjeT8bynIqI9MNQfvkiT8bymIqK9Wl8fPpqIZT4OYwM80kMOPh60dDs/gag9gE/xvZtnPr1gFf+9KPayveQbMj4hGkm+ouYgvsHBLz7z/OE9H2odvoaTG70SQAI9EnY1PiDtxbqPU0o8ggEhPvApYD6Xta89fsExvnZDVj6Gccs87kwdvkclN7yKHUe9FScWPqx1Ar1wvcI9CGiwPeBLMT7zfyc+tItBPme5KT6aI7S9BukhPhrZ9bycUl68noIyvl1QNrzUWAS9GGchvsNQVj5GQdq9V31W/VD9qj4nfSb9/n8AgIuCc/1w+j1B/4Hi/QD7+kCIfMz95gEKVw+Cv/zEAe3XM4KG/OUB7yhAfIL9FgIaV2yCcf1mAeoiNYJ3/NUB7CIafBf++QGzXZZ7oP4sAuBdi33W+479FDuFfQP9nv1OO9aC+fxa/bFFb4I9/ND9wkVMfen84NQkP8F8if081Qc/W4If/JrSC0FXgR78LNLkQEiEEP29Alc7wYJw/WkCcju0fDX9sAKJRO57kP1tAk9E")
+}]
+
+[node name="UgGrassRegular" type="Node3D" unique_id=231983429]
+
+[node name="@MeshInstance3D@7" type="MeshInstance3D" parent="." unique_id=1331677169]
+mesh = SubResource("ArrayMesh_nqawb")

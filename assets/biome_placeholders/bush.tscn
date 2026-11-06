@@ -1,0 +1,31 @@
+[gd_scene load_steps=3 format=3]
+
+[sub_resource type="StandardMaterial3D" id="leaf"]
+albedo_color = Color(0.35, 0.47, 0.10, 1)
+roughness = 1.0
+metallic_specular = 0.0
+
+[sub_resource type="SphereMesh" id="body"]
+material = SubResource("leaf")
+radius = 0.48
+height = 0.8
+radial_segments = 8
+rings = 3
+
+[node name="BushPlaceholder" type="Node3D"]
+metadata/placeholder = true
+
+[node name="Part0" type="MeshInstance3D" parent="."]
+position = Vector3(0, 0.4, 0)
+mesh = SubResource("body")
+
+[node name="Part1" type="MeshInstance3D" parent="."]
+position = Vector3(-0.37, 0.3, 0.1)
+scale = Vector3(0.75, 0.75, 0.8)
+mesh = SubResource("body")
+
+[node name="Part2" type="MeshInstance3D" parent="."]
+position = Vector3(0.35, 0.3, 0.15)
+scale = Vector3(0.8, 0.75, 0.8)
+mesh = SubResource("body")
+

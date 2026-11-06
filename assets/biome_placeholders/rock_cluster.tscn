@@ -1,0 +1,24 @@
+[gd_scene load_steps=3 format=3]
+
+[sub_resource type="StandardMaterial3D" id="stone"]
+albedo_color = Color(0.38, 0.42, 0.43, 1)
+roughness = 1.0
+[sub_resource type="SphereMesh" id="rock"]
+material = SubResource("stone")
+radius = 0.6
+height = 0.9
+radial_segments = 6
+rings = 2
+
+[node name="RockClusterPlaceholder" type="Node3D"]
+[node name="Large" type="MeshInstance3D" parent="."]
+position = Vector3(0, 0.45, 0)
+mesh = SubResource("rock")
+[node name="Small" type="MeshInstance3D" parent="."]
+position = Vector3(0.65, 0.27, 0.15)
+scale = Vector3(0.7, 0.6, 0.7)
+mesh = SubResource("rock")
+[node name="Flat" type="MeshInstance3D" parent="."]
+position = Vector3(-0.5, 0.16, 0.25)
+scale = Vector3(0.8, 0.36, 0.7)
+mesh = SubResource("rock")

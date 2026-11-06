@@ -1,0 +1,8 @@
+[gd_resource type="Resource" load_steps=2 format=3]
+[ext_resource type="Script" path="res://scripts/scenery/relic_purpose.gd" id="1"]
+[resource]
+script = ExtResource("1")
+purpose_id = "layout_reveal"
+display_name = "Reveal layout"
+output_kind = "layout"
+energy_cost = 16.0

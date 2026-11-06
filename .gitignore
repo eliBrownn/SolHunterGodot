@@ -1,6 +1,9 @@
 .godot/
 artifacts/
 builds/
+assets/local/emace_grass/
+assets/local/emace_cool_water/
+assets/local/vefects/
 *.tmp
 
 # Local secrets and Godot export credentials
@@ -12,3 +15,4 @@ export_credentials.cfg
 # Local operating system files
 .DS_Store
 Thumbs.db
+assets/local/tropical_plants/

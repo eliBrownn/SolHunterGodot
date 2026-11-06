@@ -1,0 +1,464 @@
+extends Node3D
+## Bounded, presentation-only planting for the map-first world. A patch owns
+## absolute sample positions, while residency follows the player's chunk.
+
+const Plan := preload("res://scripts/world/world_map_plan.gd")
+const Surface := preload("res://scripts/world/world_map_surface.gd")
+const Community := preload("res://scripts/world/plant_community.gd")
+const Art := preload("res://scripts/scenery/nature_art.gd")
+const Meadow := preload("res://scripts/scenery/meadow_art.gd")
+const Library := preload("res://scripts/scenery/plant_library.gd")
+const PlantMesh := preload("res://scripts/scenery/plant_vastra_anatomy_mesh.gd")
+const GROUND_RADIUS := 1
+const CANOPY_RADIUS := 3
+const GROUND_STEP := 2
+const TREE_STEP := 8
+const BANK_SEARCH := 12.0
+const CARDINALS := [Vector2.LEFT, Vector2.RIGHT, Vector2.UP, Vector2.DOWN]
+const WORK_USEC := 1600
+const MAX_CANDIDATES_PER_FRAME := 96
+const SPAWN_CLEARANCE := 5.0
+
+enum Plant { GRASS, OPEN_FAN, DIVIDED_FROND, OXIDE_THORN_CROWN, RIBBON_LEAVES,
+	SALT_RIBBON, DUNE_PADDLE, SCREE_CUSHION, FROST_MAT, TREE_BASE }
+enum TreeDesign { CRIMSON_UMBRELLA, BLUE_TWIN_ARCH, BONE_JOINTED_CAUDEX, VIOLET_STILT_CURTAIN,
+	NEW_PLANT, RAIN_VAULT, COPPER_FLATCROWN, RIME_SPIRE, ECOSYSTEM_START }
+
+const ECOSYSTEM_TREE_BASE := Plant.TREE_BASE + TreeDesign.ECOSYSTEM_START
+const ECOSYSTEM_TREE_PATH := "res://resources/plants/ecosystem_trees/"
+const CROWN_FAMILIES := 3
+const SIZE_CLASSES := 3
+const FORMS_PER_HABITAT := CROWN_FAMILIES * SIZE_CLASSES
+const ECOSYSTEM_TREE_HABITAT := {
+	Plan.Biome.PLAINS: 0,
+	Plan.Biome.WOODLAND: 1,
+	Plan.Biome.HEATH: 2,
+	Plan.Biome.MARSH: 3,
+}
+
+const GROUND_BY_BIOME := {
+	Plan.Biome.PLAINS: Plant.OPEN_FAN,
+	Plan.Biome.WOODLAND: Plant.DIVIDED_FROND,
+	Plan.Biome.HEATH: Plant.OXIDE_THORN_CROWN,
+	Plan.Biome.MARSH: Plant.RIBBON_LEAVES,
+	Plan.Biome.COAST: Plant.SALT_RIBBON,
+	Plan.Biome.DESERT: Plant.DUNE_PADDLE,
+	Plan.Biome.JUNGLE: Plant.DIVIDED_FROND,
+	Plan.Biome.SAVANNA: Plant.OXIDE_THORN_CROWN,
+	Plan.Biome.ALPINE: Plant.SCREE_CUSHION,
+	Plan.Biome.TUNDRA: Plant.FROST_MAT,
+	Plan.Biome.TAIGA: Plant.DIVIDED_FROND,
+}
+const GROUND_DESIGNS := {
+	Plant.OPEN_FAN: "meadow_open_fan",
+	Plant.DIVIDED_FROND: "woodland_divided_frond",
+	Plant.OXIDE_THORN_CROWN: "heath_oxide_thorn_crown",
+	Plant.RIBBON_LEAVES: "marsh_ribbon_leaves",
+}
+# New visual drafts reuse the Bible plants' growth vocabulary and mesh builder.
+# These recipes stay local to map presentation until design review.
+const NEW_DESIGNS := {
+	Plant.TREE_BASE + TreeDesign.RAIN_VAULT: {
+		"name": "Rain vault", "base": 1, "height": 7.8, "seed": 891,
+		"settings": {"height_ratio": 1.7, "spread_ratio": 1.5, "branch_reach": 1.5,
+			"foliage": 1.2, "foliage_fullness": 1.35, "leaf_architecture": 2,
+			"biome_palette_variant": 1, "tree_fork_depth": 1},
+	},
+	Plant.TREE_BASE + TreeDesign.COPPER_FLATCROWN: {
+		"name": "Copper flatcrown", "base": 0, "height": 3.6, "seed": 263,
+		"settings": {"height_ratio": 0.72, "spread_ratio": 1.4, "branch_reach": 1.85,
+			"branch_rise": -0.9, "foliage": 0.72, "biome_palette_variant": 2,
+			"bark_palette": 3, "tree_fork_depth": 1},
+	},
+	Plant.TREE_BASE + TreeDesign.RIME_SPIRE: {
+		"name": "Rime spire", "base": 0, "height": 6.6, "seed": 664,
+		"settings": {"height_ratio": 1.85, "spread_ratio": 0.54, "branch_reach": 0.85,
+			"branch_rise": 1.0, "leaf_architecture": 4, "foliage_palette": 3,
+			"hue_shift": 28.0, "tree_fork_depth": 1},
+	},
+	Plant.SALT_RIBBON: {
+		"name": "Salt ribbon", "base": 3, "height": 0.44, "seed": 237,
+		"settings": {"height_ratio": 0.62, "leaf_architecture": 4, "biome_palette_variant": 1},
+	},
+	Plant.DUNE_PADDLE: {
+		"name": "Dune paddle", "base": 2, "height": 0.48, "seed": 196,
+		"settings": {"leaf_architecture": 3, "leaf_width": 1.55, "biome_palette_variant": 2},
+	},
+	Plant.SCREE_CUSHION: {
+		"name": "Scree cushion", "base": 2, "height": 0.19, "seed": 123,
+		"settings": {"height_ratio": 0.65, "spread_ratio": 1.2, "node_count": 10,
+			"foliage_palette": 4},
+	},
+	Plant.FROST_MAT: {
+		"name": "Frost mat", "base": 0, "height": 0.17, "seed": 346,
+		"settings": {"height_ratio": 0.52, "spread_ratio": 1.5, "leaf_architecture": 2,
+			"foliage_palette": 4, "hue_shift": 30.0},
+	},
+}
+
+const TREE_DESIGNS := {
+	TreeDesign.CRIMSON_UMBRELLA: "meadow_crimson_umbrella",
+	TreeDesign.BLUE_TWIN_ARCH: "woodland_blue_twin_arch",
+	TreeDesign.BONE_JOINTED_CAUDEX: "heath_bone_jointed_caudex",
+	TreeDesign.VIOLET_STILT_CURTAIN: "marsh_violet_stilt_curtain",
+	TreeDesign.NEW_PLANT: "meadow_new_plant",
+}
+const TREE_BY_BIOME := {
+	Plan.Biome.PLAINS: TreeDesign.CRIMSON_UMBRELLA,
+	Plan.Biome.WOODLAND: TreeDesign.BLUE_TWIN_ARCH,
+	Plan.Biome.HEATH: TreeDesign.BONE_JOINTED_CAUDEX,
+	Plan.Biome.MARSH: TreeDesign.VIOLET_STILT_CURTAIN,
+	Plan.Biome.JUNGLE: TreeDesign.RAIN_VAULT,
+	Plan.Biome.SAVANNA: TreeDesign.COPPER_FLATCROWN,
+	Plan.Biome.TAIGA: TreeDesign.RIME_SPIRE,
+}
+
+# Ground cover, fraction of cover that is foliage or scrub, and tree density.
+const HABITATS := {
+	Plan.Biome.COAST: Vector3(0.20, 0.14, 0.0),
+	Plan.Biome.PLAINS: Vector3(0.82, 0.16, 0.045),
+	Plan.Biome.WOODLAND: Vector3(0.58, 0.38, 0.64),
+	Plan.Biome.HEATH: Vector3(0.27, 0.55, 0.05),
+	Plan.Biome.MARSH: Vector3(0.65, 0.19, 0.08),
+	Plan.Biome.DESERT: Vector3(0.10, 0.83, 0.0),
+	Plan.Biome.JUNGLE: Vector3(0.78, 0.58, 0.78),
+	Plan.Biome.SAVANNA: Vector3(0.46, 0.32, 0.15),
+	Plan.Biome.ALPINE: Vector3(0.12, 0.68, 0.0),
+	Plan.Biome.TUNDRA: Vector3(0.16, 0.60, 0.0),
+	Plan.Biome.TAIGA: Vector3(0.38, 0.35, 0.48),
+}
+const TINTS := {
+	Plan.Biome.COAST: Color("a6a866"),
+	Plan.Biome.PLAINS: Color("698b37"),
+	Plan.Biome.WOODLAND: Color("57743c"),
+	Plan.Biome.HEATH: Color("89905b"),
+	Plan.Biome.MARSH: Color("718d4a"),
+	Plan.Biome.DESERT: Color("a8a16a"),
+	Plan.Biome.JUNGLE: Color("4f843f"),
+	Plan.Biome.SAVANNA: Color("a7a156"),
+	Plan.Biome.ALPINE: Color("898a5d"),
+	Plan.Biome.TUNDRA: Color("a8ad83"),
+	Plan.Biome.TAIGA: Color("647c5b"),
+}
+
+var _plan: Plan
+var _surface: Surface
+var _height: Callable
+var _terrain_ready: Callable
+var _coverage := 0.0
+var _chunk_size := 64
+var _spawn := Vector2i.ZERO
+var _has_spawn := false
+var _center := Vector2i.ZERO
+var _ground := Community.new()
+var _canopy := Community.new()
+var _models := {}
+var _wanted := {}
+var _pending: Array[Vector3i] = []
+var _patches: Dictionary[Vector3i, Node3D] = {}
+var _job: Dictionary = {}
+
+
+func configure(plan: Plan, surface: Surface, seed_value: int, chunk_size: int,
+		coverage: float, height_at: Callable, terrain_ready: Callable) -> void:
+	_plan = plan
+	_surface = surface
+	_chunk_size = chunk_size
+	_coverage = clampf(coverage, 0.0, 1.0)
+	_height = height_at
+	_terrain_ready = terrain_ready
+	_ground.configure(seed_value ^ 0x5739b, 16.0, 1.0, 2.0, 0.0, 0)
+	_canopy.configure(seed_value ^ 0x712d3, 24.0, 1.0, 4.0, 0.0, 1)
+	set_process(false)
+
+
+func cover(cell: Vector2i) -> void:
+	if _coverage <= 0.0:
+		return
+	var center := Vector2i((Vector2(cell) / _chunk_size).floor())
+	if _has_spawn and center == _center:
+		return
+	if not _has_spawn:
+		_spawn = cell
+		_has_spawn = true
+	_center = center
+	_wanted.clear()
+	_pending.clear()
+	for z in range(-CANOPY_RADIUS, CANOPY_RADIUS + 1):
+		for x in range(-CANOPY_RADIUS, CANOPY_RADIUS + 1):
+			var chunk := center + Vector2i(x, z)
+			_wanted[Vector3i(chunk.x, chunk.y, 1)] = true
+			if maxi(absi(x), absi(z)) <= GROUND_RADIUS:
+				_wanted[Vector3i(chunk.x, chunk.y, 0)] = true
+	for key: Vector3i in _patches.keys():
+		if not _wanted.has(key):
+			var patch := _patches[key]
+			remove_child(patch)
+			patch.queue_free()
+			_patches.erase(key)
+	if not _job.is_empty() and not _wanted.has(_job.key):
+		_job.clear()
+	for key: Vector3i in _wanted:
+		if not _patches.has(key) and (_job.is_empty() or key != _job.key):
+			_pending.append(key)
+	_pending.sort_custom(func(a: Vector3i, b: Vector3i) -> bool:
+		var da := Vector2i(a.x, a.y).distance_squared_to(_center) * 2 + a.z
+		var db := Vector2i(b.x, b.y).distance_squared_to(_center) * 2 + b.z
+		return da < db if da != db else (a.y < b.y if a.y != b.y else a.x < b.x))
+	set_process(not _pending.is_empty() or not _job.is_empty())
+
+
+func _process(_delta: float) -> void:
+	if _job.is_empty():
+		for index in range(_pending.size()):
+			var key := _pending[index]
+			if not _terrain_ready.call(Vector2i(key.x, key.y)):
+				continue
+			_pending.remove_at(index)
+			_job = {"key": key, "next": 0, "groups": {}}
+			break
+		if _job.is_empty():
+			set_process(not _pending.is_empty())
+			return
+	var key: Vector3i = _job.key
+	var origin := Vector2i(key.x, key.y) * _chunk_size
+	var step := GROUND_STEP if key.z == 0 else TREE_STEP
+	var width := _chunk_size / step
+	var deadline := Time.get_ticks_usec() + WORK_USEC
+	var stop := mini(width * width, int(_job.next) + MAX_CANDIDATES_PER_FRAME)
+	while int(_job.next) < stop and Time.get_ticks_usec() < deadline:
+		var index: int = _job.next
+		var cell := origin + Vector2i(index % width, index / width) * step
+		var plant := _placement(cell, key.z != 0, origin)
+		if not plant.is_empty():
+			var groups: Dictionary = _job.groups
+			var kind: int = plant.kind
+			if not groups.has(kind):
+				groups[kind] = []
+			groups[kind].append(plant)
+		_job.next += 1
+	if int(_job.next) == width * width:
+		_publish(key, origin, _job.groups)
+		_job.clear()
+		set_process(not _pending.is_empty())
+
+
+func _placement(cell: Vector2i, tree: bool, origin: Vector2i) -> Dictionary:
+	var patch := _canopy if tree else _ground
+	var step := TREE_STEP if tree else GROUND_STEP
+	# One jittered site per absolute lattice square. A site's jitter stays
+	# inside its square, so separate chunks never contend for ownership.
+	var offset := Vector2(patch.roll(cell, 17), patch.roll(cell, 31))
+	var point := Vector2(cell) + Vector2.ONE * (step * 0.5) + (offset - Vector2.ONE * 0.5) * (step * 0.72)
+	if point.distance_squared_to(Vector2(_spawn) + Vector2(0.5, 0.5)) < SPAWN_CLEARANCE * SPAWN_CLEARANCE:
+		return {}
+	var ground := _plan.sample_world_cell(Vector2i(point.floor()))
+	if not HABITATS.has(ground.biome):
+		return {}
+	var profile: Vector3 = HABITATS[ground.biome]
+	var irrigated_dry: bool = ground.biome == Plan.Biome.PLAINS and ground.natural_biome in [Plan.Biome.DESERT, Plan.Biome.SAVANNA]
+	var density: float
+	var grove := 0.0
+	if tree:
+		if profile.z <= 0.0:
+			return {}
+		grove = smoothstep(0.34, 0.72, _canopy.patch_at(cell))
+		density = _tree_density(ground, point, grove, profile.z, irrigated_dry)
+	else:
+		var field := smoothstep(0.18, 0.70, patch.patch_at(cell))
+		var moisture := lerpf(0.65, 1.12, float(ground.soil_moisture))
+		density = profile.x * moisture * lerpf(0.08, 1.45, field)
+		if irrigated_dry:
+			density *= 0.72
+	var roll := patch.roll(cell, 52)
+	if roll >= density * _coverage or not _surface.planting_ground(point):
+		return {}
+	var reach := 1.2 if tree else 0.38
+	var height: float = _height.call(point)
+	var dx: float = _height.call(point + Vector2(reach, 0.0)) - _height.call(point - Vector2(reach, 0.0))
+	var dz: float = _height.call(point + Vector2(0.0, reach)) - _height.call(point - Vector2(0.0, reach))
+	var grade := Vector2(dx, dz).length() / (2.0 * reach)
+	if grade > (0.425 if tree else 0.575):
+		return {}
+	if tree and roll >= density * _coverage * (1.0 - smoothstep(0.12, 0.425, grade)):
+		return {}
+	if ground.biome == Plan.Biome.DESERT:
+		var shelter: float = (_height.call(point + Vector2(4.0, 0.0)) + _height.call(point - Vector2(4.0, 0.0))
+			+ _height.call(point + Vector2(0.0, 4.0)) + _height.call(point - Vector2(0.0, 4.0))) * 0.25
+		if height > shelter + 0.12:
+			return {}
+	if tree:
+		for direction: Vector2 in CARDINALS:
+			if not _surface.planting_ground(point + direction * reach):
+				return {}
+	var kind: int = Plant.GRASS
+	var maturity := 0.0
+	if tree:
+		# The same continuous grove field governs admission and mature size.
+		maturity = grove * (1.0 - smoothstep(0.12, 0.425, grade) * 0.45)
+		kind = _tree_kind(ground.biome, irrigated_dry, cell, maturity)
+	elif patch.roll(cell, 68) < profile.y:
+		kind = GROUND_BY_BIOME[ground.natural_biome if irrigated_dry else ground.biome]
+	var tint: Color = TINTS[ground.natural_biome] if irrigated_dry else TINTS[ground.biome]
+	if irrigated_dry:
+		tint = tint.lerp(TINTS[Plan.Biome.PLAINS], 0.53)
+	if kind == Plant.GRASS:
+		tint = tint.lerp(Color.WHITE, patch.roll(cell, 91) * 0.18)
+		tint.a = patch.roll(cell, 97)
+	else:
+		tint = Color.WHITE
+	var size_roll := patch.roll(cell, 79)
+	var height_scale := lerpf(0.70, 1.28, size_roll)
+	if tree:
+		height_scale = lerpf(0.72, 1.16, maturity) * lerpf(0.93, 1.07, size_roll)
+	if kind == Plant.GRASS and ground.biome == Plan.Biome.MARSH:
+		height_scale *= 1.35
+	var basis := Basis(Vector3.UP, patch.roll(cell, 85) * TAU).scaled(Vector3.ONE * height_scale)
+	var at := Vector3(point.x - origin.x, height, point.y - origin.y)
+	return {"kind": kind, "transform": Transform3D(basis, at), "color": tint}
+
+
+func _tree_kind(biome: int, irrigated_dry: bool, cell: Vector2i, maturity: float) -> int:
+	var habitat := Plan.Biome.HEATH if irrigated_dry else biome
+	var named: int = TREE_BY_BIOME[habitat]
+	if not ECOSYSTEM_TREE_HABITAT.has(habitat) or _canopy.roll(cell, 105) < 0.20:
+		if named == TreeDesign.CRIMSON_UMBRELLA and _canopy.roll(cell, 101) < 0.50:
+			named = TreeDesign.NEW_PLANT
+		return Plant.TREE_BASE + named
+	var palette: int = ECOSYSTEM_TREE_HABITAT[habitat]
+	var family := mini(int(_canopy.roll(cell, 101) * CROWN_FAMILIES), CROWN_FAMILIES - 1)
+	var size_weight := lerpf(_canopy.roll(cell, 117), maturity, 0.65)
+	var size_class := mini(int(size_weight * SIZE_CLASSES), SIZE_CLASSES - 1)
+	return ECOSYSTEM_TREE_BASE + palette * FORMS_PER_HABITAT + family * SIZE_CLASSES + size_class
+
+
+func _tree_density(ground: Dictionary, point: Vector2, grove: float, base: float, irrigated_dry: bool) -> float:
+	var wet: float = ground.soil_moisture
+	var warmth: float = ground.temperature
+	match ground.biome:
+		Plan.Biome.WOODLAND, Plan.Biome.JUNGLE:
+			# Dense interiors open up where the grove field is low.
+			return base * lerpf(0.0, 1.75, grove) * smoothstep(0.29, 0.62, wet)
+		Plan.Biome.TAIGA:
+			var climate := smoothstep(0.19, 0.32, warmth) * smoothstep(0.24, 0.52, wet)
+			return base * lerpf(0.02, 1.55, grove) * climate
+		Plan.Biome.HEATH:
+			# Dry exposed ridges thin out toward the treeline.
+			var treeline := 1.0 - smoothstep(0.34, 0.59, float(ground.elevation))
+			return base * grove * treeline * smoothstep(0.14, 0.36, wet)
+
+	# Open country favors damp pockets and banks. In marshes, the root
+	# footprint still has to fit on an exposed hummock or solid bank.
+	var near_bank := false
+	for direction: Vector2 in CARDINALS:
+		if not _surface.planting_ground(point + direction * BANK_SEARCH):
+			near_bank = true
+			break
+	if irrigated_dry:
+		# Water can green the ground without turning a dry climate into woodland.
+		return base * grove * (1.2 if near_bank else 0.16)
+	if ground.biome == Plan.Biome.MARSH:
+		return base * grove * (1.8 if near_bank else 0.35)
+	return base * grove * smoothstep(0.18, 0.55, wet) * (1.8 if near_bank else 0.55)
+
+
+func _publish(key: Vector3i, origin: Vector2i, groups: Dictionary) -> void:
+	var root := Node3D.new()
+	root.position = Vector3(origin.x, 0.0, origin.y)
+	var count := 0
+	for kind: int in groups:
+		var model := _model(kind)
+		var rows: Array = groups[kind]
+		for piece: Dictionary in model.pieces:
+			var instances := MultiMesh.new()
+			instances.transform_format = MultiMesh.TRANSFORM_3D
+			instances.use_colors = true
+			instances.mesh = piece.mesh
+			instances.instance_count = rows.size()
+			for index in range(rows.size()):
+				var record: Dictionary = rows[index]
+				instances.set_instance_transform(index, record.transform * model.fit * piece.transform)
+				instances.set_instance_color(index, record.color)
+			var view := MultiMeshInstance3D.new()
+			view.name = model.name
+			view.multimesh = instances
+			view.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+			view.lod_bias = 0.7 if key.z == 1 else 1.0
+			view.visibility_range_end = 300.0 if key.z == 1 else 96.0
+			view.visibility_range_end_margin = 16.0 if key.z == 1 else 10.0
+			root.add_child(view)
+		if not model.pieces.is_empty():
+			count += rows.size()
+	root.set_meta("plant_count", count)
+	root.set_meta("placement_signature", hash(groups))
+	add_child(root)
+	_patches[key] = root
+
+
+func _model(kind: int) -> Dictionary:
+	if _models.has(kind):
+		return _models[kind]
+	if kind == Plant.GRASS:
+		var blade := Meadow.mesh(1)
+		var clump := SurfaceTool.new()
+		clump.begin(Mesh.PRIMITIVE_TRIANGLES)
+		clump.set_material(blade.surface_get_material(0))
+		for index in range(7):
+			var angle := float(index) * 2.39996
+			var offset := Vector2.from_angle(angle) * lerpf(0.04, 0.19, float(index) / 6.0)
+			var basis := Basis(Vector3.UP, angle).scaled(Vector3(1.2, 0.28 + 0.02 * index, 1.25))
+			clump.append_from(blade, 0, Transform3D(basis, Vector3(offset.x, 0.0, offset.y)))
+		_models[kind] = {"name": "Grass", "pieces": [{"mesh": clump.commit(), "transform": Transform3D.IDENTITY}], "fit": Transform3D.IDENTITY}
+		return _models[kind]
+	var is_tree := kind >= Plant.TREE_BASE
+	var definition: Resource
+	var target: float
+	var scene: PackedScene
+	var name: String
+	if NEW_DESIGNS.has(kind):
+		var draft: Dictionary = NEW_DESIGNS[kind]
+		name = draft.name
+		target = draft.height
+		scene = _draft_scene(draft, is_tree)
+	else:
+		if kind >= ECOSYSTEM_TREE_BASE:
+			var index := kind - ECOSYSTEM_TREE_BASE
+			var key := "procedural_%d_1_%d" % [index / FORMS_PER_HABITAT, index % FORMS_PER_HABITAT]
+			definition = load(ECOSYSTEM_TREE_PATH + key + ".res")
+		elif is_tree:
+			definition = load(ECOSYSTEM_TREE_PATH + "official_" + TREE_DESIGNS[kind - Plant.TREE_BASE] + ".res")
+		else:
+			definition = Library.official_definition(GROUND_DESIGNS[kind])
+		if definition != null:
+			scene = definition.scene
+			target = definition.world_height
+			name = definition.plant_id
+	var model := Art.compact_parts(scene) if scene != null else {"supported": false}
+	if not model.supported or model.pieces.is_empty():
+		_models[kind] = {"pieces": [], "fit": Transform3D.IDENTITY}
+		return _models[kind]
+	var bounds: AABB = model.bounds
+	var base: Vector3 = definition.ground_offset(bounds) if definition != null else Vector3.ZERO
+	var scale := target / maxf(bounds.end.y - base.y, 0.01)
+	var width := maxf(bounds.size.x, bounds.size.z)
+	var width_limit := 5.2 if is_tree else 1.5
+	if kind >= ECOSYSTEM_TREE_BASE:
+		var size_class := (kind - ECOSYSTEM_TREE_BASE) % SIZE_CLASSES
+		width_limit = [3.2, 5.2, 7.2][size_class]
+	scale = minf(scale, width_limit / maxf(width, 0.01))
+	_models[kind] = {"name": name, "pieces": model.pieces, "fit": Transform3D(Basis.IDENTITY.scaled(Vector3.ONE * scale), -base * scale)}
+	return _models[kind]
+
+
+func _draft_scene(draft: Dictionary, is_tree: bool) -> PackedScene:
+	var builder := PlantMesh.new()
+	builder.tube_sides = 4
+	var settings := {"branches": 6, "node_count": 7, "tree_leaf_cards": is_tree}
+	settings.merge(draft.settings, true)
+	var sample := builder.create_sample(draft.base, 1 if is_tree else 0, draft.seed, settings, PlantMesh.make_anatomy_materials())
+	var body := MeshInstance3D.new()
+	body.mesh = sample.body
+	var scene := PackedScene.new()
+	scene.pack(body)
+	body.free()
+	return scene

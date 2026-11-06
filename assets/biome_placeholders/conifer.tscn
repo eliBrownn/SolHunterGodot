@@ -1,0 +1,34 @@
+[gd_scene load_steps=5 format=3]
+
+[sub_resource type="StandardMaterial3D" id="bark"]
+albedo_color = Color(0.29, 0.23, 0.18, 1)
+roughness = 1.0
+[sub_resource type="StandardMaterial3D" id="needles"]
+albedo_color = Color(0.18, 0.36, 0.29, 1)
+roughness = 1.0
+[sub_resource type="CylinderMesh" id="trunk"]
+material = SubResource("bark")
+top_radius = 0.08
+bottom_radius = 0.17
+height = 2.5
+radial_segments = 6
+rings = 1
+[sub_resource type="CylinderMesh" id="crown"]
+material = SubResource("needles")
+top_radius = 0.0
+bottom_radius = 1.0
+height = 2.1
+radial_segments = 7
+rings = 1
+
+[node name="ConiferPlaceholder" type="Node3D"]
+[node name="Trunk" type="MeshInstance3D" parent="."]
+position = Vector3(0, 1.25, 0)
+mesh = SubResource("trunk")
+[node name="LowerCrown" type="MeshInstance3D" parent="."]
+position = Vector3(0, 1.9, 0)
+mesh = SubResource("crown")
+[node name="UpperCrown" type="MeshInstance3D" parent="."]
+position = Vector3(0, 2.9, 0)
+scale = Vector3(0.7, 0.8, 0.7)
+mesh = SubResource("crown")

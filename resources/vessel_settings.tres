@@ -1,0 +1,19 @@
+[gd_resource type="Resource" script_class="VesselSettings" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/sols/vessel_settings.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+enabled = true
+group_limit = 9
+signal_lifetime_ticks = 40
+feed_per_tick = 2
+response_cost = 1
+response_ticks = 12
+recovery_ticks = 30
+blockage_ticks = 8
+stranded_energy = 300
+escalation_overload = 1
+storm_threshold = 80
+storm_chance_percent = 0
+storm_ticks = 20

@@ -1,0 +1,32 @@
+[gd_scene load_steps=3 format=3]
+
+[sub_resource type="StandardMaterial3D" id="ice"]
+albedo_color = Color(0.65, 0.82, 0.87, 1)
+roughness = 1.0
+metallic_specular = 0.0
+
+[sub_resource type="CylinderMesh" id="shard"]
+material = SubResource("ice")
+top_radius = 0
+bottom_radius = 0.32
+height = 1.7
+radial_segments = 6
+rings = 1
+
+[node name="IceClusterPlaceholder" type="Node3D"]
+metadata/placeholder = true
+
+[node name="Part0" type="MeshInstance3D" parent="."]
+position = Vector3(0, 0.85, 0)
+mesh = SubResource("shard")
+
+[node name="Part1" type="MeshInstance3D" parent="."]
+position = Vector3(0.4, 0.55, 0.2)
+scale = Vector3(0.7, 0.647, 0.7)
+mesh = SubResource("shard")
+
+[node name="Part2" type="MeshInstance3D" parent="."]
+position = Vector3(-0.35, 0.425, 0.18)
+scale = Vector3(0.65, 0.5, 0.65)
+mesh = SubResource("shard")
+

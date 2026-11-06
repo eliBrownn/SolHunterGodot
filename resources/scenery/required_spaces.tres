@@ -1,0 +1,10 @@
+[gd_resource type="Resource" script_class="SceneryRequiredSpaces" format=3]
+
+[ext_resource type="Script" path="res://scripts/scenery/scenery_required_spaces.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+world_seed = 2601026
+woodland = Array[Vector2i]([Vector2i(32, 16)])
+dryland = Array[Vector2i]([Vector2i(104, 24)])
+wetland = Array[Vector2i]([Vector2i(32, 32)])
